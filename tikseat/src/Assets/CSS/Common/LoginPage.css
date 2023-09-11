@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Merriweather:ital,wght@1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+.login{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.logoGrid{
+    display: flex;
+    flex-direction: row;
+
+}
+
+.logo{
+    margin: 0px;
+    font-family: 'Archivo Black';
+    text-align: start;
+    background: linear-gradient(to right, #897F5F 0%, #ECB71F 60%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+.right{
+    width: 50%;
+}
+
+.loginGrid{
+    height: 670px;
+    width: 1044px;
+    display: flex;
+}
+
+.left{
+    width: 50%;
+    padding: 40px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    ;
+}
+
+.email{
+    margin-bottom: 20px;
+}
+.btnLogin{
+    background-color: #F5BD19;
+    color: black;
+    margin-bottom: 20px;
+}
+.btnLoginGG{
+    border: #F5BD19 solid 1px;
+    color: black;
+    margin-top: 20px;
+}
