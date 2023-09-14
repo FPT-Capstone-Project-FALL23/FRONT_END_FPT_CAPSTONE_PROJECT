@@ -16,6 +16,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { environment } from "../environment/environment";
 import ButtonCustom from "../Components/button/ButtonCustom";
+import ApiCommon from "../API/ApiCommon";
 
 const anotherChoice = [
   { logo: <IconFB /> },
@@ -40,7 +41,8 @@ const SignUp = () => {
         role: "client",
       };
 
-      const response = await axios.post(environment.apiUrl, newData);
+      // const response = await axios.post(environment.apiUrl, newData);
+      const response = await ApiCommon.signUp(newData)
       console.log("data: ", response);
       if (response.statusCode === 200) {
         toast.success("Register Success");
