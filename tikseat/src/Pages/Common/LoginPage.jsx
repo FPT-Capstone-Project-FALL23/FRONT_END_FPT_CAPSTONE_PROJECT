@@ -1,13 +1,8 @@
 import { Button, Grid, Paper } from "@mui/material";
 import React from "react";
-import {
-  LOGIN,
-  NAME_LOGO,
-  TITLE_LOGIN,
-} from "../../Assets/Constant/ConstLogin";
-import FormLogin from "../../Components/Common/FormLogin";
-import SwiperLogin from "../../Components/Common/SwiperLogin";
-import "../../Assets/CSS/Common/LoginPage.css";
+import "Assets/CSS/Common/LoginPage.css";
+import { NAME_LOGO, TITLE_LOGIN, LOGIN } from "Assets/Constant/ConstLogin";
+import FormLogin from "Components/Common/FormLogin";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -24,7 +19,8 @@ function LoginPage() {
           className="loginGrid"
           style={{
             boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
-          }}>
+          }}
+        >
           <Paper className="left" fullWidth>
             <Grid className="logoGrid">
               <Button>

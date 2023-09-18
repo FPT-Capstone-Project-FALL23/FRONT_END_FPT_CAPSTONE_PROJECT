@@ -1,10 +1,11 @@
-import { Box, Typography } from "@mui/material";
-import InputCustom from "../Components/input/InputCustom";
+import InputCustom from "Components/input/InputCustom";
 import { useState } from "react";
-import axios from "axios";
-import { environment } from "../environment/environment";
 import { toast } from "react-toastify";
-import ButtonCustom from "../Components/button/ButtonCustom";
+import ButtonCustom from "Components/button/ButtonCustom";
+import { SET_PASSWORD, TITLE_PAGE } from "Assets/Constant/constSetPassword";
+import ApiCommon from "API/ApiCommon";
+import FormSubmit from "Components/formCustom/FormSubmit";
+import { PageNameStyle, TitlePageStyle } from "style/style.const";
 
 const SetPassword = () => {
   const [newPassword, setNewPassword] = useState(null);
@@ -13,7 +14,7 @@ const SetPassword = () => {
   const handleSetPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(environment.apiUrl, {
+      const response = await ApiCommon.setPassword({
         newPassword,
         confirmPassword,
       });
@@ -28,22 +29,12 @@ const SetPassword = () => {
   };
   return (
     <>
-      <Typography
-        variant="h4"
-        component={"h5"}
-        style={{ marginTop: "20px", fontStyle: "italic" }}
-      >
-        Set a password
-      </Typography>
-      <p style={{ color: "#112211", marginTop: "20px" }}>
-        Your previous password has been reseted. Please set a new password for
-        your account.
-      </p>
-      <Box
-        component={"form"}
-        onSubmit={handleSetPassword}
-        style={{ marginTop: "50px" }}
-      >
+      <PageNameStyle variant="h4" component={"h5"}>
+        {SET_PASSWORD}
+      </PageNameStyle>
+      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+
+      <FormSubmit onSubmit={handleSetPassword}>
         <InputCustom
           type="password"
           setValue={setNewPassword}
@@ -54,9 +45,8 @@ const SetPassword = () => {
           setValue={setConfirmPassword}
           label=" Re-enter Password"
         />
-
         <ButtonCustom content="Set Password" color="#F5BD19" />
-      </Box>
+      </FormSubmit>
     </>
   );
 };

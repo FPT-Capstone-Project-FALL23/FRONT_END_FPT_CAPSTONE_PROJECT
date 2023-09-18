@@ -7,12 +7,25 @@ import {
   MenuItem,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
-import InputCustom from "../Components/input/InputCustom";
-import axios from "axios";
-import { environment } from "../environment/environment";
-import ButtonCustom from "../Components/button/ButtonCustom";
+import InputCustom from "Components/input/InputCustom";
+import { environment } from "environment/environment";
+import ButtonCustom from "Components/button/ButtonCustom";
+import {
+  ADD_PAYMENT_METHOD,
+  BACK,
+  CONTENT_INTRODUCTION,
+  SECURELY_SAVE_MY_INFO,
+  TITLE_PAGE,
+} from "Assets/Constant/constAddPayment";
+import ApiCommon from "API/ApiCommon";
+import {
+  BackToPageStyle,
+  ContentIntroductionStyle,
+  PageNameStyle,
+  TitlePageStyle,
+} from "style/style.const";
+import FormSubmit from "Components/formCustom/FormSubmit";
 
 const currencies = [];
 const AddPaymentMethod = () => {
@@ -35,8 +48,8 @@ const AddPaymentMethod = () => {
   const handleAddPayment = async (e) => {
     e.preventDefault();
     try {
-      const newDate = {};
-      const response = await axios.post(environment.apiUrl, newDate);
+      const newData = {};
+      const response = await ApiCommon.addPayment(newData);
       console.log("environment: ", environment);
       if (response.status === 200) {
       } else {
@@ -47,35 +60,16 @@ const AddPaymentMethod = () => {
   };
   return (
     <div>
-      <span
-        style={{
-          marginTop: "20px",
-          fontStyle: "italic",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <KeyboardArrowLeftIcon /> <span>Back</span>
-      </span>
-      <Typography
-        variant="h4"
-        component={"h5"}
-        style={{ marginTop: "20px", fontStyle: "italic" }}
-      >
-        Add a payment method
-      </Typography>
+      <BackToPageStyle to={"/"}>
+        <KeyboardArrowLeftIcon /> <span>{BACK}</span>
+      </BackToPageStyle>
+      <PageNameStyle variant="h4" component={"h5"}>
+        {ADD_PAYMENT_METHOD}
+      </PageNameStyle>
 
-      <Box style={{ color: "#112211", marginTop: "20px" }}>
-        Let’s get you all st up so you can access your personal account.
-      </Box>
+      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
       <Box>
-        <Box
-          onSubmit={handleAddPayment}
-          component="form"
-          noValidate
-          autoComplete="off"
-          style={{ marginTop: "30px" }}
-        >
+        <FormSubmit onSubmit={handleAddPayment} style={{ marginTop: "30px" }}>
           <InputCustom
             inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
             type="text"
@@ -116,33 +110,14 @@ const AddPaymentMethod = () => {
             style={{ fontSize: "14px", display: "block" }}
             control={<Checkbox />}
             label={
-              <span style={{ fontSize: "14px" }}>
-                Securely save my information for 1-click checkout
-              </span>
+              <span style={{ fontSize: "14px" }}>{SECURELY_SAVE_MY_INFO}</span>
             }
           />
           <ButtonCustom content="Add payment method" color="#8DD3BB" />
-        </Box>
-        <div
-          style={{
-            padding: "20px 150px",
-            textAlign: "center",
-          }}
-        >
-          <p
-            style={{
-              fontSize: "12px",
-              width: "500px",
-              margin: "0 auto",
-              color: "#112211",
-            }}
-          >
-            By confirming your subscription, you allow The Outdoor Inn Crowd
-            Limited to charge your card for this payment and future payments in
-            accordance with their terms. You can always cancel your
-            subscription.
-          </p>
-        </div>
+        </FormSubmit>
+        <ContentIntroductionStyle>
+          <p>{CONTENT_INTRODUCTION}</p>
+        </ContentIntroductionStyle>
       </Box>
     </div>
   );

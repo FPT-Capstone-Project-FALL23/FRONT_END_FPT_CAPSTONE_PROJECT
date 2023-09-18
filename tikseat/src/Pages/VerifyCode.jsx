@@ -1,12 +1,24 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import InputCustom from "../Components/input/InputCustom";
-import axios from "axios";
+import InputCustom from "Components/input/InputCustom";
 import { toast } from "react-toastify";
-import ButtonCustom from "../Components/button/ButtonCustom";
+import ButtonCustom from "Components/button/ButtonCustom";
+import {
+  BACK_TO_LOGIN,
+  NOT_RECEIVE_CODE,
+  RESEND,
+  TITLE_PAGE_VERIFY,
+  VERIFY_CODE,
+} from "Assets/Constant/constVerifyCode";
+import ApiCommon from "API/ApiCommon";
+import {
+  BackToPageStyle,
+  PageNameStyle,
+  TitlePageStyle,
+} from "style/style.const";
+import FormSubmit from "Components/formCustom/FormSubmit";
 
 const VerifyCode = () => {
   const [verifyCode, setVerifyCode] = useState(true);
@@ -15,7 +27,10 @@ const VerifyCode = () => {
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("", { verifyCode });
+      const response = await ApiCommon.verifyCode({
+        email: "",
+        enteredOTP: verifyCode,
+      });
       if (response.status === 200) {
         toast.success("success");
       } else {
@@ -27,27 +42,14 @@ const VerifyCode = () => {
   };
   return (
     <>
-      <Link to={"/login"}
-        style={{
-          marginTop: "20px",
-          fontStyle: "italic",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <KeyboardArrowLeftIcon /> <span>Back to login</span>
-      </Link>
-      <Typography
-        variant="h4"
-        component={"h5"}
-        style={{ marginTop: "20px", fontStyle: "italic" }}
-      >
-        Verify code
-      </Typography>
-      <p style={{ color: "#112211", marginTop: "20px" }}>
-        An authentication code has been sent to your email.
-      </p>
-      <Box component={"form"} onSubmit={handleVerifyCode}>
+      <BackToPageStyle to={"/login"}>
+        <KeyboardArrowLeftIcon /> <span>{BACK_TO_LOGIN}</span>
+      </BackToPageStyle>
+      <PageNameStyle variant="h4" component={"h5"}>
+        {VERIFY_CODE}
+      </PageNameStyle>
+      <TitlePageStyle>{TITLE_PAGE_VERIFY}</TitlePageStyle>
+      <FormSubmit onSubmit={handleVerifyCode}>
         <InputCustom
           type="password"
           setValue={setVerifyCode}
@@ -59,13 +61,13 @@ const VerifyCode = () => {
           direction={"row"}
           style={{ fontSize: "14px" }}
         >
-          <span>Didn’t receive a code? </span>
+          <span>{NOT_RECEIVE_CODE}</span>
           <Link to={"/"} style={{ color: "#FF8682", fontWeight: "500" }}>
-            Resend
+            {RESEND}
           </Link>
         </Stack>
         <ButtonCustom content="Verify" color="#8DD3BB" />
-      </Box>
+      </FormSubmit>
     </>
   );
 };

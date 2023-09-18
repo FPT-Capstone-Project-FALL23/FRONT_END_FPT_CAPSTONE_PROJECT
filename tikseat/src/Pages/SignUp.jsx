@@ -1,28 +1,26 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Stack } from "@mui/material";
 import React, { useState } from "react";
-import IconFB from "../Components/Icons/IconFB";
-import IconGG from "../Components/Icons/IconGG";
-import IconApple from "../Components/Icons/IconApple";
 import { Link } from "react-router-dom";
-import InputCustom from "../Components/input/InputCustom";
-import axios from "axios";
+import InputCustom from "Components/input/InputCustom";
 import { toast } from "react-toastify";
-import { environment } from "../environment/environment";
-import ButtonCustom from "../Components/button/ButtonCustom";
-import ApiCommon from "../API/ApiCommon";
+import ButtonCustom from "Components/button/ButtonCustom";
+import ApiCommon from "API/ApiCommon";
+import { anotherChoice } from "Assets/Constant/anotherChoie";
+import {
+  ACCOUNT_QUESTION_EXSIST,
+  PAGE_NAME,
+  SIGN_UP_WITH,
+  TITLE_PAGE,
+  lOGIN,
+} from "Assets/Constant/constSignup";
+import FormSubmit from "Components/formCustom/FormSubmit";
+import {
+  AnotherChoiceStyle,
+  PageNameStyle,
+  SignUpLineOrtherStyle,
+  TitlePageStyle,
+} from "style/style.const";
 
-const anotherChoice = [
-  { logo: <IconFB /> },
-  { logo: <IconGG /> },
-  { logo: <IconApple /> },
-];
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -35,16 +33,15 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const newData = await {
+      const newData = {
         email,
         password,
         role: "client",
       };
 
-      // const response = await axios.post(environment.apiUrl, newData);
-      const response = await ApiCommon.signUp(newData)
+      const response = await ApiCommon.signUp(newData);
       console.log("data: ", response);
-      if (response.statusCode === 200) {
+      if (response.status === 200) {
         toast.success("Register Success");
       } else {
         toast.error("error");
@@ -55,24 +52,12 @@ const SignUp = () => {
   };
   return (
     <>
-      <Typography
-        variant="h4"
-        component={"h5"}
-        style={{ marginTop: "20px", fontStyle: "italic" }}
-      >
-        Sign Up
-      </Typography>
-      <div style={{ color: "#112211", marginTop: "20px" }}>
-        Let’s get you all st up so you can access your personal account.
-      </div>
-      <div>
-        <Box
-          onSubmit={handleSignUp}
-          component="form"
-          noValidate
-          autoComplete="off"
-          style={{ marginTop: "30px" }}
-        >
+      <PageNameStyle variant="h4" component={"h5"}>
+        {PAGE_NAME}
+      </PageNameStyle>
+      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+      <Box component={"div"}>
+        <FormSubmit onSubmit={handleSignUp} style={{ marginTop: "30px" }}>
           <Stack direction="row" spacing={6}>
             <InputCustom
               type="text"
@@ -100,7 +85,6 @@ const SignUp = () => {
             setValue={setConfirmPassword}
             label="Confirm Password"
           />
-
           <div>
             <FormControlLabel
               style={{ fontSize: "14px" }}
@@ -115,7 +99,7 @@ const SignUp = () => {
             />
           </div>
           <ButtonCustom content="Create account" color="#8DD3BB" />
-        </Box>
+        </FormSubmit>
         <Stack
           justifyContent="center"
           spacing={1}
@@ -123,62 +107,32 @@ const SignUp = () => {
           direction={"row"}
           style={{ fontSize: "14px" }}
         >
-          <span>Already have an account? </span>
+          <span>{ACCOUNT_QUESTION_EXSIST}</span>
           <Link to={"/login"} style={{ color: "#FF8682", fontWeight: "500" }}>
-            Login
+            {lOGIN}
           </Link>
         </Stack>
         <Stack direction={"column"} style={{ marginTop: "40px" }}>
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              height: "1px",
-              background: "gray",
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                zIndex: 2,
-                background: "white",
-                padding: "0 10px",
-                color: "#112211",
-                fontSize: "14px",
-              }}
-            >
-              Or Sign up with
-            </span>
-          </div>
+          <SignUpLineOrtherStyle>
+            <span>{SIGN_UP_WITH}</span>
+          </SignUpLineOrtherStyle>
           <Stack
             direction="row"
             justifyContent="space-between"
             style={{ marginTop: "50px" }}
             spacing={2}
           >
-            {anotherChoice.length > 0 &&
+            {anotherChoice?.length > 0 &&
               anotherChoice.map((item, index) => {
                 return (
-                  <div
-                    key={index}
-                    style={{
-                      padding: "15px 20px",
-                      borderRadius: "10px",
-                      border: "1px solid #8DD3BB",
-                      textAlign: "center",
-                      flex: "1",
-                    }}
-                  >
+                  <AnotherChoiceStyle key={index}>
                     {item.logo}
-                  </div>
+                  </AnotherChoiceStyle>
                 );
               })}
           </Stack>
         </Stack>
-      </div>
+      </Box>
     </>
   );
 };

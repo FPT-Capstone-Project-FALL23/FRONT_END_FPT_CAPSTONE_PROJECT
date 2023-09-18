@@ -1,66 +1,48 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { Box, Stack, Typography } from "@mui/material";
-import medico from "../Assets/images/medico.png";
+import { Stack } from "@mui/material";
+import medico from "Assets/images/medico.png";
+import {
+  BACK_TO_LOGIN,
+  CHOOSE_ACCESS,
+  SELECT_ORGANIZERS,
+  SELECT_USER,
+  TITLE_PAGE,
+} from "Assets/Constant/constChooseAccess";
+import {
+  BackToPageStyle,
+  ChooseItemStyle,
+  PageNameStyle,
+  TitlePageStyle,
+} from "style/style.const";
 const ChooseAccess = () => {
   return (
     <>
-      <Link to={"/login"}
-        style={{
-          marginTop: "20px",
-          fontStyle: "italic",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <KeyboardArrowLeftIcon /> <span>Back to login</span>
-      </Link>
-      <Typography
-        variant="h4"
-        component={"h5"}
-        style={{ marginTop: "20px", fontStyle: "italic" }}
-      >
-        Choose Access
-      </Typography>
-      <p style={{ color: "#112211", marginTop: "20px" }}>
-        To access tiksea, it is necessary to select the type of access
-        permission
-      </p>
+      <BackToPageStyle to={"/login"}>
+        <KeyboardArrowLeftIcon /> <span>{BACK_TO_LOGIN}</span>
+      </BackToPageStyle>
+      <PageNameStyle variant="h4" component={"h5"}>
+        {CHOOSE_ACCESS}
+      </PageNameStyle>
+      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
       <Stack
         justifyContent={"space-evenly"}
         alignItems={"center"}
         direction={"row"}
         style={{ marginTop: "100px" }}
       >
-        <Box
-          component={"div"}
-          style={{
-            boxShadow: "2px 4px 12px 8px #8FBFFC",
-            padding: "20px",
-            borderRadius: "50px",
-            textAlign: "center",
-          }}
-        >
+        <ChooseItemStyle>
           <div>
             <img src={medico} alt="" />
           </div>
-          <span>User</span>
-        </Box>
-        <Box
-          component={"div"}
-          style={{
-            boxShadow: "2px 4px 12px 8px #8FBFFC",
-            padding: "20px",
-            borderRadius: "50px",
-            textAlign: "center",
-          }}
-        >
+          <span>{SELECT_USER}</span>
+        </ChooseItemStyle>
+        <ChooseItemStyle>
           <div>
             <img src={medico} alt="" />
           </div>
-          <span>Organizers</span>
-        </Box>
+          <span>{SELECT_ORGANIZERS}</span>
+        </ChooseItemStyle>
       </Stack>
     </>
   );
