@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { Box, Stack, Typography } from "@mui/material";
-import medico from "../Assets/images/medico.png";
+import { Box, Stack, Typography, Button } from "@mui/material";
+import ClientAvt from "../Assets/images/Client.png";
+import OrganizersAvt from "../Assets/images/Organizers.png";
 const ChooseAccess = () => {
   return (
     <>
@@ -34,32 +35,67 @@ const ChooseAccess = () => {
         style={{ marginTop: "100px" }}
       >
         <Box
-          component={"div"}
           style={{
-            boxShadow: "2px 4px 12px 8px #8FBFFC",
-            padding: "20px",
-            borderRadius: "50px",
+            width: "150px",
+            height: "175px",
+            boxShadow:"rgb(245 210 23 / 68%) 0px 1px 15px 15px",
+            borderRadius: "20px",
             textAlign: "center",
+            
           }}
         >
-          <div>
-            <img src={medico} alt="" />
-          </div>
-          <span>User</span>
+          <Button 
+            style={{
+              display:'flex', 
+              flexDirection:'column', 
+              marginTop:"-6px",
+              color:"black"
+            }} 
+            type='submit' 
+            fullWidth
+          >
+            <img 
+              style={{
+                height: "150px", 
+                width: "150px", 
+                borderRadius: "20px 20px 0px 0px"
+              }} 
+              src={ClientAvt} 
+              alt=''
+            /> 
+            <span>Client</span>
+          </Button>
         </Box>
         <Box
-          component={"div"}
           style={{
-            boxShadow: "2px 4px 12px 8px #8FBFFC",
-            padding: "20px",
-            borderRadius: "50px",
+            width: "150px",
+            height: "175px",
+            boxShadow:"rgb(245 210 23 / 68%) 0px 1px 15px 15px",
+            borderRadius: "20px",
             textAlign: "center",
           }}
         >
-          <div>
-            <img src={medico} alt="" />
-          </div>
-          <span>Organizers</span>
+          <Button 
+            style={{
+              display:'flex', 
+              flexDirection:'column', 
+              marginTop:"-6px",
+              color:"black"
+            }} 
+            type='submit' 
+            fullWidth
+          >
+            <img 
+              style={{
+                height: "150px", 
+                width: "150px", 
+                borderRadius: "20px 20px 0px 0px"
+              }} 
+              src={OrganizersAvt}
+              alt=''
+            /> 
+            <span>Organizers</span>
+          </Button>
         </Box>
       </Stack>
     </>

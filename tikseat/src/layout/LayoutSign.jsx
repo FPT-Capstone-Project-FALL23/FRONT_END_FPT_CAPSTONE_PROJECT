@@ -1,63 +1,47 @@
-import { Grid, Typography } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Grid, Typography, Paper } from "@mui/material";
+import { Outlet, Link } from "react-router-dom";
 import styled from "styled-components";
 import { NAME_LOGO } from "../Assets/Constant/ConstLogin";
-import { Carousel } from "react-responsive-carousel";
+import SwiperLogin from "../Components/Common/SwiperLogin";
+import "../Assets/CSS/Common/LayoutSign.css"
 
-const GridStyleLayout = styled(Grid)`
-  height: 100% !important;
-  overflow: hidden;
+const GridStyleLayout = styled(Grid)
+`
+  height: 100vh;
+  // overflow: hidden;
   width: 100vw;
-  position: relative;
-  padding: 90px 104px 0 104px;
-  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
-const LayoutSign = ({ direction = "row", itemLeft = 4, itemRight = 8 }) => {
+const LayoutSign = ({ direction = "row", itemLeft , itemRight}) => {
   return (
-    <GridStyleLayout
-      container
-      spacing={10}
-      direction={direction || "row-reverse"}
-    >
-      <Grid item md={itemLeft}>
-        <Carousel
-          style={{ overflow: "hidden", borderRadius: "30px", height: "780px" }}
-          autoPlay
-          infiniteLoop
-          swipeable
-          showThumbs={false}
-          showArrows={false}
+    <>
+      <GridStyleLayout
+        container
+      >
+        <Paper 
+          className="loginGrid"
+          style={{
+            boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
+          }}
         >
-          {Array(3)
-            .fill(0)
-            .map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{
-                    height: "750px",
-                    overflow: "hidden",
-                    borderRadius: "30px",
-                  }}
-                >
-                  <img
-                    alt=""
-                    src="https://haycafe.vn/wp-content/uploads/2022/03/Anh-hoa-cuc-trang-nen-troi-xanh.jpg"
-                  />
-                </div>
-              );
-            })}
-        </Carousel>
-      </Grid>
-      <Grid item md={itemRight}>
-        <div>
-          <Typography variant="h3" className="logoStyle" component="h4">
-            {NAME_LOGO}
-          </Typography>
-        </div>
-        <Outlet />
-      </Grid>
-    </GridStyleLayout>
+          <Grid item md={itemLeft} className="left"> 
+            <Link to={"/#"}>
+              <Typography variant="h3" className="logoStyle" component="h4">
+                {NAME_LOGO}
+              </Typography>
+            </Link>
+            <Outlet />
+          </Grid>
+
+          <Grid item md={itemRight}>
+            <SwiperLogin />
+          </Grid>
+
+        </Paper>
+      </GridStyleLayout>
+    </>
   );
 };
 

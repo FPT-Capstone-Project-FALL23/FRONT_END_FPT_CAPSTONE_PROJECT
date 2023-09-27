@@ -1,5 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+// import { useState, useEffect } from "react";
+// import axios from "axios";
 
 const LoginPage = lazy(() => import("./Common/LoginPage"));
 const SignUp = lazy(() => import("./SignUp"));
@@ -11,13 +13,18 @@ const ForgetPassword = lazy(() => import("./ForgotPassword"));
 const SetPassword = lazy(() => import("./SetPassword"));
 const VerifyEmail = lazy(() => import("./VerifyEmail"));
 
+
+
 function RoutePage() {
+  
   return (
     <Suspense fallback={<>loading</>}>
+
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route element={<LayoutSign />}>
-          <Route path="/signup" element={<SignUp />}></Route>
+        <Route path="/signup" element={<SignUp />}></Route>
+        <Route element={<LayoutSign/>}>
+          {/* <Route path="/signup" element={<SignUp />}></Route> */}
           <Route path="/add-payment" element={<AddPaymentMethod />}></Route>
         </Route>
         <Route
@@ -27,6 +34,7 @@ function RoutePage() {
         >
           <Route path="/choose-access" element={<ChooseAccess />}></Route>
           <Route path="/verify-code" element={<VerifyCode />}></Route>
+          
         </Route>
         <Route
           element={

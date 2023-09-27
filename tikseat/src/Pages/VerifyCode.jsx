@@ -64,7 +64,7 @@ const VerifyCode = () => {
             Resend
           </Link>
         </Stack>
-        <ButtonCustom content="Verify" color="#8DD3BB" />
+        <ButtonCustom content="Verify" color="black" backgroundcolor="#F5BD19" />
       </Box>
     </>
   );
