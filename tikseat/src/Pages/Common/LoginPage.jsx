@@ -4,8 +4,8 @@ import {
   LOGIN,
   NAME_LOGO,
   TITLE_LOGIN,
-} from "../../Assets/Constant/ConstLogin";
-import FormLogin from "../../Components/Common/FormLogin";
+} from "../../Assets/Constant/Common/constLogin";
+import FormLogin from "../../Components/Common/FormCustom/FormLogin";
 import SwiperLogin from "../../Components/Common/SwiperLogin";
 import "../../Assets/CSS/Common/LoginPage.css";
 

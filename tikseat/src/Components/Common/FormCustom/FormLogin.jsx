@@ -13,7 +13,10 @@ import {
   Link,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { FORGOT_PASSWORD, LOGIN } from "../../Assets/Constant/ConstLogin";
+import {
+  FORGOT_PASSWORD,
+  LOGIN,
+} from "../../../Assets/Constant/Common/constLogin";
 
 function FormLogin({
   handleClickShowPassword,
