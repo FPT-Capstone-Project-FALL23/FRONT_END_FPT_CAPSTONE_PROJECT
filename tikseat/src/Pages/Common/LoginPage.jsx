@@ -4,9 +4,9 @@ import {
   LOGIN,
   NAME_LOGO,
   TITLE_LOGIN,
-} from "../../Assets/Constant/Common/constLogin";
-import FormLogin from "../../Components/Common/FormCustom/FormLogin";
-import SwiperLogin from "../../Components/Common/SwiperLogin";
+} from "../../Assets/Constant/ConstLogin";
+import FormLogin from "../../Components/Common/FormLogin";
+// import SwiperLogin from "../../Components/Common/SwiperLogin";
 import "../../Assets/CSS/Common/LoginPage.css";
 
 function LoginPage() {
@@ -24,7 +24,8 @@ function LoginPage() {
           className="loginGrid"
           style={{
             boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
-          }}>
+          }}
+        >
           <Paper className="left" fullWidth>
             <Grid className="logoGrid">
               <Button>
