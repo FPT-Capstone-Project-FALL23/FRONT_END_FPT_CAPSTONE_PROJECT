@@ -10,22 +10,53 @@ import {
   InputAdornment,
   Button,
   FormControlLabel,
-  Link,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   FORGOT_PASSWORD,
   LOGIN,
 } from "../../../Assets/Constant/Common/constLogin";
+import { useNavigate, Link } from "react-router-dom";
+import ApiCommon from "../../../API/Common/ApiCommon";
+import { toast } from "react-toastify";
+import FormSubmit from "./FormSubmit";
 
 function FormLogin({
   handleClickShowPassword,
   handleMouseDownPassword,
   showPassword,
 }) {
+
+  const [email, setEmail] = React.useState();
+  const [password, setPassword] = React.useState();
+  // let navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    console.log("Login button clicked");
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    try{
+      const response  = await ApiCommon.login({
+        email: email,
+        password: password,
+      });
+      console.log(response)
+      if (response.status === true) {
+        console.log("success!")
+      } else {
+        console.log("error!")
+      }
+    }catch(error){
+      console.log("error: ",error);
+    }
+
+  }
+
   return (
     <>
-      <form>
+      <FormSubmit onSubmit={handleLogin}>
         <TextField
           style={{ marginBottom: "20px" }}
           className="email"
@@ -34,6 +65,8 @@ function FormLogin({
           fullWidth
           required
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <FormControl
           variant="outlined"
@@ -45,6 +78,8 @@ function FormLogin({
           <OutlinedInput
             id="outlined-adornment-password"
             type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             endAdornment={
               <InputAdornment position="end" variant="standard">
                 <IconButton
@@ -90,7 +125,7 @@ function FormLogin({
             {LOGIN}
           </Button>
         </Grid>
-      </form>
+      </FormSubmit>
     </>
   );
 }

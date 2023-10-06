@@ -1,136 +1,105 @@
-import { Box, Checkbox, FormControlLabel, Stack } from "@mui/material";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  Box, Paper, Grid,
+  Stack,
+  Typography,
+  Avatar,
+} from "@mui/material";
+import styled from "styled-components";
+import React, { useState, useRef } from "react";  
+import IconGG from "../../Components/Common/Icons/IconGG";
+import { Link, Outlet } from "react-router-dom";
 import InputCustom from "../../Components/Common/Input/InputCustom";
+import axios from "axios";
 import { toast } from "react-toastify";
+import { environment } from "../../";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import ApiCommon from "../../API/Common/ApiCommon";
-import { anotherChoice } from "../../Assets/Constant/Common/anotherChoie";
-import {
-  ACCOUNT_QUESTION_EXSIST,
-  PAGE_NAME,
-  SIGN_UP_WITH,
-  TITLE_PAGE,
-  lOGIN,
-} from "../../Assets/Constant/Common/constSignup";
-import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
-import {
-  AnotherChoiceStyle,
-  PageNameStyle,
-  SignUpLineOrtherStyle,
-  TitlePageStyle,
-} from "../../Assets/CSS/Style/style.const";
+import { NAME_LOGO } from "../../Assets/Constant/Common/constLogin";
+import "../../Assets/CSS/Common/LayoutSign.css"
+import ClientAvt from "../../Assets/Images/Client.png";
+import MonochromePhotosIcon from '@mui/icons-material/MonochromePhotos';
+
+import ProfileClient from "./ProfileClient";
+import ProfileOrganizers from "../Organizers/ProfileOrganizers";
+
+const anotherChoice = [
+  { logo: <IconGG /> },
+];
+
+const GridStyleLayout = styled(Grid)
+`
+  height: 100vh;
+  // overflow: hidden;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState();
-  console.log("confirmPassword: ", confirmPassword);
+  
+  // const handleSignUp = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const newData = await {
+  //       email,
+  //       password,
+  //       role: "client",
+  //     };
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      const newData = {
-        email,
-        password,
-        role: "client",
-      };
+  //     // const response = await axios.post(environment.apiUrl, newData);
+  //     const response = await ApiCommon.signUp(newData);
+  //     console.log("data: ", response);
+  //     if (response.statusCode === true) {
+  //       toast.success("Register Success");
+  //     } else {
+  //       toast.error("error");
+  //     }
+  //   } catch (error) {
+  //     console.log("error: ", error);
+  //   }
+  // };
 
-      const response = await ApiCommon.signUp(newData);
-      console.log("data: ", response);
-      if (response.status === 200) {
-        toast.success("Register Success");
-      } else {
-        toast.error("error");
-      }
-    } catch (error) {
-      console.log("error: ", error);
-    }
-  };
   return (
     <>
-      <PageNameStyle variant="h4" component={"h5"}>
-        {PAGE_NAME}
-      </PageNameStyle>
-      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
-      <Box component={"div"}>
-        <FormSubmit onSubmit={handleSignUp} style={{ marginTop: "30px" }}>
-          <Stack direction="row" spacing={6}>
-            <InputCustom
-              type="text"
-              setValue={setFirstName}
-              label="First Name"
-            />
-            <InputCustom type="text" setValue={setLastName} label="Last Name" />
-          </Stack>
-          <Stack direction="row" spacing={6}>
-            <InputCustom type="email" setValue={setEmail} label="Email" />
-            <InputCustom
-              type="text"
-              setValue={setPhoneNumber}
-              label="Phone Number"
-            />
-          </Stack>
-
-          <InputCustom
-            type="password"
-            setValue={setPassword}
-            label="Password"
-          />
-          <InputCustom
-            type="password"
-            setValue={setConfirmPassword}
-            label="Confirm Password"
-          />
-          <div>
-            <FormControlLabel
-              style={{ fontSize: "14px" }}
-              control={<Checkbox />}
-              label={
-                <span>
-                  I agree to all the{" "}
-                  <span style={{ color: "#FF8682" }}>Terms</span> and
-                  <span style={{ color: "#FF8682" }}> Privacy Policies</span>
-                </span>
-              }
-            />
-          </div>
-          <ButtonCustom content="Create account" color="#8DD3BB" />
-        </FormSubmit>
-        <Stack
-          justifyContent="center"
-          spacing={1}
-          alignItems={"center"}
-          direction={"row"}
-          style={{ fontSize: "14px" }}>
-          <span>{ACCOUNT_QUESTION_EXSIST}</span>
-          <Link to={"/login"} style={{ color: "#FF8682", fontWeight: "500" }}>
-            {lOGIN}
-          </Link>
-        </Stack>
-        <Stack direction={"column"} style={{ marginTop: "40px" }}>
-          <SignUpLineOrtherStyle>
-            <span>{SIGN_UP_WITH}</span>
-          </SignUpLineOrtherStyle>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            style={{ marginTop: "50px" }}
-            spacing={2}>
-            {anotherChoice?.length > 0 &&
-              anotherChoice.map((item, index) => {
-                return (
-                  <AnotherChoiceStyle key={index}>
-                    {item.logo}
-                  </AnotherChoiceStyle>
-                );
-              })}
-          </Stack>
-        </Stack>
-      </Box>
+      <GridStyleLayout container >
+          <Paper 
+            className="loginGrid"
+            style={{
+              display:"flex",
+              flexDirection:"column",
+              padding:"20px",
+              boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
+            }}
+          >
+            <Grid style={{width:"100%", display:"flex", justifyContent:"space-between", marginBottom:"40px"}}> 
+              <Link to={"/#"} style={{textDecoration:"none"}}>
+                <Typography variant="h3" className="logo" component="h4">
+                  {NAME_LOGO}
+                </Typography>
+              </Link>
+                <Typography
+                  variant="h4"
+                  component={"h6"}
+                  style={{ marginTop: "20px", fontStyle: "italic" }}
+                >
+                  Profile
+                </Typography>
+              <div style={{ color: "#112211", marginTop: "20px", marginBottom:"20px"}}>
+                Let’s get you all st up so you can access your personal account.
+              </div>
+              
+              
+                
+            </Grid>
+            <Grid>
+            <ProfileOrganizers/>
+            {/* <ProfileClient/> */}
+            </Grid>
+            
+          </Paper>
+        </GridStyleLayout>      
     </>
   );
 };

@@ -6,7 +6,7 @@ import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import {
   BACK_TO_LOGIN,
   TITLE_PAGE_VERIFY_EMAIL,
-  VERIFY_CODE,
+  VERIFY_EMAIL,
 } from "../../Assets/Constant/Common/constVerifyEmail";
 import ApiCommon from "../../API/Common/ApiCommon";
 import {
@@ -17,13 +17,13 @@ import {
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
 const VerifyEmail = () => {
-  const [code, setCode] = useState(null);
+  const [email, setEmail] = useState(null);
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
     try {
       const response = await ApiCommon.verifyEmail({
         email: "",
-        enteredOTP: code,
+        enteredOTP: email,
       });
       console.log("data: ", response);
       if (response.statusCode === 200) {
@@ -41,11 +41,11 @@ const VerifyEmail = () => {
         <KeyboardArrowLeftIcon /> <span>{BACK_TO_LOGIN}</span>
       </BackToPageStyle>
       <PageNameStyle variant="h4" component={"h5"}>
-        {VERIFY_CODE}
+        {VERIFY_EMAIL}
       </PageNameStyle>
       <TitlePageStyle>{TITLE_PAGE_VERIFY_EMAIL}</TitlePageStyle>
       <FormSubmit onSubmit={handleVerifyEmail} style={{ marginTop: "40px" }}>
-        <InputCustom type="password" setValue={setCode} label="Code" />
+        <InputCustom type="email" setValue={setEmail} label="Email" />
 
         <ButtonCustom content="Submit" color="#F5BD19" />
       </FormSubmit>

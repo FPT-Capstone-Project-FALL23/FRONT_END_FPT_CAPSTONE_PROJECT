@@ -1,47 +1,106 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { Stack } from "@mui/material";
-import medico from "../../Assets/Images/medico.png";
-import {
-  BACK_TO_LOGIN,
-  CHOOSE_ACCESS,
-  SELECT_ORGANIZERS,
-  SELECT_USER,
-  TITLE_PAGE,
-} from "../../Assets/Constant/Common/constChooseAccess";
-import {
-  BackToPageStyle,
-  ChooseItemStyle,
-  PageNameStyle,
-  TitlePageStyle,
-} from "../../Assets/CSS/Style/style.const";
+import { Box, Stack, Typography, Button } from "@mui/material";
+import ClientAvt from "../../Assets/Images/Client.png";
+import OrganizersAvt from "../../Assets/Images/Organizers.png";
+
 const ChooseAccess = () => {
   return (
     <>
-      <BackToPageStyle to={"/login"}>
-        <KeyboardArrowLeftIcon /> <span>{BACK_TO_LOGIN}</span>
-      </BackToPageStyle>
-      <PageNameStyle variant="h4" component={"h5"}>
-        {CHOOSE_ACCESS}
-      </PageNameStyle>
-      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+      <Link to={"/login"}
+        style={{
+          marginTop: "20px",
+          fontStyle: "italic",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <KeyboardArrowLeftIcon /> <span>Back to login</span>
+      </Link>
+      <Typography
+        variant="h4"
+        component={"h5"}
+        style={{ marginTop: "20px", fontStyle: "italic" }}
+      >
+        Choose Access
+      </Typography>
+      <p style={{ color: "#112211", marginTop: "20px" }}>
+        To access tiksea, it is necessary to select the type of access
+        permission
+      </p>
       <Stack
         justifyContent={"space-evenly"}
         alignItems={"center"}
         direction={"row"}
-        style={{ marginTop: "100px" }}>
-        <ChooseItemStyle>
-          <div>
-            <img src={medico} alt="" />
-          </div>
-          <span>{SELECT_USER}</span>
-        </ChooseItemStyle>
-        <ChooseItemStyle>
-          <div>
-            <img src={medico} alt="" />
-          </div>
-          <span>{SELECT_ORGANIZERS}</span>
-        </ChooseItemStyle>
+        style={{ marginTop: "100px" }}
+      >
+        <Box
+          style={{
+            width: "150px",
+            height: "175px",
+            boxShadow:"rgb(245 210 23 / 68%) 0px 1px 15px 15px",
+            borderRadius: "20px",
+            textAlign: "center",
+            
+          }}
+        >
+          <Link to={"/login"}>
+            
+          <Button 
+            style={{
+              display:'flex', 
+              flexDirection:'column', 
+              marginTop:"-6px",
+              color:"black"
+            }} 
+            type='submit' 
+            fullWidth
+          >
+            <img 
+              style={{
+                height: "150px", 
+                width: "150px", 
+                borderRadius: "20px 20px 0px 0px"
+              }} 
+              src={ClientAvt} 
+              alt=''
+            /> 
+            <span>Client</span>
+          </Button>
+          </Link>
+        </Box>
+        <Box
+          style={{
+            width: "150px",
+            height: "175px",
+            boxShadow:"rgb(245 210 23 / 68%) 0px 1px 15px 15px",
+            borderRadius: "20px",
+            textAlign: "center",
+          }}
+        >
+          <Button 
+            style={{
+              display:'flex', 
+              flexDirection:'column', 
+              marginTop:"-6px",
+              color:"black"
+            }} 
+            type='submit' 
+            fullWidth
+          >
+            <img 
+              style={{
+                height: "150px", 
+                width: "150px", 
+                borderRadius: "20px 20px 0px 0px"
+              }} 
+              src={OrganizersAvt}
+              alt=''
+            /> 
+            <span>Organizers</span>
+          </Button>
+        </Box>
       </Stack>
     </>
   );

@@ -15,17 +15,19 @@ import {
   TitlePageStyle,
 } from "../../Assets/CSS/Style/style.const";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
+import { TroubleshootSharp } from "@mui/icons-material";
 
-const ForgotPassword = () => {
 
-  const [email, setEmail] = useState("");
 
+function SendEmail() {
+
+   const [email, setEmail] = useState("");
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
       const response = await ApiCommon.forgotPassword({ email });
       console.log("data: ", response);
-      if (response.status === true) {
+      if (response.status === TroubleshootSharp) {
         toast.success(" Success");
       } else {
         toast.error("error");
@@ -35,25 +37,26 @@ const ForgotPassword = () => {
     }
   };
 
+
   return (
     <>
       <BackToPageStyle to={"/login"}>
-        <KeyboardArrowLeftIcon /> <span>{BACK_TO_LOGIN}</span>
+        <KeyboardArrowLeftIcon/> <span>{BACK_TO_LOGIN}</span>
       </BackToPageStyle>
       <PageNameStyle variant="h4" component={"h5"}>
-        {FORGOT_PASSWORD}
+        Verify Email
       </PageNameStyle>
-      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+      <TitlePageStyle>The first step is to confirm your Email</TitlePageStyle>
       <FormSubmit onSubmit={handleForgotPassword} style={{ marginTop: "30px" }}>
         <InputCustom 
-          type="text" 
+          type="email" 
           setValue={setEmail} 
           label="Email" 
         />
         <ButtonCustom content=" SEND VERIFY CODE" color="#F5BD19" />
       </FormSubmit>
     </>
-  );
-};
+  )
+}
 
-export default ForgotPassword;
+export default SendEmail

@@ -9,3 +9,4 @@ export const URL_FORGOTPASSWORD = "";
 export const URL_SETPASSWORD = "";
 export const URL_VERIFYCODE = "";
 export const URL_VERIFYEMAIL = "";
+export const URL_LOGIN = "/auth/login";

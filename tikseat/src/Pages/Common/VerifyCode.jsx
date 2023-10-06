@@ -31,7 +31,7 @@ const VerifyCode = () => {
         email: "",
         enteredOTP: verifyCode,
       });
-      if (response.status === 200) {
+      if (response.status === true) {
         toast.success("success");
       } else {
         toast.error("error");
