@@ -102,12 +102,13 @@ function FormLogin({
           }}>
           <FormControlLabel control={<Checkbox />} label="Remember me" />
           <Link
+            to={"/forgot-password"}
             style={{
               padding: "10px",
               color: "#F5BD19",
               textDecoration: "none",
             }}
-            href="#">
+            >
             {FORGOT_PASSWORD}
           </Link>
         </div>
@@ -124,7 +125,34 @@ function FormLogin({
             fullWidth>
             {LOGIN}
           </Button>
+          
         </Grid>
+
+        <Grid className="btnLogin">
+            <Link
+              style={{
+                
+                backgroundColor:"#F5BD19",
+                color: "black",
+                textDecoration: "none",
+              }}
+              to="/choose-access"
+              fullWidth
+            >
+              <Button 
+            style={{
+              padding: "10px",
+              
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            fullWidth>
+              Sign Up
+            </Button>
+              
+            </Link>
+        </Grid> 
       </FormSubmit>
     </>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme } from "@mui/material/styles";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import {
   Box,
   Grid,
@@ -15,14 +15,13 @@ import {
   MenuItem,
   Avatar,
 } from "@mui/material";
-import styled from "styled-components";
-// import IconGG from "../../Components/Common/Icons/IconGG";
-import { Link, Outlet } from "react-router-dom";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import ClientAvt from "../../Assets/Images/Client.png";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
+import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
+import ApiCommon from "../../API/Common/ApiCommon";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,34 +47,32 @@ const names = [
   "Kelly Snyder",
 ];
 
-function getStyles(name, personName, theme) {
+function getStyles(name, eventType, theme) {
   return {
     fontWeight:
-      personName.indexOf(name) === -1
+    eventType.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
 }
 
 function ProfileOrganizers() {
-  const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+
+  const [avatar, setAvatar] = useState(ClientAvt);
+  const [eventType, setEventType] = useState([]);
+  const today = new Date().toISOString().slice(0, 10);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+    setEventType(
+      typeof value === "string" ? [value] : value
     );
   };
-
-  const [fullName, setFullName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState();
-  const [avatar, setAvatar] = useState(ClientAvt);
-  const [birthDay, setBirthDay] = useState(getTodayDate());
-
+  
+  const theme = useTheme();
+  
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
@@ -92,22 +89,55 @@ function ProfileOrganizers() {
     }
   };
 
-  useEffect(() => {
-    // Sử dụng useEffect để cập nhật giá trị mặc định của birthDay khi trang được tải
-    setBirthDay(getTodayDate());
-  }, []);
 
-  function getTodayDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
+  const [organizerInfo, setOrganizerInfo] = useState({
+    organizer_name: "",
+    organizer_type: eventType,
+    isctive: false,
+    phone: "",
+    website: "",
+    founded_date: today,
+    description: "",
+    address: {
+      city: "Quảng Nam",
+      district: "Quế Sơn",
+      ward: "Đông Phú",
+      specific_address: "Mỹ Đông"
+    }
+  });
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    // Sử dụng spread operator để cập nhật state mà không làm thay đổi các thuộc tính khác
+    setOrganizerInfo({
+      ...organizerInfo,
+      [name]: value
+    });
+  };
+
+  console.log(organizerInfo);
+
+  const handleOrganizerInfo = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await ApiCommon.profileOrganizer({
+        _idUser: "650d53992fb0b313f9ea058e",
+        organizerInfo: organizerInfo
+      });
+      console.log("data:", response.data);
+      if (response.status === true) {
+        console.log("Thanh cong")
+      } else {
+        console.log("erroe!")
+      }
+    } catch (error) {
+      console.log("error", error)
+    }
+  };
 
   return (
     <>
-      <form
+      <FormSubmit
+        onSubmit={handleOrganizerInfo}
         style={{
           width: "100%",
           height: "100%",
@@ -121,9 +151,12 @@ function ProfileOrganizers() {
             <Stack>
               <InputCustom
                 type="text"
-                value={fullName}
-                setValue={setFullName}
-                label="Full Name"
+                id="organizer_name"
+                name="organizer_name"
+                value={organizerInfo.organizer_name}
+                onChange={handleInputChange}
+                label="Organizer Name"
+                // defaultValue = ""
               />
             </Stack>
 
@@ -137,16 +170,20 @@ function ProfileOrganizers() {
               <Stack style={{ width: "47%" }}>
                 <InputCustom
                   type="text"
-                  value={phoneNumber}
-                  setValue={setPhoneNumber}
+                  id="phone"
+                  name="phone"
+                  value={organizerInfo.phone}
+                  onChange={handleInputChange}
                   label="Phone number"
                 />
               </Stack>
               <Stack style={{ width: "47%" }}>
                 <InputCustom
                   type="date"
-                  value={birthDay}
-                  setValue={setBirthDay}
+                  id="founded_date"
+                  name="founded_date"
+                  value={organizerInfo.founded_date}
+                  onChange={handleInputChange}
                   label="Day of birth"
                 />
               </Stack>
@@ -154,12 +191,14 @@ function ProfileOrganizers() {
             <Stack>
               <InputCustom
                 type="text"
-                value={fullName}
-                setValue={setFullName}
+                id="website"
+                name="website"
+                value={organizerInfo.website}
+                onChange={handleInputChange}
                 label="Website"
               />
             </Stack>
-            <Stack
+            {/* <Stack
               style={{
                 display: "flex",
                 flexDirection: "row",
@@ -226,7 +265,7 @@ function ProfileOrganizers() {
                   label="Số nhà"
                 />
               </Stack>
-            </Stack>
+            </Stack> */}
             <Stack>
               <FormControl fullWidth style={{ marginBottom: "20px" }}>
                 <InputLabel id="demo-multiple-chip-label">
@@ -234,10 +273,11 @@ function ProfileOrganizers() {
                 </InputLabel>
                 <Select
                   labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
                   multiple
-                  value={personName}
-                  onChange={handleChange}
+                  id="organizer_type"
+                  name="organizer_type"
+                  value={organizerInfo.organizer_type}
+                  onChange={handleInputChange}
                   input={
                     <OutlinedInput
                       id="select-multiple-chip"
@@ -257,7 +297,7 @@ function ProfileOrganizers() {
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, personName, theme)}
+                      style={getStyles(name, eventType, theme)}
                     >
                       {name}
                     </MenuItem>
@@ -305,6 +345,10 @@ function ProfileOrganizers() {
                 style={{ width: "100%" }}
                 minRows={6}
                 placeholder="Description"
+                id="description"
+                name="description"
+                value={organizerInfo.description}
+                onChange={handleInputChange}
               />
             </Stack>
           </Grid>
@@ -321,7 +365,7 @@ function ProfileOrganizers() {
         >
           <div>
             <FormControlLabel
-              style={{ fontSize: "14px", marginTop: "40px" }}
+              style={{ fontSize: "14px", marginTop: "20px" }}
               control={<Checkbox />}
               label={
                 <span>
@@ -340,7 +384,7 @@ function ProfileOrganizers() {
             />
           </Stack>
         </Grid>
-      </form>
+      </FormSubmit>
     </>
   );
 }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { Grid, Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { toast } from "react-toastify";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import {
   BACK_TO_LOGIN,
   FORGOT_PASSWORD,
@@ -21,7 +21,7 @@ import { TroubleshootSharp } from "@mui/icons-material";
 
 function SendEmail() {
 
-   const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
@@ -53,7 +53,20 @@ function SendEmail() {
           setValue={setEmail} 
           label="Email" 
         />
-        <ButtonCustom content=" SEND VERIFY CODE" color="#F5BD19" />
+        <Grid className="btnLogin">
+          <Button
+            style={{
+              padding: "10px",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            type="submit"
+            fullWidth>
+            send
+          </Button>
+          
+        </Grid>
       </FormSubmit>
     </>
   )

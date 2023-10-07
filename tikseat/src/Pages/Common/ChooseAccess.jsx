@@ -45,29 +45,28 @@ const ChooseAccess = () => {
             
           }}
         >
-          <Link to={"/login"}>
-            
-          <Button 
-            style={{
-              display:'flex', 
-              flexDirection:'column', 
-              marginTop:"-6px",
-              color:"black"
-            }} 
-            type='submit' 
-            fullWidth
-          >
-            <img 
+          <Link style={{textDecoration:"none"}} to={"/login"}> 
+            <Button 
               style={{
-                height: "150px", 
-                width: "150px", 
-                borderRadius: "20px 20px 0px 0px"
+                display:'flex', 
+                flexDirection:'column', 
+                marginTop:"-6px",
+                color:"black"
               }} 
-              src={ClientAvt} 
-              alt=''
-            /> 
-            <span>Client</span>
-          </Button>
+              type='submit' 
+              fullWidth
+            >
+              <img 
+                style={{
+                  height: "150px", 
+                  width: "150px", 
+                  borderRadius: "20px 20px 0px 0px"
+                }} 
+                src={ClientAvt} 
+                alt=''
+              /> 
+              <span>Client</span>
+            </Button>
           </Link>
         </Box>
         <Box
@@ -79,27 +78,29 @@ const ChooseAccess = () => {
             textAlign: "center",
           }}
         >
-          <Button 
-            style={{
-              display:'flex', 
-              flexDirection:'column', 
-              marginTop:"-6px",
-              color:"black"
-            }} 
-            type='submit' 
-            fullWidth
-          >
-            <img 
+          <Link style={{textDecoration:"none"}} to={"/login"}> 
+            <Button 
               style={{
-                height: "150px", 
-                width: "150px", 
-                borderRadius: "20px 20px 0px 0px"
+                display:'flex', 
+                flexDirection:'column', 
+                marginTop:"-6px",
+                color:"black"
               }} 
-              src={OrganizersAvt}
-              alt=''
-            /> 
-            <span>Organizers</span>
-          </Button>
+              type='submit' 
+              fullWidth
+            >
+              <img 
+                style={{
+                  height: "150px", 
+                  width: "150px", 
+                  borderRadius: "20px 20px 0px 0px"
+                }} 
+                src={OrganizersAvt}
+                alt=''
+              /> 
+              <span>Organizers</span>
+            </Button>
+          </Link>
         </Box>
       </Stack>
     </>

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { toast } from "react-toastify";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import {
   BACK_TO_LOGIN,
   FORGOT_PASSWORD,
@@ -14,6 +13,7 @@ import {
   PageNameStyle,
   TitlePageStyle,
 } from "../../Assets/CSS/Style/style.const";
+import { Grid, Button } from "@mui/material";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
 const ForgotPassword = () => {
@@ -50,7 +50,20 @@ const ForgotPassword = () => {
           setValue={setEmail} 
           label="Email" 
         />
-        <ButtonCustom content=" SEND VERIFY CODE" color="#F5BD19" />
+        <Grid className="btnLogin">
+          <Button
+            style={{
+              padding: "10px",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            type="submit"
+            fullWidth>
+            Verify
+          </Button>
+          
+        </Grid>
       </FormSubmit>
     </>
   );

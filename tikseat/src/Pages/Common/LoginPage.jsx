@@ -28,10 +28,10 @@ function LoginPage() {
             boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
           }}>
           <Grid className="left">
-            <Link to={"/#"}>
-              <Typography variant="h3" className="logo" >
-                {NAME_LOGO}
-              </Typography>
+            <Link to={"/#"} style={{textDecoration:"none"}}>
+                <Typography variant="h3" className="logo" component="h4">
+                  {NAME_LOGO}
+                </Typography>
             </Link>
             <Grid 
               fullWidth

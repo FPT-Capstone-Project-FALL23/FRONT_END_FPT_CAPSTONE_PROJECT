@@ -1,7 +1,7 @@
 import InputCustom from "../../Components/Common/Input/InputCustom";
+import { Grid, Button } from "@mui/material";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
+// import { toast } from "react-toastify";
 import { SET_PASSWORD, TITLE_PAGE } from "../../Assets/Constant/Common/constSetPassword";
 import ApiCommon from "../../API/Common/ApiCommon";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
@@ -14,17 +14,21 @@ const SetPassword = () => {
   const [newPassword, setNewPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
 
+  console.log(newPassword)
+
   const handleSetPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await ApiCommon.setPassword({
-        newPassword,
-        confirmPassword,
+      const response = await ApiCommon.registerUser({
+        email: "nghia12345@gmail.com",
+        password: newPassword,
+        role: "client"
       });
-      if (response.status === 200) {
-        toast.success("success");
+      console.log("data: ", response.data)
+      if (response.status === true) {
+        console.log("Thanh cong")
       } else {
-        toast.error("error");
+        console.log("error!")
       }
     } catch (error) {
       console.log("error: ", error);
@@ -48,7 +52,20 @@ const SetPassword = () => {
           setValue={setConfirmPassword}
           label=" Re-enter Password"
         />
-        <ButtonCustom content="Set Password" color="#F5BD19" />
+        <Grid className="btnLogin">
+          <Button
+            style={{
+              padding: "10px",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            type="submit"
+            fullWidth>
+            Confirm
+          </Button>
+          
+        </Grid>
       </FormSubmit>
     </>
   );

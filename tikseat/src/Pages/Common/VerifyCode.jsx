@@ -1,10 +1,9 @@
-import { Stack } from "@mui/material";
+import { Stack, Grid, Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import { toast } from "react-toastify";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import {
   BACK_TO_LOGIN,
   NOT_RECEIVE_CODE,
@@ -20,7 +19,9 @@ import {
 } from "../../Assets/CSS/Style/style.const";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
+
 const VerifyCode = () => {
+  const navigate = useNavigate();
   const [verifyCode, setVerifyCode] = useState(true);
   console.log("verifyCode: ", verifyCode);
 
@@ -28,13 +29,13 @@ const VerifyCode = () => {
     e.preventDefault();
     try {
       const response = await ApiCommon.verifyCode({
-        email: "",
+        email: "nghia12345@gmail.com",
         enteredOTP: verifyCode,
       });
       if (response.status === true) {
-        toast.success("success");
+        navigate('/set-password');
       } else {
-        toast.error("error");
+        console.log("error!");
       }
     } catch (error) {
       console.log("error: ", error);
@@ -59,13 +60,34 @@ const VerifyCode = () => {
           spacing={1}
           alignItems={"center"}
           direction={"row"}
-          style={{ fontSize: "14px" }}>
+          style={{ fontSize: "18px", marginBottom: "20px" }}
+        >
           <span>{NOT_RECEIVE_CODE}</span>
-          <Link to={"/"} style={{ color: "#FF8682", fontWeight: "500" }}>
+          <Link
+            to={"/"}
+            style={{
+              color: "#F5BD19",
+              fontWeight: "500",
+              textDecoration: "none",
+            }}
+          >
             {RESEND}
           </Link>
         </Stack>
-        <ButtonCustom content="Verify" color="#8DD3BB" />
+        <Grid className="btnLogin">
+          <Button
+            style={{
+              padding: "10px",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            type="submit"
+            fullWidth>
+            Verify
+          </Button>
+          
+        </Grid>
       </FormSubmit>
     </>
   );
