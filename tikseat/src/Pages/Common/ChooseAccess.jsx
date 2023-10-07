@@ -1,11 +1,20 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import ClientAvt from "../../Assets/Images/Client.png";
 import OrganizersAvt from "../../Assets/Images/Organizers.png";
 
+
 const ChooseAccess = () => {
+  
+  const navigate = useNavigate();
+  
+  const handleClientClick = (clientType) => {
+    // Truyền state và chuyển hướng qua useHistory
+    navigate("/verify-email", { state: { clientType } });
+  };
+
   return (
     <>
       <Link to={"/login"}
@@ -42,32 +51,30 @@ const ChooseAccess = () => {
             boxShadow:"rgb(245 210 23 / 68%) 0px 1px 15px 15px",
             borderRadius: "20px",
             textAlign: "center",
-            
           }}
         >
-          <Link style={{textDecoration:"none"}} to={"/login"}> 
-            <Button 
+          <Button 
+             onClick={() => handleClientClick("client")}
+            style={{
+              display:'flex', 
+              flexDirection:'column', 
+              marginTop:"-6px",
+              color:"black"
+            }} 
+            type='submit' 
+            fullWidth
+          >
+            <img 
               style={{
-                display:'flex', 
-                flexDirection:'column', 
-                marginTop:"-6px",
-                color:"black"
+                height: "150px", 
+                width: "150px", 
+                borderRadius: "20px 20px 0px 0px"
               }} 
-              type='submit' 
-              fullWidth
-            >
-              <img 
-                style={{
-                  height: "150px", 
-                  width: "150px", 
-                  borderRadius: "20px 20px 0px 0px"
-                }} 
-                src={ClientAvt} 
-                alt=''
-              /> 
-              <span>Client</span>
-            </Button>
-          </Link>
+              src={ClientAvt} 
+              alt=''
+            /> 
+            <span>Client</span>
+          </Button>
         </Box>
         <Box
           style={{
@@ -78,29 +85,28 @@ const ChooseAccess = () => {
             textAlign: "center",
           }}
         >
-          <Link style={{textDecoration:"none"}} to={"/login"}> 
-            <Button 
+          <Button 
+            onClick={() => handleClientClick("organizer")}
+            style={{
+              display:'flex', 
+              flexDirection:'column', 
+              marginTop:"-6px",
+              color:"black"
+            }} 
+            type='submit' 
+            fullWidth
+          >
+            <img 
               style={{
-                display:'flex', 
-                flexDirection:'column', 
-                marginTop:"-6px",
-                color:"black"
+                height: "150px", 
+                width: "150px", 
+                borderRadius: "20px 20px 0px 0px"
               }} 
-              type='submit' 
-              fullWidth
-            >
-              <img 
-                style={{
-                  height: "150px", 
-                  width: "150px", 
-                  borderRadius: "20px 20px 0px 0px"
-                }} 
-                src={OrganizersAvt}
-                alt=''
-              /> 
-              <span>Organizers</span>
-            </Button>
-          </Link>
+              src={OrganizersAvt}
+              alt=''
+            /> 
+            <span>Organizers</span>
+          </Button>
         </Box>
       </Stack>
     </>

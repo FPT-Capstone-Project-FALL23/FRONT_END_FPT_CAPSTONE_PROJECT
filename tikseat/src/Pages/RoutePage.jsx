@@ -14,17 +14,26 @@ const SendEmail = lazy(() => import("./Common/SendEmail"));
 const ProfileOrganizers = lazy(() => import("./Organizers/ProfileOrganizers"));
 const ProfileClient = lazy(() => import("./Client/ProfileClient") );
 
+// Trang tam thoi
+const HomePageClient = lazy(() => import("../Pages/Client/HomePageClient"))
+const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"))
+const HomePageOrganizer = lazy(() => import("../Pages/Organizers/HomePageOrganizer"))
+//
+
 function RoutePage() {
   return (
     
     <Suspense fallback={<>loading</>}>
 
       <Routes>
+        <Route path="/homepageOrganizer" element={<HomePageOrganizer />} />
+        <Route path="/homepageAdmin" element={<HomePageAdmin />} />
+        <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />
         
         <Route element={<SignUp/>}>
           <Route path="/profileOrganizers" element={<ProfileOrganizers/>}/>
-          <Route path="/ProfileClient" element={<ProfileClient/>}/>
+          <Route path="/profileClient" element={<ProfileClient/>}/>
         </Route>
         
         <Route element={<LayoutSign/>}>

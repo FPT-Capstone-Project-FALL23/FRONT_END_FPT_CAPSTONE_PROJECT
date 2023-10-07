@@ -9,24 +9,39 @@ import {
   PageNameStyle,
   TitlePageStyle,
 } from "../../Assets/CSS/Style/style.const";
+import { json, useLocation, useNavigate } from "react-router-dom";
+
 
 const SetPassword = () => {
   const [newPassword, setNewPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
 
-  console.log(newPassword)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {state} = location;
+  console.log("Email: ", state.email)
+
+  const roleToken = localStorage.getItem("role");
+      console.log(roleToken);
+
+
 
   const handleSetPassword = async (e) => {
     e.preventDefault();
     try {
       const response = await ApiCommon.registerUser({
-        email: "nghia12345@gmail.com",
+        email: state.email,
         password: newPassword,
-        role: "client"
+        role: roleToken
       });
-      console.log("data: ", response.data)
+      console.log("data: ", response.token)
+      localStorage.setItem("userSignUp", JSON.stringify(response.token));
       if (response.status === true) {
-        console.log("Thanh cong")
+        if (roleToken === "client") {
+          navigate("/profileClient");
+        } else {
+          navigate("/profileOrganizers");
+        }
       } else {
         console.log("error!")
       }

@@ -1,10 +1,11 @@
 import {
   Paper, Grid,
   Typography,
+  Button,
 } from "@mui/material";
 import styled from "styled-components";
 import React, { useState, useRef } from "react";  
-import { Link, Outlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { environment } from "../../";
@@ -12,6 +13,7 @@ import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import ApiCommon from "../../API/Common/ApiCommon";
 import { NAME_LOGO } from "../../Assets/Constant/Common/constLogin";
 import "../../Assets/CSS/Common/LayoutSign.css"
+import jwtDecode from "jwt-decode";
 
 const GridStyleLayout = styled(Grid)
 `
@@ -26,27 +28,19 @@ const GridStyleLayout = styled(Grid)
 
 const SignUp = () => {
   
-  // const handleSignUp = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const newData = await {
-  //       email,
-  //       password,
-  //       role: "client",
-  //     };
 
-  //     // const response = await axios.post(environment.apiUrl, newData);
-  //     const response = await ApiCommon.signUp(newData);
-  //     console.log("data: ", response);
-  //     if (response.statusCode === true) {
-  //       toast.success("Register Success");
-  //     } else {
-  //       toast.error("error");
-  //     }
-  //   } catch (error) {
-  //     console.log("error: ", error);
-  //   }
-  // };
+
+  const navigate = useNavigate();
+  const dataUser = jwtDecode(localStorage.getItem("userSignUp"));
+  console.log(dataUser);
+
+  const handleClickLogo = () => {
+    if (dataUser.role === "client") {
+      navigate("/homepageClient")
+    } else {
+      navigate("/homepageOrganizer")
+    }
+  }
 
   return (
     <>
@@ -61,11 +55,13 @@ const SignUp = () => {
             }}
           >
             <Grid style={{width:"100%", display:"flex", justifyContent:"space-between", marginBottom:"20px"}}> 
-              <Link to={"/#"} style={{textDecoration:"none"}}>
+              <Button
+                onClick={() => handleClickLogo()}
+              >
                 <Typography variant="h3" className="logo" component="h4">
                   {NAME_LOGO}
                 </Typography>
-              </Link>
+              </Button>
                 <Typography
                   variant="h4"
                   component={"h6"}

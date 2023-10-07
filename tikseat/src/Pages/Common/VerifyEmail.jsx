@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { Grid, Button } from "@mui/material";
 import {
   BACK_TO_LOGIN,
@@ -14,23 +14,31 @@ import {
   PageNameStyle,
   TitlePageStyle,
 } from "../../Assets/CSS/../../Assets/CSS/Style/style.const";
+import { useLocation, useNavigate } from "react-router-dom";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
 const VerifyEmail = () => {
 
-  const [email, setEmail] = useState(null);
+  const location = useLocation();
+  const { state } = location;
+  console.log("State:", state.clientType);
+  localStorage.setItem("role", state.clientType);
+
+  const [email, setEmail] = useState("");
+  console.log("Email:", email);
+
+  let navigate = useNavigate();
 
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
-    console.log("Login button clicked");
-    console.log("Email:", email);
+    
     try {
       const response = await ApiCommon.verifyEmail({
-        email: email
+        email: email,
       });
-      console.log("data: ", response.data);
+      console.log("data: ", response);
       if (response.status === true) {
-        console.log("thanh cong");
+        navigate("/verify-code", {state: {email}});
       } else {
         console.log("error!");
       }
@@ -46,14 +54,13 @@ const VerifyEmail = () => {
       <PageNameStyle variant="h4" component={"h5"}>
         {VERIFY_EMAIL}
       </PageNameStyle>
-      <TitlePageStyle>
-          {TITLE_PAGE_VERIFY_EMAIL}
-      </TitlePageStyle>
-      <FormSubmit 
-        onSubmit={handleVerifyEmail} 
-        style={{ marginTop: "40px" }}
-      >
-        <InputCustom type="email" setValue={setEmail} label="Email" />
+      <TitlePageStyle>{TITLE_PAGE_VERIFY_EMAIL}</TitlePageStyle>
+      <FormSubmit onSubmit={handleVerifyEmail} style={{ marginTop: "40px" }}>
+        <InputCustom 
+          type="email" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          label="Email" />
 
         <Grid className="btnLogin">
           <Button

@@ -20,6 +20,8 @@ import { useNavigate, Link } from "react-router-dom";
 import ApiCommon from "../../../API/Common/ApiCommon";
 import { toast } from "react-toastify";
 import FormSubmit from "./FormSubmit";
+import jwtDecode from 'jwt-decode';
+
 
 function FormLogin({
   handleClickShowPassword,
@@ -29,29 +31,35 @@ function FormLogin({
 
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
-  // let navigate = useNavigate();
+  let navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login button clicked");
-    console.log("Email:", email);
-    console.log("Password:", password);
 
     try{
       const response  = await ApiCommon.login({
         email: email,
         password: password,
       });
-      console.log(response)
-      if (response.status === true) {
-        console.log("success!")
-      } else {
-        console.log("error!")
+      localStorage.setItem("userLogin", JSON.stringify(response.token))
+      if (jwtDecode(JSON.stringify(response.token)).role === "client"){
+        // console.log("client");
+        navigate("/homepageClient");
+      }else if (jwtDecode(JSON.stringify(response.token)).role === "organizer"){
+        navigate("/homepageOrganizer")
+        // console.log("homeOrganizer")
+      } else{
+        navigate("/homepageAdmin")
+        // console.log("Admin")
       }
+      // if (response.status === true) {
+      //   console.log("success!")
+      // } else {
+      //   console.log("error!")
+      // }
     }catch(error){
       console.log("error: ",error);
     }
-
   }
 
   return (

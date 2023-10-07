@@ -1,7 +1,7 @@
 import { Stack, Grid, Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import { toast } from "react-toastify";
 import {
@@ -21,6 +21,12 @@ import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
 
 const VerifyCode = () => {
+
+  const location = useLocation();
+  const { state } = location;
+  const [email, setEmail] = useState(state.email)
+  console.log("Email:", email);
+
   const navigate = useNavigate();
   const [verifyCode, setVerifyCode] = useState(true);
   console.log("verifyCode: ", verifyCode);
@@ -29,11 +35,11 @@ const VerifyCode = () => {
     e.preventDefault();
     try {
       const response = await ApiCommon.verifyCode({
-        email: "nghia12345@gmail.com",
+        email: email,
         enteredOTP: verifyCode,
       });
       if (response.status === true) {
-        navigate('/set-password');
+        navigate('/set-password', {state: {email}});
       } else {
         console.log("error!");
       }
