@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import HomePage from "./Common/HomePage";
 
 const LoginPage = lazy(() => import("./Common/LoginPage"));
 const SignUp = lazy(() => import("./Common/SignUp"));
@@ -52,6 +53,7 @@ function RoutePage() {
           <Route path="/verify-email" element={<VerifyEmail />}></Route>
           <Route path="/send-email" element={<SendEmail />}></Route>
         </Route>
+        <Route path="/" element={<HomePage />}></Route>
       </Routes>
     </Suspense>
   );
