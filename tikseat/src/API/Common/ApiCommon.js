@@ -9,7 +9,8 @@ import {
     URL_VERIFYCODE,
     URL_VERIFYEMAIL,
     URL_VERIFYOTP,
-    URL_LOGIN
+    URL_LOGIN,
+    URL_RESENDOTP,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -54,9 +55,14 @@ const ApiCommon = {
     verifyEmail(data) {
         return axiosDefault.post(URL_VERIFYEMAIL, data);
     },
-    login(data){
+
+    login(data) {
         return axiosDefault.post(URL_LOGIN, data);
-    }
+    },
+
+    resendOTP(data) {
+        return axiosDefault.post(URL_RESENDOTP, data);
+    },
 };
 
 export default ApiCommon;

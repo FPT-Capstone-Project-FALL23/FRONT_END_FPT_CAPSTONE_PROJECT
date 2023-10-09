@@ -1,7 +1,16 @@
-import React from "react";
 import IconFB from "../../../Components/Common/Icons/IconFB";
 import IconLinkedin from "../../../Components/Common/Icons/IconLinkedin";
 import IconTwitter from "../../../Components/Common/Icons/IconTwitter";
+import IconApple from "../../../Components/Common/Icons/IconApple";
+import IconGG from "../../../Components/Common/Icons/IconGG";
+
+
+export const anotherChoice = [
+  { logo: <IconFB /> },
+  { logo: <IconGG /> },
+  { logo: <IconApple /> },
+];
+
 
 export const listPlanEvents = [
   { title: "Create and Set Up" },
@@ -56,3 +65,11 @@ export const navItems = [
   { title: "Ticket", url: "/ticket" },
   { title: "Contact", url: "/contact" },
 ];
+
+export const toastOptions = {
+  position: "bottom-right",
+  autoClose: 8000,
+  pauseOnFocusLoss: true,
+  draggable: true,
+  theme: "dark",
+};

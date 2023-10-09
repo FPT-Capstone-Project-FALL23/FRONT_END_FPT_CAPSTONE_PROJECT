@@ -24,6 +24,7 @@ import ClientAvt from "../../Assets/Images/Client.png";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
+import { getLocalStorageUserData } from "../../Store/userStore";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -59,21 +60,13 @@ function getStyles(name, personName, theme) {
 }
 
 function ProfileClient() {
-
   const theme = useTheme();
   const [eventType, setEventType] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
+  const dataUser = getLocalStorageUserData();
 
-  // const handleChange = (event) => {
-  //   const {
-  //     target: { value },
-  //   } = event;
-  //   setEventType(
-  //     typeof value === "string" ? [value] : value
-  //   );
-  // };
-
-  const [avatar, setAvatar] = useState(ClientAvt);
+  const [avatar, setAvatar] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
@@ -84,18 +77,20 @@ function ProfileClient() {
   const handleFileInputChange = (e) => {
     // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
     const selectedFile = e.target.files[0];
+    console.log("a", selectedFile);
+    setSelectedFile(selectedFile);
     if (selectedFile) {
       const objectUrl = URL.createObjectURL(selectedFile);
+      // console.log("objectUrl", objectUrl);
       setAvatar(objectUrl);
     }
   };
 
   const [clientInfo, setClientInfo] = useState({
-    full_name: '',
-    phone: '',
+    full_name: "",
+    phone: "",
     birthday: today,
-    gender: '',
-    avatarImage: ClientAvt,
+    gender: "",
     interest: eventType,
   });
 
@@ -109,23 +104,36 @@ function ProfileClient() {
     });
   };
 
-  console.log(clientInfo);
-
   const handleClientInfo = async (e) => {
     e.preventDefault();
+    console.log("clientInfo", clientInfo, clientInfo);
     try {
-      const response = await ApiCommon.profileClient({
-        _idUser: "650aa7ca33d7874ebe8975bf",
-        clientInfo: clientInfo
-      });
-      console.log("data: ", response.data);
-      if (response.status === true) {
-        console.log("thanh cong")
-      } else {
-        console.log("error!")
+      const _idUser = dataUser._id;
+      console.log("_idUser", _idUser);
+
+      if (!selectedFile) {
+        callApiProfile(null, _idUser, clientInfo);
       }
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+
+      reader.onloadend = () => {
+        callApiProfile(reader.result, _idUser, clientInfo);
+      };
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
+    }
+  };
+
+  const callApiProfile = async (base64EncodedImage, _idUser, clientInfo) => {
+    try {
+      await ApiCommon.profileClient({
+        _idUser: _idUser,
+        clientInfo: clientInfo,
+        avatarImage: base64EncodedImage,
+      });
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -140,8 +148,7 @@ function ProfileClient() {
           flexDirection: "column",
           justifyContent: "center",
           marginTop: "20px",
-        }}
-      >
+        }}>
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
@@ -157,8 +164,7 @@ function ProfileClient() {
             <Stack
               direction="row"
               spacing={12}
-              style={{ marginBottom: "20px" }}
-            >
+              style={{ marginBottom: "20px" }}>
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Gender
@@ -168,8 +174,7 @@ function ProfileClient() {
                   value={clientInfo.gender}
                   onChange={handleInputChange}
                   row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                >
+                  aria-labelledby="demo-row-radio-buttons-group-label">
                   <FormControlLabel
                     value="Female"
                     control={<Radio />}
@@ -232,14 +237,12 @@ function ProfileClient() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MenuProps}
-                >
+                  MenuProps={MenuProps}>
                   {names.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}
-                    >
+                      style={getStyles(name, eventType, theme)}>
                       {name}
                     </MenuItem>
                   ))}
@@ -283,8 +286,7 @@ function ProfileClient() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <div>
             <FormControlLabel
               style={{ fontSize: "14px", marginTop: "40px" }}

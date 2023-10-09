@@ -15,8 +15,8 @@ import {
   BACK,
   CONTENT_INTRODUCTION,
   SECURELY_SAVE_MY_INFO,
-  TITLE_PAGE,
-} from "../../Assets/Constant/Common/constAddPayment";
+  TITLE_PAGE_SIGN_UP,
+} from "../../Assets/Constant/Common/constCommon";
 import ApiCommon from "../../API/Common/ApiCommon";
 import {
   BackToPageStyle,
@@ -65,7 +65,7 @@ const AddPaymentMethod = () => {
         {ADD_PAYMENT_METHOD}
       </PageNameStyle>
 
-      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+      <TitlePageStyle>{TITLE_PAGE_SIGN_UP}</TitlePageStyle>
       <Box>
         <FormSubmit onSubmit={handleAddPayment} style={{ marginTop: "30px" }}>
           <InputCustom

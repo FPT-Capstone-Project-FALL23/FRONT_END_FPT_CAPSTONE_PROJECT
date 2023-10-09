@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import logoWeb from "../../../Assets/Images/logo.png";
 import imgBgHeader from "../../../Assets/Images/bgheaderhomepage.png";
 import imgCarousel from "../../../Assets/Images/pngguru.png";
-import { navItems } from "../../../Assets/Constant/Common/dataStatic";
+import { navItems } from "../../../Assets/Constant/Common/dataCommon";
 import {
   AppBarStyle,
   ButtonLoginStyle,
@@ -16,7 +16,7 @@ import {
   TextFieldStyle,
 } from "../../../Assets/CSS/Style/style.const";
 import { colorWhite } from "../../../Assets/CSS/Style/theme";
-import { LOGIN } from "../../../Assets/Constant/Common/constLogin";
+import { LOGIN } from "../../../Assets/Constant/Common/constCommon";
 
 const Header = () => {
   return (

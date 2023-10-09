@@ -1,16 +1,18 @@
-import { Stack, Grid, Button } from "@mui/material";
+import { Stack, Grid, Button, Link } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 import {
   BACK_TO_LOGIN,
   NOT_RECEIVE_CODE,
   RESEND,
   TITLE_PAGE_VERIFY,
   VERIFY_CODE,
-} from "../../Assets/Constant/Common/constVerifyCode";
+} from "../../Assets/Constant/Common/constCommon";
 import ApiCommon from "../../API/Common/ApiCommon";
 import {
   BackToPageStyle,
@@ -19,12 +21,10 @@ import {
 } from "../../Assets/CSS/Style/style.const";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
-
 const VerifyCode = () => {
-
   const location = useLocation();
   const { state } = location;
-  const [email, setEmail] = useState(state.email)
+  const [email, setEmail] = useState(state.email);
   console.log("Email:", email);
 
   const navigate = useNavigate();
@@ -39,14 +39,27 @@ const VerifyCode = () => {
         enteredOTP: verifyCode,
       });
       if (response.status === true) {
-        navigate('/set-password', {state: {email}});
+        navigate("/set-password", { state: { email } });
       } else {
         console.log("error!");
       }
     } catch (error) {
       console.log("error: ", error);
+      const err = error.response.data.message;
+      toast.error(err, toastOptions);
     }
   };
+  const handleResendOTP = async (e) => {
+    e.preventDefault();
+    try {
+      await ApiCommon.resendOTP({
+        email: email,
+      });
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
+
   return (
     <>
       <BackToPageStyle to={"/login"}>
@@ -55,7 +68,10 @@ const VerifyCode = () => {
       <PageNameStyle variant="h4" component={"h5"}>
         {VERIFY_CODE}
       </PageNameStyle>
-      <TitlePageStyle>{TITLE_PAGE_VERIFY}</TitlePageStyle>
+      <TitlePageStyle>
+        {TITLE_PAGE_VERIFY}
+        {email}.
+      </TitlePageStyle>
       <FormSubmit onSubmit={handleVerifyCode}>
         <InputCustom
           type="password"
@@ -66,17 +82,16 @@ const VerifyCode = () => {
           spacing={1}
           alignItems={"center"}
           direction={"row"}
-          style={{ fontSize: "18px", marginBottom: "20px" }}
-        >
+          style={{ fontSize: "18px", marginBottom: "20px" }}>
           <span>{NOT_RECEIVE_CODE}</span>
           <Link
-            to={"/"}
+            component="button"
+            onClick={handleResendOTP}
             style={{
               color: "#F5BD19",
               fontWeight: "500",
               textDecoration: "none",
-            }}
-          >
+            }}>
             {RESEND}
           </Link>
         </Stack>
@@ -92,8 +107,8 @@ const VerifyCode = () => {
             fullWidth>
             Verify
           </Button>
-          
         </Grid>
+        <ToastContainer />
       </FormSubmit>
     </>
   );

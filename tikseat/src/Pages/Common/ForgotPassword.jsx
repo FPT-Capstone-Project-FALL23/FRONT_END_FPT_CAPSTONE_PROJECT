@@ -5,8 +5,8 @@ import InputCustom from "../../Components/Common/Input/InputCustom";
 import {
   BACK_TO_LOGIN,
   FORGOT_PASSWORD,
-  TITLE_PAGE,
-} from "../../Assets/Constant/Common/constForgotPassword";
+  TITLE_PAGE_VERIFY_EMAIL,
+} from "../../Assets/Constant/Common/constCommon";
 import ApiCommon from "../../API/Common/ApiCommon";
 import {
   BackToPageStyle,
@@ -17,7 +17,6 @@ import { Grid, Button } from "@mui/material";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 
 const ForgotPassword = () => {
-
   const [email, setEmail] = useState("");
 
   const handleForgotPassword = async (e) => {
@@ -43,13 +42,9 @@ const ForgotPassword = () => {
       <PageNameStyle variant="h4" component={"h5"}>
         {FORGOT_PASSWORD}
       </PageNameStyle>
-      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+      <TitlePageStyle>{TITLE_PAGE_VERIFY_EMAIL}</TitlePageStyle>
       <FormSubmit onSubmit={handleForgotPassword} style={{ marginTop: "30px" }}>
-        <InputCustom 
-          type="text" 
-          setValue={setEmail} 
-          label="Email" 
-        />
+        <InputCustom type="text" setValue={setEmail} label="Email" />
         <Grid className="btnLogin">
           <Button
             style={{
@@ -62,7 +57,6 @@ const ForgotPassword = () => {
             fullWidth>
             Verify
           </Button>
-          
         </Grid>
       </FormSubmit>
     </>

@@ -1,6 +1,6 @@
 import { Box, Grid, Pagination, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { UPCOMING_EVENTS } from "../../../Assets/Constant/Common/constHome";
+import { UPCOMING_EVENTS } from "../../../Assets/Constant/Common/constCommon";
 import { colorIndigo } from "../../../Assets/CSS/Style/theme";
 import CardItem from "./CardItem";
 import SelectCustom from "../HomePage/SelectCustom";
