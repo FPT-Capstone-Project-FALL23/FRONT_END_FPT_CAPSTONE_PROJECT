@@ -15,7 +15,7 @@ import {
   PLD_SEND_EMAIL,
   SEND_EMAIL_CONCERT,
   STAY_LOOP,
-} from "../../../Assets/Constant/Common/constHome";
+} from "../../../Assets/Constant/Common/constCommon";
 import {
   CpSendEmailStyle,
   FooterStyle,
@@ -24,7 +24,7 @@ import {
   listEventick,
   listLogoSocialNetwork,
   listPlanEvents,
-} from "../../../Assets/Constant/Common/dataStatic";
+} from "../../../Assets/Constant/Common/dataCommon";
 
 const Footer = () => {
   return (

@@ -1,33 +1,66 @@
 import InputCustom from "../../Components/Common/Input/InputCustom";
+import { Grid, Button } from "@mui/material";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
-import { SET_PASSWORD, TITLE_PAGE } from "../../Assets/Constant/Common/constSetPassword";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import ApiCommon from "../../API/Common/ApiCommon";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import {
   PageNameStyle,
   TitlePageStyle,
 } from "../../Assets/CSS/Style/style.const";
+import { json, useLocation, useNavigate } from "react-router-dom";
+import {
+  ROLE,
+  SET_PASSWORD,
+  TITLE_PAGE_SETPASSWORD,
+} from "../../Assets/Constant/Common/constCommon";
+import {
+  getLocalStorageRole,
+  setLocalStorageToken,
+} from "../../Store/authStore";
+import { setLocalStorageUserData } from "../../Store/userStore";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 
 const SetPassword = () => {
   const [newPassword, setNewPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+  console.log("Email: ", state.email);
+
+  const roleToken = getLocalStorageRole();
+  console.log(roleToken);
+
+  const navigateAfterConfirmPassword = (roleUser) => {
+    if (roleUser == ROLE[0]) {
+      navigate("/profileClient");
+    } else {
+      navigate("/profileOrganizers");
+    }
+  };
+
   const handleSetPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await ApiCommon.setPassword({
-        newPassword,
-        confirmPassword,
+      const response = await ApiCommon.registerUser({
+        email: state.email,
+        password: newPassword,
+        role: roleToken,
       });
-      if (response.status === 200) {
-        toast.success("success");
-      } else {
-        toast.error("error");
-      }
+      console.log("data: ", response);
+      const token = response.token;
+      const roleUser = response.data.role;
+      const userData = response.data;
+      setLocalStorageToken(token);
+      setLocalStorageUserData(userData);
+      navigateAfterConfirmPassword(roleUser);
     } catch (error) {
       console.log("error: ", error);
+      const err = error.response.data.message;
+      toast.error(err, toastOptions);
     }
   };
   return (
@@ -35,7 +68,7 @@ const SetPassword = () => {
       <PageNameStyle variant="h4" component={"h5"}>
         {SET_PASSWORD}
       </PageNameStyle>
-      <TitlePageStyle>{TITLE_PAGE}</TitlePageStyle>
+      <TitlePageStyle>{TITLE_PAGE_SETPASSWORD}</TitlePageStyle>
 
       <FormSubmit onSubmit={handleSetPassword}>
         <InputCustom
@@ -48,7 +81,20 @@ const SetPassword = () => {
           setValue={setConfirmPassword}
           label=" Re-enter Password"
         />
-        <ButtonCustom content="Set Password" color="#F5BD19" />
+        <Grid className="btnLogin">
+          <Button
+            style={{
+              padding: "10px",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            type="submit"
+            fullWidth>
+            Confirm
+          </Button>
+        </Grid>
+        <ToastContainer />
       </FormSubmit>
     </>
   );

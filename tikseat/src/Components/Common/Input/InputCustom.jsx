@@ -52,7 +52,7 @@ const InputCustom = ({
       className={className}
       style={{ marginBottom: "20px" }}
       label={label || "Not label"}
-      onChange={(e) => setValue(e.target.value)}
+      // onChange={(e) => setValue(e.target.value)}
       placeholder={label}
       fullWidth
       required

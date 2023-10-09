@@ -1,38 +1,54 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Grid, Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import ApiCommon from "../../API/Common/ApiCommon";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-import { toast } from "react-toastify";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import {
   BACK_TO_LOGIN,
   TITLE_PAGE_VERIFY_EMAIL,
-  VERIFY_CODE,
-} from "../../Assets/Constant/Common/constVerifyEmail";
-import ApiCommon from "../../API/Common/ApiCommon";
+  VERIFY_EMAIL,
+} from "../../Assets/Constant/Common/constCommon";
+import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import {
   BackToPageStyle,
   PageNameStyle,
   TitlePageStyle,
-} from "../../Assets/CSS/../../Assets/CSS/Style/style.const";
-import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
+} from "../../Assets/CSS/Style/style.const";
+import { setLocalStorageRole } from "../../Store/authStore";
 
 const VerifyEmail = () => {
-  const [code, setCode] = useState(null);
+  const location = useLocation();
+  const { state } = location;
+  console.log("State:", state.clientType);
+  setLocalStorageRole(state.clientType);
+
+  const [email, setEmail] = useState("");
+  console.log("Email:", email);
+
+  let navigate = useNavigate();
+
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
+
     try {
       const response = await ApiCommon.verifyEmail({
-        email: "",
-        enteredOTP: code,
+        email: email,
       });
       console.log("data: ", response);
-      if (response.statusCode === 200) {
-        toast.success("Register Success");
+      if (response.status === true) {
+        navigate("/verify-code", { state: { email } });
       } else {
-        toast.error("error");
+        console.log("error!");
       }
     } catch (error) {
       console.log("error: ", error);
+      const err = error.response.data.message;
+      toast.error(err, toastOptions);
     }
   };
   return (
@@ -41,13 +57,31 @@ const VerifyEmail = () => {
         <KeyboardArrowLeftIcon /> <span>{BACK_TO_LOGIN}</span>
       </BackToPageStyle>
       <PageNameStyle variant="h4" component={"h5"}>
-        {VERIFY_CODE}
+        {VERIFY_EMAIL}
       </PageNameStyle>
       <TitlePageStyle>{TITLE_PAGE_VERIFY_EMAIL}</TitlePageStyle>
       <FormSubmit onSubmit={handleVerifyEmail} style={{ marginTop: "40px" }}>
-        <InputCustom type="password" setValue={setCode} label="Code" />
+        <InputCustom
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          label="Email"
+        />
 
-        <ButtonCustom content="Submit" color="#F5BD19" />
+        <Grid className="btnLogin">
+          <Button
+            style={{
+              padding: "10px",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+            type="submit"
+            fullWidth>
+            Verify
+          </Button>
+        </Grid>
+        <ToastContainer />
       </FormSubmit>
     </>
   );

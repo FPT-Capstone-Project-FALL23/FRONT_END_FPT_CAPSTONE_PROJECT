@@ -1,14 +1,16 @@
 import {
     URL_ADDPAYMENT,
-    URL_CREATEOTGANIZER,
-    URL_CREATEUSER,
+    URL_PROFILEOTGANIZER,
+    URL_PROFILECLIENT,
     URL_FORGOTPASSWORD,
     URL_SENOTP,
-    URL_SETPASSWORD,
+    URL_REGISTERUSER,
     URL_SIGNUP,
     URL_VERIFYCODE,
     URL_VERIFYEMAIL,
     URL_VERIFYOTP,
+    URL_LOGIN,
+    URL_RESENDOTP,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -18,8 +20,8 @@ const ApiCommon = {
         return axiosDefault.post(URL_SIGNUP, { name: data.name });
     },
 
-    createUser(data) {
-        return axiosDefault.post(URL_CREATEUSER, data);
+    profileClient(data) {
+        return axiosDefault.post(URL_PROFILECLIENT, data);
     },
 
     sendOtp(data) {
@@ -30,8 +32,8 @@ const ApiCommon = {
         return axiosDefault.post(URL_VERIFYOTP, data);
     },
 
-    createOrganizer(data) {
-        return axiosDefault.post(URL_CREATEOTGANIZER, data);
+    profileOrganizer(data) {
+        return axiosDefault.post(URL_PROFILEOTGANIZER, data);
     },
 
     addPayment(data) {
@@ -42,8 +44,8 @@ const ApiCommon = {
         return axiosDefault.post(URL_FORGOTPASSWORD, data);
     },
 
-    setPassword(data) {
-        return axiosDefault.post(URL_SETPASSWORD, data);
+    registerUser(data) {
+        return axiosDefault.post(URL_REGISTERUSER, data);
     },
 
     verifyCode(data) {
@@ -52,6 +54,14 @@ const ApiCommon = {
 
     verifyEmail(data) {
         return axiosDefault.post(URL_VERIFYEMAIL, data);
+    },
+
+    login(data) {
+        return axiosDefault.post(URL_LOGIN, data);
+    },
+
+    resendOTP(data) {
+        return axiosDefault.post(URL_RESENDOTP, data);
     },
 };
 
