@@ -22,42 +22,19 @@ import ClientAvt from "../../Assets/Images/Client.png";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
+import { MENUPROPS } from "../../Assets/Constant/Client/constClient";
+import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 
 function getStyles(name, eventType, theme) {
   return {
     fontWeight:
-    eventType.indexOf(name) === -1
+      eventType.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
 }
 
 function ProfileOrganizers() {
-
   const [avatar, setAvatar] = useState(ClientAvt);
   const [eventType, setEventType] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
@@ -66,13 +43,11 @@ function ProfileOrganizers() {
     const {
       target: { value },
     } = event;
-    setEventType(
-      typeof value === "string" ? [value] : value
-    );
+    setEventType(typeof value === "string" ? [value] : value);
   };
-  
+
   const theme = useTheme();
-  
+
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
@@ -89,7 +64,6 @@ function ProfileOrganizers() {
     }
   };
 
-
   const [organizerInfo, setOrganizerInfo] = useState({
     organizer_name: "",
     organizer_type: eventType,
@@ -102,15 +76,15 @@ function ProfileOrganizers() {
       city: "Quảng Nam",
       district: "Quế Sơn",
       ward: "Đông Phú",
-      specific_address: "Mỹ Đông"
-    }
+      specific_address: "Mỹ Đông",
+    },
   });
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     // Sử dụng spread operator để cập nhật state mà không làm thay đổi các thuộc tính khác
     setOrganizerInfo({
       ...organizerInfo,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -121,16 +95,16 @@ function ProfileOrganizers() {
     try {
       const response = await ApiCommon.profileOrganizer({
         _idUser: "650d53992fb0b313f9ea058e",
-        organizerInfo: organizerInfo
+        organizerInfo: organizerInfo,
       });
       console.log("data:", response.data);
       if (response.status === true) {
-        console.log("Thanh cong")
+        console.log("Thanh cong");
       } else {
-        console.log("erroe!")
+        console.log("erroe!");
       }
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
     }
   };
 
@@ -144,8 +118,7 @@ function ProfileOrganizers() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-        }}
-      >
+        }}>
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "45%" }}>
             <Stack>
@@ -165,8 +138,7 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <Stack style={{ width: "47%" }}>
                 <InputCustom
                   type="text"
@@ -198,23 +170,23 @@ function ProfileOrganizers() {
                 label="Website"
               />
             </Stack>
-            {/* <Stack
+            <Stack
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginBottom:"20px"
-              }}
-            >
+                marginBottom: "20px",
+              }}>
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Tỉnh/Thành Phố</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    Tỉnh/Thành Phố
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Tỉnh/Thành Phố"
-                    onChange={handleChange}
-                  >
+                    onChange={handleChange}>
                     <MenuItem value={10}>Ten</MenuItem>
                     <MenuItem value={20}>Twenty</MenuItem>
                     <MenuItem value={30}>Thirty</MenuItem>
@@ -223,13 +195,14 @@ function ProfileOrganizers() {
               </Stack>
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Quận/Huyện</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    Quận/Huyện
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Quận/Huyện"
-                    onChange={handleChange}
-                  >
+                    onChange={handleChange}>
                     <MenuItem value={10}>Ten</MenuItem>
                     <MenuItem value={20}>Twenty</MenuItem>
                     <MenuItem value={30}>Thirty</MenuItem>
@@ -242,17 +215,17 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Xã/Phường</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    Xã/Phường
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Xã/Phường"
-                    onChange={handleChange}
-                  >
+                    onChange={handleChange}>
                     <MenuItem value={10}>Ten</MenuItem>
                     <MenuItem value={20}>Twenty</MenuItem>
                     <MenuItem value={30}>Thirty</MenuItem>
@@ -260,12 +233,9 @@ function ProfileOrganizers() {
                 </FormControl>
               </Stack>
               <Stack style={{ width: "47%" }}>
-                <InputCustom
-                  type="text"
-                  label="Số nhà"
-                />
+                <InputCustom type="text" label="Số nhà" />
               </Stack>
-            </Stack> */}
+            </Stack>
             <Stack>
               <FormControl fullWidth style={{ marginBottom: "20px" }}>
                 <InputLabel id="demo-multiple-chip-label">
@@ -291,14 +261,12 @@ function ProfileOrganizers() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MenuProps}
-                >
-                  {names.map((name) => (
+                  MenuProps={MENUPROPS}>
+                  {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}
-                    >
+                      style={getStyles(name, eventType, theme)}>
                       {name}
                     </MenuItem>
                   ))}
@@ -308,8 +276,7 @@ function ProfileOrganizers() {
           </Grid>
 
           <Grid
-            style={{ width: "45%", display: "flex", flexDirection: "column" }}
-          >
+            style={{ width: "45%", display: "flex", flexDirection: "column" }}>
             <Grid
               style={{
                 width: "100%",
@@ -317,8 +284,7 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-              }}
-            >
+              }}>
               <Avatar
                 style={{ height: "300px", width: "300px" }}
                 alt="Remy Sharp"
@@ -361,8 +327,7 @@ function ProfileOrganizers() {
             flexDirection: "column",
             alignItems: "center",
             bottom: "10px",
-          }}
-        >
+          }}>
           <div>
             <FormControlLabel
               style={{ fontSize: "14px", marginTop: "20px" }}

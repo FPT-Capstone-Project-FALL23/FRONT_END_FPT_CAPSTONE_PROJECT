@@ -1,4 +1,6 @@
 import React from "react";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import {
   Grid,
@@ -17,38 +19,17 @@ import {
   OutlinedInput,
   MenuItem,
 } from "@mui/material";
-import { useState, useRef } from "react";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
-import ClientAvt from "../../Assets/Images/Client.png";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
-import { getLocalStorageUserData } from "../../Store/userStore";
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
+import {
+  getLocalStorageUserData,
+  setLocalStorageUserInfo,
+} from "../../Store/userStore";
+import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
+import { MENUPROPS } from "../../Assets/Constant/Client/constClient";
 
 function getStyles(name, personName, theme) {
   return {
@@ -68,6 +49,7 @@ function ProfileClient() {
   const [avatar, setAvatar] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
@@ -91,7 +73,7 @@ function ProfileClient() {
     phone: "",
     birthday: today,
     gender: "",
-    interest: eventType,
+    favorit_enres: eventType,
   });
 
   // Hàm xử lý khi người dùng nhập dữ liệu vào input
@@ -106,7 +88,7 @@ function ProfileClient() {
 
   const handleClientInfo = async (e) => {
     e.preventDefault();
-    console.log("clientInfo", clientInfo, clientInfo);
+    console.log("clientInfo", clientInfo);
     try {
       const _idUser = dataUser._id;
       console.log("_idUser", _idUser);
@@ -127,11 +109,13 @@ function ProfileClient() {
 
   const callApiProfile = async (base64EncodedImage, _idUser, clientInfo) => {
     try {
-      await ApiCommon.profileClient({
+      const respone = await ApiCommon.profileClient({
         _idUser: _idUser,
         clientInfo: clientInfo,
         avatarImage: base64EncodedImage,
       });
+      setLocalStorageUserInfo(respone.data);
+      navigate("/");
     } catch (err) {
       console.error(err);
     }
@@ -221,8 +205,8 @@ function ProfileClient() {
                   labelId="demo-multiple-chip-label"
                   id="demo-multiple-chip"
                   multiple
-                  name="interest"
-                  value={clientInfo.interest}
+                  name="favorit_enres"
+                  value={clientInfo.favorit_enres}
                   onChange={handleInputChange}
                   input={
                     <OutlinedInput
@@ -237,8 +221,8 @@ function ProfileClient() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MenuProps}>
-                  {names.map((name) => (
+                  MenuProps={MENUPROPS}>
+                  {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
