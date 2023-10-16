@@ -1,4 +1,12 @@
-import { Typography, AppBar, Box, FormControl, Pagination, TextField } from "@mui/material";
+import {
+  Typography,
+  AppBar,
+  Box,
+  FormControl,
+  Pagination,
+  TextField,
+  Autocomplete,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Carousel } from "react-responsive-carousel";
@@ -9,6 +17,7 @@ import {
   colorIndigo,
   colorWhite,
 } from "./theme";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
 export const BackToPageStyle = styled(Link)`
   margin-top: 20px;
@@ -122,7 +131,8 @@ export const TextFieldStyle = styled(TextField)`
     line-height: 21px;
     left: -10px;
   }
-  input {
+  input,
+  #filled-helperText {
     color: ${colorWhite};
     font-size: 22px;
     width: 100%;
@@ -196,12 +206,12 @@ export const FormHeaderStyle = styled.div`
   left: 50%;
   transform: translateX(-50%);
   border-radius: 20px;
-  overflow: hidden;
+  /* overflow: hidden; */
   padding: 50px 60px;
 `;
 
 export const AppBarStyle = styled(AppBar)`
-  background: transparent;
+  background: transparent !important;
   position: absolute;
   box-shadow: none;
   padding: 0 150px;
@@ -221,4 +231,33 @@ export const BoxPaginationStyle = styled(Box)`
   width: 100%;
   display: flex;
   justify-content: center;
+`;
+
+export const DatePickerStyle = styled(DatePicker)`
+  & .MuiInputBase-root {
+    & fieldset.MuiOutlinedInput-notchedOutline {
+      border: 0 !important;
+      & input {
+        color: white !important;
+      }
+    }
+    & .MuiButtonBase-root {
+      color: white !important;
+    }
+    color: white !important;
+  }
+`;
+
+export const AutocompleteStyle = styled(Autocomplete)`
+  & input,
+  label,
+  .MuiAutocomplete-tag {
+    color: white !important;
+  }
+  & .MuiOutlinedInput-notchedOutline {
+    border: none !important;
+  }
+
+  & .MuiAutocomplete-tag {
+  }
 `;
