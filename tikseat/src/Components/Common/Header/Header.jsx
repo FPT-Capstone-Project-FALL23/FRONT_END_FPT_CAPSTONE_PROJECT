@@ -255,7 +255,7 @@ const Header = () => {
         </div>
         <FormHeaderStyle>
           <Grid container spacing={2} alignItems={"self-end"}>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               <TextFieldStyle
                 id="filled-helperText"
                 label="Search Event"
@@ -443,9 +443,11 @@ const Header = () => {
                     />
                     <Stack direction={"row"} justifyContent={"space-between"}>
                       <Stack
+                        onClick={() => setSelectsDistrict([])}
                         direction={"row"}
                         alignItems={"center"}
                         gap={"10px"}
+                        style={{ cursor: "pointer" }}
                       >
                         <LoopIcon></LoopIcon>
                         <span>dat lai</span>
@@ -501,6 +503,11 @@ const Header = () => {
                   </MenuItem>
                 ))}
               </TextFieldStyle>
+            </Grid>
+            <Grid item xs={1}>
+              <Button variant="outlined" style={{ background: "white" }}>
+                Search
+              </Button>
             </Grid>
           </Grid>
         </FormHeaderStyle>
