@@ -11,6 +11,7 @@ import {
   COPYRIGHT,
   EVENTICK,
   INTRODUCE_EVENTICK,
+  NAME_LOGO,
   PLAN_EVENT,
   PLD_SEND_EMAIL,
   SEND_EMAIL_CONCERT,
@@ -35,11 +36,12 @@ const Footer = () => {
         width={"1240px"}
         color={colorAntiFlashWhite}
         margin={"auto"}
-        flexWrap={"wrap"}>
+        flexWrap={"wrap"}
+      >
         <Stack direction={"column"} spacing={2}>
-          <div style={{ width: "150px" }}>
-            <img src={logo} alt="" />
-          </div>
+          <Typography variant="h3" className="logo" component="h4">
+            {NAME_LOGO}
+          </Typography>
           <Stack direction={"column"} spacing={2}>
             <Typography component={"p"} width={"333px"} fontSize={"14px"}>
               {INTRODUCE_EVENTICK}
@@ -63,7 +65,8 @@ const Footer = () => {
                     key={index}
                     padding={"5px 0"}
                     fontSize={"14px"}
-                    fontWeight={500}>
+                    fontWeight={500}
+                  >
                     {item.title}
                   </Typography>
                 );
@@ -81,7 +84,8 @@ const Footer = () => {
                     key={index}
                     padding={"5px 0"}
                     fontSize={"14px"}
-                    fontWeight={500}>
+                    fontWeight={500}
+                  >
                     {item.title}
                   </Typography>
                 );
@@ -110,13 +114,15 @@ const Footer = () => {
         margin={"auto"}
         width={"1240px"}
         alignItems={"center"}
-        marginTop="50px">
+        marginTop="50px"
+      >
         <div
           style={{
             width: "100%",
             height: "1px",
             background: `${colorPurpleNavy}`,
-          }}></div>
+          }}
+        ></div>
         <Typography marginTop={"20px"} color={colorWhite} fontSize={"14px"}>
           {COPYRIGHT}
         </Typography>

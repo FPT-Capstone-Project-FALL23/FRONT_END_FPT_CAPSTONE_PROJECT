@@ -4,13 +4,11 @@ import IconTwitter from "../../../Components/Common/Icons/IconTwitter";
 import IconApple from "../../../Components/Common/Icons/IconApple";
 import IconGG from "../../../Components/Common/Icons/IconGG";
 
-
 export const anotherChoice = [
   { logo: <IconFB /> },
   { logo: <IconGG /> },
   { logo: <IconApple /> },
 ];
-
 
 export const listPlanEvents = [
   { title: "Create and Set Up" },
@@ -60,10 +58,9 @@ export const listLogoSocialNetwork = [
 ];
 
 export const navItems = [
-  { title: "Schedule", url: "/schedule" },
-  { title: "Speakers", url: "/speakers" },
-  { title: "Ticket", url: "/ticket" },
-  { title: "Contact", url: "/contact" },
+  { title: "My ticket", url: "/my_ticket" },
+  { title: "My sell", url: "/my_sell" },
+  { title: "My History payment", url: "/my_history_payment" },
 ];
 
 export const toastOptions = {

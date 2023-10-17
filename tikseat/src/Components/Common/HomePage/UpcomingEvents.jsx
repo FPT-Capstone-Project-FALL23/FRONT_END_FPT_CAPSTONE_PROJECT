@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import { UPCOMING_EVENTS } from "../../../Assets/Constant/Common/constCommon";
 import { colorIndigo } from "../../../Assets/CSS/Style/theme";
 import CardItem from "./CardItem";
-import SelectCustom from "../HomePage/SelectCustom";
 import { BoxPaginationStyle } from "../../../Assets/CSS/Style/style.const";
 
 const UpcomingEvents = () => {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -24,21 +23,22 @@ const UpcomingEvents = () => {
         <Typography
           style={{ fontSize: "40px", color: `${colorIndigo}` }}
           variant="h1"
-          component="h2">
+          component="h2"
+        >
           {UPCOMING_EVENTS}
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
+        {/* <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
           <SelectCustom></SelectCustom>
           <SelectCustom></SelectCustom>
           <SelectCustom></SelectCustom>
-        </Box>
+        </Box> */}
       </Box>
       <Box marginTop={"100px"}>
         <Grid container spacing={2}>
           {currentPageData.map((item, index) => {
             return (
-              <Grid item xs={2.4} key={index}>
+              <Grid item xs={4} key={index}>
                 <CardItem></CardItem>
               </Grid>
             );
