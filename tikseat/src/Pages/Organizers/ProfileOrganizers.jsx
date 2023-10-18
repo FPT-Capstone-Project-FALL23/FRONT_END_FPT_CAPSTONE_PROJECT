@@ -219,11 +219,14 @@ function ProfileOrganizers() {
 
   return (
     <>
+      <Grid style={{display:"flex", justifyContent:"center"}}>
+          <h1>Profile Organizer</h1>
+      </Grid>
       <FormSubmit
         onSubmit={handleOrganizerInfo}
         style={{
           width: "100%",
-          height: "100%",
+          height: "90%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -264,7 +267,7 @@ function ProfileOrganizers() {
                   name="founded_date"
                   value={organizerInfo.founded_date}
                   onChange={handleInputChange}
-                  label="Day of birth"
+                  label="Founded Date"
                 />
               </Stack>
             </Stack>
