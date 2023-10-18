@@ -64,7 +64,7 @@ const VerifyEmail = () => {
         <InputCustom
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          setValue={(value) => setEmail(value)}
           label="Email"
         />
 

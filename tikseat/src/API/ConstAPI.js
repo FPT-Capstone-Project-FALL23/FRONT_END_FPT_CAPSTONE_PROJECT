@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:8080/api";
+export const URL_API_CITY = "https://provinces.open-api.vn/api/";
 
 //-------------------AUTH----------------------------
 export const URL_LOGIN = "/auth/login";
@@ -21,6 +22,9 @@ export const URL_SEARCHEVENT = "/event/searchEvent";
 export const URL_CREATEEVENT = "/event/createEvent";
 export const URL_UPDATEEVENT = "/event/updateEvent";
 
+//-------------------CITY----------------------------
+export const URL_CITY = "?depth=1";
+export const URL_DISTRICT = "?depth=2";
 
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
