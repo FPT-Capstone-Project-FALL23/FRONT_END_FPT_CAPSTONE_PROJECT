@@ -8,7 +8,7 @@ const FormSubmit = ({ onSubmit, children, ...rest }) => {
       autoComplete="off"
       component={"form"}
       onSubmit={onSubmit}
-      style={{ marginTop: "50px" }}
+      style={{ marginTop: "20px" }}
     >
       {children}
     </Box>
