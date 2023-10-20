@@ -7,11 +7,9 @@ import {
   MenuItem,
   Stack,
   TextField,
-  Grid,
-  Button,
 } from "@mui/material";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-// import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
+import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import {
   ADD_PAYMENT_METHOD,
   BACK,
@@ -59,20 +57,17 @@ const AddPaymentMethod = () => {
     }
   };
   return (
-    <Grid
-      style={{
-        margin: "50px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <div>
+      <BackToPageStyle to={"/"}>
+        <KeyboardArrowLeftIcon /> <span>{BACK}</span>
+      </BackToPageStyle>
       <PageNameStyle variant="h4" component={"h5"}>
         {ADD_PAYMENT_METHOD}
       </PageNameStyle>
 
+      <TitlePageStyle>{TITLE_PAGE_SIGN_UP}</TitlePageStyle>
       <Box>
-        <FormSubmit onSubmit={handleAddPayment}>
+        <FormSubmit onSubmit={handleAddPayment} style={{ marginTop: "30px" }}>
           <InputCustom
             inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
             type="text"
@@ -94,47 +89,34 @@ const AddPaymentMethod = () => {
             setValue={setNameCard}
             label="Name on Card"
           />
+
           <TextField
             id="outlined-select-currency"
             select
             label="Country or Region"
             defaultValue="EUR"
             helperText="Please select your currency"
-            style={{ width: "100%" }}
-          >
+            style={{ width: "100%" }}>
             {currencies.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
             ))}
           </TextField>
-          <Grid
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "30px",
-            }}
-          >
-            <Button
-              style={{
-                padding: "10px",
-                color: "black",
-                fontWeight: "bold",
-                fontSize: "18px",
-                backgroundColor: "#F5BD19",
-                width: "50%",
-              }}
-              type="submit"
-            >
-              Verify
-            </Button>
-          </Grid>
+          <FormControlLabel
+            style={{ fontSize: "14px", display: "block" }}
+            control={<Checkbox />}
+            label={
+              <span style={{ fontSize: "14px" }}>{SECURELY_SAVE_MY_INFO}</span>
+            }
+          />
+          <ButtonCustom content="Add payment method" color="#8DD3BB" />
         </FormSubmit>
         <ContentIntroductionStyle>
           <p>{CONTENT_INTRODUCTION}</p>
         </ContentIntroductionStyle>
       </Box>
-    </Grid>
+    </div>
   );
 };
 

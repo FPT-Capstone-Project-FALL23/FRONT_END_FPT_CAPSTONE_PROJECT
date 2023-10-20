@@ -40,18 +40,6 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
-  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
-  const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
-  setSelectedFile(selectedFile);
-  if (selectedFile) {
-    const objectUrl = URL.createObjectURL(selectedFile);
-    // console.log("objectUrl", objectUrl);
-    setAvatar(objectUrl);
-  }
-};
-
 function ProfileClient() {
   const theme = useTheme();
   const [eventType, setEventType] = useState([]);
@@ -66,6 +54,18 @@ function ProfileClient() {
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e) => {
+    // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
+    const selectedFile = e.target.files[0];
+    console.log("a", selectedFile);
+    setSelectedFile(selectedFile);
+    if (selectedFile) {
+      const objectUrl = URL.createObjectURL(selectedFile);
+      // console.log("objectUrl", objectUrl);
+      setAvatar(objectUrl);
+    }
   };
 
   const [clientInfo, setClientInfo] = useState({
@@ -258,9 +258,7 @@ function ProfileClient() {
                 ref={fileInputRef}
                 type="file"
                 style={{ display: "none" }}
-                onChange={(e) =>
-                  handleFileInputChange(e, setSelectedFile, setAvatar)
-                }
+                onChange={handleFileInputChange}
               />
             </Stack>
           </Grid>

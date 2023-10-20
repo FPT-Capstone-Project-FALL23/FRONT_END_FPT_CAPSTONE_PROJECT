@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTheme } from "@mui/material/styles";
 import { useState, useRef } from "react";
 import {
@@ -14,8 +14,6 @@ import {
   OutlinedInput,
   MenuItem,
   Avatar,
-  Autocomplete,
-  TextField,
 } from "@mui/material";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
@@ -26,14 +24,6 @@ import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
 import { MENUPROPS } from "../../Assets/Constant/Client/constClient";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
-import ApiCity from "../../API/City/ApiCity";
-import {
-  getLocalStorageUserData,
-  setLocalStorageUserInfo,
-} from "../../Store/userStore";
-import { handleFileInputChange } from "../Client/ProfileClient";
-import { Api } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 
 function getStyles(name, eventType, theme) {
   return {
@@ -44,91 +34,36 @@ function getStyles(name, eventType, theme) {
   };
 }
 
-/*======CALL API SET QUẬN HUYỆN KHI CHỌN THÀNH PHỐ=====*/
-export const handleChangeCity = async (
-  event,
-  newValue,
-  setSelectCity,
-  setAllDistrictsOfCity,
-  setAllWardsOfDistricts,
-  setSelectDistrict,
-  setSelectWard
-) => {
-  setSelectCity(newValue);
-  if (newValue) {
-    const codeCity = newValue.code;
-    const response = await ApiCity.getDistrict(codeCity);
-    setAllDistrictsOfCity(response.districts);
-  } else {
-    setAllDistrictsOfCity([]);
-    setAllWardsOfDistricts([]);
-    setSelectDistrict({
-      code: "",
-      name: "",
-      division_type: "",
-      codename: "",
-      province_code: "",
-      wards: [],
-    });
-    setSelectWard({
-      code: "",
-      codename: "",
-      district_code: "",
-      division_type: "",
-      name: "",
-    });
-  }
-};
-
-/*======CALL API SET PHƯỜNG XÃ KHI CHỌN QUẬN HUYỆN=====*/
-export const handleChangeDistrict = async (
-  event,
-  newValue,
-  setSelectDistrict,
-  setAllWardsOfDistricts,
-  setSelectWard
-) => {
-  setSelectDistrict(newValue);
-  if (newValue) {
-    const codeDistrict = newValue.code;
-    const respones = await ApiCity.getWards(codeDistrict);
-    setAllWardsOfDistricts(respones.wards);
-  } else {
-    setAllWardsOfDistricts([]);
-    setSelectWard({
-      code: "",
-      codename: "",
-      district_code: "",
-      division_type: "",
-      name: "",
-    });
-  }
-};
-
-/*======SET QUẬN HUYỆN=====*/
-export const handleChangeWard = (event, newValue, setSelectWard) => {
-  setSelectWard(newValue);
-};
-
-/*======CALL API SET THÀNH PHỐ=====*/
-export const getAPICity = async (setAllCity) => {
-  const response = await ApiCity.getCity();
-  setAllCity(response);
-};
-
 function ProfileOrganizers() {
-  const dataUser = getLocalStorageUserData();
-  const [avatar, setAvatar] = useState();
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [avatar, setAvatar] = useState(ClientAvt);
   const [eventType, setEventType] = useState([]);
-  const [allCity, setAllCity] = useState([]);
-  const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
-  const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
-  const [selectCity, setSelectCity] = useState(null);
-  const [selectDistrict, setSelectDistrict] = useState(null);
-  const [selectWard, setSelectWard] = useState(null);
-  const [specificAddress, setSpecificAddress] = useState();
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setEventType(typeof value === "string" ? [value] : value);
+  };
+
+  const theme = useTheme();
+
+  const fileInputRef = useRef(null);
+
+  const handleIconClick = () => {
+    // Kích hoạt sự kiện click trên thẻ input
+    fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e) => {
+    // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      const objectUrl = URL.createObjectURL(selectedFile);
+      setAvatar(objectUrl);
+    }
+  };
+
   const [organizerInfo, setOrganizerInfo] = useState({
     organizer_name: "",
     organizer_type: eventType,
@@ -138,40 +73,12 @@ function ProfileOrganizers() {
     founded_date: today,
     description: "",
     address: {
-      city: selectCity?.name,
-      district: selectDistrict?.name,
-      ward: selectWard?.name,
-      specific_address: specificAddress,
+      city: "Quảng Nam",
+      district: "Quế Sơn",
+      ward: "Đông Phú",
+      specific_address: "Mỹ Đông",
     },
   });
-
-  const theme = useTheme();
-  const fileInputRef = useRef(null);
-  const navigate = useNavigate();
-
-  const handleIconClick = () => {
-    // Kích hoạt sự kiện click trên thẻ input
-    fileInputRef.current.click();
-  };
-
-  //call api khi mở trang để lấy thành phố
-  useEffect(() => {
-    getAPICity(setAllCity);
-  }, []);
-
-  //thêm thành phố, quận huyện, phường xã khi có thay đổi của nớ
-  useEffect(() => {
-    setOrganizerInfo((prevOrganizerInfo) => ({
-      ...prevOrganizerInfo,
-      address: {
-        city: selectCity?.name,
-        district: selectDistrict?.name,
-        ward: selectWard?.name,
-        specific_address: specificAddress,
-      },
-    }));
-  }, [selectCity, selectDistrict, selectWard, specificAddress]);
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     // Sử dụng spread operator để cập nhật state mà không làm thay đổi các thuộc tính khác
@@ -181,52 +88,33 @@ function ProfileOrganizers() {
     });
   };
 
+  console.log(organizerInfo);
+
   const handleOrganizerInfo = async (e) => {
     e.preventDefault();
     try {
-      const _idUser = dataUser._idUser;
-      if (!selectedFile) {
-        callApiProfileOrganizers(null, _idUser, organizerInfo);
+      const response = await ApiCommon.profileOrganizer({
+        _idUser: "650d53992fb0b313f9ea058e",
+        organizerInfo: organizerInfo,
+      });
+      console.log("data:", response.data);
+      if (response.status === true) {
+        console.log("Thanh cong");
+      } else {
+        console.log("erroe!");
       }
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-
-      reader.onloadend = () => {
-        callApiProfileOrganizers(reader.result, _idUser, organizerInfo);
-      };
     } catch (error) {
       console.log("error", error);
     }
   };
 
-  const callApiProfileOrganizers = async (
-    base64EncodedImage,
-    _idUser,
-    organizerInfo
-  ) => {
-    try {
-      const respone = await ApiCommon.profileOrganizer({
-        _idUser: _idUser,
-        organizerInfo: organizerInfo,
-        avatarImage: base64EncodedImage,
-      });
-      setLocalStorageUserInfo(respone.data);
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <>
-      <Grid style={{display:"flex", justifyContent:"center"}}>
-          <h1>Profile Organizer</h1>
-      </Grid>
       <FormSubmit
         onSubmit={handleOrganizerInfo}
         style={{
           width: "100%",
-          height: "90%",
+          height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -244,6 +132,7 @@ function ProfileOrganizers() {
                 // defaultValue = ""
               />
             </Stack>
+
             <Stack
               style={{
                 display: "flex",
@@ -267,7 +156,7 @@ function ProfileOrganizers() {
                   name="founded_date"
                   value={organizerInfo.founded_date}
                   onChange={handleInputChange}
-                  label="Founded Date"
+                  label="Day of birth"
                 />
               </Stack>
             </Stack>
@@ -290,50 +179,34 @@ function ProfileOrganizers() {
               }}>
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    id="select-city"
-                    options={allCity}
-                    value={selectCity}
-                    onChange={(event, newValue) =>
-                      handleChangeCity(
-                        event,
-                        newValue,
-                        setSelectCity,
-                        setAllDistrictsOfCity,
-                        setAllWardsOfDistricts,
-                        setSelectDistrict,
-                        setSelectWard
-                      )
-                    }
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField {...params} required label="City" />
-                    )}
-                  />
+                  <InputLabel id="demo-simple-select-label">
+                    Tỉnh/Thành Phố
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Tỉnh/Thành Phố"
+                    onChange={handleChange}>
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
                 </FormControl>
               </Stack>
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    id="select-districts"
-                    options={allDistrictsOfCity}
-                    value={selectDistrict}
-                    onChange={(event, newValue) =>
-                      handleChangeDistrict(
-                        event,
-                        newValue,
-                        setSelectDistrict,
-                        setAllWardsOfDistricts,
-                        setSelectWard
-                      )
-                    }
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => (
-                      <TextField {...params} required label="Districts" />
-                    )}
-                  />
+                  <InputLabel id="demo-simple-select-label">
+                    Quận/Huyện
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Quận/Huyện"
+                    onChange={handleChange}>
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
                 </FormControl>
               </Stack>
             </Stack>
@@ -345,29 +218,22 @@ function ProfileOrganizers() {
               }}>
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    id="select-wards"
-                    value={selectWard}
-                    onChange={(event, newValue) =>
-                      handleChangeWard(event, newValue, setSelectWard)
-                    }
-                    getOptionLabel={(option) => option.name}
-                    options={allWardsOfDistricts}
-                    renderInput={(params) => (
-                      <TextField {...params} required label="Wards" />
-                    )}
-                  />
+                  <InputLabel id="demo-simple-select-label">
+                    Xã/Phường
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Xã/Phường"
+                    onChange={handleChange}>
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
                 </FormControl>
               </Stack>
               <Stack style={{ width: "47%" }}>
-                <InputCustom
-                  type="text"
-                  name="specific_address"
-                  value={organizerInfo.address.specific_address}
-                  onChange={(e) => setSpecificAddress(e.target.value)}
-                  label="Specific address"
-                />
+                <InputCustom type="text" label="Số nhà" />
               </Stack>
             </Stack>
             <Stack>
@@ -437,9 +303,7 @@ function ProfileOrganizers() {
                 ref={fileInputRef}
                 type="file"
                 style={{ display: "none" }}
-                onChange={(e) =>
-                  handleFileInputChange(e, setSelectedFile, setAvatar)
-                }
+                onChange={handleFileInputChange}
               />
             </Grid>
             <Stack>

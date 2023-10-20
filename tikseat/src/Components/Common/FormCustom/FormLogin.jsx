@@ -23,7 +23,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormSubmit from "./FormSubmit";
 import jwtDecode from "jwt-decode";
-import { getLocalStorageToken, setLocalStorageToken } from "../../../Store/authStore";
+import { setLocalStorageToken } from "../../../Store/authStore";
 import {
   setLocalStorageUserData,
   setLocalStorageUserInfo,
@@ -40,13 +40,13 @@ function FormLogin({
   let navigate = useNavigate();
 
   //Điều hướng login
-  const navigateAfterLogin = () => {
-    if(jwtDecode(getLocalStorageToken()).role == ROLE[0]){
+  const navigateAfterLogin = (roleUser) => {
+    if (roleUser == ROLE[0]) {
       navigate("/");
-    }else if(jwtDecode(getLocalStorageToken()).role == ROLE[1]){
-      navigate("/dashboard");
+    } else {
+      navigate("/Homepage");
     }
-  }; 
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -60,11 +60,29 @@ function FormLogin({
       const roleUser = response.data.dataUser.role;
       const dataUser = response.data.dataUser;
       const dataInfo = response.data.dataInfo;
-
+      console.log("token", dataUser);
       setLocalStorageToken(token);
       setLocalStorageUserData(dataUser);
       setLocalStorageUserInfo(dataInfo);
-      navigateAfterLogin();
+      navigateAfterLogin(roleUser);
+
+      // if (jwtDecode(JSON.stringify(response.token)).role === "client") {
+      //   // console.log("client");
+      //   navigate("/");
+      // } else if (
+      //   jwtDecode(JSON.stringify(response.token)).role === "organizer"
+      // ) {
+      //   navigate("/homepageOrganizer");
+      //   // console.log("homeOrganizer")
+      // } else {
+      //   navigate("/homepageAdmin");
+      //   // console.log("Admin")
+      // }
+      // if (response.status === true) {
+      //   console.log("success!")
+      // } else {
+      //   console.log("error!")
+      // }
     } catch (error) {
       console.log("error: ", error.response.data);
       const err = error.response.data.message;
