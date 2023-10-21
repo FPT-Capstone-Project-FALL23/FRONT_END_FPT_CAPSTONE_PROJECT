@@ -8,27 +8,33 @@ import {
 } from "@mui/material";
 import React from "react";
 import { colorPalatinateBlue } from "../../../Assets/CSS/Style/theme";
+import { useNavigate } from "react-router-dom";
 
 const CardItem = ({ dataEventItem }) => {
   const now = new Date();
   let statusEvent = null;
-  const currentTimestamp = Math.floor(now.getTime() / 1000); // Chia cho 1000 để chuyển đổi thành giây
+  const navigate = useNavigate();
+  const currentTimestamp = Math.floor(now.getTime() / 1000);
 
   const serverTimestamp = new Date(dataEventItem?.time || 1633860600);
 
-  // So sánh timestamp từ server với timestamp hiện tại
   if (serverTimestamp === currentTimestamp) {
     statusEvent = "Happening";
   } else {
     statusEvent = "Up Comming";
   }
   return (
-    <Card style={{ borderRadius: "20px", overflow: "hidden" }}>
+    <Card
+      style={{ borderRadius: "20px", overflow: "hidden" }}
+      onClick={() => {
+        navigate("/book-tickets");
+      }}
+    >
       <CardActionArea>
         <CardMedia
           component="img"
           height="140"
-          image="https://snsdkorean.files.wordpress.com/2011/08/smtown_family_by_kimhanjin.jpg"
+          image="https://i.ytimg.com/vi/d-ck5QxqgMg/maxresdefault.jpg"
           alt="green iguana"
         />
         <CardContent>
@@ -67,14 +73,17 @@ const CardItem = ({ dataEventItem }) => {
                 style={{ fontSize: "16px", fontWeight: "700" }}
                 component="p"
               >
-                2011 Super Junior SM Town Live '10 World Tour New York City
+                đất rừng phương nam
               </Typography>{" "}
               <Typography
                 gutterBottom
                 component="p"
                 style={{ fontSize: "14px" }}
               >
-                Directly seated and inside for you to enjoy the show.
+                Đất rừng phương Nam (tựa tiếng Anh: Song of the South) là một bộ
+                phim điện ảnh Việt Nam thuộc thể loại sử thi – tâm lý – chính
+                kịch ra mắt vào năm 2023, được dựa trên cuốn tiểu thuyết cùng
+                tên của nhà văn Đoàn Giỏi
               </Typography>
               <Typography
                 style={{
