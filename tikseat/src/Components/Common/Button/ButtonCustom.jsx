@@ -1,14 +1,21 @@
 import React from "react";
 import { ButtonCutomStyle } from "./style.const";
 
-const ButtonCustom = ({ none = "0px" , backgroundcolor = "#8DD3BB", content, color }) => {
+const ButtonCustom = ({
+  none = "0px",
+  backgroundcolor = "#8DD3BB",
+  content,
+  color,
+  ...rest
+}) => {
   return (
     <ButtonCutomStyle
+      {...rest}
       type="submit"
       style={{
-        borderRadius:`${none}`,
+        borderRadius: `${none}`,
         background: `${backgroundcolor}`,
-        color: `${color}`
+        color: `${color}`,
       }}
       variant="contained"
     >

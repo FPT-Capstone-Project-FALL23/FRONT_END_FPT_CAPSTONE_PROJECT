@@ -1,10 +1,12 @@
 import {
+  Avatar,
   Box,
   Button,
   Divider,
   Grid,
   IconButton,
   InputBase,
+  Menu,
   MenuItem,
   Paper,
   Stack,
@@ -15,10 +17,11 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import IconNext from "../../Common/Icons/IconNext";
 import IconPrev from "../../Common/Icons/IconPrev";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import imgBgHeader from "../../../Assets/Images/bgheaderhomepage.png";
 import imgCarousel from "../../../Assets/Images/pngguru.png";
 import { navItems } from "../../../Assets/Constant/Common/dataCommon";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   AppBarStyle,
   ButtonLoginStyle,
@@ -37,10 +40,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { LOGIN, NAME_LOGO } from "../../../Assets/Constant/Common/constCommon";
 import SearchIcon from "@mui/icons-material/Search";
+import { getLocalStorageUserData } from "../../../Store/userStore";
 
 const Header = () => {
-  // const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-  // const checkedIcon = <CheckBoxIcon fontSize="small" />;
+  const dataUser = getLocalStorageUserData();
   const [isOpen, setIsOpen] = useState(false);
   const [selectsDistrict, setSelectsDistrict] = useState([]);
   console.log("selectsDistrict: ", selectsDistrict);
@@ -55,6 +58,13 @@ const Header = () => {
       setIsOpen(false);
     }
   };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   // useEffect(() => {
   //   document.addEventListener("mousedown", closeDropdown);
 
@@ -62,7 +72,12 @@ const Header = () => {
   //     document.removeEventListener("mousedown", closeDropdown);
   //   };
   // }, []);
-
+  const navigate = useNavigate();
+  const ManagementUser = [
+    { url: "/", content: `Xin chào ${dataUser?.email}` },
+    { url: "/my-profile", content: "Quản lý hồ sơ" },
+    { url: "/", content: "Đăng xuất" },
+  ];
   const dataDistrict = [
     { value: "tesst1", id: 1 },
     { value: "tesst2", id: 2 },
@@ -550,7 +565,42 @@ const Header = () => {
                 </Link>
               ))}
             </Box>
-            <ButtonLoginStyle to={"/login"}>{LOGIN}</ButtonLoginStyle>
+            {dataUser.email ? (
+              <Box sx={{ flexGrow: 0 }}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <AccountCircleIcon />
+                </IconButton>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {ManagementUser?.map((item, index) => (
+                    <MenuItem key={index} onClick={handleCloseUserMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => navigate(item?.url)}
+                      >
+                        {item.content}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            ) : (
+              <ButtonLoginStyle to={"/login"}>{LOGIN}</ButtonLoginStyle>
+            )}
           </Box>
         </Toolbar>
       </AppBarStyle>

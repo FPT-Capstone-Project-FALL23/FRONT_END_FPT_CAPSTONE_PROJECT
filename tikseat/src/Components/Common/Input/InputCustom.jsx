@@ -1,6 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -16,12 +17,14 @@ const InputCustom = ({
   setValue,
   passwordValue,
   isConfirm,
+  value,
+  disabled,
+  labelError,
   ...rest
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
   const validateEmail = (email) => {
     // Regular expression to check for a valid email format
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -76,13 +79,18 @@ const InputCustom = ({
       <FormControl
         variant="outlined"
         fullWidth
-        style={{ marginBottom: "20px" }}>
+        style={{ marginBottom: "20px" }}
+      >
         <InputLabel htmlFor="outlined-adornment-password" required>
           {label || "not label"}
         </InputLabel>
         <OutlinedInput
           id="outlined-adornment-password"
           type={showPassword ? "text" : "password"}
+          value={value}
+          required
+          disabled={disabled}
+          defaultValue={value}
           onChange={(e) => setValue(e.target.value)}
           endAdornment={
             <InputAdornment position="end" variant="standard">
@@ -90,13 +98,19 @@ const InputCustom = ({
                 aria-label="toggle password visibility"
                 onClick={() => setShowPassword(!showPassword)}
                 // onMouseDown={handleMouseDownPassword}
-                edge="end">
+                edge="end"
+              >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           }
           label={label}
         />
+        {labelError?.length > 0 && (
+          <FormHelperText style={{ color: "red" }} id="component-error-text">
+            {labelError}
+          </FormHelperText>
+        )}
       </FormControl>
     );
   }
@@ -108,7 +122,9 @@ const InputCustom = ({
       label={label || "Not label"}
       fullWidth
       required
+      disabled={disabled}
       type={type}
+      defaultValue={value}
       onChange={handleChange}
       error={error}
       helperText={error ? errorMessage : ""}
