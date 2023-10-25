@@ -565,7 +565,7 @@ const Header = () => {
                 </Link>
               ))}
             </Box>
-            {dataUser.email ? (
+            {dataUser?.email ? (
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <AccountCircleIcon />

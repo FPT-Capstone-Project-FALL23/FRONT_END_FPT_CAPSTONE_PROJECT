@@ -26,10 +26,6 @@ const ApiCommon = {
     return axiosDefault.post(URL_CHANGEPASSWORD, data);
   },
 
-  getProfile(data) {
-    return axiosDefault.post(URL_PROFILE, data);
-  },
-
   updateProfileClient(data) {
     return axiosDefault.post(URL_UPDATE_PROFILE, data);
   },
