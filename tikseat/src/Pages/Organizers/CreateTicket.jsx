@@ -40,10 +40,9 @@ function CreateTicket() {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const location = useLocation();
+  const today = new Date().toISOString().slice(0, 10);
 
   const { newEvent } = location.state;
-
-  console.log(newEvent);
 
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
@@ -81,6 +80,13 @@ function CreateTicket() {
     },
   ]);
 
+  const [saleDate, setSaleDate] = useState({
+    startSaleDate: today,
+    endSaleDate: today,
+  })
+
+  console.log(saleDate);
+
   const [eventInfo, setEventInfo] = useState({
     event_name: newEvent.event_name,
     type_of_event: newEvent.type_of_event.join(", "),
@@ -88,8 +94,8 @@ function CreateTicket() {
     type_layout: "",
     event_description: newEvent.event_description,
     sales_date: {
-      start_sale_date: newEvent.start_sale_date,
-      end_sale_date: newEvent.end_sale_date,
+      start_sales_date: saleDate.startSaleDate,
+      end_sales_date: saleDate.endSaleDate,
     },
     event_location: {
       city: newEvent.address.city,
@@ -120,7 +126,11 @@ function CreateTicket() {
   });
 
   const updatedEventInfo = {
-    ...eventInfo, // Giữ nguyên các thuộc tính hiện tại của eventInfo
+    ...eventInfo,
+    sales_date: {
+      start_sales_date: saleDate.startSaleDate,
+      end_sales_date: saleDate.endSaleDate,
+    },
     event_date: eventDate.map((date) => ({
       day_number: date.date_number,
       date: date.dateEvent,
@@ -135,8 +145,6 @@ function CreateTicket() {
       })),
     })),
   };
-
-  console.log(eventInfo);
 
   const addForm = () => {
     const newForm = {
@@ -187,6 +195,11 @@ function CreateTicket() {
       (formTicket) => formTicket.id !== ticketId
     );
     setTickets(updateTicket);
+  };
+
+  const handleSaleDateChange = (name, value) => {
+    setSaleDate({ ...saleDate, [name]: value });
+    setEventInfo(updatedEventInfo);
   };
 
   const handleDateChange = (event, formId) => {
@@ -341,7 +354,7 @@ function CreateTicket() {
     setEventInfo(updatedEventInfo);
   };
 
-  console.log(eventDate);
+  console.log("EventInfo: ",eventInfo);
 
   const callApiCreateEvent = async (_idOrganizer, eventInfo) => {
     try {
@@ -414,37 +427,48 @@ function CreateTicket() {
             />
           </Grid>
 
-          <Stack
+          <Grid style={{ display: "flex", justifyContent: "start" }}>
+            <h3 style={{ marginTop: "20px" }}>Name and Type of Event</h3>
+          </Grid>
+          <Grid
             style={{
-              marginTop: "20px",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              padding: "30px",
+              border: "1px solid black",
+              borderRadius: "5px",
+              marginBottom:"20px"
             }}
           >
-            <Stack style={{ width: "45%" }}>
-              <InputCustom
-                type="date"
-                id="start_sale_date"
-                name="start_sale_date"
-                value={newEvent.start_sale_date}
-                // setValue={(value) =>
-                //   handleInputChange("start_sale_date", value)
-                // }
-                label="Start Date"
-              />
+            <Stack
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Stack style={{ width: "45%" }}>
+                <InputCustom
+                  type="date"
+                  id="startSaleDate"
+                  name="startSaleDate"
+                  value={saleDate.startSaleDate}
+                  setValue={(value) =>
+                    handleSaleDateChange("startSaleDate", value)
+                  }
+                  label="Start Date"
+                />
+              </Stack>
+              <Stack style={{ width: "45%" }}>
+                <InputCustom
+                  type="date"
+                  id="endSaleDate"
+                  name="endSaleDate"
+                  value={saleDate.endSaleDate}
+                  setValue={(value) => handleSaleDateChange("endSaleDate", value)}
+                  label="End Date"
+                />
+              </Stack>
             </Stack>
-            <Stack style={{ width: "45%" }}>
-              <InputCustom
-                type="date"
-                id="end_sale_date"
-                name="end_sale_date"
-                value={newEvent.end_sale_date}
-                // setValue={(value) => handleInputChange("end_sale_date", value)}
-                label="End Date"
-              />
-            </Stack>
-          </Stack>
+          </Grid>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>Event Time</h3>
           </Grid>
@@ -631,7 +655,7 @@ function CreateTicket() {
                       </Grid>
                     </Grid>
 
-                    <Grid className="DateFormTicket" fullWidth>
+                    {/* <Grid className="DateFormTicket" fullWidth>
                       <Grid style={{ width: "48%", display: "flex" }}>
                         <p style={{ display: "flex", alignItems: "center" }}>
                           Start sale date &nbsp;
@@ -656,7 +680,7 @@ function CreateTicket() {
                           // value={}
                         />
                       </Grid>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 ))}
 
