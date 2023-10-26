@@ -428,9 +428,9 @@ function CreateTicket() {
                 id="start_sale_date"
                 name="start_sale_date"
                 value={newEvent.start_sale_date}
-                setValue={(value) =>
-                  handleInputChange("start_sale_date", value)
-                }
+                // setValue={(value) =>
+                //   handleInputChange("start_sale_date", value)
+                // }
                 label="Start Date"
               />
             </Stack>
@@ -440,7 +440,7 @@ function CreateTicket() {
                 id="end_sale_date"
                 name="end_sale_date"
                 value={newEvent.end_sale_date}
-                setValue={(value) => handleInputChange("end_sale_date", value)}
+                // setValue={(value) => handleInputChange("end_sale_date", value)}
                 label="End Date"
               />
             </Stack>

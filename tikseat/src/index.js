@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import reportWebVitals from "./reportWebVitals";
-
+import "react-multi-carousel/lib/styles.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
