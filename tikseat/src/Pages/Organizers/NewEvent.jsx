@@ -125,7 +125,7 @@ function NewEvent() {
   const [allCity, setAllCity] = useState([]);
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
   const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
-  const today = new Date().toISOString().slice(0, 10);
+  // const today = new Date().toISOString().slice(0, 10);
 
   const [selectCity, setSelectCity] = useState(null);
   const [selectDistrict, setSelectDistrict] = useState(null);
@@ -141,8 +141,6 @@ function NewEvent() {
     eventImage: null,
     type_of_event: eventType,
     event_description: null,
-    start_sale_date: today,
-    end_sale_date: today,
     address: {
       city: selectCity?.name,
       district: selectDistrict?.name,
@@ -258,6 +256,7 @@ function NewEvent() {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
+                  borderRadius:"5px"
                 }}
               >
                 <Stack
@@ -334,6 +333,7 @@ function NewEvent() {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
+                  borderRadius:"5px"
                 }}
               >
                 <Stack
@@ -431,58 +431,19 @@ function NewEvent() {
               <Grid style={{ display: "flex", justifyContent: "start" }}>
                 <h3 style={{ marginTop: "20px" }}> Event Information</h3>
               </Grid>
-              <Grid
-                style={{
-                  padding: "30px",
-                  border: "1px solid black",
-                }}
-              >
-                <Stack>
-                  <TextareaAutosize
-                    fullWidth
-                    minRows={6}
-                    placeholder="Description"
-                    name="event_description"
-                    value={newEvent.event_description}
-                    onChange={(e) =>
-                      handleInputChange("event_description", e.target.value)
-                    }
-                  />
-                </Stack>
-              </Grid>
-              {/* <Stack
-                style={{
-                  marginTop: "20px",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Stack style={{ width: "45%" }}>
-                  <InputCustom
-                    type="date"
-                    id="start_sale_date"
-                    name="start_sale_date"
-                    value={newEvent.start_sale_date}
-                    setValue={(value) =>
-                      handleInputChange("start_sale_date", value)
-                    }
-                    label="Start Date"
-                  />
-                </Stack>
-                <Stack style={{ width: "45%" }}>
-                  <InputCustom
-                    type="date"
-                    id="end_sale_date"
-                    name="end_sale_date"
-                    value={newEvent.end_sale_date}
-                    setValue={(value) =>
-                      handleInputChange("end_sale_date", value)
-                    }
-                    label="End Date"
-                  />
-                </Stack>
-              </Stack> */}
+              <Stack>
+                <TextareaAutosize
+                  style={{ fontSize:"20px" }}
+                  fullWidth
+                  minRows={6}
+                  placeholder="Description"
+                  name="event_description"
+                  value={newEvent.event_description}
+                  onChange={(e) =>
+                    handleInputChange("event_description", e.target.value)
+                  }
+                />
+              </Stack>
             </Grid>
           </Grid>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
@@ -492,7 +453,7 @@ function NewEvent() {
             style={{
               padding: "30px",
               border: "1px solid black",
-              borderRadius:"5px"
+              borderRadius: "5px",
             }}
           >
             <Stack
