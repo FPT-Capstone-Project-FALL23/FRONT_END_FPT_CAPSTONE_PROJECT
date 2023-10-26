@@ -32,7 +32,7 @@ import {
   setLocalStorageUserInfo,
 } from "../../Store/userStore";
 import { handleFileInputChange } from "../Client/ProfileClient";
-import { Api } from "@mui/icons-material";
+// import { Api } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 function getStyles(name, eventType, theme) {
@@ -125,10 +125,11 @@ function ProfileOrganizers() {
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
   const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
+
   const [selectCity, setSelectCity] = useState(null);
   const [selectDistrict, setSelectDistrict] = useState(null);
   const [selectWard, setSelectWard] = useState(null);
-  const [specificAddress, setSpecificAddress] = useState();
+
   const [organizerInfo, setOrganizerInfo] = useState({
     organizer_name: "",
     organizer_type: eventType,
@@ -141,9 +142,11 @@ function ProfileOrganizers() {
       city: selectCity?.name,
       district: selectDistrict?.name,
       ward: selectWard?.name,
-      specific_address: specificAddress,
+      specific_address: "",
     },
   });
+
+  console.log(organizerInfo);
 
   const theme = useTheme();
   const fileInputRef = useRef(null);
@@ -167,17 +170,27 @@ function ProfileOrganizers() {
         city: selectCity?.name,
         district: selectDistrict?.name,
         ward: selectWard?.name,
-        specific_address: specificAddress,
+        specific_address: null,
       },
     }));
-  }, [selectCity, selectDistrict, selectWard, specificAddress]);
+  }, [selectCity, selectDistrict, selectWard]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+  const handleInputChange = (name, value) => {
+    // const { name, value } = event.target;
     // Sử dụng spread operator để cập nhật state mà không làm thay đổi các thuộc tính khác
     setOrganizerInfo({
       ...organizerInfo,
       [name]: value,
+    });
+  };
+
+  const handleSpecificAddressChange = (value) => {
+    setOrganizerInfo({
+      ...organizerInfo,
+      address: {
+        ...organizerInfo.address,
+        specific_address: value,
+      },
     });
   };
 
@@ -219,8 +232,8 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid style={{display:"flex", justifyContent:"center"}}>
-          <h1>Profile Organizer</h1>
+      <Grid style={{ display: "flex", justifyContent: "center" }}>
+        <h1>Profile Organizer</h1>
       </Grid>
       <FormSubmit
         onSubmit={handleOrganizerInfo}
@@ -230,7 +243,8 @@ function ProfileOrganizers() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-        }}>
+        }}
+      >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "45%" }}>
             <Stack>
@@ -239,9 +253,8 @@ function ProfileOrganizers() {
                 id="organizer_name"
                 name="organizer_name"
                 value={organizerInfo.organizer_name}
-                onChange={handleInputChange}
+                setValue={(value) => handleInputChange("organizer_name", value)}
                 label="Organizer Name"
-                // defaultValue = ""
               />
             </Stack>
             <Stack
@@ -249,14 +262,15 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}>
+              }}
+            >
               <Stack style={{ width: "47%" }}>
                 <InputCustom
                   type="text"
                   id="phone"
                   name="phone"
                   value={organizerInfo.phone}
-                  onChange={handleInputChange}
+                  setValue={(value) => handleInputChange("phone", value)}
                   label="Phone number"
                 />
               </Stack>
@@ -266,7 +280,7 @@ function ProfileOrganizers() {
                   id="founded_date"
                   name="founded_date"
                   value={organizerInfo.founded_date}
-                  onChange={handleInputChange}
+                  setValue={(value) => handleInputChange("founded_date", value)}
                   label="Founded Date"
                 />
               </Stack>
@@ -277,7 +291,7 @@ function ProfileOrganizers() {
                 id="website"
                 name="website"
                 value={organizerInfo.website}
-                onChange={handleInputChange}
+                setValue={(value) => handleInputChange("website", value)}
                 label="Website"
               />
             </Stack>
@@ -287,7 +301,8 @@ function ProfileOrganizers() {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 marginBottom: "20px",
-              }}>
+              }}
+            >
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
                   <Autocomplete
@@ -342,7 +357,8 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}>
+              }}
+            >
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
                   <Autocomplete
@@ -365,7 +381,7 @@ function ProfileOrganizers() {
                   type="text"
                   name="specific_address"
                   value={organizerInfo.address.specific_address}
-                  onChange={(e) => setSpecificAddress(e.target.value)}
+                  setValue={(value) => handleSpecificAddressChange(value)}
                   label="Specific address"
                 />
               </Stack>
@@ -381,7 +397,12 @@ function ProfileOrganizers() {
                   id="organizer_type"
                   name="organizer_type"
                   value={organizerInfo.organizer_type}
-                  onChange={handleInputChange}
+                  onChange={(e) =>
+                    setOrganizerInfo({
+                      ...organizerInfo,
+                      organizer_type: e.target.value,
+                    })
+                  }
                   input={
                     <OutlinedInput
                       id="select-multiple-chip"
@@ -395,12 +416,14 @@ function ProfileOrganizers() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MENUPROPS}>
+                  MenuProps={MENUPROPS}
+                >
                   {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}>
+                      style={getStyles(name, eventType, theme)}
+                    >
                       {name}
                     </MenuItem>
                   ))}
@@ -410,7 +433,8 @@ function ProfileOrganizers() {
           </Grid>
 
           <Grid
-            style={{ width: "45%", display: "flex", flexDirection: "column" }}>
+            style={{ width: "45%", display: "flex", flexDirection: "column" }}
+          >
             <Grid
               style={{
                 width: "100%",
@@ -418,7 +442,8 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <Avatar
                 style={{ height: "300px", width: "300px" }}
                 alt="Remy Sharp"
@@ -450,7 +475,9 @@ function ProfileOrganizers() {
                 id="description"
                 name="description"
                 value={organizerInfo.description}
-                onChange={handleInputChange}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
               />
             </Stack>
           </Grid>
@@ -463,7 +490,8 @@ function ProfileOrganizers() {
             flexDirection: "column",
             alignItems: "center",
             bottom: "10px",
-          }}>
+          }}
+        >
           <div>
             <FormControlLabel
               style={{ fontSize: "14px", marginTop: "20px" }}

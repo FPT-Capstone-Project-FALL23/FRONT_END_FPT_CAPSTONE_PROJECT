@@ -59,3 +59,13 @@ h2{
     justify-content: flex-start;
     margin: 20px;
 }
+
+.enterSeat{
+    display: flex;
+    margin-bottom: 10px;
+
+}
+
+.buttonCreateEvent{
+    height: 50px;
+}

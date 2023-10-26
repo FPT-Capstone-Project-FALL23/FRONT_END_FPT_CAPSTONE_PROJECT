@@ -23,7 +23,6 @@ const HomePageOrganizer = lazy(() => import("../Pages/Organizers/HomePageOrganiz
 const DefaultDashboard = lazy(() => import("../Pages/Organizers/DefaultDashboard"));
 const EventHistory = lazy(() => import("../Pages/Organizers/EventHistory"));
 const NewEvent = lazy(() => import("../Pages/Organizers/NewEvent"));
-const SecondPage = lazy(() => import("../Pages/Organizers/SecondPage"));
 const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"))
 //
 
@@ -44,7 +43,6 @@ function RoutePage() {
           <Route path="/dashboard" element={<DefaultDashboard/>}></Route>
           <Route path="/event-history" element={<EventHistory/>}></Route>
           <Route path="/create-event" element={<NewEvent/>}></Route>
-          <Route path="/second" element={<SecondPage/>}></Route>
           <Route path="/create-ticket" element={<CreateTicket/>}></Route>
         </Route>
  
