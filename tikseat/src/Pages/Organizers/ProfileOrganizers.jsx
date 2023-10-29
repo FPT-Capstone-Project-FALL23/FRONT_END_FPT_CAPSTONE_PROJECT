@@ -219,8 +219,8 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid style={{display:"flex", justifyContent:"center"}}>
-          <h1>Profile Organizer</h1>
+      <Grid style={{ display: "flex", justifyContent: "center" }}>
+        <h1>Profile Organizer</h1>
       </Grid>
       <FormSubmit
         onSubmit={handleOrganizerInfo}
@@ -230,7 +230,8 @@ function ProfileOrganizers() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-        }}>
+        }}
+      >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "45%" }}>
             <Stack>
@@ -249,7 +250,8 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}>
+              }}
+            >
               <Stack style={{ width: "47%" }}>
                 <InputCustom
                   type="text"
@@ -287,7 +289,8 @@ function ProfileOrganizers() {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 marginBottom: "20px",
-              }}>
+              }}
+            >
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
                   <Autocomplete
@@ -342,7 +345,8 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}>
+              }}
+            >
               <Stack style={{ width: "47%" }}>
                 <FormControl fullWidth>
                   <Autocomplete
@@ -395,12 +399,14 @@ function ProfileOrganizers() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MENUPROPS}>
+                  MenuProps={MENUPROPS}
+                >
                   {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}>
+                      style={getStyles(name, eventType, theme)}
+                    >
                       {name}
                     </MenuItem>
                   ))}
@@ -410,7 +416,8 @@ function ProfileOrganizers() {
           </Grid>
 
           <Grid
-            style={{ width: "45%", display: "flex", flexDirection: "column" }}>
+            style={{ width: "45%", display: "flex", flexDirection: "column" }}
+          >
             <Grid
               style={{
                 width: "100%",
@@ -418,7 +425,8 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <Avatar
                 style={{ height: "300px", width: "300px" }}
                 alt="Remy Sharp"
@@ -463,7 +471,8 @@ function ProfileOrganizers() {
             flexDirection: "column",
             alignItems: "center",
             bottom: "10px",
-          }}>
+          }}
+        >
           <div>
             <FormControlLabel
               style={{ fontSize: "14px", marginTop: "20px" }}

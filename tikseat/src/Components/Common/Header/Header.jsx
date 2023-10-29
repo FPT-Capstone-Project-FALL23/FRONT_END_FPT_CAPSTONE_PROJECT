@@ -40,10 +40,18 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { LOGIN, NAME_LOGO } from "../../../Assets/Constant/Common/constCommon";
 import SearchIcon from "@mui/icons-material/Search";
-import { getLocalStorageUserData } from "../../../Store/userStore";
+import {
+  getLocalStorageUserData,
+  getLocalStorageUserInfo,
+  setLocalStorageUserData,
+  setLocalStorageUserInfo,
+} from "../../../Store/userStore";
 
 const Header = () => {
   const dataUser = getLocalStorageUserData();
+  console.log("dataUser: ", dataUser);
+  const dataInfo = getLocalStorageUserInfo();
+  console.log("dataInfo: ", dataInfo);
   const [isOpen, setIsOpen] = useState(false);
   const [selectsDistrict, setSelectsDistrict] = useState([]);
   console.log("selectsDistrict: ", selectsDistrict);
@@ -74,9 +82,9 @@ const Header = () => {
   // }, []);
   const navigate = useNavigate();
   const ManagementUser = [
-    { url: "/", content: `Xin chào ${dataUser?.email}` },
-    { url: "/my-profile", content: "Quản lý hồ sơ" },
-    { url: "/", content: "Đăng xuất" },
+    { content: `Xin chào ${dataUser?.email}` },
+    { url: "/createProfileClient", content: "Quản lý hồ sơ" },
+    { url: "/login", content: "Đăng xuất" },
   ];
   const dataDistrict = [
     { value: "tesst1", id: 1 },
@@ -568,7 +576,7 @@ const Header = () => {
             {dataUser?.email ? (
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <AccountCircleIcon />
+                  <Avatar alt="Remy Sharp" src={dataInfo?.avatarImage} />
                 </IconButton>
                 <Menu
                   sx={{ mt: "45px" }}
@@ -586,16 +594,45 @@ const Header = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  {ManagementUser?.map((item, index) => (
-                    <MenuItem key={index} onClick={handleCloseUserMenu}>
-                      <Typography
-                        textAlign="center"
-                        onClick={() => navigate(item?.url)}
-                      >
-                        {item.content}
-                      </Typography>
-                    </MenuItem>
-                  ))}
+                  {ManagementUser?.map((item, index) => {
+                    if (!item?.url) {
+                      return (
+                        <MenuItem
+                          style={{
+                            cursor: "text",
+                            backgroundColor: "transparent",
+                          }}
+                          key={index}
+                          onClick={handleCloseUserMenu}
+                        >
+                          <Typography
+                            textAlign="center"
+                            onClick={() => navigate(item?.url)}
+                          >
+                            {item.content}
+                          </Typography>
+                        </MenuItem>
+                      );
+                    }
+                    return (
+                      <MenuItem key={index} onClick={handleCloseUserMenu}>
+                        <Typography
+                          textAlign="center"
+                          onClick={() => {
+                            if (item?.url === "/login") {
+                              navigate(item?.url);
+                              setLocalStorageUserData("");
+                              setLocalStorageUserInfo("");
+                            } else {
+                              navigate(item?.url);
+                            }
+                          }}
+                        >
+                          {item.content}
+                        </Typography>
+                      </MenuItem>
+                    );
+                  })}
                 </Menu>
               </Box>
             ) : (

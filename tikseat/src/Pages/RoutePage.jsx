@@ -39,7 +39,7 @@ function RoutePage() {
       <Routes>
         <Route path="/homepageOrganizer" element={<HomePageOrganizer />} />
         <Route path="/homepageAdmin" element={<HomePageAdmin />} />
-        <Route path="/my-profile" element={<MyProfile />}></Route>
+        {/* <Route path="/my-profile" element={<MyProfile />}></Route> */}
         <Route path="/change-password" element={<ChangePassword />}></Route>
         <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />

@@ -20,6 +20,8 @@ const InputCustom = ({
   value,
   disabled,
   labelError,
+  name,
+  onChange,
   ...rest
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -122,10 +124,11 @@ const InputCustom = ({
       label={label || "Not label"}
       fullWidth
       required
+      name={name}
       disabled={disabled}
       type={type}
       defaultValue={value}
-      onChange={handleChange}
+      onChange={onChange || handleChange}
       error={error}
       helperText={error ? errorMessage : ""}
     />
