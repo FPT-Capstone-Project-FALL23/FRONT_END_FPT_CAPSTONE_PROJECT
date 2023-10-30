@@ -120,7 +120,8 @@ const InputCustom = ({
     <TextField
       {...rest}
       className={className}
-      style={{ marginBottom: "20px" }}
+      // style={{ marginBottom: "20px" }}
+      style={{ backgroundColor:"white" }}
       label={label || "Not label"}
       fullWidth
       required

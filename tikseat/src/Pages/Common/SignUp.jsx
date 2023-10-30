@@ -47,7 +47,7 @@ const SignUp = () => {
             boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
           }}
         >
-          <Grid>
+          <Grid style={{ width: "30%", position: "absolute" }}>
             <Button onClick={() => handleClickLogo()}>
               <Typography variant="h3" className="logo" component="h4">
                 {NAME_LOGO}
@@ -65,7 +65,8 @@ const SignUp = () => {
               Profile
             </Typography>
           </Grid>
-          <Grid>
+
+          <Grid style={{marginTop:"20px"}}>
             <Outlet />
           </Grid>
         </Grid>

@@ -29,8 +29,12 @@ const DefaultDashboard = lazy(() =>
 const MyProfile = lazy(() => import("./Client/MyProfile"));
 const EventHistory = lazy(() => import("../Pages/Organizers/EventHistory"));
 const NewEvent = lazy(() => import("../Pages/Organizers/NewEvent"));
-const SecondPage = lazy(() => import("../Pages/Organizers/SecondPage"));
-const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"));
+// <<<<<<< HEAD
+const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"))
+// =======
+// const SecondPage = lazy(() => import("../Pages/Organizers/SecondPage"));
+// const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"));
+// >>>>>>> 6dafba31b862c7b1597617f220ffe374d440fa2a
 //
 
 function RoutePage() {
@@ -50,7 +54,7 @@ function RoutePage() {
           <Route path="/dashboard" element={<DefaultDashboard />}></Route>
           <Route path="/event-history" element={<EventHistory />}></Route>
           <Route path="/create-event" element={<NewEvent />}></Route>
-          <Route path="/second" element={<SecondPage />}></Route>
+
           <Route path="/create-ticket" element={<CreateTicket />}></Route>
         </Route>
         <Route path="/book-tickets" element={<BookTickets />}></Route>

@@ -142,6 +142,9 @@ function ProfileClient() {
 
   return (
     <>
+    <Grid style={{ display: "flex", justifyContent: "center" }}>
+        <h1>Profile Client</h1>
+      </Grid>
       <FormSubmit
         onSubmit={handleClientInfo}
         style={{
