@@ -21,10 +21,12 @@ const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
 const HomePageOrganizer = lazy(() =>
   import("../Pages/Organizers/HomePageOrganizer")
 );
+const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
 
 const DefaultDashboard = lazy(() =>
   import("../Pages/Organizers/DefaultDashboard")
 );
+const MyProfile = lazy(() => import("./Client/MyProfile"));
 const EventHistory = lazy(() => import("../Pages/Organizers/EventHistory"));
 const NewEvent = lazy(() => import("../Pages/Organizers/NewEvent"));
 // <<<<<<< HEAD
@@ -41,6 +43,8 @@ function RoutePage() {
       <Routes>
         <Route path="/homepageOrganizer" element={<HomePageOrganizer />} />
         <Route path="/homepageAdmin" element={<HomePageAdmin />} />
+        {/* <Route path="/my-profile" element={<MyProfile />}></Route> */}
+        <Route path="/change-password" element={<ChangePassword />}></Route>
         <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />
 
