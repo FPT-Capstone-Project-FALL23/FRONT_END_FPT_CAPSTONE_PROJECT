@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:8080/api";
+export const URL_SOCKET = "http://localhost:5000";
 export const URL_API_CITY = "https://provinces.open-api.vn/api/";
 
 //-------------------AUTH----------------------------

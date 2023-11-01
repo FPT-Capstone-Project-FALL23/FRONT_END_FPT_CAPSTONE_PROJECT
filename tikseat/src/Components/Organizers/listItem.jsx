@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
+import {Button, Grid} from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LayersIcon from "@mui/icons-material/Layers";
 import Divider from "@mui/material/Divider";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -14,7 +14,17 @@ import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import { useNavigate } from "react-router-dom";
 
-const MainListItems = () => {
+const style = { display: "flex", textAline: "start", color: "black" };
+const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
+const styleNotication = {
+  width: "15px",
+  height: "15px",
+  color: "white",
+  backgroundColor: "red",
+};
+
+const MainListItems = (notifications) => {
+
   const [selectedItem, setSelectedItem] = useState(null);
   const navigate = useNavigate();
 
@@ -34,7 +44,7 @@ const MainListItems = () => {
     } else if (value === "Integrations") {
       navigate("/integrations");
     } else if (value === "Profile") {
-      navigate("/profileOrganizers");
+      navigate("/UpdateProfileOrganizers");
     } else if (value === "Bank Account") {
       navigate("/add-payment");
     } else if (value === "Log out") {
@@ -42,66 +52,98 @@ const MainListItems = () => {
     }
   };
 
+
   return (
     <React.Fragment>
-      <Button style={{width:"100%", paddingLeft:"10px"}} onClick={() => handleListItemClick("Dashboard")}>
+      <Button
+        style={{ width: "100%", paddingLeft: "10px" }}
+        onClick={() => handleListItemClick("Dashboard")}
+      >
         <ListItemIcon>
-          <DashboardIcon style={{ paddingLeft:"10px"}}/>
+          <DashboardIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Dashboard" />
-      </Button >
+        <ListItemText sx={style} primary="Dashboard" />
+      </Button>
       <Divider sx={{ my: 1 }} />
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick("newEvent")}>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => handleListItemClick("newEvent")}
+      >
         <ListItemIcon>
-          <AddCircleIcon style={{ paddingLeft:"10px"}}/>
+          <AddCircleIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="New Event" />
-      </Button >
+        <ListItemText sx={style} primary="New Event" />
+      </Button>
       <Divider sx={{ my: 1 }} />
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick("EventHistory")}>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => handleListItemClick("EventHistory")}
+      >
         <ListItemIcon>
-          <WorkHistoryIcon style={{ paddingLeft:"10px"}}/>
+          <WorkHistoryIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Event History" />
-      </Button >
+        <ListItemText sx={style} primary="Event History" />
+      </Button>
       <Divider sx={{ my: 1 }} />
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick("Notification")}>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => handleListItemClick("Notification")}
+      >
         <ListItemIcon>
-          <NotificationsActiveIcon style={{ paddingLeft:"10px"}}/>
+          <NotificationsActiveIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Notification" />
-      </Button >
-      <Divider sx={{ my: 1 }} />
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick("Integrations")}>
-        <ListItemIcon>
-          <LayersIcon style={{ paddingLeft:"10px"}}/>
-        </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Integrations" />
-      </Button >
-
+        <ListItemText sx={style} primary="Notification" />
+        {notifications.length > 0 && (
+        <Grid
+          style={{
+            width: "30px",
+            height: "30px",
+            borderRadius: "50%",
+            backgroundColor: "red",
+            color: "white",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"center",
+            fontSize:"20px",
+            marginRight:"20px"
+          }}
+        >
+          {notifications.length}
+        </Grid>
+        )}
+      </Button>
       <ListSubheader component="div" inset>
         Organizer Information
       </ListSubheader>
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick('Profile')}>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => handleListItemClick("Profile")}
+      >
         <ListItemIcon>
-          <AssignmentIndIcon style={{ paddingLeft:"10px"}}/>
+          <AssignmentIndIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Profile" />
-      </Button >
+        <ListItemText sx={style} primary="Profile" />
+      </Button>
       <Divider sx={{ my: 1 }} />
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick('Bank Account')}>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => handleListItemClick("Bank Account")}
+      >
         <ListItemIcon>
-          <CurrencyExchangeIcon style={{ paddingLeft:"10px"}}/>
+          <CurrencyExchangeIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Bank Account" />
-      </Button >
+        <ListItemText sx={style} primary="Bank Account" />
+      </Button>
       <Divider sx={{ my: 1 }} />
-      <Button style={{width:"100%"}} onClick={() => handleListItemClick('Log out')}>
+      <Button
+        style={{ width: "100%" }}
+        onClick={() => handleListItemClick("Log out")}
+      >
         <ListItemIcon>
-          <LogoutIcon style={{ paddingLeft:"10px"}}/>
+          <LogoutIcon sx={styleIcon} />
         </ListItemIcon>
-        <ListItemText style={{  display:"flex", textAline:"start"}} primary="Log out" />
-      </Button >
+        <ListItemText sx={style} primary="Log out" />
+      </Button>
       <Divider sx={{ my: 1 }} />
     </React.Fragment>
   );

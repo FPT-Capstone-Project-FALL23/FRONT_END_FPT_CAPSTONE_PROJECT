@@ -44,7 +44,7 @@ h2{
 .bodyFormTicket{
     display: flex;
     justify-content: space-evenly;
-    margin: 10px 0px 10px 0px;
+    margin: 30px;
 }
 
 .boxTicket{
