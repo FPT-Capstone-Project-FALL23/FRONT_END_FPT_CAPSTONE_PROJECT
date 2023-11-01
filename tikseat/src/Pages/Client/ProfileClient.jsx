@@ -5,7 +5,6 @@ import { useTheme } from "@mui/material/styles";
 import {
   Grid,
   Box,
-  Checkbox,
   FormControlLabel,
   Stack,
   Radio,
@@ -27,6 +26,7 @@ import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
 import {
   getLocalStorageUserData,
+  getLocalStorageUserInfo,
   setLocalStorageUserInfo,
 } from "../../Store/userStore";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
@@ -58,9 +58,11 @@ function ProfileClient() {
   const [eventType, setEventType] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
   const dataUser = getLocalStorageUserData();
-
-  const [avatar, setAvatar] = useState();
+  const dataInfo = getLocalStorageUserInfo();
+  console.log("dataInfo: ", dataInfo);
+  const [avatar, setAvatar] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  console.log("selectedFile: ", selectedFile);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -70,46 +72,27 @@ function ProfileClient() {
   };
 
   const [clientInfo, setClientInfo] = useState({
-    full_name: "",
-    phone: "",
+    email: dataUser.email,
+    full_name: dataInfo?.full_name,
+    phone: dataInfo?.phone,
     birthday: today,
-    gender: "",
-    favorit_enres: eventType,
+    gender: dataInfo?.gender,
+    favorit_enres: dataInfo?.favorit_enres,
   });
+  console.log("clientInfo: ", clientInfo);
 
   console.log(clientInfo);
 
   // Hàm xử lý khi người dùng nhập dữ liệu vào input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log("name: ", name);
     // Cập nhật state tương ứng với input được thay đổi
-    setClientInfo({
+    setClientInfo((clientInfo) => ({
       ...clientInfo,
       [name]: value,
-    });
+    }));
   };
-
-  const handleClientInfo = async (e) => {
-    e.preventDefault();
-    console.log("clientInfo", clientInfo);
-    try {
-      const _idUser = dataUser._id;
-      console.log("_idUser", _idUser);
-
-      if (!selectedFile) {
-        callApiProfile(null, _idUser, clientInfo);
-      }
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-
-      reader.onloadend = () => {
-        callApiProfile(reader.result, _idUser, clientInfo);
-      };
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
   const callApiProfile = async (base64EncodedImage, _idUser, clientInfo) => {
     try {
       const respone = await ApiCommon.profileClient({
@@ -117,10 +100,46 @@ function ProfileClient() {
         clientInfo: clientInfo,
         avatarImage: base64EncodedImage,
       });
-      setLocalStorageUserInfo(respone.data);
+      await setLocalStorageUserInfo(respone.data);
       navigate("/");
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleClientInfo = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("avatarImage", selectedFile);
+    try {
+      const _idUser = dataUser._id;
+      const dataUpdate = {
+        avatarImage: avatar || "",
+        _idClient: dataInfo?._id,
+        clientInfo: {
+          full_name: clientInfo?.full_name || "",
+          phone: clientInfo?.phone || "",
+          birthday: clientInfo.birthday || "",
+          gender: clientInfo.gender || "",
+          favorit_enres: clientInfo.favorit_enres || "",
+        },
+      };
+      const response = await ApiCommon.updateProfileClient(dataUpdate);
+      if (response?.status) {
+        setLocalStorageUserInfo(response.data);
+      }
+      console.log("response: ", response);
+      if (!selectedFile) {
+        callApiProfile(null, _idUser, clientInfo);
+      }
+      // const reader = new FileReader();
+      // reader.readAsDataURL(selectedFile);
+
+      // reader.onloadend = () => {
+      //   callApiProfile(reader.result, _idUser, clientInfo);
+      // };
+    } catch (error) {
+      console.log("error", error);
     }
   };
 
@@ -138,15 +157,31 @@ function ProfileClient() {
           flexDirection: "column",
           justifyContent: "center",
           marginTop: "20px",
-        }}>
+        }}
+      >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
+<<<<<<< HEAD
               <TextField
+=======
+              <InputCustom
+                disabled={true}
+                type="text"
+                name="email"
+                placeholder="email"
+                value={clientInfo.email}
+                onChange={handleInputChange}
+                label="Email"
+              />
+            </Stack>
+            <Stack>
+              <InputCustom
+>>>>>>> 8794a011c01fdd5fae313488281ae1563499ae56
                 type="text"
                 name="full_name"
                 placeholder="Full Name"
-                value={clientInfo.full_name}
+                value={clientInfo?.full_name}
                 onChange={handleInputChange}
                 label="Full Name"
               />
@@ -154,7 +189,8 @@ function ProfileClient() {
             <Stack
               direction="row"
               spacing={12}
-              style={{ marginBottom: "20px" }}>
+              style={{ marginBottom: "20px" }}
+            >
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Gender
@@ -164,7 +200,8 @@ function ProfileClient() {
                   value={clientInfo.gender}
                   onChange={handleInputChange}
                   row
-                  aria-labelledby="demo-row-radio-buttons-group-label">
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                >
                   <FormControlLabel
                     value="Female"
                     control={<Radio />}
@@ -212,7 +249,7 @@ function ProfileClient() {
                   id="demo-multiple-chip"
                   multiple
                   name="favorit_enres"
-                  value={clientInfo.favorit_enres}
+                  value={clientInfo?.favorit_enres}
                   onChange={handleInputChange}
                   input={
                     <OutlinedInput
@@ -227,17 +264,26 @@ function ProfileClient() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MENUPROPS}>
+                  MenuProps={MENUPROPS}
+                >
                   {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}>
+                      style={getStyles(name, eventType, theme)}
+                    >
                       {name}
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl>{" "}
+              <ButtonCustom
+                type="button"
+                onClick={() => navigate("/change-password")}
+                color="black"
+                content="Update password"
+                backgroundcolor="#F5BD19"
+              />
             </Stack>
           </Grid>
           <Grid>
@@ -278,8 +324,9 @@ function ProfileClient() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
-          <div>
+          }}
+        >
+          {/* <div>
             <FormControlLabel
               style={{ fontSize: "14px", marginTop: "40px" }}
               control={<Checkbox />}
@@ -291,11 +338,12 @@ function ProfileClient() {
                 </span>
               }
             />
-          </div>
-          <Stack style={{ width: "50%" }}>
+          </div> */}
+
+          <Stack style={{ width: "50%", marginTop: "20px" }}>
             <ButtonCustom
               color="black"
-              content="Create account"
+              content="Update Information"
               backgroundcolor="#F5BD19"
             />
           </Stack>

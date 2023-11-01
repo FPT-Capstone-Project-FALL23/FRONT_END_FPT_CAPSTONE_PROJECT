@@ -7,6 +7,8 @@ export const URL_LOGIN = "/auth/login";
 export const URL_REGISTERUSER = "auth/resigterUser";
 export const URL_PROFILEOTGANIZER = "/auth/createOrganizer";
 export const URL_PROFILECLIENT = "/auth/createClient";
+export const URL_UPDATE_PROFILE = "/auth/updateClient";
+export const URL_CHANGEPASSWORD = "/auth/changePassword";
 
 //-------------------SENDMAIL----------------------------
 export const URL_SENOTP = "/sendMail/sendOTPResign";
@@ -31,4 +33,3 @@ export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
 export const URL_FORGOTPASSWORD = "";
 export const URL_SETPASSWORD = "";
-

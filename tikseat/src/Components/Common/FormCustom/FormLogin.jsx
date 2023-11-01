@@ -22,7 +22,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormSubmit from "./FormSubmit";
 import jwtDecode from "jwt-decode";
-import { getLocalStorageToken, setLocalStorageToken } from "../../../Store/authStore";
+import {
+  getLocalStorageToken,
+  setLocalStorageToken,
+} from "../../../Store/authStore";
 import {
   setLocalStorageUserData,
   setLocalStorageUserInfo,
@@ -41,12 +44,12 @@ function FormLogin({
 
   //Điều hướng login
   const navigateAfterLogin = () => {
-    if(jwtDecode(getLocalStorageToken()).role == ROLE[0]){
+    if (jwtDecode(getLocalStorageToken()).role == ROLE[0]) {
       navigate("/");
-    }else if(jwtDecode(getLocalStorageToken()).role == ROLE[1]){
+    } else if (jwtDecode(getLocalStorageToken()).role == ROLE[1]) {
       navigate("/dashboard");
     }
-  }; 
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -90,7 +93,8 @@ function FormLogin({
         <FormControl
           variant="outlined"
           fullWidth
-          style={{ marginBottom: "20px" }}>
+          style={{ marginBottom: "20px" }}
+        >
           <InputLabel htmlFor="outlined-adornment-password" required>
             Password
           </InputLabel>
@@ -105,7 +109,8 @@ function FormLogin({
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
-                  edge="end">
+                  edge="end"
+                >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -118,7 +123,8 @@ function FormLogin({
             display: "flex",
             justifyContent: "space-between",
             marginBottom: "20px",
-          }}>
+          }}
+        >
           <FormControlLabel control={<Checkbox />} label="Remember me" />
           <Link
             to={"/forgot-password"}
@@ -126,7 +132,8 @@ function FormLogin({
               padding: "10px",
               color: "#F5BD19",
               textDecoration: "none",
-            }}>
+            }}
+          >
             {FORGOT_PASSWORD}
           </Link>
         </div>
@@ -140,7 +147,8 @@ function FormLogin({
               fontSize: "18px",
             }}
             type="submit"
-            fullWidth>
+            fullWidth
+          >
             {LOGIN}
           </Button>
         </Grid>
@@ -155,7 +163,8 @@ function FormLogin({
               textDecoration: "none",
             }}
             to="/choose-access"
-            fullWidth>
+            fullWidth
+          >
             <Button
               style={{
                 padding: "10px",
@@ -164,7 +173,8 @@ function FormLogin({
                 fontWeight: "bold",
                 fontSize: "18px",
               }}
-              fullWidth>
+              fullWidth
+            >
               Sign Up
             </Button>
           </Link>

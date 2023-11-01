@@ -8,4 +8,6 @@ export const ButtonCutomStyle = styled(Button)`
   width: 100%;
   margin-bottom: 40px;
   margin-top: 20px;
+  border-radius: "10px";
+  overflow: hidden !important;
 `;

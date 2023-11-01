@@ -1,68 +1,76 @@
 import {
-    URL_ADDPAYMENT,
-    URL_PROFILEOTGANIZER,
-    URL_PROFILECLIENT,
-    URL_FORGOTPASSWORD,
-    URL_SENOTP,
-    URL_REGISTERUSER,
-    URL_SIGNUP,
-    URL_VERIFYCODE,
-    URL_VERIFYEMAIL,
-    URL_VERIFYOTP,
-    URL_LOGIN,
-    URL_RESENDOTP,
+  URL_ADDPAYMENT,
+  URL_PROFILEOTGANIZER,
+  URL_PROFILECLIENT,
+  URL_FORGOTPASSWORD,
+  URL_SENOTP,
+  URL_REGISTERUSER,
+  URL_SIGNUP,
+  URL_VERIFYCODE,
+  URL_VERIFYEMAIL,
+  URL_VERIFYOTP,
+  URL_LOGIN,
+  URL_RESENDOTP,
+  URL_UPDATE_PROFILE,
+  URL_CHANGEPASSWORD,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
-
 const ApiCommon = {
-    signUp(data) {
-        return axiosDefault.post(URL_SIGNUP, { name: data.name });
-    },
+  signUp(data) {
+    return axiosDefault.post(URL_SIGNUP, { name: data.name });
+  },
 
-    profileClient(data) {
-        return axiosDefault.post(URL_PROFILECLIENT, data);
-    },
+  changePassword(data) {
+    return axiosDefault.post(URL_CHANGEPASSWORD, data);
+  },
 
-    sendOtp(data) {
-        return axiosDefault.post(URL_SENOTP, data);
-    },
+  async updateProfileClient(data) {
+    return await axiosDefault.post(URL_UPDATE_PROFILE, data);
+  },
+  profileClient(data) {
+    return axiosDefault.post(URL_PROFILECLIENT, data);
+  },
 
-    verifyOtp(data) {
-        return axiosDefault.post(URL_VERIFYOTP, data);
-    },
+  sendOtp(data) {
+    return axiosDefault.post(URL_SENOTP, data);
+  },
 
-    profileOrganizer(data) {
-        return axiosDefault.post(URL_PROFILEOTGANIZER, data);
-    },
+  verifyOtp(data) {
+    return axiosDefault.post(URL_VERIFYOTP, data);
+  },
 
-    addPayment(data) {
-        return axiosDefault.post(URL_ADDPAYMENT, data);
-    },
+  profileOrganizer(data) {
+    return axiosDefault.post(URL_PROFILEOTGANIZER, data);
+  },
 
-    forgotPassword(data) {
-        return axiosDefault.post(URL_FORGOTPASSWORD, data);
-    },
+  addPayment(data) {
+    return axiosDefault.post(URL_ADDPAYMENT, data);
+  },
 
-    registerUser(data) {
-        return axiosDefault.post(URL_REGISTERUSER, data);
-    },
+  forgotPassword(data) {
+    return axiosDefault.post(URL_FORGOTPASSWORD, data);
+  },
 
-    verifyCode(data) {
-        return axiosDefault.post(URL_VERIFYCODE, data);
-    },
+  registerUser(data) {
+    return axiosDefault.post(URL_REGISTERUSER, data);
+  },
 
-    verifyEmail(data) {
-        return axiosDefault.post(URL_VERIFYEMAIL, data);
-    },
+  verifyCode(data) {
+    return axiosDefault.post(URL_VERIFYCODE, data);
+  },
 
-    login(data) {
-        return axiosDefault.post(URL_LOGIN, data);
-    },
+  verifyEmail(data) {
+    return axiosDefault.post(URL_VERIFYEMAIL, data);
+  },
 
-    resendOTP(data) {
-        return axiosDefault.post(URL_RESENDOTP, data);
-    },
+  login(data) {
+    return axiosDefault.post(URL_LOGIN, data);
+  },
+
+  resendOTP(data) {
+    return axiosDefault.post(URL_RESENDOTP, data);
+  },
 };
 
 export default ApiCommon;

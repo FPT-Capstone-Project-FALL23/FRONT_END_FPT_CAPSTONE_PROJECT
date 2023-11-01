@@ -53,6 +53,17 @@ const SignUp = () => {
                 {NAME_LOGO}
               </Typography>
             </Button>
+            <Typography
+              variant="h4"
+              component={"h6"}
+              style={{
+                marginTop: "20px",
+                fontStyle: "italic",
+                paddingRight: "20%",
+              }}
+            >
+              Profile
+            </Typography>
           </Grid>
 
           <Grid style={{marginTop:"20px"}}>
