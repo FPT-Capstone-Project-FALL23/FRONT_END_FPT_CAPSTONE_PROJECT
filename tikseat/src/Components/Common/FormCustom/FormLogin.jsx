@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Grid,
-  TextField,
   FormControl,
   InputLabel,
   OutlinedInput,
@@ -32,6 +31,7 @@ import {
   setLocalStorageUserInfo,
 } from "../../../Store/userStore";
 import { toastOptions } from "../../../Assets/Constant/Common/dataCommon";
+import InputCustom from "../Input/InputCustom";
 
 function FormLogin({
   handleClickShowPassword,
@@ -78,8 +78,8 @@ function FormLogin({
   return (
     <>
       <FormSubmit onSubmit={handleLogin}>
-        <TextField
-          style={{ marginBottom: "20px" }}
+        <Grid style={{marginBottom:"30px"}}> 
+        <InputCustom
           className="email"
           label="Email"
           placeholder="Email"
@@ -87,8 +87,9 @@ function FormLogin({
           required
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          setValue={setEmail}
         />
+        </Grid>
         <FormControl
           variant="outlined"
           fullWidth

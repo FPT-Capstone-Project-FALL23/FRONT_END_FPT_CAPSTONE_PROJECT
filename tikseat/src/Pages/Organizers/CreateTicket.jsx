@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Grid,
@@ -15,7 +15,16 @@ import { handleFileInputChange } from "../Client/ProfileClient";
 import "../../Assets/CSS/Organizer/CreateTiket.css";
 import ApiEvent from "../../API/Event/ApiEvent";
 import InputCustom from "../../Components/Common/Input/InputCustom";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import PostAddSharpIcon from "@mui/icons-material/PostAddSharp";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
+import {
+  getLocalStorageUserData,
+  setLocalStorageUserInfo,
+  getLocalStorageUserInfo,
+} from "../../Store/userStore";
+import {URL_SOCKET} from "../../API/ConstAPI"
+import { io } from "socket.io-client";
 
 const style = {
   position: "absolute",
@@ -33,6 +42,11 @@ const style = {
 };
 
 function CreateTicket() {
+  
+  const dataUser = getLocalStorageUserData();
+  const dataInfo = getLocalStorageUserInfo();
+  console.log(dataInfo)
+
   const [countForm, setCountForm] = useState(1);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const [open, setOpen] = useState(false);
@@ -40,9 +54,27 @@ function CreateTicket() {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const location = useLocation();
+  const { newEvent } = location.state;
   const today = new Date().toISOString().slice(0, 10);
 
-  const { newEvent } = location.state;
+  //socket
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+  const organizerId = dataInfo._id;
+  const organizerName = dataInfo.organizer_name;
+
+  useEffect(() => {
+    socket?.emit("organizerId", organizerId);
+  },[socket, organizerId])
+
+  const handleNewEvent = () => {
+    console.log("ran 1st");
+    socket.emit("new_event", { 
+      senderName: organizerName,
+      receiverName: "64f20a070f3feb00f7f2f4f7",
+    });
+  };
+
+
 
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
@@ -83,9 +115,9 @@ function CreateTicket() {
   const [saleDate, setSaleDate] = useState({
     startSaleDate: today,
     endSaleDate: today,
-  })
+  });
 
-  console.log(saleDate);
+  // console.log(saleDate);
 
   const [eventInfo, setEventInfo] = useState({
     event_name: newEvent.event_name,
@@ -354,7 +386,7 @@ function CreateTicket() {
     setEventInfo(updatedEventInfo);
   };
 
-  console.log("EventInfo: ",eventInfo);
+  // console.log("EventInfo: ", eventInfo);
 
   const callApiCreateEvent = async (_idOrganizer, eventInfo) => {
     try {
@@ -377,6 +409,7 @@ function CreateTicket() {
   return (
     <>
       <Grid fullwidth>
+        <Button onClick={() => handleNewEvent()}>Test</Button>
         <FormSubmit onSubmit={handleFormSubmit}>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>Add Photo Layout</h3>
@@ -428,14 +461,14 @@ function CreateTicket() {
           </Grid>
 
           <Grid style={{ display: "flex", justifyContent: "start" }}>
-            <h3 style={{ marginTop: "20px" }}>Name and Type of Event</h3>
+            <h3 style={{ marginTop: "20px" }}>Sale Event date</h3>
           </Grid>
           <Grid
             style={{
               padding: "30px",
               border: "1px solid black",
               borderRadius: "5px",
-              marginBottom:"20px"
+              marginBottom: "20px",
             }}
           >
             <Stack
@@ -463,7 +496,9 @@ function CreateTicket() {
                   id="endSaleDate"
                   name="endSaleDate"
                   value={saleDate.endSaleDate}
-                  setValue={(value) => handleSaleDateChange("endSaleDate", value)}
+                  setValue={(value) =>
+                    handleSaleDateChange("endSaleDate", value)
+                  }
                   label="End Date"
                 />
               </Stack>
@@ -479,6 +514,10 @@ function CreateTicket() {
                 <Grid className="headerFormEventDate" fullWidth>
                   <p style={{ margin: "0px" }}>Event Date {form.date_number}</p>
                   <Button
+                    style={{
+                      backgroundColor: "#F5BD19",
+                      color: "black",
+                    }}
                     variant="contained"
                     onClick={() => removeForm(form.date_number)}
                   >
@@ -536,6 +575,10 @@ function CreateTicket() {
                         }
                       />
                       <Button
+                        style={{
+                          backgroundColor: "#F5BD19",
+                          color: "black",
+                        }}
                         variant="contained"
                         onClick={() => removeTicket(formTicket.id)}
                       >
@@ -553,6 +596,7 @@ function CreateTicket() {
                         <p>Price &nbsp;(VND)</p>
                         <TextField
                           style={{
+                            backgroundColor: "white",
                             marginBottom: "10px",
                             width: "80%",
                           }}
@@ -578,15 +622,17 @@ function CreateTicket() {
                       >
                         <p>Total row</p>
                         <Grid
+                          className="boxTicket"
                           style={{
-                            display: "flex",
-                            justifyContent: "space-evenly",
+                            flexDirection: "column",
+                            border: "none",
                           }}
                         >
                           <TextField
                             style={{
+                              backgroundColor: "white",
                               marginBottom: "10px",
-                              width: "50%",
+                              width: "80%",
                             }}
                             type="text"
                             label=""
@@ -603,9 +649,6 @@ function CreateTicket() {
                           />
 
                           <Grid className="enterSeat">
-                            <Button onClick={() => handleOpen(formTicket.id)}>
-                              Enter seats
-                            </Button>
                             <Modal
                               open={open}
                               onClose={handleClose}
@@ -653,59 +696,80 @@ function CreateTicket() {
                           </Grid>
                         </Grid>
                       </Grid>
+                      <Grid
+                        style={{
+                          display: "flex",
+                          justifyContent: "ceter",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Button
+                          style={{
+                            backgroundColor: "#F5BD19",
+                            color: "black",
+                          }}
+                          onClick={() => handleOpen(formTicket.id)}
+                        >
+                          Enter seats
+                        </Button>
+                      </Grid>
                     </Grid>
-
-                    {/* <Grid className="DateFormTicket" fullWidth>
-                      <Grid style={{ width: "48%", display: "flex" }}>
-                        <p style={{ display: "flex", alignItems: "center" }}>
-                          Start sale date &nbsp;
-                        </p>
-                        <TextField
-                          style={{ width: "70%" }}
-                          type="date"
-                          label=""
-                          variant="outlined"
-                          // value={}
-                        />
-                      </Grid>
-                      <Grid style={{ width: "48%", display: "flex" }}>
-                        <p style={{ display: "flex", alignItems: "center" }}>
-                          End sale date &nbsp;
-                        </p>
-                        <TextField
-                          style={{ width: "70%" }}
-                          type="date"
-                          label=""
-                          variant="outlined"
-                          // value={}
-                        />
-                      </Grid>
-                    </Grid> */}
                   </Grid>
                 ))}
 
-                <Grid style={{ border: "1px dashed black", margin: "20px" }}>
+                <Grid style={{ margin: "20px" }}>
                   <Button
+                    style={{
+                      color: "#f1df39",
+                      fontSize: "30px",
+                      fontWeight: "bolder",
+                    }}
                     className="buttonCreateEvent"
                     fullWidth
                     onClick={() => addTicket(form.date_number)}
                   >
+                    <AddCircleIcon
+                      style={{ fontSize: "35px", marginRight: "5px" }}
+                    />
                     Add Ticket
                   </Button>
                 </Grid>
               </Grid>
             ))}
-            <Grid style={{ border: "1px dashed black" }}>
-              <Button className="buttonCreateEvent" fullWidth onClick={addForm}>
+            <Grid style={{ border: "2px dashed black" }}>
+              <Button
+                style={{
+                  color: "black",
+                  fontSize: "30px",
+                  fontWeight: "bolder",
+                  textTransform: "none",
+                  margin: "15px",
+                }}
+                className="buttonCreateEvent"
+                fullWidth
+                onClick={addForm}
+              >
+                <PostAddSharpIcon
+                  style={{ fontSize: "35px", marginRight: "5px" }}
+                />
                 Add Another Event Time
               </Button>
             </Grid>
           </Grid>
-          <Grid
-            style={{ border: "1px solid black", margin: "20px 0px 20px 0px" }}
-          >
-            <Button className="buttonCreateEvent" fullWidth type="submit">
-              create event
+          <Grid style={{ margin: "30px 0px 30px 0px" }}>
+            <Button
+              style={{
+                backgroundColor: "#F5BD19",
+                color: "black",
+                fontSize: "30px",
+                fontWeight: "bolder",
+                padding: "35px",
+              }}
+              className="buttonCreateEvent"
+              fullWidth
+              type="submit"
+            >
+              Create Event
             </Button>
           </Grid>
         </FormSubmit>
