@@ -164,7 +164,18 @@ function ProfileClient() {
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
-              <TextField
+              <InputCustom
+                disabled={true}
+                type="text"
+                name="email"
+                placeholder="email"
+                value={clientInfo.email}
+                onChange={handleInputChange}
+                label="Email"
+              />
+            </Stack>
+            <Stack>
+              <InputCustom
                 type="text"
                 name="full_name"
                 placeholder="Full Name"
