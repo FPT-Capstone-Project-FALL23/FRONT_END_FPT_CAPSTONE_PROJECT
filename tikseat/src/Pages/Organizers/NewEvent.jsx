@@ -256,7 +256,7 @@ function NewEvent() {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
-                  borderRadius:"5px"
+                  borderRadius: "5px",
                 }}
               >
                 <Stack
@@ -333,7 +333,7 @@ function NewEvent() {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
-                  borderRadius:"5px"
+                  borderRadius: "5px",
                 }}
               >
                 <Stack
@@ -433,7 +433,7 @@ function NewEvent() {
               </Grid>
               <Stack>
                 <TextareaAutosize
-                  style={{ fontSize:"20px" }}
+                  style={{ fontSize: "20px" }}
                   fullWidth
                   minRows={6}
                   placeholder="Description"
@@ -507,8 +507,27 @@ function NewEvent() {
               </Stack>
             </Stack>
           </Grid>
-          <Button onClick={() => handleClientClick()}>Next</Button>
-          <Grid></Grid>
+          <Grid
+            style={{
+              backgroundColor: "#F5BD19",
+              color: "black",
+              marginBottom: "20px",
+              margin: "30px 0px 30px 0px",
+            }}
+          >
+            <Button
+              fullWidth
+              style={{
+                padding: "10px",
+                color: "black",
+                fontSize: "30px",
+                fontWeight: "bolder",
+              }}
+              onClick={() => handleClientClick()}
+            >
+              continue
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </>

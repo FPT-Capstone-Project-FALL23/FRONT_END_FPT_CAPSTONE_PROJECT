@@ -31,7 +31,7 @@ import {
   getLocalStorageUserData,
   setLocalStorageUserInfo,
 } from "../../Store/userStore";
-import { handleFileInputChange } from "../Client/ProfileClient";
+// import { handleFileInputChange } from "../Client/ProfileClient";
 // import { Api } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -116,8 +116,23 @@ export const getAPICity = async (setAllCity) => {
   setAllCity(response);
 };
 
+export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
+  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
+  const selectedFile = e.target.files[0];
+  console.log("a", selectedFile);
+  setSelectedFile(selectedFile);
+  if (selectedFile) {
+    const objectUrl = URL.createObjectURL(selectedFile);
+    // console.log("objectUrl", objectUrl);
+    setAvatar(objectUrl);
+  }
+};
+
 function ProfileOrganizers() {
+  
   const dataUser = getLocalStorageUserData();
+
+  console.log(dataUser._id);
   const [avatar, setAvatar] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [eventType, setEventType] = useState([]);
@@ -133,7 +148,7 @@ function ProfileOrganizers() {
   const [organizerInfo, setOrganizerInfo] = useState({
     organizer_name: "",
     organizer_type: eventType,
-    isctive: false,
+    isActive: false,
     phone: "",
     website: "",
     founded_date: today,
@@ -197,7 +212,7 @@ function ProfileOrganizers() {
   const handleOrganizerInfo = async (e) => {
     e.preventDefault();
     try {
-      const _idUser = dataUser._idUser;
+      const _idUser = dataUser._id;
       if (!selectedFile) {
         callApiProfileOrganizers(null, _idUser, organizerInfo);
       }
@@ -223,8 +238,9 @@ function ProfileOrganizers() {
         organizerInfo: organizerInfo,
         avatarImage: base64EncodedImage,
       });
+      console.log(respone.data)
       setLocalStorageUserInfo(respone.data);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
     }
@@ -247,7 +263,7 @@ function ProfileOrganizers() {
       >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "45%" }}>
-            <Stack>
+            <Stack style={{marginBottom:"30px"}}>
               <InputCustom
                 type="text"
                 id="organizer_name"
@@ -262,6 +278,7 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                marginBottom:"30px"
               }}
             >
               <Stack style={{ width: "47%" }}>
@@ -285,7 +302,7 @@ function ProfileOrganizers() {
                 />
               </Stack>
             </Stack>
-            <Stack>
+            <Stack style={{marginBottom:"30px"}}>
               <InputCustom
                 type="text"
                 id="website"
@@ -357,6 +374,7 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                marginBottom:"30px"
               }}
             >
               <Stack style={{ width: "47%" }}>

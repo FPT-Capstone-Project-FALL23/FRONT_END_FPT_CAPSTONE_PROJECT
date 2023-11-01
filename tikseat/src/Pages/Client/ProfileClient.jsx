@@ -17,6 +17,7 @@ import {
   Chip,
   OutlinedInput,
   MenuItem,
+  TextField,
 } from "@mui/material";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
@@ -79,6 +80,8 @@ function ProfileClient() {
     favorit_enres: dataInfo?.favorit_enres,
   });
   console.log("clientInfo: ", clientInfo);
+
+  console.log(clientInfo);
 
   // Hàm xử lý khi người dùng nhập dữ liệu vào input
   const handleInputChange = (e) => {
@@ -159,6 +162,9 @@ function ProfileClient() {
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
+<<<<<<< HEAD
+              <TextField
+=======
               <InputCustom
                 disabled={true}
                 type="text"
@@ -171,6 +177,7 @@ function ProfileClient() {
             </Stack>
             <Stack>
               <InputCustom
+>>>>>>> 8794a011c01fdd5fae313488281ae1563499ae56
                 type="text"
                 name="full_name"
                 placeholder="Full Name"
@@ -215,7 +222,7 @@ function ProfileClient() {
             </Stack>
 
             <Stack style={{ marginBottom: "20px" }}>
-              <InputCustom
+              <TextField
                 type="text"
                 name="phone"
                 value={clientInfo.phone}
@@ -224,7 +231,7 @@ function ProfileClient() {
               />
             </Stack>
             <Stack>
-              <InputCustom
+              <TextField
                 type="date"
                 name="birthday"
                 value={clientInfo.birthday}

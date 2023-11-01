@@ -5,7 +5,6 @@ import {
   Typography,
   IconButton,
   Grid,
-  Button,
   List,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -39,7 +38,7 @@ function HomePageOrganizer() {
               top: "65px", // Đặt khoảng cách từ đỉnh của AppBar
               height: "100%",
               width: "20%",
-              backgroundColor: "pink",
+              backgroundColor: "rgb(255 239 137)",
               overflowY: "auto", // Thêm thanh cuộn nếu cần thiết
             }}
           >
@@ -51,7 +50,7 @@ function HomePageOrganizer() {
             style={{
               position: "absolute",
               left: "20%",
-              top: "65px", // Đặt khoảng cách từ đỉnh của AppBar
+              top: "65px",
               padding: "20px 50px 0px 50px",
               width: "80%",
             }}
