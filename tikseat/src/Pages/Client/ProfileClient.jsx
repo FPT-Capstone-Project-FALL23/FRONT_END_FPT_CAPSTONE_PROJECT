@@ -83,6 +83,8 @@ function ProfileClient() {
 
   console.log(clientInfo);
 
+  console.log(clientInfo);
+
   // Hàm xử lý khi người dùng nhập dữ liệu vào input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
