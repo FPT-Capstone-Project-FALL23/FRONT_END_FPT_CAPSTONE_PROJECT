@@ -19,14 +19,10 @@ const BookTickets = lazy(() => import("./Common/BookTickets"));
 // Trang tam thoi
 const HomePageClient = lazy(() => import("../Pages/Client/HomePageClient"));
 const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
-const HomePageOrganizer = lazy(() =>
-  import("../Pages/Organizers/HomePageOrganizer")
-);
+const HomePageOrganizer = lazy(() => import("../Pages/Organizers/HomePageOrganizer"));
+const DefaultDashboard = lazy(() => import("../Pages/Organizers/DefaultDashboard"));
 const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
 
-const DefaultDashboard = lazy(() =>
-  import("../Pages/Organizers/DefaultDashboard")
-);
 const MyProfile = lazy(() => import("./Client/MyProfile"));
 const EventHistory = lazy(() => import("../Pages/Organizers/EventHistory"));
 const NewEvent = lazy(() => import("../Pages/Organizers/NewEvent"));

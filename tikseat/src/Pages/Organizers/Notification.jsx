@@ -72,8 +72,7 @@ function Notification() {
           width: "100%",
           borderRight: "2px solid #ccc",
           display: "flex",
-        }}
-      >
+        }}>
         <Grid
           style={{
             position: "fixed",
@@ -82,8 +81,7 @@ function Notification() {
             width: "20%",
             backgroundColor: "rgb(255 239 137)",
             overflowY: "auto", // Thêm thanh cuộn nếu cần thiết
-          }}
-        >
+          }}>
           <List component="nav">
             <MainListItems notifications={notifications} />
           </List>
@@ -98,6 +96,7 @@ function Notification() {
           }}
         >
           <Grid maxWidth="100%">
+
             <h1>Danh sách thông báo</h1>
             <Grid
               style={{
