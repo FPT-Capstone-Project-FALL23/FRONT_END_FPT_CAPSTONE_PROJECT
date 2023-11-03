@@ -162,9 +162,7 @@ function ProfileClient() {
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
-<<<<<<< HEAD
-              <TextField
-=======
+              {/* <TextField */}
               <InputCustom
                 disabled={true}
                 type="text"
@@ -177,7 +175,6 @@ function ProfileClient() {
             </Stack>
             <Stack>
               <InputCustom
->>>>>>> 8794a011c01fdd5fae313488281ae1563499ae56
                 type="text"
                 name="full_name"
                 placeholder="Full Name"

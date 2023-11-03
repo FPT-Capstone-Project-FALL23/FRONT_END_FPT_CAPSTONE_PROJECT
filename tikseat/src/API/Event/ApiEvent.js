@@ -6,6 +6,7 @@ import {
   URL_SEARCHEVENT,
   URL_CREATEEVENT,
   URL_UPDATEEVENT,
+  URL_EVENTHISTORY,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -32,6 +33,10 @@ const ApiEvent = {
   updateEvent(data) {
     return axiosDefault.post(URL_UPDATEEVENT, data);
   },
+
+  eventHistory(data){
+    return axiosDefault.post(URL_EVENTHISTORY, data);
+  }
 };
 
 export default ApiEvent;
