@@ -41,7 +41,6 @@ function Notification() {
   }, [socket]);
 
   const handleNotification = (data) => {
-   
     if (
       !notifications.some(
         (notification) => notification.senderName === data.senderName
@@ -73,8 +72,7 @@ function Notification() {
           width: "100%",
           borderRight: "2px solid #ccc",
           display: "flex",
-        }}
-      >
+        }}>
         <Grid
           style={{
             position: "fixed",
@@ -83,8 +81,7 @@ function Notification() {
             width: "20%",
             backgroundColor: "rgb(255 239 137)",
             overflowY: "auto", // Thêm thanh cuộn nếu cần thiết
-          }}
-        >
+          }}>
           <List component="nav">
             <MainListItems />
           </List>
@@ -96,8 +93,7 @@ function Notification() {
             top: "65px",
             padding: "20px 50px 0px 50px",
             width: "80%",
-          }}
-        >
+          }}>
           <Grid maxWidth="md">
             <h1>Danh sách thông báo</h1>
             <Grid>

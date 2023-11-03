@@ -23,7 +23,7 @@ import {
   setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-import {URL_SOCKET} from "../../API/ConstAPI"
+import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 
 const style = {
@@ -42,10 +42,9 @@ const style = {
 };
 
 function CreateTicket() {
-  
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  console.log(dataInfo)
+  console.log(dataInfo);
 
   const [countForm, setCountForm] = useState(1);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -64,17 +63,15 @@ function CreateTicket() {
 
   useEffect(() => {
     socket?.emit("organizerId", organizerId);
-  },[socket, organizerId])
+  }, [socket, organizerId]);
 
   const handleNewEvent = () => {
     console.log("ran 1st");
-    socket.emit("new_event", { 
+    socket.emit("new_event", {
       senderName: organizerName,
       receiverName: "64f20a070f3feb00f7f2f4f7",
     });
   };
-
-
 
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
@@ -421,15 +418,13 @@ function CreateTicket() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-            }}
-          >
+            }}>
             <Avatar
               style={{
                 height: "500px",
                 width: "80%",
                 borderRadius: "0px",
-              }}
-            >
+              }}>
               <img
                 style={{
                   objectFit: "contain",
@@ -469,15 +464,13 @@ function CreateTicket() {
               border: "1px solid black",
               borderRadius: "5px",
               marginBottom: "20px",
-            }}
-          >
+            }}>
             <Stack
               style={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-              }}
-            >
+              }}>
               <Stack style={{ width: "45%" }}>
                 <InputCustom
                   type="date"
@@ -519,8 +512,7 @@ function CreateTicket() {
                       color: "black",
                     }}
                     variant="contained"
-                    onClick={() => removeForm(form.date_number)}
-                  >
+                    onClick={() => removeForm(form.date_number)}>
                     Delete Form
                   </Button>
                 </Grid>
@@ -531,8 +523,7 @@ function CreateTicket() {
                       display: "flex",
                       width: "100%",
                       justifyContent: "center",
-                    }}
-                  >
+                    }}>
                     <p style={{ display: "flex", alignItems: "center" }}>
                       Date and time start &nbsp;&nbsp;
                     </p>
@@ -580,8 +571,7 @@ function CreateTicket() {
                           color: "black",
                         }}
                         variant="contained"
-                        onClick={() => removeTicket(formTicket.id)}
-                      >
+                        onClick={() => removeTicket(formTicket.id)}>
                         Delete Ticket
                       </Button>
                     </Grid>
@@ -591,8 +581,7 @@ function CreateTicket() {
                         className="boxTicket"
                         style={{
                           flexDirection: "column",
-                        }}
-                      >
+                        }}>
                         <p>Price &nbsp;(VND)</p>
                         <TextField
                           style={{
@@ -618,16 +607,14 @@ function CreateTicket() {
                         className="boxTicket"
                         style={{
                           flexDirection: "column",
-                        }}
-                      >
+                        }}>
                         <p>Total row</p>
                         <Grid
                           className="boxTicket"
                           style={{
                             flexDirection: "column",
                             border: "none",
-                          }}
-                        >
+                          }}>
                           <TextField
                             style={{
                               backgroundColor: "white",
@@ -653,8 +640,7 @@ function CreateTicket() {
                               open={open}
                               onClose={handleClose}
                               aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
+                              aria-describedby="modal-modal-description">
                               <Box sx={style}>
                                 <Grid fullWidth>
                                   {formTicket.rows.map((row, index) => (
@@ -664,8 +650,7 @@ function CreateTicket() {
                                         justifyContent: "center",
                                         alignItems: "center",
                                       }}
-                                      key={row.id}
-                                    >
+                                      key={row.id}>
                                       <Typography style={{ width: "20%" }}>
                                         Row &nbsp;{row.row_name} &nbsp;
                                       </Typography>
@@ -701,15 +686,13 @@ function CreateTicket() {
                           display: "flex",
                           justifyContent: "ceter",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         <Button
                           style={{
                             backgroundColor: "#F5BD19",
                             color: "black",
                           }}
-                          onClick={() => handleOpen(formTicket.id)}
-                        >
+                          onClick={() => handleOpen(formTicket.id)}>
                           Enter seats
                         </Button>
                       </Grid>
@@ -726,8 +709,7 @@ function CreateTicket() {
                     }}
                     className="buttonCreateEvent"
                     fullWidth
-                    onClick={() => addTicket(form.date_number)}
-                  >
+                    onClick={() => addTicket(form.date_number)}>
                     <AddCircleIcon
                       style={{ fontSize: "35px", marginRight: "5px" }}
                     />
@@ -747,8 +729,7 @@ function CreateTicket() {
                 }}
                 className="buttonCreateEvent"
                 fullWidth
-                onClick={addForm}
-              >
+                onClick={addForm}>
                 <PostAddSharpIcon
                   style={{ fontSize: "35px", marginRight: "5px" }}
                 />
@@ -767,8 +748,7 @@ function CreateTicket() {
               }}
               className="buttonCreateEvent"
               fullWidth
-              type="submit"
-            >
+              type="submit">
               Create Event
             </Button>
           </Grid>
