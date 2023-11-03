@@ -65,6 +65,7 @@ function CreateTicket() {
     socket?.emit("organizerId", organizerId);
   }, [socket, organizerId]);
 
+  //Thay receiverName === idAdmin
   const handleNewEvent = () => {
     console.log("ran 1st");
     socket.emit("new_event", {
@@ -77,6 +78,9 @@ function CreateTicket() {
     // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
   };
+
+  const [maxTicket, setMaxTicket] = useState("");
+  console.log(maxTicket);
 
   const [eventDate, setEventDate] = useState([
     {
@@ -114,14 +118,13 @@ function CreateTicket() {
     endSaleDate: today,
   });
 
-  // console.log(saleDate);
-
   const [eventInfo, setEventInfo] = useState({
     event_name: newEvent.event_name,
     type_of_event: newEvent.type_of_event.join(", "),
     eventImage: newEvent.eventImage,
     type_layout: "",
     event_description: newEvent.event_description,
+    maxTicketInOrder: "",
     sales_date: {
       start_sales_date: saleDate.startSaleDate,
       end_sales_date: saleDate.endSaleDate,
@@ -156,6 +159,7 @@ function CreateTicket() {
 
   const updatedEventInfo = {
     ...eventInfo,
+    maxTicketInOrder: maxTicket,
     sales_date: {
       start_sales_date: saleDate.startSaleDate,
       end_sales_date: saleDate.endSaleDate,
@@ -230,6 +234,18 @@ function CreateTicket() {
     setSaleDate({ ...saleDate, [name]: value });
     setEventInfo(updatedEventInfo);
   };
+
+  const handleMaxTicketChange = (value) => {
+    setMaxTicket(value);
+  };
+
+  useEffect(() => {
+    const updatedEventInfo = {
+      ...eventInfo,
+      maxTicketInOrder: maxTicket,
+    };
+    setEventInfo(updatedEventInfo);
+  }, [maxTicket]);
 
   const handleDateChange = (event, formId) => {
     const updatedEventDates = eventDate.map((form) => {
@@ -324,7 +340,12 @@ function CreateTicket() {
     setOpen(true);
   };
 
-  // Hàm cập nhật số lượng ghế của một hàng
+  const handleSeatChange = (event, formId, ticketId, rowIndex) => {
+    const newSeatCount = event.target.value;
+    updateEventDate(formId, ticketId, rowIndex, newSeatCount);
+  };
+
+  // Hàm cập nhật danh sách ghế của một hàng
   const updateSeatCountInRow = (ticket, rowIndex, newSeatCount) => {
     return ticket.rows.map((row, index) => {
       if (index === rowIndex) {
@@ -371,26 +392,18 @@ function CreateTicket() {
     setEventInfo(updatedEventInfo);
   };
 
-  // Hàm xử lý sự kiện thay đổi số lượng ghế của một hàng
-  const handleSeatChange = (event, formId, ticketId, rowIndex) => {
-    const newSeatCount = event.target.value;
-    updateEventDate(formId, ticketId, rowIndex, newSeatCount);
-    setEventInfo(updatedEventInfo);
-  };
-
   const handleClose = () => {
     setOpen(false);
     setEventInfo(updatedEventInfo);
   };
 
-  // console.log("EventInfo: ", eventInfo);
-
   const callApiCreateEvent = async (_idOrganizer, eventInfo) => {
     try {
       const respont = await ApiEvent.createEvent({
-        _idOrganizer: "65129684a666ee1a54b54232",
+        _idOrganizer: organizerId,
         eventInfo: eventInfo,
       });
+      handleNewEvent();
       console.log(respont.status);
       console.log(respont.data);
     } catch (error) {
@@ -400,13 +413,12 @@ function CreateTicket() {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    callApiCreateEvent("65129684a666ee1a54b54232", eventInfo);
+    callApiCreateEvent(organizerId, eventInfo);
   };
-
+  console.log(eventInfo);
   return (
     <>
       <Grid fullwidth>
-        <Button onClick={() => handleNewEvent()}>Test</Button>
         <FormSubmit onSubmit={handleFormSubmit}>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>Add Photo Layout</h3>
@@ -455,47 +467,83 @@ function CreateTicket() {
             />
           </Grid>
 
-          <Grid style={{ display: "flex", justifyContent: "start" }}>
-            <h3 style={{ marginTop: "20px" }}>Sale Event date</h3>
-          </Grid>
           <Grid
             style={{
               padding: "30px",
               border: "1px solid black",
               borderRadius: "5px",
               marginBottom: "20px",
-            }}>
-            <Stack
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}>
-              <Stack style={{ width: "45%" }}>
-                <InputCustom
-                  type="date"
-                  id="startSaleDate"
-                  name="startSaleDate"
-                  value={saleDate.startSaleDate}
-                  setValue={(value) =>
-                    handleSaleDateChange("startSaleDate", value)
-                  }
-                  label="Start Date"
-                />
-              </Stack>
-              <Stack style={{ width: "45%" }}>
-                <InputCustom
-                  type="date"
-                  id="endSaleDate"
-                  name="endSaleDate"
-                  value={saleDate.endSaleDate}
-                  setValue={(value) =>
-                    handleSaleDateChange("endSaleDate", value)
-                  }
-                  label="End Date"
-                />
-              </Stack>
-            </Stack>
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Grid>
+              <Grid style={{ display: "flex", justifyContent: "start" }}>
+                <h3>Max Ticket In Order</h3>
+              </Grid>
+              <Grid
+                style={{
+                  padding: "30px",
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                  width: "100%",
+                }}
+              >
+                <Stack>
+                  <InputCustom
+                    type="text"
+                    id="maxTicket"
+                    name="maxTicket"
+                    value={maxTicket}
+                    setValue={handleMaxTicketChange}
+                    // onChange={(e) => setMaxTicket(e.target.value)}
+                    label="Max Ticket In Order"
+                  />
+                </Stack>
+              </Grid>
+            </Grid>
+
+            <Grid style={{ width: "70%" }}>
+              <Grid style={{ display: "flex", justifyContent: "start" }}>
+                <h3>Sale Event date</h3>
+              </Grid>
+              <Grid
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  padding: "30px",
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                }}
+              >
+                <Stack style={{ width: "45%" }}>
+                  <InputCustom
+                    type="date"
+                    id="startSaleDate"
+                    name="startSaleDate"
+                    value={saleDate.startSaleDate}
+                    setValue={(value) =>
+                      handleSaleDateChange("startSaleDate", value)
+                    }
+                    label="Start Date"
+                  />
+                </Stack>
+                <Stack style={{ width: "45%" }}>
+                  <InputCustom
+                    type="date"
+                    id="endSaleDate"
+                    name="endSaleDate"
+                    value={saleDate.endSaleDate}
+                    setValue={(value) =>
+                      handleSaleDateChange("endSaleDate", value)
+                    }
+                    label="End Date"
+                  />
+                </Stack>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>Event Time</h3>
