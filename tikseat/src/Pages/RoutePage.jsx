@@ -43,7 +43,7 @@ function RoutePage() {
         <Route path="/notification" element={<Notification />}></Route>
 
         <Route element={<HomePageOrganizer />}>
-          <Route path="/profileOrganizers" element={<ProfileOrganizers />} />
+          <Route path="//UpdateProfileOrganizers" element={<UpdatePfrofileOrganizer />} />
           <Route path="/add-payment" element={<AddPaymentMethod />}></Route>
           <Route path="/dashboard" element={<DefaultDashboard />}></Route>
           <Route path="/event-history" element={<EventHistory />}></Route>
