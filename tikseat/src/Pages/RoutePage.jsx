@@ -25,14 +25,10 @@ const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
 const MyProfile = lazy(() => import("./Client/MyProfile"));
 const EventHistory = lazy(() => import("../Pages/Organizers/EventHistory"));
 const NewEvent = lazy(() => import("../Pages/Organizers/NewEvent"));
-// <<<<<<< HEAD
+
 const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"));
 const Notification = lazy(() => import("../Pages/Organizers/Notification"));
-// =======
-// const SecondPage = lazy(() => import("../Pages/Organizers/SecondPage"));
-// const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"));
-// >>>>>>> 6dafba31b862c7b1597617f220ffe374d440fa2a
-//
+
 
 function RoutePage() {
   return (
