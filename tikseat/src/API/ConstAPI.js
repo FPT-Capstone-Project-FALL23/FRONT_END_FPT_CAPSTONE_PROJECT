@@ -25,6 +25,8 @@ export const URL_SEARCHEVENT = "/event/searchEvent";
 export const URL_CREATEEVENT = "/event/createEvent";
 export const URL_UPDATEEVENT = "/event/updateEvent";
 
+export const URL_EVENTHISTORY = "/event/listEventOrganizer";
+
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";
 export const URL_DISTRICT = "?depth=2";

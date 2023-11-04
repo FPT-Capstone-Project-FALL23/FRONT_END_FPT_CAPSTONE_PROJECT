@@ -79,7 +79,7 @@ function Notification() {
             overflowY: "auto", // Thêm thanh cuộn nếu cần thiết
           }}>
           <List component="nav">
-            <MainListItems />
+            <MainListItems notifications={notifications} />
           </List>
         </Grid>
         <Grid
@@ -89,12 +89,26 @@ function Notification() {
             top: "65px",
             padding: "20px 50px 0px 50px",
             width: "80%",
-          }}>
-          <Grid maxWidth="md">
+          }}
+        >
+          <Grid maxWidth="100%">
+
             <h1>Danh sách thông báo</h1>
-            <Grid>
+            <Grid
+              style={{
+                height: "70px",
+                width: "100%",
+                backgroundColor: "yellow",
+                fontSize: "25px",
+                paddingLeft: "20px",
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "5px",
+                marginBottom: "15px",
+              }}
+            >
               {notifications.map((n, index) => (
-                <div key={index}>{displayNotification(n)}</div>
+                <Grid key={index}>{displayNotification(n)}</Grid>
               ))}
             </Grid>
           </Grid>

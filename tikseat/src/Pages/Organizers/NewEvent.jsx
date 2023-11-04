@@ -23,6 +23,10 @@ import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import { handleFileInputChange } from "../Client/ProfileClient";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 import InputCustom from "../../Components/Common/Input/InputCustom";
+import {
+  getLocalStorageUserInfo,
+  getLocalStorageUserData,
+} from "../../Store/userStore";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -125,7 +129,8 @@ function NewEvent() {
   const [allCity, setAllCity] = useState([]);
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
   const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
-  // const today = new Date().toISOString().slice(0, 10);
+  const dataInfo = getLocalStorageUserInfo();
+  const dataUser = getLocalStorageUserData();
 
   const [selectCity, setSelectCity] = useState(null);
   const [selectDistrict, setSelectDistrict] = useState(null);
@@ -465,22 +470,18 @@ function NewEvent() {
               }}
             >
               <Stack style={{ width: "45%" }}>
-                <InputCustom
+                <TextField
+                  aria-readonly
                   type="text"
-                  // id="phone"
-                  // name="phone"
-                  // value={organizerInfo.phone}
-                  // onChange={handleInputChange}
+                  value={dataInfo.organizer_name}
                   label="Name Organizer"
                 />
               </Stack>
               <Stack style={{ width: "45%" }}>
-                <InputCustom
+                <TextField
+                  aria-readonly
                   type="text"
-                  // id="phone"
-                  // name="phone"
-                  // value={organizerInfo.phone}
-                  // onChange={handleInputChange}
+                  value={dataInfo.phone}
                   label="Phone number"
                 />
               </Stack>
@@ -493,17 +494,20 @@ function NewEvent() {
               }}
             >
               <Stack style={{ width: "45%" }}>
-                <InputCustom
+                <TextField
+                  aria-readonly
                   type="text"
-                  // id="phone"
-                  // name="phone"
-                  // value={organizerInfo.phone}
-                  // onChange={handleInputChange}
+                  value={dataUser.email}
                   label="Email"
                 />
               </Stack>
               <Stack style={{ width: "45%" }}>
-                <InputCustom type="text" label="WEBSITE" />
+                <TextField
+                  aria-readonly
+                  type="text"
+                  value={dataInfo.website}
+                  label="WEBSITE"
+                />
               </Stack>
             </Stack>
           </Grid>
