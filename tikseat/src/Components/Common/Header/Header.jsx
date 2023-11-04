@@ -82,9 +82,9 @@ const Header = () => {
   // }, []);
   const navigate = useNavigate();
   const ManagementUser = [
-    { content: `Xin chào ${dataUser?.email}` },
-    { url: "/createProfileClient", content: "Quản lý hồ sơ" },
-    { url: "/login", content: "Đăng xuất" },
+    { content: `Welcome ${dataUser?.email}` },
+    { url: "/createProfileClient", content: "My profile" },
+    { url: "/login", content: "Log out" },
   ];
   const dataDistrict = [
     { value: "tesst1", id: 1 },
