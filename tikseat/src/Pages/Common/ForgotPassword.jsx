@@ -44,14 +44,7 @@ const ForgotPassword = () => {
       </PageNameStyle>
       <TitlePageStyle>{TITLE_PAGE_VERIFY_EMAIL}</TitlePageStyle>
       <FormSubmit onSubmit={handleForgotPassword} style={{ marginTop: "30px" }}>
-        <Grid style={{marginBottom:"40px"}}>
-          <InputCustom
-            type="email"
-            value={email}
-            setValue={setEmail}
-            label="Email"
-          />
-        </Grid>
+        <InputCustom type="text" setValue={setEmail} label="Email" />
         <Grid className="btnLogin">
           <Button
             style={{
@@ -61,8 +54,7 @@ const ForgotPassword = () => {
               fontSize: "18px",
             }}
             type="submit"
-            fullWidth
-          >
+            fullWidth>
             Verify
           </Button>
         </Grid>
