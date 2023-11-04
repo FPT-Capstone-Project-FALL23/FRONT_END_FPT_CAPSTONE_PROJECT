@@ -44,12 +44,7 @@ function SendEmail() {
       </PageNameStyle>
       <TitlePageStyle>The first step is to confirm your Email</TitlePageStyle>
       <FormSubmit onSubmit={handleForgotPassword} style={{ marginTop: "30px" }}>
-        <InputCustom
-          type="email"
-          value={email}
-          setValue={(value) => setEmail(value)}
-          label="Email"
-        />
+        <InputCustom type="email" setValue={setEmail} label="Email" />
         <Grid className="btnLogin">
           <Button
             style={{
@@ -59,8 +54,7 @@ function SendEmail() {
               fontSize: "18px",
             }}
             type="submit"
-            fullWidth
-          >
+            fullWidth>
             send
           </Button>
         </Grid>

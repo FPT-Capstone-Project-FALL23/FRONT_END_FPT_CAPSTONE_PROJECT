@@ -61,14 +61,13 @@ const VerifyEmail = () => {
       </PageNameStyle>
       <TitlePageStyle>{TITLE_PAGE_VERIFY_EMAIL}</TitlePageStyle>
       <FormSubmit onSubmit={handleVerifyEmail} style={{ marginTop: "40px" }}>
-        <Grid style={{ marginBottom: "30px" }}>
-          <InputCustom
-            type="email"
-            value={email}
-            setValue={(value) => setEmail(value)}
-            label="Email"
-          />
-        </Grid>
+        <InputCustom
+          type="email"
+          value={email}
+          setValue={(value) => setEmail(value)}
+          label="Email"
+        />
+
         <Grid className="btnLogin">
           <Button
             style={{
@@ -78,8 +77,7 @@ const VerifyEmail = () => {
               fontSize: "18px",
             }}
             type="submit"
-            fullWidth
-          >
+            fullWidth>
             Verify
           </Button>
         </Grid>

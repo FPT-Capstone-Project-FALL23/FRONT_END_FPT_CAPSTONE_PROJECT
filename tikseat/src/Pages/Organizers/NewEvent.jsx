@@ -23,10 +23,6 @@ import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import { handleFileInputChange } from "../Client/ProfileClient";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 import InputCustom from "../../Components/Common/Input/InputCustom";
-import {
-  getLocalStorageUserInfo,
-  getLocalStorageUserData,
-} from "../../Store/userStore";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -129,8 +125,7 @@ function NewEvent() {
   const [allCity, setAllCity] = useState([]);
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
   const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
-  const dataInfo = getLocalStorageUserInfo();
-  const dataUser = getLocalStorageUserData();
+  // const today = new Date().toISOString().slice(0, 10);
 
   const [selectCity, setSelectCity] = useState(null);
   const [selectDistrict, setSelectDistrict] = useState(null);
@@ -261,7 +256,7 @@ function NewEvent() {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
-                  borderRadius: "5px",
+                  borderRadius:"5px"
                 }}
               >
                 <Stack
@@ -338,7 +333,7 @@ function NewEvent() {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
-                  borderRadius: "5px",
+                  borderRadius:"5px"
                 }}
               >
                 <Stack
@@ -438,7 +433,7 @@ function NewEvent() {
               </Grid>
               <Stack>
                 <TextareaAutosize
-                  style={{ fontSize: "20px" }}
+                  style={{ fontSize:"20px" }}
                   fullWidth
                   minRows={6}
                   placeholder="Description"
@@ -470,18 +465,22 @@ function NewEvent() {
               }}
             >
               <Stack style={{ width: "45%" }}>
-                <TextField
-                  aria-readonly
+                <InputCustom
                   type="text"
-                  value={dataInfo.organizer_name}
+                  // id="phone"
+                  // name="phone"
+                  // value={organizerInfo.phone}
+                  // onChange={handleInputChange}
                   label="Name Organizer"
                 />
               </Stack>
               <Stack style={{ width: "45%" }}>
-                <TextField
-                  aria-readonly
+                <InputCustom
                   type="text"
-                  value={dataInfo.phone}
+                  // id="phone"
+                  // name="phone"
+                  // value={organizerInfo.phone}
+                  // onChange={handleInputChange}
                   label="Phone number"
                 />
               </Stack>
@@ -494,44 +493,22 @@ function NewEvent() {
               }}
             >
               <Stack style={{ width: "45%" }}>
-                <TextField
-                  aria-readonly
+                <InputCustom
                   type="text"
-                  value={dataUser.email}
+                  // id="phone"
+                  // name="phone"
+                  // value={organizerInfo.phone}
+                  // onChange={handleInputChange}
                   label="Email"
                 />
               </Stack>
               <Stack style={{ width: "45%" }}>
-                <TextField
-                  aria-readonly
-                  type="text"
-                  value={dataInfo.website}
-                  label="WEBSITE"
-                />
+                <InputCustom type="text" label="WEBSITE" />
               </Stack>
             </Stack>
           </Grid>
-          <Grid
-            style={{
-              backgroundColor: "#F5BD19",
-              color: "black",
-              marginBottom: "20px",
-              margin: "30px 0px 30px 0px",
-            }}
-          >
-            <Button
-              fullWidth
-              style={{
-                padding: "10px",
-                color: "black",
-                fontSize: "30px",
-                fontWeight: "bolder",
-              }}
-              onClick={() => handleClientClick()}
-            >
-              continue
-            </Button>
-          </Grid>
+          <Button onClick={() => handleClientClick()}>Next</Button>
+          <Grid></Grid>
         </Grid>
       </Grid>
     </>

@@ -64,7 +64,7 @@ export const navItems = [
 ];
 
 export const toastOptions = {
-  position: "top-center",
+  position: "bottom-right",
   autoClose: 8000,
   pauseOnFocusLoss: true,
   draggable: true,

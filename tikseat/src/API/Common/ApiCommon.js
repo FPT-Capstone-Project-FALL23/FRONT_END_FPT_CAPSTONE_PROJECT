@@ -13,6 +13,9 @@ import {
   URL_RESENDOTP,
   URL_UPDATE_PROFILE,
   URL_CHANGEPASSWORD,
+  URL_GETALLEVENTS,
+  URL_GETEVENTBYID,
+  URL_GETDETAILEVENT,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -70,6 +73,14 @@ const ApiCommon = {
 
   resendOTP(data) {
     return axiosDefault.post(URL_RESENDOTP, data);
+  },
+
+  getAllEvents(data) {
+    return axiosDefault.post(URL_GETALLEVENTS, data);
+  },
+
+  geDetailEvent(data) {
+    return axiosDefault.post(URL_GETDETAILEVENT, data);
   },
 };
 
