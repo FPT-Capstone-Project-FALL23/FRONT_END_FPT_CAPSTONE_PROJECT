@@ -637,7 +637,7 @@ const BookTickets = () => {
                             />
                           </svg>
                         </div>
-                        <span>By ticket</span>
+                        <span>Buy ticket</span>
                       </div>
                       <Stack
                         direction={"column"}
@@ -668,7 +668,7 @@ const BookTickets = () => {
                         </Stack>
                         <Box
                           component={"div"}
-                          height={"400px"}
+                          height={"300px"}
                           width={"80%"}
                           style={{ overflow: "auto" }}
                         >
@@ -855,18 +855,6 @@ const BookTickets = () => {
                                 <Input id="standard-adornment-amount" />
                               </FormControl>
                             </Grid>
-                            <Grid item sx={6} md={6}>
-                              <FormControl
-                                fullWidth
-                                sx={{ m: 1 }}
-                                variant="standard"
-                              >
-                                <InputLabel htmlFor="standard-adornment-amount">
-                                  Chair name
-                                </InputLabel>
-                                <Input id="standard-adornment-amount" />
-                              </FormControl>
-                            </Grid>
                           </Grid>
                         </Stack>
 
@@ -912,7 +900,7 @@ const BookTickets = () => {
                         >
                           <Stack>
                             <Typography variant="body2" color={"gray"}>
-                              Tạm tính
+                              Price
                             </Typography>
                             <Typography variant="h6">
                               {totalByTicket}
@@ -927,7 +915,7 @@ const BookTickets = () => {
                               padding: "10px 20px",
                             }}
                           >
-                            By Ticket
+                            Buy Ticket
                           </Button>
                         </Stack>
                       </Stack>

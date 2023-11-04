@@ -142,8 +142,14 @@ function ProfileClient() {
 
   return (
     <>
-    <Grid style={{ display: "flex", justifyContent: "center" }}>
-        <h1>Profile Client</h1>
+      <Grid
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "100px",
+        }}
+      >
+        {/* <h1>Profile Client</h1> */}
       </Grid>
       <FormSubmit
         onSubmit={handleClientInfo}
@@ -153,7 +159,6 @@ function ProfileClient() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          marginTop: "20px",
         }}
       >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
@@ -169,7 +174,7 @@ function ProfileClient() {
                 label="Email"
               />
             </Stack>
-            <Stack>
+            <Stack marginTop={"20px"}>
               <InputCustom
                 type="text"
                 name="full_name"
@@ -232,7 +237,7 @@ function ProfileClient() {
                 label="Day of birth"
               />
             </Stack>
-            <Stack>
+            <Stack marginTop={"20px"}>
               <FormControl fullWidth style={{ marginBottom: "20px" }}>
                 <InputLabel id="demo-multiple-chip-label">
                   Event Type
@@ -279,7 +284,7 @@ function ProfileClient() {
               />
             </Stack>
           </Grid>
-          <Grid>
+          <Grid marginTop={"20px"}>
             <Stack>
               <Avatar
                 style={{
