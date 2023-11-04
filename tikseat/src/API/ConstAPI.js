@@ -32,6 +32,9 @@ export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 export const URL_CITY = "?depth=1";
 export const URL_DISTRICT = "?depth=2";
 
+//-------------------PAYMENT----------------------------
+export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
+
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
 export const URL_FORGOTPASSWORD = "";

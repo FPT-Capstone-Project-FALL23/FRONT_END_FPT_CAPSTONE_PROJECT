@@ -42,6 +42,7 @@ import { navItems } from "../../Assets/Constant/Common/dataCommon";
 import { colorBlack, colorWhite } from "../../Assets/CSS/Style/theme";
 import ApiCommon from "../../API/Common/ApiCommon";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ApiClient from "../../API/Client/ApiClient";
 const style = {
   position: "absolute",
   top: "50%",
@@ -99,15 +100,15 @@ const BookTickets = () => {
   const [age, setAge] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState({});
   const [selectRows, setSelectRows] = useState([]);
-  console.log("selectRows: ", selectRows);
+  // console.log("selectRows: ", selectRows);
   const [organizer, setOrganizer] = useState("");
-  console.log("dataEventDetail: ", dataEventDetail);
+  // console.log("dataEventDetail: ", dataEventDetail);
   const navigate = useNavigate();
   const dataUser = getLocalStorageUserData();
   const [selectChair, setSelectChair] = useState([]);
-  console.log("selectChair: ", selectChair);
+  // console.log("selectChair: ", selectChair);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  console.log("selectChair: ", selectChair);
+  // console.log("selectChair: ", selectChair);
   const [checkDay, setCheckDay] = useState(1);
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -128,7 +129,7 @@ const BookTickets = () => {
         const response = await ApiCommon.geDetailEvent({ _idEvent: idEvent });
         setDataEventDetail(response.event);
         setOrganizer(response.organizer);
-        console.log("response: ", response);
+        // console.log("response: ", response);
       }
       getEventDetail();
     }
@@ -150,6 +151,31 @@ const BookTickets = () => {
     (accumulator, seat) => accumulator + seat.price,
     0
   );
+
+  //call api create payment
+  const handleBuyTickect = async (event) =>{
+    event.preventDefault();
+    try{
+      const listChairIds = selectChair.map((item)=> item._id);
+      const requestData = {
+        _idEvent: dataEventDetail._id,
+        chairIds: listChairIds,
+        amount: totalByTicket,
+      }
+  
+      console.log("requestData", requestData)
+      const response = await ApiClient.paymentTicket(requestData)
+      console.log("responseData", response)
+      if(response){
+        //chuyển trang qua trang của zalo
+        window.location.href = response.data.order_url
+      }
+    }catch(e){
+      alert(e.response.data.message)
+    }
+    
+
+  }
 
   const [time, setTime] = useState(null); // 10 phút = 600 giây
   const [minutes, setMinutes] = useState(0);
@@ -535,13 +561,13 @@ const BookTickets = () => {
                   justifyContent={"space-between"}
                 >
                   <Typography variant="h4">About</Typography>
-                  <Stack
+                  {/* <Stack
                     direction={"row"}
                     alignItems={"center"}
                     alignSelf={"center"}
                   >
                     <FormControl sx={{ m: 1, minWidth: 200 }} size="medium">
-                      {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
+                      <InputLabel id="demo-select-small-label">Age</InputLabel>
                       <Select
                         labelId="demo-select-small-label"
                         id="demo-select-small"
@@ -564,7 +590,7 @@ const BookTickets = () => {
                     >
                       Gần bạn
                     </Button>
-                  </Stack>
+                  </Stack> */}
                 </Stack>
                 <Stack>{dataEventDetail?.event_description}</Stack>
               </TabPanel>
@@ -675,7 +701,7 @@ const BookTickets = () => {
                           <Stack direction={"column"} gap={"30px"}>
                             {selectRows?.length > 0 &&
                               selectRows?.map((selectRow) => {
-                                console.log("SelectRow: ", selectRow);
+                                // console.log("SelectRow: ", selectRow);
                                 return (
                                   <Stack
                                     direction={"row"}
@@ -719,6 +745,7 @@ const BookTickets = () => {
                                                 setSelectChair([
                                                   ...selectChair,
                                                   {
+                                                    _id: item._id,
                                                     chair: item.chair_name,
                                                     price:
                                                       selectRow?.ticket_price,
@@ -914,6 +941,7 @@ const BookTickets = () => {
                               fontWeight: "bold",
                               padding: "10px 20px",
                             }}
+                            onClick={(event)=>handleBuyTickect(event)}
                           >
                             Buy Ticket
                           </Button>
