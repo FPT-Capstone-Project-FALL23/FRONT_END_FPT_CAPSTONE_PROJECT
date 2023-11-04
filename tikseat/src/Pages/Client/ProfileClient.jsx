@@ -17,7 +17,6 @@ import {
   Chip,
   OutlinedInput,
   MenuItem,
-  TextField,
 } from "@mui/material";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
@@ -81,8 +80,6 @@ function ProfileClient() {
   });
   console.log("clientInfo: ", clientInfo);
 
-  console.log(clientInfo);
-
   // Hàm xử lý khi người dùng nhập dữ liệu vào input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -145,7 +142,7 @@ function ProfileClient() {
 
   return (
     <>
-      <Grid style={{ display: "flex", justifyContent: "center" }}>
+    <Grid style={{ display: "flex", justifyContent: "center" }}>
         <h1>Profile Client</h1>
       </Grid>
       <FormSubmit
@@ -157,7 +154,8 @@ function ProfileClient() {
           flexDirection: "column",
           justifyContent: "center",
           marginTop: "20px",
-        }}>
+        }}
+      >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
@@ -184,7 +182,8 @@ function ProfileClient() {
             <Stack
               direction="row"
               spacing={12}
-              style={{ marginBottom: "20px" }}>
+              style={{ marginBottom: "20px" }}
+            >
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Gender
@@ -194,7 +193,8 @@ function ProfileClient() {
                   value={clientInfo.gender}
                   onChange={handleInputChange}
                   row
-                  aria-labelledby="demo-row-radio-buttons-group-label">
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                >
                   <FormControlLabel
                     value="Female"
                     control={<Radio />}
@@ -215,7 +215,7 @@ function ProfileClient() {
             </Stack>
 
             <Stack style={{ marginBottom: "20px" }}>
-              <TextField
+              <InputCustom
                 type="text"
                 name="phone"
                 value={clientInfo.phone}
@@ -224,7 +224,7 @@ function ProfileClient() {
               />
             </Stack>
             <Stack>
-              <TextField
+              <InputCustom
                 type="date"
                 name="birthday"
                 value={clientInfo.birthday}
@@ -257,12 +257,14 @@ function ProfileClient() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MENUPROPS}>
+                  MenuProps={MENUPROPS}
+                >
                   {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}>
+                      style={getStyles(name, eventType, theme)}
+                    >
                       {name}
                     </MenuItem>
                   ))}
@@ -315,7 +317,8 @@ function ProfileClient() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
+          }}
+        >
           {/* <div>
             <FormControlLabel
               style={{ fontSize: "14px", marginTop: "40px" }}

@@ -13,6 +13,14 @@ function TotalRevenue() {
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
           <Grid>
             <AnalyticEcommerce
+              title="Total Page Views"
+              count="4,42,236"
+              percentage={59.3}
+              extra="35,000"
+            />
+          </Grid>
+          <Grid>
+            <AnalyticEcommerce
               title="Total Users"
               count="78,250"
               percentage={70.5}
