@@ -36,9 +36,9 @@ const SetPassword = () => {
 
   const navigateAfterConfirmPassword = (roleUser) => {
     if (roleUser == ROLE[0]) {
-      navigate("/createProfileClient");
+      navigate("/profileClient");
     } else {
-      navigate("/createProfileOrganizers");
+      navigate("/profileOrganizers");
     }
   };
 

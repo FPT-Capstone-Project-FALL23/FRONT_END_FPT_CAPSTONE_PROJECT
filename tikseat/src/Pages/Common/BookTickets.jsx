@@ -9,14 +9,18 @@ import {
   Divider,
   FormControl,
   Grid,
+  Input,
+  InputLabel,
+  Menu,
   MenuItem,
   Modal,
   Select,
   Stack,
+  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
@@ -28,6 +32,16 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import {
+  getLocalStorageUserData,
+  setLocalStorageUserData,
+  setLocalStorageUserInfo,
+} from "../../Store/userStore";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { navItems } from "../../Assets/Constant/Common/dataCommon";
+import { colorBlack, colorWhite } from "../../Assets/CSS/Style/theme";
+import ApiCommon from "../../API/Common/ApiCommon";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const style = {
   position: "absolute",
   top: "50%",
@@ -41,112 +55,58 @@ const style = {
   // pb: 3,
 };
 
-const DataStage = [
-  {
-    type: "normal",
-    chair_name: "A12",
-    id: 1,
-    price: 50000,
-  },
-  {
-    type: "normal",
-    chair_name: "A13",
-    id: 2,
-    price: 50000,
-  },
-  {
-    type: "pair",
-    chair_name: "A14",
-    id: 3,
-    price: 50000,
-  },
-  {
-    type: "pair",
-    chair_name: "H12",
-    id: 4,
-    price: 50000,
-  },
-  {
-    type: "pair",
-    chair_name: "A14",
-    id: 5,
-    price: 50000,
-  },
-  {
-    type: "pair",
-    chair_name: "H12",
-    id: 6,
-    price: 50000,
-  },
-];
+// const selectRows = [
+//   {
+//     type: "normal",
+//     chair_name: "A12",
+//     id: 1,
+//     price: 50000,
+//   },
+//   {
+//     type: "normal",
+//     chair_name: "A13",
+//     id: 2,
+//     price: 50000,
+//   },
+//   {
+//     type: "pair",
+//     chair_name: "A14",
+//     id: 3,
+//     price: 50000,
+//   },
+//   {
+//     type: "pair",
+//     chair_name: "H12",
+//     id: 4,
+//     price: 50000,
+//   },
+//   {
+//     type: "pair",
+//     chair_name: "A14",
+//     id: 5,
+//     price: 50000,
+//   },
+//   {
+//     type: "pair",
+//     chair_name: "H12",
+//     id: 6,
+//     price: 50000,
+//   },
+// ];
 
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 10,
-  },
-};
-const images = [
-  {
-    day: "20",
-    weekdays: "Thứ 6",
-  },
-  {
-    day: "21",
-    weekdays: "Thứ 7",
-  },
-  {
-    day: "22",
-    weekdays: "Chủ nhật",
-  },
-  {
-    day: "23",
-    weekdays: "Thứ 2",
-  },
-  {
-    day: "24",
-    weekdays: "Thứ 3",
-  },
-  {
-    day: "25",
-    weekdays: "Thứ 4",
-  },
-  {
-    day: "26",
-    weekdays: "Thứ 5",
-  },
-  {
-    day: "27",
-    weekdays: "Thứ 6",
-  },
-  {
-    day: "28",
-    weekdays: "Thứ 7",
-  },
-  {
-    day: "29",
-    weekdays: "Chủ nhật",
-  },
-  {
-    day: "30",
-    weekdays: "Thứ 2",
-  },
-  {
-    day: "28",
-    weekdays: "Thứ 7",
-  },
-  {
-    day: "29",
-    weekdays: "Chủ nhật",
-  },
-  {
-    day: "30",
-    weekdays: "Thứ 2",
-  },
-];
 const BookTickets = () => {
+  const { id: idEvent } = useParams();
   const [age, setAge] = useState("");
+  const [dataEventDetail, setDataEventDetail] = useState({});
+  const [selectRows, setSelectRows] = useState([]);
+  console.log("selectRows: ", selectRows);
+  const [organizer, setOrganizer] = useState("");
+  console.log("dataEventDetail: ", dataEventDetail);
+  const navigate = useNavigate();
+  const dataUser = getLocalStorageUserData();
   const [selectChair, setSelectChair] = useState([]);
+  console.log("selectChair: ", selectChair);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   console.log("selectChair: ", selectChair);
   const [checkDay, setCheckDay] = useState(1);
   const handleChange = (event) => {
@@ -155,16 +115,95 @@ const BookTickets = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
+    setTime(600);
   };
   const handleClose = () => {
     setOpen(false);
+    setTime(0);
   };
 
+  useEffect(() => {
+    if (idEvent) {
+      async function getEventDetail() {
+        const response = await ApiCommon.geDetailEvent({ _idEvent: idEvent });
+        setDataEventDetail(response.event);
+        setOrganizer(response.organizer);
+        console.log("response: ", response);
+      }
+      getEventDetail();
+    }
+  }, [idEvent]);
+  const ManagementUser = [
+    { content: `Welcome ${dataUser?.email}` },
+    { url: "/createProfileClient", content: "My profile" },
+    { url: "/login", content: "Log out" },
+  ];
   const [value, setValue] = React.useState("1");
 
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
   };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  const totalByTicket = selectChair.reduce(
+    (accumulator, seat) => accumulator + seat.price,
+    0
+  );
+
+  const [time, setTime] = useState(null); // 10 phút = 600 giây
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    if (time === 0) {
+      setOpen(false);
+    }
+    const intervalId = setInterval(() => {
+      if (time > 0) {
+        setTime(time - 1);
+        const min = Math.floor(time / 60);
+        const sec = time % 60;
+        setMinutes(min);
+        setSeconds(sec);
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [time]);
+
+  const eventDate = new Date(dataEventDetail?.sales_date?.start_sales_date); // Đặt ngày và giờ diễn ra sự kiện
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const now = new Date().getTime();
+      const timeDifference = eventDate - now;
+
+      if (timeDifference > 0) {
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+      } else {
+        clearInterval(intervalId);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [eventDate]);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -172,22 +211,99 @@ const BookTickets = () => {
           background: "white",
           position: "relative",
           padding: "0 150px",
+          color: "black",
         }}
         component="nav"
       >
-        <Toolbar>
+        <Toolbar style={{ width: "100%", justifyContent: "space-between" }}>
           <Typography variant="h3" className="logo" component="h4">
             {NAME_LOGO}
           </Typography>
-          <div>tes</div>
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                md: "flex",
+                gap: "40px",
+                alignItems: "center",
+              },
+            }}
+          >
+            <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
+              {navItems?.map((item, index) => (
+                <Link
+                  to={item.url}
+                  key={index}
+                  style={{ color: `${colorBlack}`, fontWeight: "500" }}
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </Box>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {ManagementUser?.map((item, index) => {
+                if (!item?.url) {
+                  return (
+                    <MenuItem
+                      style={{
+                        cursor: "text",
+                        backgroundColor: "transparent",
+                      }}
+                      key={index}
+                      onClick={handleCloseUserMenu}
+                    >
+                      <Typography
+                        textAlign="center"
+                        onClick={() => navigate(item?.url)}
+                      >
+                        {item.content}
+                      </Typography>
+                    </MenuItem>
+                  );
+                }
+                return (
+                  <MenuItem key={index} onClick={handleCloseUserMenu}>
+                    <Typography
+                      textAlign="center"
+                      style={{ color: "black" }}
+                      onClick={() => {
+                        if (item?.url === "/login") {
+                          navigate(item?.url);
+                          setLocalStorageUserData("");
+                          setLocalStorageUserInfo("");
+                        } else {
+                          navigate(item?.url);
+                        }
+                      }}
+                    >
+                      {item.content}
+                    </Typography>
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
       <div
         style={{
           width: "100%",
           position: "relative",
-          background:
-            "url(https://i.ytimg.com/vi/d-ck5QxqgMg/maxresdefault.jpg) no-repeat center ",
+          background: `url(${dataEventDetail?.type_layout}) no-repeat center `,
           height: "550px",
           backgroundSize: "cover",
           paddingBottom: "50px",
@@ -213,87 +329,178 @@ const BookTickets = () => {
           }}
         >
           <div style={{ width: "400px" }}>
-            <img
-              alt=""
-              loading="lazy"
-              src="https://media.vov.vn/sites/default/files/styles/large/public/2023-09/official_poster.jpg"
-            ></img>
+            <img alt="" loading="lazy" src={dataEventDetail?.eventImage} />
           </div>
-          <Stack
-            direction={"column"}
-            flex={1}
-            padding={"20px 0"}
-            color={"white"}
-          >
-            <Chip
-              color="primary"
-              style={{
-                fontWeight: "700",
-                width: "max-content",
-                borderRadius: "10px",
-              }}
-              label="K"
-            />
-            <Typography variant="h3" marginTop={"20px"}>
-              đất rừng phương nam
-            </Typography>
-            <Stack>
-              <Typography color={"gray"}>
-                song of the south - 2023 - 110 phút
-              </Typography>
-            </Stack>
+          <Stack direction={"row"} gap={"20px"} alignContent={"center"}>
             <Stack
-              direction={"row"}
-              alignItems={"center"}
-              gap={"10px"}
-              marginTop={"10px"}
+              direction={"column"}
+              flex={1}
+              padding={"20px 0"}
+              color={"white"}
             >
-              <span style={{ color: "yellow", width: "30px", display: "flex" }}>
-                <IconStar />
-              </span>
-              <Typography style={{ fontWeight: "700" }} variant="h5">
-                8.3
+              <Chip
+                color="primary"
+                style={{
+                  fontWeight: "700",
+                  width: "max-content",
+                  borderRadius: "10px",
+                }}
+                label="K"
+              />
+              <Typography variant="h3" marginTop={"20px"}>
+                {dataEventDetail?.event_name}
               </Typography>
-              <Stack>
-                <Typography fontSize={"12px"} color={"gray"} variant="body2">
-                  1.4k
-                </Typography>
-                <Typography fontSize={"12px"} color={"gray"} variant="body2">
-                  Đánh giá
-                </Typography>
+
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                gap={"10px"}
+                marginTop={"10px"}
+              >
+                <Stack direction={"row"} alignItems={"center"} gap={"10px"}>
+                  <Typography>
+                    {dataEventDetail.event_location?.specific_address}
+                  </Typography>
+                  -
+                  <Typography>
+                    {dataEventDetail?.event_location?.ward}
+                  </Typography>
+                  -
+                  <Typography>
+                    {dataEventDetail?.event_location?.district}
+                  </Typography>
+                  -
+                  <Typography>
+                    {dataEventDetail?.event_location?.city}
+                  </Typography>
+                </Stack>
               </Stack>
-            </Stack>
-            <Typography
-              variant="body1"
-              fontStyle={"italic"}
-              color={"gray"}
-              margin={"20px 0"}
-            >
-              Dựa theo tiểu thuyết cùng tên của nhà văn Đoàn Hải
-            </Typography>
-            <Stack gap={"20px"}>
-              <Typography variant="h3">Nội dung</Typography>
-              <Typography variant="body1" color={"gray"}>
-                Đất rừng phương Nam (tựa tiếng Anh: Song of the South) là một bộ
-                phim điện ảnh Việt Nam thuộc thể loại sử thi – tâm lý – chính
-                kịch ra mắt vào năm 2023, được dựa trên cuốn tiểu thuyết cùng
-                tên của nhà văn Đoàn Giỏi... Xem Theem
+              <Typography
+                variant="h5"
+                fontStyle={"italic"}
+                color={"white"}
+                margin={"20px 0"}
+              >
+                {organizer}
+              </Typography>
+
+              <Typography
+                variant="h4"
+                fontStyle={"italic"}
+                color={"white"}
+                margin={"20px 0"}
+              >
+                {dataEventDetail?.type_of_event}
               </Typography>
             </Stack>
-            <Stack direction={"row"} gap={"20px"} marginTop={"30px"}>
-              <Stack>
-                <Typography color="gray">Ngày chiếu</Typography>
-                <Typography fontWeight={"700"}>20/10/2023</Typography>
+            <Stack direction={"column"} gap={"20px"} style={{ margin: "auto" }}>
+              <Stack direction={"row"} gap={"10px"}>
+                <Stack
+                  direction={"column"}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "green",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="h6">{timeLeft.days}</Typography>
+                  <Typography variant="body2">Day</Typography>
+                </Stack>
+                <Stack
+                  direction={"column"}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "green",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="h6">{timeLeft.hours}</Typography>
+                  <Typography variant="body2">hours</Typography>
+                </Stack>
+                <Stack
+                  direction={"column"}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "green",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="h6">{timeLeft.minutes}</Typography>
+                  <Typography variant="body2">minutes</Typography>
+                </Stack>
+                <Stack
+                  direction={"column"}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "green",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="h6">{timeLeft.seconds}</Typography>
+                  <Typography variant="body2">seconds</Typography>
+                </Stack>
               </Stack>
-              <Stack>
-                <Typography color="gray">Thể loại</Typography>
-                <Typography fontWeight={"700"}>
-                  Chiến trang, kịch tính, gia đình
-                </Typography>
-              </Stack>
-              <Stack>
-                <Typography color="gray">Quốc Gia</Typography>
-                <Typography fontWeight={"700"}>Viet Nam</Typography>
+              <Stack
+                style={{
+                  padding: "20px",
+                  borderRadius: "10px",
+                  background: "white",
+                  color: "black",
+                  height: "max-content",
+                  margin: "auto",
+                }}
+              >
+                <Stack direction={"row "} gap={"10px"} gridColumn={"10px"}>
+                  <span
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "100%",
+                      background: "skyblue",
+                      color: "green",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CalendarMonthIcon />
+                  </span>
+                  <Stack direction={"column"}>
+                    <Typography>Time: </Typography>
+                    <Stack direction={"row"} gap={"10px"}>
+                      <Typography>
+                        {new Date(
+                          dataEventDetail?.sales_date?.start_sales_date
+                        ).toLocaleDateString()}
+                      </Typography>{" "}
+                      -
+                      <Typography>
+                        {new Date(
+                          dataEventDetail?.sales_date?.end_sales_date
+                        ).toLocaleDateString()}
+                      </Typography>
+                    </Stack>
+                    <Stack direction={"row"} gap={"10px"}>
+                      <Typography>9:00 morning - 5:00 afternoon</Typography>
+                    </Stack>
+                  </Stack>
+                </Stack>
               </Stack>
             </Stack>
           </Stack>
@@ -359,172 +566,32 @@ const BookTickets = () => {
                     </Button>
                   </Stack>
                 </Stack>
-                <Stack>
-                  Phim "Đất rừng phương Nam" bán được 900.000 vé, bằng một nửa
-                  "Bố già" (Trấn Thành) sau một tuần chiếu. Theo Box Office
-                  Vietnam - đơn vị quan sát phòng vé độc lập, chiều 20/10, phim
-                  đạt gần 76 tỷ đồng, dẫn đầu bảng xếp hạng phòng vé sau một
-                  tuần công chiếu. Tốc độ bán vé này chỉ bằng một nửa Bố già -
-                  phim từng gây sốt phòng vé do Trấn Thành đồng sản xuất và đóng
-                  chính, ra mắt năm 2021 - trong cùng kỳ. Tỷ lệ lấp đầy phòng vé
-                  của Đất rừng phương Nam đạt 15%, cũng bằng một nửa Bố già. Nhà
-                  bà Nữ - tác phẩm ra rạp hồi Tết của Trấn Thành - hiện giữ kỷ
-                  lục với hơn 200 tỷ đồng trong một tuần. Tuy nhiên, tác phẩm
-                  này chiếu vào dịp Tết, thời điểm sức mua vé thường tăng cao so
-                  với ngày thường. Trên hệ thống bán vé của các cụm rạp lớn như
-                  CGV, Galaxy, Lotte, tác phẩm hiện được xếp số suất chiếu áp
-                  đảo so với các phim ra mắt cùng thời điểm. Tại CGV Sư Vạn Hạnh
-                  - một trong những rạp đông khán giả nhất TP HCM, Đất rừng
-                  phương Nam được xếp 27 suất một ngày. Các phim ngoại như Vầng
-                  trăng máu (Leonardo Dicaprio đóng chính), Bước chân thép -
-                  phim Hàn về đường đua marathon, được
-                  <Stack marginTop={"20px"}>
-                    <Typography variant="h5">Content</Typography>
-                    <Divider></Divider>
-                    <Typography variant="body2" marginTop={"10px"}>
-                      An là một cậu bé sinh sống ở đô thành của khu vực Nam Kỳ
-                      Lục tỉnh cùng với mẹ của mình vào những năm 1920 – 1930.
-                      Ba của An là Hai Thành, một người đi theo cách mạng với
-                      mong muốn đánh đuổi Pháp rời khỏi Việt Nam. Khi danh tính
-                      của Hai Thành bị bại lộ, mẹ của An đã dẫn cậu rời khỏi đô
-                      thành duới sự chỉ dẫn của thầy giáo Bảy. Trên đường đi thì
-                      một cuộc biểu tình của quần chúng nhân dân đã diễn ra khi
-                      Võ Tòng – một thành viên của tổ chức Chính Nghĩa hội[a] –
-                      bị bắt giữ. Tại đây, một vụ xô xát đã diễn ra giữa binh
-                      lính Pháp và những người biểu tình, dẫn đến việc mẹ của An
-                      vô tình đã bị lính Pháp bắn chết. Út Lục Lâm – một tên
-                      trộm trong thời chiến đã vô tình thấy cảnh tượng này nên
-                      hắn đã quyết định hỗ trợ An rời khỏi đó. Sau khi chôn cất
-                      mẹ của mình, An đã bị ngất vì đói nhưng được Út Lục Lâm
-                      cưu mang bằng số tiền mà hắn trộm được. Để sinh tồn, An
-                      cũng đã phải học cách ăn trộm theo Út Lục Lâm. Trong một
-                      dịp Tết Đoan ngọ, chính quyền bảo hộ Pháp dưới sự chỉ đạo
-                      của tướng Durie đã quyết định xử tử Võ Tòng công khai
-                      trước mặt quần chúng nhân dân nhằm răn đe về hành vi phản
-                      loạn, chống lại chính quyền bảo hộ. Trong lúc chứng kiến
-                      việc hành quyết, An đã bị say men cơm rượu và cậu vô tình
-                      trở thành người khai màn cho việc cướp pháp trường và giải
-                      cứu Võ Tòng, với sự xuất hiện ngay sau đó của tổ chức
-                      Chính Nghĩa hội. Sau khi Võ Tòng được giải cứu, An và Út
-                      Lục Lâm cũng bắt đầu mất liên lạc với nhau. An được cưu
-                      mang bởi ông Tiều – một thầy thuốc người Hoa và cũng là
-                      một thành viên của Chính Nghĩa hội, ngoài ra ông có một
-                      đứa con tên là Xinh. Tại đây, An đã được ông Tiều huấn
-                      luyện và trở thành một thành viên của Chính Nghĩa hội sau
-                      lời thề. Trong một buổi ghé thăm chợ nổi trên sông, An có
-                      dịp gặp gỡ với Cò, ông Ba "bắt rắn", bác Ba Phi, Tư Ù và
-                      Tư Mắm – một người đang theo đuổi ông Tiều. Một gánh hát
-                      cải lương với sự góp mặt của thầy giáo Bảy cũng đã đến khu
-                      vực nhằm lan tỏa nghệ thuật về lòng yêu nước cho nhân dân.
-                      Cả ba bạn An, Cò và Xinh cũng được mời tham gia diễn tuồng
-                      trong dịp Tết Trung thu sắp diễn ra. Không lâu sau đó, một
-                      thành viên của Chính Nghĩa hội bị bắt giữ. Nhiều nghĩa
-                      quân của khu vực Nam Kỳ cùng lực lượng cách mạng đã có một
-                      cuộc trao đổi nhằm giải thoát các tù nhân, nhưng giữa họ
-                      lại nảy sinh nhiều mâu thuẫn. Trong lúc thi hành giải
-                      thoát tù nhân, ông Tiều đã bị bọn lính Pháp bắt giữ. Trong
-                      tù, ông Tiều đã phát hiện ra Tư Mắm là nhân tình của tướng
-                      Durie và thực chất cô là gián điệp được cài vào nhằm tiếp
-                      cận các tổ chức nghĩa quân cũng như lực lượng cách mạng.
-                      Cùng lúc đó, Út Lục Lâm đang lẻn vào dinh thự của tướng
-                      Durie để trộm thì phát hiện sự việc nên liền báo về cho
-                      An. Khi bị bắt giữ, Xinh đã vô tình tiết lộ cho Tư Mắm
-                      biết rằng ba của An chính là Hai Thành và cả hai sẽ gặp
-                      nhau trong dịp Tết Trung thu ở gánh hát cải lương.
-                    </Typography>
-                  </Stack>
-                  {/* <CarouselStyled
-                    ssr
-                    partialVisbile
-                    itemClass="image-item"
-                    responsive={responsive}
-                  >
-                    {images.map((item, index) => {
-                      return (
-                        <Stack key={index} padding={"10px"}>
-                          <Stack
-                            onClick={() => {
-                              setCheckDay(index);
-                            }}
-                            alignItems={"center"}
-                            style={{
-                              cursor: "pointer",
-                              borderRadius: "10px",
-                              border: `1px solid ${
-                                checkDay === index ? "#bbbb02" : "#ddd"
-                              }`,
-                              width: "max-content",
-                              overflow: "hidden",
-                            }}
-                          >
-                            <div
-                              style={{
-                                background: `${
-                                  checkDay === index ? "#bbbb02" : "#ddd"
-                                }`,
-                                color: `${
-                                  checkDay === index ? "white" : "black"
-                                }`,
-                                fontWeight: "700",
-                                padding: "10px 30px",
-                              }}
-                            >
-                              {item.day}
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "12px",
-                                padding: "10px 0",
-                                color: `${
-                                  checkDay === index ? "#bbbb02" : "black"
-                                }`,
-                              }}
-                            >
-                              {item.weekdays}
-                            </div>
-                          </Stack>
-                        </Stack>
-                      );
-                    })}
-                  </CarouselStyled> */}
-                </Stack>
+                <Stack>{dataEventDetail?.event_description}</Stack>
               </TabPanel>
               <TabPanel value="2">
                 <Stack>
-                  {/* <Typography variant="h4">Choose time</Typography> */}
                   <Stack marginTop={"30px"} direction={"column"} gap={"20px"}>
-                    {Array(14)
-                      .fill(0)
-                      .map((_, index) => {
-                        return (
-                          <Stack
-                            direction={"column"}
-                            style={{ cursor: "pointer" }}
-                            onClick={handleOpen}
-                          >
+                    {dataEventDetail?.event_date?.length > 0 &&
+                      dataEventDetail?.event_date[0]?.event_areas.map(
+                        (item, index) => {
+                          return (
                             <Stack
                               key={index}
-                              direction={"row"}
-                              color={"gray"}
-                              justifyContent={"space-between"}
-                              alignItems={"center"}
-                              padding={"15px 0"}
+                              direction={"column"}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                handleOpen();
+                                setSelectRows(item?.rows);
+                              }}
                             >
-                              <Typography variant="body2">
-                                Day1 - Rvip (Day 1:5pm - 9:30pm 21.10.2023)
+                              <Typography variant="h4">
+                                {item.name_areas}
                               </Typography>
-                              <Typography
-                                variant="body1"
-                                fontWeight={"700"}
-                                color={"black"}
-                              >
-                                4,200,000 VND
-                              </Typography>
+                              <Divider />
                             </Stack>
-                            <Divider />
-                          </Stack>
-                        );
-                      })}
+                          );
+                        }
+                      )}
                   </Stack>
                   <ModalStyled open={open} onClose={handleClose}>
                     <Box sx={{ ...style, width: "70%" }}>
@@ -570,7 +637,7 @@ const BookTickets = () => {
                             />
                           </svg>
                         </div>
-                        <span>By ticket</span>
+                        <span>Buy ticket</span>
                       </div>
                       <Stack
                         direction={"column"}
@@ -601,49 +668,97 @@ const BookTickets = () => {
                         </Stack>
                         <Box
                           component={"div"}
-                          height={"400px"}
+                          height={"300px"}
+                          width={"80%"}
                           style={{ overflow: "auto" }}
                         >
-                          <Stack
-                            direction={"row"}
-                            gap={"10px"}
-                            flexWrap={"wrap"}
-                          >
-                            {DataStage?.length > 0 &&
-                              DataStage.map((item) => {
+                          <Stack direction={"column"} gap={"30px"}>
+                            {selectRows?.length > 0 &&
+                              selectRows?.map((selectRow) => {
+                                console.log("SelectRow: ", selectRow);
                                 return (
-                                  <div
-                                    onClick={() => {
-                                      setSelectChair([
-                                        ...selectChair,
-                                        item.chair_name,
-                                      ]);
-                                    }}
-                                    key={item.id}
-                                    style={{
-                                      width: "50px",
-                                      height: "50px",
-                                      borderRadius: "5px",
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                      color: "white",
-                                      cursor: "pointer",
-                                      backgroundColor: "#6908bd",
-                                    }}
+                                  <Stack
+                                    direction={"row"}
+                                    gap={"20px"}
+                                    key={selectRow._id}
                                   >
-                                    {item.chair_name}
-                                  </div>
+                                    <Stack direction={"column"} gap={"10px"}>
+                                      <Typography variant="h3" color={"white"}>
+                                        {selectRow?.row_name}
+                                      </Typography>
+                                      <Typography
+                                        whiteSpace={"nowrap"}
+                                        variant="body2"
+                                        color={"white"}
+                                      >
+                                        Price: {selectRow?.ticket_price}
+                                      </Typography>
+                                      <Typography
+                                        whiteSpace={"nowrap"}
+                                        variant="body2"
+                                        color={"white"}
+                                      >
+                                        Total chair: {selectRow?.total_chair}
+                                      </Typography>
+                                    </Stack>
+                                    <Stack
+                                      direction={"row"}
+                                      flexWrap="wrap"
+                                      gap={"15px"}
+                                    >
+                                      {selectRow?.chairs?.map((item, index) => {
+                                        return (
+                                          <div
+                                            onClick={() => {
+                                              const exists = selectChair.some(
+                                                (itemC) =>
+                                                  itemC.chair ===
+                                                  item.chair_name
+                                              );
+                                              if (!item.isBuy && !exists) {
+                                                setSelectChair([
+                                                  ...selectChair,
+                                                  {
+                                                    chair: item.chair_name,
+                                                    price:
+                                                      selectRow?.ticket_price,
+                                                  },
+                                                ]);
+                                              }
+                                            }}
+                                            key={item.id}
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                              borderRadius: "5px",
+                                              display: "flex",
+                                              justifyContent: "center",
+                                              alignItems: "center",
+                                              color: "white",
+                                              cursor: "pointer",
+                                              backgroundColor: `${
+                                                !item.isBuy
+                                                  ? "#6908bd"
+                                                  : "#46494c"
+                                              }`,
+                                            }}
+                                          >
+                                            {item.chair_name}
+                                          </div>
+                                        );
+                                      })}
+                                    </Stack>
+                                  </Stack>
                                 );
                               })}
                           </Stack>
                         </Box>
                         <Stack color={"white"} direction={"row"} gap={"40px"}>
-                          <Stack gap={"10px"}>
+                          <Stack direction={"row"} gap={"10px"}>
                             <Stack
                               direction={"row"}
                               alignItems={"center"}
-                              gap={"10px"}
+                              gap={"20px"}
                             >
                               <div
                                 style={{
@@ -662,79 +777,13 @@ const BookTickets = () => {
                             >
                               <div
                                 style={{
-                                  background: "#d33209",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                }}
-                              ></div>
-                              <span>Ghế vip</span>
-                            </Stack>
-                          </Stack>
-                          <Stack gap={"10px"}>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                            >
-                              <div
-                                style={{
-                                  background: "#ff20cb",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                  border: "1px solid white",
-                                }}
-                              ></div>
-                              <span>Ghế bạn chọn</span>
-                            </Stack>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                            >
-                              <div
-                                style={{
-                                  background: "#ff20cb",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                }}
-                              ></div>
-                              <span>Ghế đôi</span>
-                            </Stack>
-                          </Stack>
-                          <Stack gap={"10px"}>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                            >
-                              <div
-                                style={{
                                   background: "#6908bd",
                                   height: "25px",
                                   width: "25px",
                                   borderRadius: "4px",
                                 }}
                               ></div>
-                              <span>Ghế thường</span>
-                            </Stack>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                            >
-                              <div
-                                style={{
-                                  background: "#302d32",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                  border: "1px solid green",
-                                }}
-                              ></div>
-                              <span>Vùng trung tâm</span>
+                              <span>Chưa đặt</span>
                             </Stack>
                           </Stack>
                         </Stack>
@@ -752,35 +801,76 @@ const BookTickets = () => {
                           gap={"20px"}
                           alignItems={"center"}
                         >
-                          <Chip
-                            color="primary"
-                            style={{
-                              fontWeight: "700",
-                              width: "max-content",
-                              borderRadius: "10px",
-                            }}
-                            label="K"
-                          />
                           <Typography variant="h4">
-                            Đất rừng phương nam
+                            Thời gian còn lại: {minutes < 10 ? "0" : ""}
+                            {minutes}:{seconds < 10 ? "0" : ""}
+                            {seconds}
                           </Typography>
                         </Stack>
-                        <Typography
-                          variant="body2"
-                          color={"#bfad17"}
-                          margin={"10px 0"}
-                        >
-                          09:45 ~ 11:35 · T3, 24/10 · Phòng chiếu P5 · 2D Phụ đề
-                        </Typography>
-                        <Divider />
+
                         <Stack
                           direction={"row"}
                           padding={"15px 0"}
-                          style={{ color: "gray" }}
+                          style={{ color: "gray", width: "100%" }}
                           alignItems={"center"}
                           justifyContent={"space-between"}
+                          flexWrap={"wrap"}
                         >
-                          <Typography variant="body2">Chỗ ngồi</Typography>
+                          <Grid container spacing={3}>
+                            <Grid item sx={6} md={6}>
+                              <FormControl
+                                fullWidth
+                                sx={{ m: 1 }}
+                                variant="standard"
+                              >
+                                <InputLabel htmlFor="standard-adornment-amount">
+                                  Fullname
+                                </InputLabel>
+                                <Input id="standard-adornment-amount" />
+                              </FormControl>
+                            </Grid>
+                            <Grid item sx={6} md={6}>
+                              <FormControl
+                                fullWidth
+                                sx={{ m: 1 }}
+                                variant="standard"
+                              >
+                                <InputLabel htmlFor="standard-adornment-amount">
+                                  Phone number
+                                </InputLabel>
+                                <Input id="standard-adornment-amount" />
+                              </FormControl>
+                            </Grid>
+                          </Grid>
+                          <Grid container spacing={3}>
+                            <Grid item sx={6} md={6}>
+                              <FormControl
+                                fullWidth
+                                sx={{ m: 1 }}
+                                variant="standard"
+                              >
+                                <InputLabel htmlFor="standard-adornment-amount">
+                                  Enter email
+                                </InputLabel>
+                                <Input id="standard-adornment-amount" />
+                              </FormControl>
+                            </Grid>
+                            <Grid item sx={6} md={6}>
+                              <FormControl
+                                fullWidth
+                                sx={{ m: 1 }}
+                                variant="standard"
+                              >
+                                <InputLabel htmlFor="standard-adornment-amount">
+                                  Chair name
+                                </InputLabel>
+                                <Input id="standard-adornment-amount" />
+                              </FormControl>
+                            </Grid>
+                          </Grid>
+                        </Stack>
+
+                        <Stack>
                           {selectChair.length > 0 && (
                             <Stack
                               direction={"row"}
@@ -796,7 +886,7 @@ const BookTickets = () => {
                                 {selectChair?.length > 0 &&
                                   selectChair
                                     .map((item) => {
-                                      return String(item);
+                                      return String(item.chair);
                                     })
                                     .join(",")}
                               </div>
@@ -824,7 +914,9 @@ const BookTickets = () => {
                             <Typography variant="body2" color={"gray"}>
                               Tạm tính
                             </Typography>
-                            <Typography variant="h6">{"0 đ"}</Typography>
+                            <Typography variant="h6">
+                              {totalByTicket}
+                            </Typography>
                           </Stack>
                           <Button
                             type="button"
@@ -835,7 +927,7 @@ const BookTickets = () => {
                               padding: "10px 20px",
                             }}
                           >
-                            By Ticket
+                            Buy Ticket
                           </Button>
                         </Stack>
                       </Stack>
@@ -922,29 +1014,6 @@ const BookTickets = () => {
     </Box>
   );
 };
-
-const CarouselStyled = styled(Carousel)`
-  border: 1px solid gray;
-  padding: 5px;
-  border-radius: 10px;
-  .react-multiple-carousel__arrow {
-    padding: 0;
-    height: 100%;
-    border-radius: 0;
-    color: gray;
-    background-color: white;
-    box-shadow: 0 0 4px 1px #ddd;
-    &::before {
-      color: black;
-    }
-    &--right {
-      right: 0 !important;
-    }
-    &--left {
-      left: 0 !important;
-    }
-  }
-`;
 
 const ModalStyled = styled(Modal)`
   .MuiBox-root {

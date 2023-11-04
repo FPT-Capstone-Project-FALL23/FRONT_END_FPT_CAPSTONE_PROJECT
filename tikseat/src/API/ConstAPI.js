@@ -19,8 +19,9 @@ export const URL_RESENDOTP = "/sendMail/resendOTPForMail";
 
 //-------------------EVENT----------------------------
 export const URL_GETEVENTBYTYPE = "/event/getEventByType";
-export const URL_GETALLEVENTS = "/event/getAllEvent";
+export const URL_GETALLEVENTS = "/event/getEvent";
 export const URL_GETEVENTBYID = "/event/getEventById";
+export const URL_GETDETAILEVENT = "/event/getDetailEvent";
 export const URL_SEARCHEVENT = "/event/searchEvent";
 export const URL_CREATEEVENT = "/event/createEvent";
 export const URL_UPDATEEVENT = "/event/updateEvent";
@@ -30,6 +31,9 @@ export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";
 export const URL_DISTRICT = "?depth=2";
+
+//-------------------PAYMENT----------------------------
+export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
 
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";

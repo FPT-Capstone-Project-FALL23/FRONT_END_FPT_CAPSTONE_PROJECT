@@ -43,7 +43,7 @@ function RoutePage() {
         <Route path="/notification" element={<Notification />}></Route>
 
         <Route element={<HomePageOrganizer />}>
-          <Route path="/UpdateProfileOrganizers" element={<UpdatePfrofileOrganizer />} />
+          <Route path="/profileOrganizers" element={<ProfileOrganizers />} />
           <Route path="/add-payment" element={<AddPaymentMethod />}></Route>
           <Route path="/dashboard" element={<DefaultDashboard />}></Route>
           <Route path="/event-history" element={<EventHistory />}></Route>
@@ -51,7 +51,7 @@ function RoutePage() {
           <Route path="/create-ticket" element={<CreateTicket />}></Route>
           
         </Route>
-        <Route path="/book-tickets" element={<BookTickets />}></Route>
+        <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
         <Route element={<SignUp />}>
           <Route
             path="/createProfileOrganizers"
