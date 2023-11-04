@@ -42,6 +42,7 @@ import { navItems } from "../../Assets/Constant/Common/dataCommon";
 import { colorBlack, colorWhite } from "../../Assets/CSS/Style/theme";
 import ApiCommon from "../../API/Common/ApiCommon";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ApiClient from "../../API/Client/ApiClient";
 const style = {
   position: "absolute",
   top: "50%",
@@ -151,6 +152,29 @@ const BookTickets = () => {
     0
   );
 
+  //call api create payment
+  const handleBuyTickect = async (event) => {
+    event.preventDefault();
+    try {
+      const listChairIds = selectChair.map((item) => item._id);
+      const requestData = {
+        _idEvent: dataEventDetail._id,
+        chairIds: listChairIds,
+        amount: totalByTicket,
+      };
+
+      console.log("requestData", requestData);
+      const response = await ApiClient.paymentTicket(requestData);
+      console.log("responseData", response);
+      if (response) {
+        //chuyển trang qua trang của zalo
+        window.location.href = response.data.order_url;
+      }
+    } catch (e) {
+      alert(e.response.data.message);
+    }
+  };
+
   const [time, setTime] = useState(null); // 10 phút = 600 giây
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
@@ -213,8 +237,7 @@ const BookTickets = () => {
           padding: "0 150px",
           color: "black",
         }}
-        component="nav"
-      >
+        component="nav">
         <Toolbar style={{ width: "100%", justifyContent: "space-between" }}>
           <Typography variant="h3" className="logo" component="h4">
             {NAME_LOGO}
@@ -227,15 +250,13 @@ const BookTickets = () => {
                 gap: "40px",
                 alignItems: "center",
               },
-            }}
-          >
+            }}>
             <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
               {navItems?.map((item, index) => (
                 <Link
                   to={item.url}
                   key={index}
-                  style={{ color: `${colorBlack}`, fontWeight: "500" }}
-                >
+                  style={{ color: `${colorBlack}`, fontWeight: "500" }}>
                   {item.title}
                 </Link>
               ))}
@@ -253,8 +274,7 @@ const BookTickets = () => {
                 horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
+              onClose={handleCloseUserMenu}>
               {ManagementUser?.map((item, index) => {
                 if (!item?.url) {
                   return (
@@ -264,12 +284,10 @@ const BookTickets = () => {
                         backgroundColor: "transparent",
                       }}
                       key={index}
-                      onClick={handleCloseUserMenu}
-                    >
+                      onClick={handleCloseUserMenu}>
                       <Typography
                         textAlign="center"
-                        onClick={() => navigate(item?.url)}
-                      >
+                        onClick={() => navigate(item?.url)}>
                         {item.content}
                       </Typography>
                     </MenuItem>
@@ -288,8 +306,7 @@ const BookTickets = () => {
                         } else {
                           navigate(item?.url);
                         }
-                      }}
-                    >
+                      }}>
                       {item.content}
                     </Typography>
                   </MenuItem>
@@ -307,16 +324,14 @@ const BookTickets = () => {
           height: "550px",
           backgroundSize: "cover",
           paddingBottom: "50px",
-        }}
-      >
+        }}>
         <div
           style={{
             height: "100%",
             width: "100%",
             background: "rgb(0 0 0 / 84%)",
             position: "absolute",
-          }}
-        ></div>
+          }}></div>
         <Stack
           direction={"row"}
           gap={"40px"}
@@ -326,8 +341,7 @@ const BookTickets = () => {
             zIndex: "2",
             width: "80%",
             height: "100%",
-          }}
-        >
+          }}>
           <div style={{ width: "400px" }}>
             <img alt="" loading="lazy" src={dataEventDetail?.eventImage} />
           </div>
@@ -336,8 +350,7 @@ const BookTickets = () => {
               direction={"column"}
               flex={1}
               padding={"20px 0"}
-              color={"white"}
-            >
+              color={"white"}>
               <Chip
                 color="primary"
                 style={{
@@ -355,8 +368,7 @@ const BookTickets = () => {
                 direction={"row"}
                 alignItems={"center"}
                 gap={"10px"}
-                marginTop={"10px"}
-              >
+                marginTop={"10px"}>
                 <Stack direction={"row"} alignItems={"center"} gap={"10px"}>
                   <Typography>
                     {dataEventDetail.event_location?.specific_address}
@@ -379,8 +391,7 @@ const BookTickets = () => {
                 variant="h5"
                 fontStyle={"italic"}
                 color={"white"}
-                margin={"20px 0"}
-              >
+                margin={"20px 0"}>
                 {organizer}
               </Typography>
 
@@ -388,8 +399,7 @@ const BookTickets = () => {
                 variant="h4"
                 fontStyle={"italic"}
                 color={"white"}
-                margin={"20px 0"}
-              >
+                margin={"20px 0"}>
                 {dataEventDetail?.type_of_event}
               </Typography>
             </Stack>
@@ -405,8 +415,7 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Typography variant="h6">{timeLeft.days}</Typography>
                   <Typography variant="body2">Day</Typography>
                 </Stack>
@@ -420,8 +429,7 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Typography variant="h6">{timeLeft.hours}</Typography>
                   <Typography variant="body2">hours</Typography>
                 </Stack>
@@ -435,8 +443,7 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Typography variant="h6">{timeLeft.minutes}</Typography>
                   <Typography variant="body2">minutes</Typography>
                 </Stack>
@@ -450,8 +457,7 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}
-                >
+                  }}>
                   <Typography variant="h6">{timeLeft.seconds}</Typography>
                   <Typography variant="body2">seconds</Typography>
                 </Stack>
@@ -464,8 +470,7 @@ const BookTickets = () => {
                   color: "black",
                   height: "max-content",
                   margin: "auto",
-                }}
-              >
+                }}>
                 <Stack direction={"row "} gap={"10px"} gridColumn={"10px"}>
                   <span
                     style={{
@@ -477,8 +482,7 @@ const BookTickets = () => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                    }}
-                  >
+                    }}>
                     <CalendarMonthIcon />
                   </span>
                   <Stack direction={"column"}>
@@ -514,15 +518,13 @@ const BookTickets = () => {
             height: "100%",
           }}
           container
-          spacing={2}
-        >
+          spacing={2}>
           <Grid item xs={8}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
                   onChange={handleChangeTab}
-                  aria-label="lab API tabs example"
-                >
+                  aria-label="lab API tabs example">
                   <Tab label="About" value="1" />
                   <Tab label="Ticket infomation" value="2" />
                 </TabList>
@@ -532,14 +534,12 @@ const BookTickets = () => {
                 <Stack
                   direction={"row"}
                   alignItems={"center"}
-                  justifyContent={"space-between"}
-                >
+                  justifyContent={"space-between"}>
                   <Typography variant="h4">About</Typography>
                   <Stack
                     direction={"row"}
                     alignItems={"center"}
-                    alignSelf={"center"}
-                  >
+                    alignSelf={"center"}>
                     <FormControl sx={{ m: 1, minWidth: 200 }} size="medium">
                       {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
                       <Select
@@ -560,8 +560,7 @@ const BookTickets = () => {
                       startIcon={<MyLocationIcon />}
                       size="medium"
                       variant="outlined"
-                      style={{ height: "max-content", padding: "15px 20px" }}
-                    >
+                      style={{ height: "max-content", padding: "15px 20px" }}>
                       Gần bạn
                     </Button>
                   </Stack>
@@ -582,8 +581,7 @@ const BookTickets = () => {
                               onClick={() => {
                                 handleOpen();
                                 setSelectRows(item?.rows);
-                              }}
-                            >
+                              }}>
                               <Typography variant="h4">
                                 {item.name_areas}
                               </Typography>
@@ -606,8 +604,7 @@ const BookTickets = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           position: "relative",
-                        }}
-                      >
+                        }}>
                         <div
                           style={{
                             position: "absolute",
@@ -620,16 +617,14 @@ const BookTickets = () => {
                             height: "30px",
                             width: "30px",
                           }}
-                          onClick={handleClose}
-                        >
+                          onClick={handleClose}>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6"
-                          >
+                            className="w-6 h-6">
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -642,27 +637,23 @@ const BookTickets = () => {
                       <Stack
                         direction={"column"}
                         alignItems={"center"}
-                        style={{ background: "black", padding: "20px" }}
-                      >
+                        style={{ background: "black", padding: "20px" }}>
                         <Stack
                           direction={"column"}
                           alignItems={"center"}
-                          justifyContent={"center"}
-                        >
+                          justifyContent={"center"}>
                           <div
                             style={{
                               width: "400px",
                               height: "10px",
                               borderRadius: "30px",
                               background: "white",
-                            }}
-                          ></div>
+                            }}></div>
                           <Typography
                             variant="body1"
                             color={"white"}
                             marginTop={"10px"}
-                            fontWeight={"700"}
-                          >
+                            fontWeight={"700"}>
                             Stage
                           </Typography>
                         </Stack>
@@ -670,8 +661,7 @@ const BookTickets = () => {
                           component={"div"}
                           height={"300px"}
                           width={"80%"}
-                          style={{ overflow: "auto" }}
-                        >
+                          style={{ overflow: "auto" }}>
                           <Stack direction={"column"} gap={"30px"}>
                             {selectRows?.length > 0 &&
                               selectRows?.map((selectRow) => {
@@ -680,8 +670,7 @@ const BookTickets = () => {
                                   <Stack
                                     direction={"row"}
                                     gap={"20px"}
-                                    key={selectRow._id}
-                                  >
+                                    key={selectRow._id}>
                                     <Stack direction={"column"} gap={"10px"}>
                                       <Typography variant="h3" color={"white"}>
                                         {selectRow?.row_name}
@@ -689,23 +678,20 @@ const BookTickets = () => {
                                       <Typography
                                         whiteSpace={"nowrap"}
                                         variant="body2"
-                                        color={"white"}
-                                      >
+                                        color={"white"}>
                                         Price: {selectRow?.ticket_price}
                                       </Typography>
                                       <Typography
                                         whiteSpace={"nowrap"}
                                         variant="body2"
-                                        color={"white"}
-                                      >
+                                        color={"white"}>
                                         Total chair: {selectRow?.total_chair}
                                       </Typography>
                                     </Stack>
                                     <Stack
                                       direction={"row"}
                                       flexWrap="wrap"
-                                      gap={"15px"}
-                                    >
+                                      gap={"15px"}>
                                       {selectRow?.chairs?.map((item, index) => {
                                         return (
                                           <div
@@ -719,6 +705,7 @@ const BookTickets = () => {
                                                 setSelectChair([
                                                   ...selectChair,
                                                   {
+                                                    _id: item._id,
                                                     chair: item.chair_name,
                                                     price:
                                                       selectRow?.ticket_price,
@@ -741,8 +728,7 @@ const BookTickets = () => {
                                                   ? "#6908bd"
                                                   : "#46494c"
                                               }`,
-                                            }}
-                                          >
+                                            }}>
                                             {item.chair_name}
                                           </div>
                                         );
@@ -758,31 +744,27 @@ const BookTickets = () => {
                             <Stack
                               direction={"row"}
                               alignItems={"center"}
-                              gap={"20px"}
-                            >
+                              gap={"20px"}>
                               <div
                                 style={{
                                   background: "#46494c",
                                   height: "25px",
                                   width: "25px",
                                   borderRadius: "4px",
-                                }}
-                              ></div>
+                                }}></div>
                               <span>Đã đặt</span>
                             </Stack>
                             <Stack
                               direction={"row"}
                               alignItems={"center"}
-                              gap={"10px"}
-                            >
+                              gap={"10px"}>
                               <div
                                 style={{
                                   background: "#6908bd",
                                   height: "25px",
                                   width: "25px",
                                   borderRadius: "4px",
-                                }}
-                              ></div>
+                                }}></div>
                               <span>Chưa đặt</span>
                             </Stack>
                           </Stack>
@@ -790,8 +772,7 @@ const BookTickets = () => {
                         <Typography
                           variant="body2"
                           color={"white"}
-                          marginTop={"20px"}
-                        >
+                          marginTop={"20px"}>
                           Xem chi tiết hình ảnh và thông tin ghế
                         </Typography>
                       </Stack>
@@ -799,8 +780,7 @@ const BookTickets = () => {
                         <Stack
                           direction={"row"}
                           gap={"20px"}
-                          alignItems={"center"}
-                        >
+                          alignItems={"center"}>
                           <Typography variant="h4">
                             Thời gian còn lại: {minutes < 10 ? "0" : ""}
                             {minutes}:{seconds < 10 ? "0" : ""}
@@ -814,15 +794,13 @@ const BookTickets = () => {
                           style={{ color: "gray", width: "100%" }}
                           alignItems={"center"}
                           justifyContent={"space-between"}
-                          flexWrap={"wrap"}
-                        >
+                          flexWrap={"wrap"}>
                           <Grid container spacing={3}>
                             <Grid item sx={6} md={6}>
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard"
-                              >
+                                variant="standard">
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Fullname
                                 </InputLabel>
@@ -833,8 +811,7 @@ const BookTickets = () => {
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard"
-                              >
+                                variant="standard">
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Phone number
                                 </InputLabel>
@@ -847,8 +824,7 @@ const BookTickets = () => {
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard"
-                              >
+                                variant="standard">
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Enter email
                                 </InputLabel>
@@ -859,8 +835,7 @@ const BookTickets = () => {
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard"
-                              >
+                                variant="standard">
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Chair name
                                 </InputLabel>
@@ -880,8 +855,7 @@ const BookTickets = () => {
                                 borderRadius: "10px",
                                 border: "1px solid gray",
                                 padding: "5px 10px",
-                              }}
-                            >
+                              }}>
                               <div>
                                 {selectChair?.length > 0 &&
                                   selectChair
@@ -896,8 +870,7 @@ const BookTickets = () => {
                                   height: "20px",
                                   color: "red",
                                 }}
-                                onClick={() => setSelectChair([])}
-                              >
+                                onClick={() => setSelectChair([])}>
                                 <IconCircle />
                               </span>
                             </Stack>
@@ -908,8 +881,7 @@ const BookTickets = () => {
                           direction={"row"}
                           justifyContent={"space-between"}
                           marginTop={"15px"}
-                          alignItems={"center"}
-                        >
+                          alignItems={"center"}>
                           <Stack>
                             <Typography variant="body2" color={"gray"}>
                               Tạm tính
@@ -926,7 +898,7 @@ const BookTickets = () => {
                               fontWeight: "bold",
                               padding: "10px 20px",
                             }}
-                          >
+                            onClick={(event) => handleBuyTickect(event)}>
                             Buy Ticket
                           </Button>
                         </Stack>
@@ -945,8 +917,7 @@ const BookTickets = () => {
             <Stack
               direction={"column"}
               gap={"20px"}
-              style={{ marginTop: "30px" }}
-            >
+              style={{ marginTop: "30px" }}>
               {Array(5)
                 .fill(0)
                 .map((_, index) => {
@@ -961,8 +932,7 @@ const BookTickets = () => {
                       <Stack direction={"column"}>
                         <CardContent
                           sx={{ flex: "1 0 auto" }}
-                          style={{ padding: 0 }}
-                        >
+                          style={{ padding: 0 }}>
                           <Chip
                             label="18+"
                             style={{
@@ -980,22 +950,19 @@ const BookTickets = () => {
                           <Typography
                             variant="subtitle1"
                             color="gray"
-                            component="div"
-                          >
+                            component="div">
                             Hình sự chính kịch
                           </Typography>
                           <Stack
                             direction={"row"}
                             alignItems={"center"}
-                            gap={"5px"}
-                          >
+                            gap={"5px"}>
                             <span
                               style={{
                                 color: "yellow",
                                 width: "20px",
                                 display: "flex",
-                              }}
-                            >
+                              }}>
                               <IconStar />
                             </span>
                             <Typography variant="body2" color={"gray"}>
