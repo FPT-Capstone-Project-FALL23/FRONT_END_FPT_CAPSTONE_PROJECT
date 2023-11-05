@@ -34,6 +34,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import {
   getLocalStorageUserData,
+  getLocalStorageUserInfo,
   setLocalStorageUserData,
   setLocalStorageUserInfo,
 } from "../../Store/userStore";
@@ -56,80 +57,53 @@ const style = {
   // pb: 3,
 };
 
-// const selectRows = [
-//   {
-//     type: "normal",
-//     chair_name: "A12",
-//     id: 1,
-//     price: 50000,
-//   },
-//   {
-//     type: "normal",
-//     chair_name: "A13",
-//     id: 2,
-//     price: 50000,
-//   },
-//   {
-//     type: "pair",
-//     chair_name: "A14",
-//     id: 3,
-//     price: 50000,
-//   },
-//   {
-//     type: "pair",
-//     chair_name: "H12",
-//     id: 4,
-//     price: 50000,
-//   },
-//   {
-//     type: "pair",
-//     chair_name: "A14",
-//     id: 5,
-//     price: 50000,
-//   },
-//   {
-//     type: "pair",
-//     chair_name: "H12",
-//     id: 6,
-//     price: 50000,
-//   },
-// ];
-
 const BookTickets = () => {
   const { id: idEvent } = useParams();
   const [age, setAge] = useState("");
-  const [dataEventDetail, setDataEventDetail] = useState({});
-  const [selectRows, setSelectRows] = useState([]);
-  console.log("selectRows: ", selectRows);
-  const [organizer, setOrganizer] = useState("");
+  const [dataEvents, setDataEvents] = useState("");
+  const [dataEventDetail, setDataEventDetail] = useState();
   console.log("dataEventDetail: ", dataEventDetail);
+  const [selectRows, setSelectRows] = useState([]);
+  const [organizer, setOrganizer] = useState("");
   const navigate = useNavigate();
   const dataUser = getLocalStorageUserData();
+  const dataInfo = getLocalStorageUserInfo();
   const [selectChair, setSelectChair] = useState([]);
-  console.log("selectChair: ", selectChair);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  console.log("selectChair: ", selectChair);
-  const [checkDay, setCheckDay] = useState(1);
+  // const [checkDay, setCheckDay] = useState(1);
+
+  const [countDown, setCountDown] = useState(false);
+  const [time, setTime] = useState(null);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
   const handleChange = (event) => {
     setAge(event.target.value);
   };
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
-    setTime(600);
   };
   const handleClose = () => {
     setOpen(false);
-    setTime(0);
+    setTime(null);
+    setSelectChair([]);
   };
 
   useEffect(() => {
+    async function getAllEvents() {
+      const resEventData = await ApiClient.getAllEvents();
+      const filterEvent = await resEventData?.events?.filter((event) => {
+        return event._id !== idEvent;
+      });
+      setDataEvents(filterEvent);
+    }
+    getAllEvents();
     if (idEvent) {
       async function getEventDetail() {
-        const response = await ApiCommon.geDetailEvent({ _idEvent: idEvent });
+        const response = await ApiClient.geDetailEvent({ _idEvent: idEvent });
         setDataEventDetail(response.event);
         setOrganizer(response.organizer);
-        console.log("response: ", response);
       }
       getEventDetail();
     }
@@ -151,7 +125,13 @@ const BookTickets = () => {
     (accumulator, seat) => accumulator + seat.price,
     0
   );
-
+  const [ticketBooker, setTicketBooker] = useState({
+    email: dataUser?.email,
+    phone: dataInfo?.phone,
+    fullname: dataInfo?.full_name,
+    selected_ticket: selectChair,
+    total_ticket: totalByTicket,
+  });
   //call api create payment
   const handleBuyTickect = async (event) => {
     event.preventDefault();
@@ -163,9 +143,7 @@ const BookTickets = () => {
         amount: totalByTicket,
       };
 
-      console.log("requestData", requestData);
       const response = await ApiClient.paymentTicket(requestData);
-      console.log("responseData", response);
       if (response) {
         //chuyển trang qua trang của zalo
         window.location.href = response.data.order_url;
@@ -175,14 +153,24 @@ const BookTickets = () => {
     }
   };
 
-  const [time, setTime] = useState(null); // 10 phút = 600 giây
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    if (selectChair.length === 0) {
+      setCountDown(false);
+      setTime(null);
+    }
+  }, [selectChair]);
+  useEffect(() => {
+    if (!open) {
+      setSelectChair([]);
+      setCountDown(false);
+    } else {
+      if (time === 0 && time !== null) {
+        setOpen(false);
+      }
+    }
+  }, [open, time]);
 
   useEffect(() => {
-    if (time === 0) {
-      setOpen(false);
-    }
     const intervalId = setInterval(() => {
       if (time > 0) {
         setTime(time - 1);
@@ -196,7 +184,7 @@ const BookTickets = () => {
     return () => clearInterval(intervalId);
   }, [time]);
 
-  const eventDate = new Date(dataEventDetail?.sales_date?.start_sales_date); // Đặt ngày và giờ diễn ra sự kiện
+  // Đặt ngày và giờ diễn ra sự kiện
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -205,6 +193,7 @@ const BookTickets = () => {
   });
 
   useEffect(() => {
+    const eventDate = new Date(dataEventDetail?.sales_date?.start_sales_date);
     const intervalId = setInterval(() => {
       const now = new Date().getTime();
       const timeDifference = eventDate - now;
@@ -226,8 +215,9 @@ const BookTickets = () => {
       }
     }, 1000);
 
+    console.log("ododod");
     return () => clearInterval(intervalId);
-  }, [eventDate]);
+  }, [dataEventDetail]);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -237,7 +227,8 @@ const BookTickets = () => {
           padding: "0 150px",
           color: "black",
         }}
-        component="nav">
+        component="nav"
+      >
         <Toolbar style={{ width: "100%", justifyContent: "space-between" }}>
           <Typography variant="h3" className="logo" component="h4">
             {NAME_LOGO}
@@ -250,13 +241,15 @@ const BookTickets = () => {
                 gap: "40px",
                 alignItems: "center",
               },
-            }}>
+            }}
+          >
             <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
               {navItems?.map((item, index) => (
                 <Link
                   to={item.url}
                   key={index}
-                  style={{ color: `${colorBlack}`, fontWeight: "500" }}>
+                  style={{ color: `${colorBlack}`, fontWeight: "500" }}
+                >
                   {item.title}
                 </Link>
               ))}
@@ -274,7 +267,8 @@ const BookTickets = () => {
                 horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}>
+              onClose={handleCloseUserMenu}
+            >
               {ManagementUser?.map((item, index) => {
                 if (!item?.url) {
                   return (
@@ -284,10 +278,12 @@ const BookTickets = () => {
                         backgroundColor: "transparent",
                       }}
                       key={index}
-                      onClick={handleCloseUserMenu}>
+                      onClick={handleCloseUserMenu}
+                    >
                       <Typography
                         textAlign="center"
-                        onClick={() => navigate(item?.url)}>
+                        onClick={() => navigate(item?.url)}
+                      >
                         {item.content}
                       </Typography>
                     </MenuItem>
@@ -306,7 +302,8 @@ const BookTickets = () => {
                         } else {
                           navigate(item?.url);
                         }
-                      }}>
+                      }}
+                    >
                       {item.content}
                     </Typography>
                   </MenuItem>
@@ -324,14 +321,16 @@ const BookTickets = () => {
           height: "550px",
           backgroundSize: "cover",
           paddingBottom: "50px",
-        }}>
+        }}
+      >
         <div
           style={{
             height: "100%",
             width: "100%",
             background: "rgb(0 0 0 / 84%)",
             position: "absolute",
-          }}></div>
+          }}
+        ></div>
         <Stack
           direction={"row"}
           gap={"40px"}
@@ -341,7 +340,8 @@ const BookTickets = () => {
             zIndex: "2",
             width: "80%",
             height: "100%",
-          }}>
+          }}
+        >
           <div style={{ width: "400px" }}>
             <img alt="" loading="lazy" src={dataEventDetail?.eventImage} />
           </div>
@@ -350,7 +350,8 @@ const BookTickets = () => {
               direction={"column"}
               flex={1}
               padding={"20px 0"}
-              color={"white"}>
+              color={"white"}
+            >
               <Chip
                 color="primary"
                 style={{
@@ -368,10 +369,11 @@ const BookTickets = () => {
                 direction={"row"}
                 alignItems={"center"}
                 gap={"10px"}
-                marginTop={"10px"}>
+                marginTop={"10px"}
+              >
                 <Stack direction={"row"} alignItems={"center"} gap={"10px"}>
                   <Typography>
-                    {dataEventDetail.event_location?.specific_address}
+                    {dataEventDetail?.event_location?.specific_address}
                   </Typography>
                   -
                   <Typography>
@@ -391,7 +393,8 @@ const BookTickets = () => {
                 variant="h5"
                 fontStyle={"italic"}
                 color={"white"}
-                margin={"20px 0"}>
+                margin={"20px 0"}
+              >
                 {organizer}
               </Typography>
 
@@ -399,7 +402,8 @@ const BookTickets = () => {
                 variant="h4"
                 fontStyle={"italic"}
                 color={"white"}
-                margin={"20px 0"}>
+                margin={"20px 0"}
+              >
                 {dataEventDetail?.type_of_event}
               </Typography>
             </Stack>
@@ -415,7 +419,8 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   <Typography variant="h6">{timeLeft.days}</Typography>
                   <Typography variant="body2">Day</Typography>
                 </Stack>
@@ -429,7 +434,8 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   <Typography variant="h6">{timeLeft.hours}</Typography>
                   <Typography variant="body2">hours</Typography>
                 </Stack>
@@ -443,7 +449,8 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   <Typography variant="h6">{timeLeft.minutes}</Typography>
                   <Typography variant="body2">minutes</Typography>
                 </Stack>
@@ -457,7 +464,8 @@ const BookTickets = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   <Typography variant="h6">{timeLeft.seconds}</Typography>
                   <Typography variant="body2">seconds</Typography>
                 </Stack>
@@ -470,7 +478,8 @@ const BookTickets = () => {
                   color: "black",
                   height: "max-content",
                   margin: "auto",
-                }}>
+                }}
+              >
                 <Stack direction={"row "} gap={"10px"} gridColumn={"10px"}>
                   <span
                     style={{
@@ -482,7 +491,8 @@ const BookTickets = () => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                    }}>
+                    }}
+                  >
                     <CalendarMonthIcon />
                   </span>
                   <Stack direction={"column"}>
@@ -518,13 +528,15 @@ const BookTickets = () => {
             height: "100%",
           }}
           container
-          spacing={2}>
+          spacing={2}
+        >
           <Grid item xs={8}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
                   onChange={handleChangeTab}
-                  aria-label="lab API tabs example">
+                  aria-label="lab API tabs example"
+                >
                   <Tab label="About" value="1" />
                   <Tab label="Ticket infomation" value="2" />
                 </TabList>
@@ -534,12 +546,14 @@ const BookTickets = () => {
                 <Stack
                   direction={"row"}
                   alignItems={"center"}
-                  justifyContent={"space-between"}>
+                  justifyContent={"space-between"}
+                >
                   <Typography variant="h4">About</Typography>
                   <Stack
                     direction={"row"}
                     alignItems={"center"}
-                    alignSelf={"center"}>
+                    alignSelf={"center"}
+                  >
                     <FormControl sx={{ m: 1, minWidth: 200 }} size="medium">
                       {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
                       <Select
@@ -560,7 +574,8 @@ const BookTickets = () => {
                       startIcon={<MyLocationIcon />}
                       size="medium"
                       variant="outlined"
-                      style={{ height: "max-content", padding: "15px 20px" }}>
+                      style={{ height: "max-content", padding: "15px 20px" }}
+                    >
                       Gần bạn
                     </Button>
                   </Stack>
@@ -573,19 +588,28 @@ const BookTickets = () => {
                     {dataEventDetail?.event_date?.length > 0 &&
                       dataEventDetail?.event_date[0]?.event_areas.map(
                         (item, index) => {
+                          console.log("item: ", item);
                           return (
                             <Stack
                               key={index}
-                              direction={"column"}
-                              style={{ cursor: "pointer" }}
+                              direction={"row"}
+                              justifyContent={"space-between"}
+                              style={{
+                                cursor: "pointer",
+                                width: "100%",
+                                alignItems: "center",
+                              }}
                               onClick={() => {
                                 handleOpen();
                                 setSelectRows(item?.rows);
-                              }}>
+                              }}
+                            >
                               <Typography variant="h4">
                                 {item.name_areas}
                               </Typography>
-                              <Divider />
+                              <Typography>
+                                {item.ticket_price} <sup>vnd</sup>
+                              </Typography>
                             </Stack>
                           );
                         }
@@ -604,7 +628,8 @@ const BookTickets = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           position: "relative",
-                        }}>
+                        }}
+                      >
                         <div
                           style={{
                             position: "absolute",
@@ -617,14 +642,16 @@ const BookTickets = () => {
                             height: "30px",
                             width: "30px",
                           }}
-                          onClick={handleClose}>
+                          onClick={handleClose}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6">
+                            className="w-6 h-6"
+                          >
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -637,65 +664,43 @@ const BookTickets = () => {
                       <Stack
                         direction={"column"}
                         alignItems={"center"}
-                        style={{ background: "black", padding: "20px" }}>
-                        <Stack
-                          direction={"column"}
-                          alignItems={"center"}
-                          justifyContent={"center"}>
-                          <div
-                            style={{
-                              width: "400px",
-                              height: "10px",
-                              borderRadius: "30px",
-                              background: "white",
-                            }}></div>
-                          <Typography
-                            variant="body1"
-                            color={"white"}
-                            marginTop={"10px"}
-                            fontWeight={"700"}>
-                            Stage
-                          </Typography>
-                        </Stack>
+                        style={{ background: "black", padding: "20px" }}
+                      >
                         <Box
                           component={"div"}
                           height={"300px"}
                           width={"80%"}
-                          style={{ overflow: "auto" }}>
+                          style={{ overflow: "auto" }}
+                        >
                           <Stack direction={"column"} gap={"30px"}>
                             {selectRows?.length > 0 &&
                               selectRows?.map((selectRow) => {
-                                console.log("SelectRow: ", selectRow);
                                 return (
                                   <Stack
                                     direction={"row"}
                                     gap={"20px"}
-                                    key={selectRow._id}>
+                                    key={selectRow._id}
+                                  >
                                     <Stack direction={"column"} gap={"10px"}>
                                       <Typography variant="h3" color={"white"}>
                                         {selectRow?.row_name}
                                       </Typography>
-                                      <Typography
-                                        whiteSpace={"nowrap"}
-                                        variant="body2"
-                                        color={"white"}>
-                                        Price: {selectRow?.ticket_price}
-                                      </Typography>
-                                      <Typography
-                                        whiteSpace={"nowrap"}
-                                        variant="body2"
-                                        color={"white"}>
-                                        Total chair: {selectRow?.total_chair}
-                                      </Typography>
                                     </Stack>
-                                    <Stack
-                                      direction={"row"}
-                                      flexWrap="wrap"
-                                      gap={"15px"}>
+                                    <Stack direction={"row"} gap={"15px"}>
                                       {selectRow?.chairs?.map((item, index) => {
+                                        const isCheckSelected =
+                                          selectChair.find((itemc) => {
+                                            return (
+                                              itemc._idChairName === item._id
+                                            );
+                                          });
                                         return (
                                           <div
                                             onClick={() => {
+                                              if (!countDown) {
+                                                setTime(600);
+                                                setCountDown(true);
+                                              }
                                               const exists = selectChair.some(
                                                 (itemC) =>
                                                   itemC.chair ===
@@ -705,15 +710,24 @@ const BookTickets = () => {
                                                 setSelectChair([
                                                   ...selectChair,
                                                   {
-                                                    _id: item._id,
+                                                    _idChairName: item._id,
                                                     chair: item.chair_name,
                                                     price:
                                                       selectRow?.ticket_price,
                                                   },
                                                 ]);
                                               }
+                                              if (isCheckSelected) {
+                                                setSelectChair(
+                                                  selectChair.filter(
+                                                    (check) =>
+                                                      check._idChairName !==
+                                                      item._id
+                                                  )
+                                                );
+                                              }
                                             }}
-                                            key={item.id}
+                                            key={index}
                                             style={{
                                               width: "50px",
                                               height: "50px",
@@ -725,10 +739,13 @@ const BookTickets = () => {
                                               cursor: "pointer",
                                               backgroundColor: `${
                                                 !item.isBuy
-                                                  ? "#6908bd"
+                                                  ? isCheckSelected
+                                                    ? "#ff15a0"
+                                                    : "#6908bd"
                                                   : "#46494c"
                                               }`,
-                                            }}>
+                                            }}
+                                          >
                                             {item.chair_name}
                                           </div>
                                         );
@@ -739,40 +756,65 @@ const BookTickets = () => {
                               })}
                           </Stack>
                         </Box>
-                        <Stack color={"white"} direction={"row"} gap={"40px"}>
+                        <Stack
+                          color={"white"}
+                          marginTop={"10px"}
+                          direction={"row"}
+                          gap={"40px"}
+                        >
                           <Stack direction={"row"} gap={"10px"}>
                             <Stack
                               direction={"row"}
                               alignItems={"center"}
-                              gap={"20px"}>
+                              gap={"20px"}
+                            >
                               <div
                                 style={{
                                   background: "#46494c",
                                   height: "25px",
                                   width: "25px",
                                   borderRadius: "4px",
-                                }}></div>
+                                }}
+                              ></div>
                               <span>Đã đặt</span>
                             </Stack>
                             <Stack
                               direction={"row"}
                               alignItems={"center"}
-                              gap={"10px"}>
+                              gap={"10px"}
+                            >
                               <div
                                 style={{
                                   background: "#6908bd",
                                   height: "25px",
                                   width: "25px",
                                   borderRadius: "4px",
-                                }}></div>
+                                }}
+                              ></div>
                               <span>Chưa đặt</span>
+                            </Stack>
+                            <Stack
+                              direction={"row"}
+                              alignItems={"center"}
+                              gap={"10px"}
+                            >
+                              <div
+                                style={{
+                                  background: "#ff15a0",
+                                  height: "25px",
+                                  width: "25px",
+                                  borderRadius: "4px",
+                                }}
+                              ></div>
+                              <span>Ghế bạn chọn</span>
                             </Stack>
                           </Stack>
                         </Stack>
                         <Typography
                           variant="body2"
                           color={"white"}
-                          marginTop={"20px"}>
+                          marginTop={"20px"}
+                        >
                           Xem chi tiết hình ảnh và thông tin ghế
                         </Typography>
                       </Stack>
@@ -780,12 +822,15 @@ const BookTickets = () => {
                         <Stack
                           direction={"row"}
                           gap={"20px"}
-                          alignItems={"center"}>
-                          <Typography variant="h4">
-                            Thời gian còn lại: {minutes < 10 ? "0" : ""}
-                            {minutes}:{seconds < 10 ? "0" : ""}
-                            {seconds}
-                          </Typography>
+                          alignItems={"center"}
+                        >
+                          {time > 0 && (
+                            <Typography variant="h4">
+                              Thời gian còn lại: {minutes < 10 ? "0" : ""}
+                              {minutes}:{seconds < 10 ? "0" : ""}
+                              {seconds}
+                            </Typography>
+                          )}
                         </Stack>
 
                         <Stack
@@ -794,28 +839,38 @@ const BookTickets = () => {
                           style={{ color: "gray", width: "100%" }}
                           alignItems={"center"}
                           justifyContent={"space-between"}
-                          flexWrap={"wrap"}>
+                          flexWrap={"wrap"}
+                        >
                           <Grid container spacing={3}>
                             <Grid item sx={6} md={6}>
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard">
+                                variant="standard"
+                              >
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Fullname
                                 </InputLabel>
-                                <Input id="standard-adornment-amount" />
+
+                                <Input
+                                  defaultValue={dataInfo?.full_name}
+                                  id="standard-adornment-amount"
+                                />
                               </FormControl>
                             </Grid>
                             <Grid item sx={6} md={6}>
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard">
+                                variant="standard"
+                              >
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Phone number
                                 </InputLabel>
-                                <Input id="standard-adornment-amount" />
+                                <Input
+                                  defaultValue={dataInfo?.phone}
+                                  id="standard-adornment-amount"
+                                />
                               </FormControl>
                             </Grid>
                           </Grid>
@@ -824,64 +879,72 @@ const BookTickets = () => {
                               <FormControl
                                 fullWidth
                                 sx={{ m: 1 }}
-                                variant="standard">
+                                variant="standard"
+                              >
                                 <InputLabel htmlFor="standard-adornment-amount">
                                   Enter email
                                 </InputLabel>
-                                <Input id="standard-adornment-amount" />
+                                <Input
+                                  defaultValue={dataUser?.email}
+                                  id="standard-adornment-amount"
+                                />
                               </FormControl>
                             </Grid>
                             <Grid item sx={6} md={6}>
-                              <FormControl
-                                fullWidth
-                                sx={{ m: 1 }}
-                                variant="standard">
-                                <InputLabel htmlFor="standard-adornment-amount">
-                                  Chair name
-                                </InputLabel>
-                                <Input id="standard-adornment-amount" />
-                              </FormControl>
+                              <Stack
+                                direction={"column"}
+                                alignSelf={"end"}
+                                borderBottom={"1px solid gray"}
+                              >
+                                <label htmlFor="" style={{ fontSize: "12px" }}>
+                                  chair name
+                                </label>
+                                <Stack>
+                                  <Stack
+                                    direction={"row"}
+                                    alignItems={"center"}
+                                    gap={"10px"}
+                                    style={{
+                                      padding: "5px 10px",
+                                      height: "38px",
+                                    }}
+                                  >
+                                    {selectChair.length > 0 && (
+                                      <>
+                                        <div>
+                                          {selectChair?.length > 0 &&
+                                            selectChair
+                                              .map((item) => {
+                                                return String(item.chair);
+                                              })
+                                              .join(",")}
+                                        </div>
+                                        <span
+                                          style={{
+                                            width: "20px",
+                                            height: "20px",
+                                            color: "red",
+                                          }}
+                                          onClick={() => setSelectChair([])}
+                                        >
+                                          <IconCircle />
+                                        </span>
+                                      </>
+                                    )}
+                                  </Stack>
+                                </Stack>
+                              </Stack>
                             </Grid>
                           </Grid>
                         </Stack>
 
-                        <Stack>
-                          {selectChair.length > 0 && (
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                              style={{
-                                borderRadius: "10px",
-                                border: "1px solid gray",
-                                padding: "5px 10px",
-                              }}>
-                              <div>
-                                {selectChair?.length > 0 &&
-                                  selectChair
-                                    .map((item) => {
-                                      return String(item.chair);
-                                    })
-                                    .join(",")}
-                              </div>
-                              <span
-                                style={{
-                                  width: "20px",
-                                  height: "20px",
-                                  color: "red",
-                                }}
-                                onClick={() => setSelectChair([])}>
-                                <IconCircle />
-                              </span>
-                            </Stack>
-                          )}
-                        </Stack>
                         <Divider />
                         <Stack
                           direction={"row"}
                           justifyContent={"space-between"}
                           marginTop={"15px"}
-                          alignItems={"center"}>
+                          alignItems={"center"}
+                        >
                           <Stack>
                             <Typography variant="body2" color={"gray"}>
                               Tạm tính
@@ -898,7 +961,8 @@ const BookTickets = () => {
                               fontWeight: "bold",
                               padding: "10px 20px",
                             }}
-                            onClick={(event) => handleBuyTickect(event)}>
+                            onClick={(event) => handleBuyTickect(event)}
+                          >
                             Buy Ticket
                           </Button>
                         </Stack>
@@ -917,22 +981,37 @@ const BookTickets = () => {
             <Stack
               direction={"column"}
               gap={"20px"}
-              style={{ marginTop: "30px" }}>
-              {Array(5)
-                .fill(0)
-                .map((_, index) => {
+              style={{ marginTop: "30px" }}
+            >
+              {dataEvents?.length > 0 &&
+                dataEvents.map((event) => {
                   return (
-                    <Card key={index} sx={{ display: "flex", gap: "20px" }}>
+                    <Card
+                      onClick={() => {
+                        navigate(`/book-tickets/${event?._id}`);
+                      }}
+                      key={event._id}
+                      sx={{ display: "flex", gap: "20px" }}
+                    >
                       <CardMedia
                         component="img"
-                        sx={{ width: 100, height: 140, borderRadius: "10px" }}
-                        image="https://cdn.nbtv.vn/upload/news/8_2022/2_13463624082022.jpg"
+                        sx={{
+                          width: 100,
+                          height: 140,
+                          borderRadius: "10px",
+                          cursor: "pointer",
+                        }}
+                        image={
+                          event.eventImage ||
+                          "https://t4.ftcdn.net/jpg/02/51/95/53/360_F_251955356_FAQH0U1y1TZw3ZcdPGybwUkH90a3VAhb.jpg"
+                        }
                         alt="Live from space album cover"
                       />
                       <Stack direction={"column"}>
                         <CardContent
                           sx={{ flex: "1 0 auto" }}
-                          style={{ padding: 0 }}>
+                          style={{ padding: 0 }}
+                        >
                           <Chip
                             label="18+"
                             style={{
@@ -944,31 +1023,16 @@ const BookTickets = () => {
                               padding: "5px 0",
                             }}
                           />
-                          <Typography component="div" variant="h5">
-                            Thanh Pho ngu gat
+                          <Typography component="div" variant="h6">
+                            {event.event_name}
                           </Typography>
                           <Typography
                             variant="subtitle1"
                             color="gray"
-                            component="div">
-                            Hình sự chính kịch
+                            component="div"
+                          >
+                            {event.type_of_event}
                           </Typography>
-                          <Stack
-                            direction={"row"}
-                            alignItems={"center"}
-                            gap={"5px"}>
-                            <span
-                              style={{
-                                color: "yellow",
-                                width: "20px",
-                                display: "flex",
-                              }}>
-                              <IconStar />
-                            </span>
-                            <Typography variant="body2" color={"gray"}>
-                              8.3
-                            </Typography>
-                          </Stack>
                         </CardContent>
                       </Stack>
                     </Card>

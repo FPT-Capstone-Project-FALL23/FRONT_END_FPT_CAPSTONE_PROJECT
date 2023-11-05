@@ -46,15 +46,16 @@ import {
   setLocalStorageUserData,
   setLocalStorageUserInfo,
 } from "../../../Store/userStore";
+import { useOpenStore } from "../../../Store/openStore";
 
 const Header = () => {
+  const { setSearchEvent } = useOpenStore();
   const dataUser = getLocalStorageUserData();
-  console.log("dataUser: ", dataUser);
   const dataInfo = getLocalStorageUserInfo();
-  console.log("dataInfo: ", dataInfo);
   const [isOpen, setIsOpen] = useState(false);
+
+  const [eventName, setEventName] = useState(null);
   const [selectsDistrict, setSelectsDistrict] = useState([]);
-  console.log("selectsDistrict: ", selectsDistrict);
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
@@ -99,6 +100,16 @@ const Header = () => {
     const currentDateTimestamp = new Date().getTime() / 1000;
     return date < currentDateTimestamp;
   };
+
+  const handleSearchEvent = () => {
+    setSearchEvent({
+      event_name: eventName || "",
+      type_of_event: "",
+      event_location: "",
+      event_date: "",
+    });
+  };
+
   const dataType = [
     {
       value: "option 1",
@@ -282,7 +293,8 @@ const Header = () => {
               <TextFieldStyle
                 id="filled-helperText"
                 label="Search Event"
-                defaultValue="Konser Jazz"
+                onChange={(e) => setEventName(e.target.value)}
+                defaultValue={eventName}
                 variant="filled"
                 size="medium"
               />
@@ -528,7 +540,12 @@ const Header = () => {
               </TextFieldStyle>
             </Grid>
             <Grid item xs={1}>
-              <Button variant="outlined" style={{ background: "white" }}>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={() => handleSearchEvent()}
+                style={{ background: "white" }}
+              >
                 Search
               </Button>
             </Grid>

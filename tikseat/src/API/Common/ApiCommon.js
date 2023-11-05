@@ -74,14 +74,6 @@ const ApiCommon = {
   resendOTP(data) {
     return axiosDefault.post(URL_RESENDOTP, data);
   },
-
-  getAllEvents(data) {
-    return axiosDefault.post(URL_GETALLEVENTS, data);
-  },
-
-  geDetailEvent(data) {
-    return axiosDefault.post(URL_GETDETAILEVENT, data);
-  },
 };
 
 export default ApiCommon;

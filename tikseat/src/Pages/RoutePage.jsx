@@ -15,7 +15,7 @@ const SendEmail = lazy(() => import("./Common/SendEmail"));
 const ProfileOrganizers = lazy(() => import("./Organizers/ProfileOrganizers"));
 const UpdatePfrofileOrganizer = lazy(() => import("./Organizers/UpdatePfrofileOrganizer"));
 const ProfileClient = lazy(() => import("./Client/ProfileClient"));
-const BookTickets = lazy(() => import("./Common/BookTickets"));
+const BookTickets = lazy(() => import("./Client/BookTickets"));
 // Trang tam thoi
 const HomePageClient = lazy(() => import("../Pages/Client/HomePageClient"));
 const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
