@@ -30,10 +30,14 @@ import ApiCity from "../../API/City/ApiCity";
 import {
   getLocalStorageUserData,
   setLocalStorageUserInfo,
+  getLocalStorageUserInfo,
 } from "../../Store/userStore";
 // import { handleFileInputChange } from "../Client/ProfileClient";
 // import { Api } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 
 function getStyles(name, eventType, theme) {
   return {
@@ -131,6 +135,9 @@ export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
 function ProfileOrganizers() {
   
   const dataUser = getLocalStorageUserData();
+  const dataInfo = getLocalStorageUserInfo();
+  console.log(dataUser);
+  console.log(dataInfo);
 
   console.log(dataUser._id);
   const [avatar, setAvatar] = useState();
@@ -163,9 +170,33 @@ function ProfileOrganizers() {
 
   console.log(organizerInfo);
 
+  
+  
+
+
   const theme = useTheme();
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+
+  //socket
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+  const _idUser  = dataUser._id;
+   const email = dataUser.email;
+  // const organizerName = dataInfo.organizer_name;
+  
+
+  useEffect(() => {
+    socket?.emit("_idUser", _idUser );
+  }, [socket, _idUser ]);
+
+  //Thay receiverName === isAdmin
+  const handleNewOrganizer = () => {
+    console.log("gửi thành công");
+    socket.emit("new_users", {
+      senderName : email ,
+       receiverName: "6544b5f73dd2f66548b5d85a",
+    });
+  };
 
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
@@ -222,6 +253,7 @@ function ProfileOrganizers() {
       reader.onloadend = () => {
         callApiProfileOrganizers(reader.result, _idUser, organizerInfo);
       };
+      
     } catch (error) {
       console.log("error", error);
     }
@@ -238,11 +270,21 @@ function ProfileOrganizers() {
         organizerInfo: organizerInfo,
         avatarImage: base64EncodedImage,
       });
-      console.log(respone.data)
+      // Kiểm tra dữ liệu trả về từ API (response) để đảm bảo gọi API thành công.
+    if (respone && respone.data) {
+      console.log("API response:", respone.data);
+      handleNewOrganizer();
+      console.log(respone.status);
+      // console.log(respone.data);
+      // Gọi thành công API
+    } else {
+      console.error("API response không hợp lệ:", respone);
+      // Xử lý lỗi khi API trả về dữ liệu không hợp lệ hoặc không có dữ liệu
+    }
       setLocalStorageUserInfo(respone.data);
       navigate("/dashboard");
     } catch (err) {
-      console.error(err);
+      console.error("Lỗi khi gọi API:",err);
     }
   };
 
@@ -528,6 +570,7 @@ function ProfileOrganizers() {
               color="black"
               content="Create account"
               backgroundcolor="#F5BD19"
+              onClick={handleNewOrganizer}
             />
           </Stack>
         </Grid>

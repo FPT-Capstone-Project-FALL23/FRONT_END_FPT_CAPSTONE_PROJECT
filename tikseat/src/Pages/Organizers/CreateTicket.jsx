@@ -70,9 +70,10 @@ function CreateTicket() {
     console.log("ran 1st");
     socket.emit("new_event", {
       senderName: organizerName,
-      receiverName: "64f20a070f3feb00f7f2f4f7",
+      receiverName: "6547447f11da6841a8aa58bf",
     });
   };
+  //"64f20a070f3feb00f7f2f4f7"
 
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
