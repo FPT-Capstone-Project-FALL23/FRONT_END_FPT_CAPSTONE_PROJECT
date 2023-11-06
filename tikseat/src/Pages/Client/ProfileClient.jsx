@@ -166,7 +166,6 @@ function ProfileClient() {
     }
   };
 
-
   return (
     <>
       <Grid
