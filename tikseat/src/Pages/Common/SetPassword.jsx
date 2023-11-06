@@ -38,7 +38,7 @@ const SetPassword = () => {
     if (roleUser == ROLE[0]) {
       navigate("/profileClient");
     } else {
-      navigate("/profileOrganizers");
+      navigate("/createProfileOrganizers");
     }
   };
 

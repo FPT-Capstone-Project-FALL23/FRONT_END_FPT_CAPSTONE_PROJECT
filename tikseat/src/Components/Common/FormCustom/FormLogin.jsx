@@ -48,6 +48,8 @@ function FormLogin({
       navigate("/");
     } else if (jwtDecode(getLocalStorageToken()).role == ROLE[1]) {
       navigate("/dashboard");
+    }else{
+      navigate("/homepageAdmin");
     }
   };
 

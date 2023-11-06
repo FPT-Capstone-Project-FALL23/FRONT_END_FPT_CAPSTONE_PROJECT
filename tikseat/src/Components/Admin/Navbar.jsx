@@ -17,6 +17,15 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useOpenStore } from "../../Store/openStore";
 import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
+import { io } from "socket.io-client";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import Popover from '@mui/material/Popover';
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Button from '@mui/material/Button';
+import { useEffect, useState } from "react";
+import {  removeLocalStorageUserData, getLocalStorageUserData } from "../../Store/userStore";
 
 const AppBar = styled(
   MuiAppBar,
@@ -24,6 +33,8 @@ const AppBar = styled(
 )(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
 }));
+
+
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -66,12 +77,71 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  
+  const [notifications, setNotifications] = useState([]);
   const updateOpen = useOpenStore((state) => state.updateOpen);
   const dopen = useOpenStore((state) => state.dopen);
+  const [anchorElProfile, setAnchorElProfile] = React.useState(null);
+  const [anchorElNotifications, setAnchorElNotifications] = React.useState(null);
+
+  
+  const socket = io(URL_SOCKET, { transports: ["websocket"] }); // Thay thế bằng URL của máy chủ Socket.io
+const dataUser = getLocalStorageUserData();
+
+console.log(dataUser._id);
+
+const _idUser = dataUser._id;
+// const email = dataUser.email;
+
+useEffect(() => {
+  socket?.emit("_idUser", _idUser);
+}, [socket, _idUser]);
+
+useEffect(() => {
+  // Đăng ký sự kiện "getNotification" khi component được mount
+  socket.on("adminNotification", handleNotification);
+  // Hủy đăng ký sự kiện khi component bị unmount
+  return () => {
+    socket.off("adminNotification", handleNotification);
+  };
+}, [socket]);
+
+const handleNotification = (data) => {
+  if (
+    !notifications.some(
+      (notification) => notification.senderName === data.senderName
+    )
+  ) {
+    setNotifications((prev) => [...prev, data]);
+    console.log("New adminnotification:", data);
+  }
+};
+
+console.log(notifications);
+
+const displayNotification = ({ senderName }) => {
+  return <p className="notification">{`${senderName} Create new Organizer.`}</p>;
+};
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElProfile(event.currentTarget);
+  };
+
+  
+  const handleNotificationsClick = (event) => {
+    setAnchorElNotifications(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorElProfile(null);
+    setAnchorElNotifications(null);
+  };
+
+  // Hàm xử lý đăng xuất
+  const handleLogout = () => {
+    // Xóa thông tin người dùng khỏi local storage hoặc trạng thái đăng nhập của ứng dụng
+    removeLocalStorageUserData(); // Đây là ví dụ, bạn cần xác định hàm xóa dữ liệu người dùng thực tế
+    // Sau đó chuyển người dùng đến trang đăng nhập hoặc trang chính của ứng dụng
   };
 
   return (
@@ -97,9 +167,10 @@ export default function Navbar() {
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
-              color="inherit">
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
+              color="inherit"
+              onClick={handleNotificationsClick}>
+               <Badge badgeContent={17} color="error">
+                  <NotificationsIcon />
               </Badge>
             </IconButton>
             <IconButton
@@ -125,6 +196,41 @@ export default function Navbar() {
           </Box> */}
         </Toolbar>
       </AppBar>
+      <Popover
+        open={Boolean(anchorElProfile)}
+        anchorEl={anchorElProfile}
+        onClose={handleClose}
+      >
+        <List component="nav">
+          <ListItem>
+            {/* Hiển thị tên người dùng */}
+            <ListItemText primary="Tên người dùng: John Doe" />
+          </ListItem>
+          <ListItem>
+            {/* Hiển thị hình ảnh người dùng (thay thế 'your_profile_image_url' bằng URL hình ảnh) */}
+            <img src="your_profile_image_url" alt="Avatar" style={{ width: 50, height: 50 }} />
+          </ListItem>
+          <ListItem>
+            {/* Nút đăng xuất */}
+            <Button onClick={handleLogout}>Đăng xuất</Button>
+          </ListItem>
+        </List>
+      </Popover>
+      <Popover
+        open={Boolean(anchorElNotifications)}
+        anchorEl={anchorElNotifications}
+        onClose={handleClose}
+        
+      >
+         <List component="nav">
+         
+         {notifications.map((notification, index) => (
+            <ListItem key={index}>
+                {displayNotification(notification)}
+            </ListItem>)
+          )}
+        </List>
+      </Popover>
     </Box>
   );
 }

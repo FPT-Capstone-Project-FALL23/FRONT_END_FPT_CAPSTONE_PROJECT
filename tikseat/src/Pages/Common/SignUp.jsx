@@ -27,6 +27,8 @@ const SignUp = () => {
   // const dataUser = jwtDecode(localStorage.getItem("userSignUp"));
   // console.log(dataUser);
 
+  
+
   const handleClickLogo = () => {
     if (dataUser.role == ROLE[0]) {
       navigate("/homepageClient");
