@@ -154,7 +154,7 @@ function ProfileClient() {
       const response = await ApiCommon.updateProfileClient({
         _idClient: _idClient,
         clientInfo: dataUpdate,
-        avatarImage: base64EncodedImage, 
+        avatarImage: base64EncodedImage, // Đường dẫn hình ảnh mới
       });
       // Sau khi cập nhật, có thể cần cập nhật dữ liệu người dùng với thông tin mới từ phản hồi
       await setLocalStorageUserInfo(response.data);
@@ -165,6 +165,7 @@ function ProfileClient() {
       console.error(err);
     }
   };
+
 
   return (
     <>
