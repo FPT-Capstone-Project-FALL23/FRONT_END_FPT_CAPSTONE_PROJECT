@@ -47,7 +47,6 @@ export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const objectUrl = URL.createObjectURL(selectedFile);
-    // console.log("objectUrl", objectUrl);
     setAvatar(objectUrl);
   }
 };
@@ -66,7 +65,6 @@ function ProfileClient() {
   const navigate = useNavigate();
 
   const handleIconClick = () => {
-    // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
   };
 
@@ -140,19 +138,40 @@ function ProfileClient() {
     }
   };
 
+  const callApiUpdateProfile = async (
+    _idClient,
+    dataUpdate,
+    base64EncodedImage = null
+  ) => {
+    try {
+      const response = await ApiCommon.updateProfileClient({
+        _idClient: _idClient,
+        clientInfo: dataUpdate,
+        avatarImage: base64EncodedImage, 
+      });
+      // Sau khi cập nhật, có thể cần cập nhật dữ liệu người dùng với thông tin mới từ phản hồi
+      await setLocalStorageUserInfo(response.data);
+      console.log(response.data);
+      navigate("/");
+      // ...
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <Grid
         style={{
           display: "flex",
           justifyContent: "center",
-          marginTop: "100px",
+          marginTop: "50px",
         }}
       >
-        {/* <h1>Profile Client</h1> */}
+        <h1>Profile Client</h1>
       </Grid>
       <FormSubmit
-        onSubmit={handleClientInfo}
+        onSubmit={(e) => handleClientInfo(e)}
         style={{
           width: "100%",
           height: "100%",
@@ -274,14 +293,7 @@ function ProfileClient() {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>{" "}
-              <ButtonCustom
-                type="button"
-                onClick={() => navigate("/change-password")}
-                color="black"
-                content="Update password"
-                backgroundcolor="#F5BD19"
-              />
+              </FormControl>
             </Stack>
           </Grid>
           <Grid marginTop={"20px"}>
