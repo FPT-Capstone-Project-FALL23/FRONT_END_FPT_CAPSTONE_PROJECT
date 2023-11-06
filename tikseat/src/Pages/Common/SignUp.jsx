@@ -23,15 +23,15 @@ const GridStyleLayout = styled(Grid)`
 const SignUp = () => {
   const navigate = useNavigate();
   const dataUser = getLocalStorageUserData();
-  console.log("dataUser", dataUser);
+  // console.log("dataUser", dataUser);
   // const dataUser = jwtDecode(localStorage.getItem("userSignUp"));
   // console.log(dataUser);
 
   const handleClickLogo = () => {
-    if (dataUser.role == ROLE[0]) {
-      navigate("/homepageClient");
+    if (dataUser.role === ROLE[0]) {
+      navigate("/");
     } else {
-      navigate("/homepageOrganizer");
+      navigate("/dashboard");
     }
   };
 
@@ -53,17 +53,6 @@ const SignUp = () => {
                 {NAME_LOGO}
               </Typography>
             </Button>
-            <Typography
-              variant="h4"
-              component={"h6"}
-              style={{
-                marginTop: "20px",
-                fontStyle: "italic",
-                paddingRight: "20%",
-              }}
-            >
-              Profile
-            </Typography>
           </Grid>
 
           <Grid style={{marginTop:"20px"}}>
