@@ -213,12 +213,8 @@ function ProfileOrganizers() {
     e.preventDefault();
     try {
       const _idUser = dataUser._id;
-      if (!selectedFile) {
-        callApiProfileOrganizers(null, _idUser, organizerInfo);
-      }
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
-
       reader.onloadend = () => {
         callApiProfileOrganizers(reader.result, _idUser, organizerInfo);
       };

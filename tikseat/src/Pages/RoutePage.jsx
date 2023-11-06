@@ -53,10 +53,7 @@ function RoutePage() {
         </Route>
         <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
         <Route element={<SignUp />}>
-          <Route
-            path="/createProfileOrganizers"
-            element={<ProfileOrganizers />}
-          />
+          <Route path="/createProfileOrganizers" element={<ProfileOrganizers />} />
           <Route path="/createProfileClient" element={<ProfileClient />} />
         </Route>
         <Route
