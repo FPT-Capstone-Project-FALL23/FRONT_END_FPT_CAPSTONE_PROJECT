@@ -28,8 +28,8 @@ const ApiCommon = {
     return axiosDefault.post(URL_CHANGEPASSWORD, data);
   },
 
-  async updateProfileClient(data) {
-    return await axiosDefault.post(URL_UPDATE_PROFILE, data);
+   updateProfileClient(data) {
+    return  axiosDefault.post(URL_UPDATE_PROFILE, data);
   },
   profileClient(data) {
     return axiosDefault.post(URL_PROFILECLIENT, data);

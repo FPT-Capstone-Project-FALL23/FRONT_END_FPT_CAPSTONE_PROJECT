@@ -43,7 +43,6 @@ function getStyles(name, personName, theme) {
 export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
   // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
   const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const objectUrl = URL.createObjectURL(selectedFile);
@@ -58,8 +57,7 @@ function ProfileClient() {
   const today = new Date().toISOString().slice(0, 10);
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  console.log("dataInfo: ", dataInfo);
-  const [avatar, setAvatar] = useState("");
+  const [avatar, setAvatar] = useState(dataInfo?.avatarImage || "");
   const [selectedFile, setSelectedFile] = useState(null);
   console.log("selectedFile: ", selectedFile);
   const fileInputRef = useRef(null);
@@ -71,12 +69,12 @@ function ProfileClient() {
   };
 
   const [clientInfo, setClientInfo] = useState({
-    email: dataUser.email,
-    full_name: dataInfo?.full_name,
-    phone: dataInfo?.phone,
-    birthday: today,
-    gender: dataInfo?.gender,
-    favorit_enres: dataInfo?.favorit_enres,
+    email: dataUser.email || "",
+    full_name: dataInfo?.full_name || "",
+    phone: dataInfo?.phone || "",
+    birthday: today || "",
+    gender: dataInfo?.gender || "",
+    favorit_enres: dataInfo?.favorit_enres || "",
   });
   console.log("clientInfo: ", clientInfo);
 
@@ -90,6 +88,7 @@ function ProfileClient() {
       [name]: value,
     }));
   };
+
   const callApiProfile = async (base64EncodedImage, _idUser, clientInfo) => {
     try {
       const respone = await ApiCommon.profileClient({
@@ -97,6 +96,7 @@ function ProfileClient() {
         clientInfo: clientInfo,
         avatarImage: base64EncodedImage,
       });
+      console.log(respone.data);
       await setLocalStorageUserInfo(respone.data);
       navigate("/");
     } catch (err) {
@@ -106,39 +106,109 @@ function ProfileClient() {
 
   const handleClientInfo = async (e) => {
     e.preventDefault();
+    const base64EncodedImage = avatar;
     const formData = new FormData();
     formData.append("avatarImage", selectedFile);
-    try {
-      const _idUser = dataUser._id;
-      const dataUpdate = {
-        avatarImage: avatar || "",
-        _idClient: dataInfo?._id,
-        clientInfo: {
+    if (dataInfo) {
+      try {
+        const _idClient = dataInfo._id;
+        const dataUpdate = {
           full_name: clientInfo?.full_name || "",
           phone: clientInfo?.phone || "",
           birthday: clientInfo.birthday || "",
           gender: clientInfo.gender || "",
           favorit_enres: clientInfo.favorit_enres || "",
-        },
-      };
-      const response = await ApiCommon.updateProfileClient(dataUpdate);
-      if (response?.status) {
-        setLocalStorageUserInfo(response.data);
-      }
-      console.log("response: ", response);
-      if (!selectedFile) {
-        callApiProfile(null, _idUser, clientInfo);
-      }
-      // const reader = new FileReader();
-      // reader.readAsDataURL(selectedFile);
+        };
 
-      // reader.onloadend = () => {
-      //   callApiProfile(reader.result, _idUser, clientInfo);
-      // };
-    } catch (error) {
-      console.log("error", error);
+        if (selectedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedFile);
+          reader.onloadend = () => {
+            // Gửi hình ảnh mới lên máy chủ và sau đó cập nhật dữ liệu người dùng
+            callApiUpdateProfile(_idClient, dataUpdate, reader.result);
+          };
+        } else {
+          callApiUpdateProfile(_idClient, dataUpdate);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    } else {
+      try {
+        const reader = new FileReader();
+        const _idUser = dataUser._id;
+        reader.readAsDataURL(selectedFile);
+        reader.onloadend = () => {
+          callApiProfile(reader.result, _idUser, clientInfo);
+        };
+      } catch (error) {
+        console.log("error", error);
+      }
     }
   };
+
+  const callApiUpdateProfile = async (
+    _idClient,
+    dataUpdate,
+    base64EncodedImage = null
+  ) => {
+    try {
+      const response = await ApiCommon.updateProfileClient({
+        _idClient: _idClient,
+        clientInfo: dataUpdate,
+        avatarImage: base64EncodedImage, // Đường dẫn hình ảnh mới
+      });
+      // Sau khi cập nhật, có thể cần cập nhật dữ liệu người dùng với thông tin mới từ phản hồi
+      await setLocalStorageUserInfo(response.data);
+      console.log(response.data);
+      navigate("/");
+      // ...
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // const handleClientInfo = async (e) => {
+  //   e.preventDefault();
+  //   const base64EncodedImage = avatar;
+  //   const formData = new FormData();
+  //   formData.append("avatarImage", selectedFile);
+  //   if (dataInfo) {
+  //     try {
+  //       // const _idUser = dataUser._id;
+  //       const dataUpdate = {
+  //         avatarImage: avatar || "",
+  //         _idClient: dataInfo?._id,
+  //         clientInfo: {
+  //           full_name: clientInfo?.full_name || "",
+  //           phone: clientInfo?.phone || "",
+  //           birthday: clientInfo.birthday || "",
+  //           gender: clientInfo.gender || "",
+  //           favorit_enres: clientInfo.favorit_enres || "",
+  //         },
+  //       };
+  //       const response = await ApiCommon.updateProfileClient(dataUpdate);
+  //       console.log(response);
+  //       // if (response?.status) {
+  //       //   setLocalStorageUserInfo(response.data);
+  //       // }
+  //       // console.log("response: ", response);
+  //       // if (!selectedFile) {
+  //       //   callApiProfile(null, _idUser, clientInfo);
+  //       // }
+  //       // // const reader = new FileReader();
+  //       // // reader.readAsDataURL(selectedFile);
+
+  //       // // reader.onloadend = () => {
+  //       // //   callApiProfile(reader.result, _idUser, clientInfo);
+  //       // // };
+  //     } catch (error) {
+  //       console.log("error", error);
+  //     }
+  //   } else {
+  //     await callApiProfile(base64EncodedImage, dataUser._id, clientInfo);
+  //   }
+  // };
 
   return (
     <>
@@ -152,7 +222,8 @@ function ProfileClient() {
         {/* <h1>Profile Client</h1> */}
       </Grid>
       <FormSubmit
-        onSubmit={handleClientInfo}
+        onSubmit={(e) => handleClientInfo(e)}
+        // onSubmit={callApiProfile}
         style={{
           width: "100%",
           height: "100%",
@@ -247,7 +318,11 @@ function ProfileClient() {
                   id="demo-multiple-chip"
                   multiple
                   name="favorit_enres"
-                  value={clientInfo?.favorit_enres}
+                  value={
+                    Array.isArray(clientInfo?.favorit_enres)
+                      ? clientInfo?.favorit_enres
+                      : []
+                  }
                   onChange={handleInputChange}
                   input={
                     <OutlinedInput
@@ -275,13 +350,13 @@ function ProfileClient() {
                   ))}
                 </Select>
               </FormControl>{" "}
-              <ButtonCustom
+              {/* <ButtonCustom
                 type="button"
                 onClick={() => navigate("/change-password")}
                 color="black"
                 content="Update password"
                 backgroundcolor="#F5BD19"
-              />
+              /> */}
             </Stack>
           </Grid>
           <Grid marginTop={"20px"}>
@@ -324,20 +399,6 @@ function ProfileClient() {
             alignItems: "center",
           }}
         >
-          {/* <div>
-            <FormControlLabel
-              style={{ fontSize: "14px", marginTop: "40px" }}
-              control={<Checkbox />}
-              label={
-                <span>
-                  I agree to all the{" "}
-                  <span style={{ color: "#F5BD19" }}>Terms</span> and
-                  <span style={{ color: "#F5BD19" }}> Privacy Policies</span>
-                </span>
-              }
-            />
-          </div> */}
-
           <Stack style={{ width: "50%", marginTop: "20px" }}>
             <ButtonCustom
               color="black"
