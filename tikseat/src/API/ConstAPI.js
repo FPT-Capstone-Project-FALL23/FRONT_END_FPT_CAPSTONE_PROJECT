@@ -1,7 +1,7 @@
 export const BASE_URL = "http://localhost:8080/api";
 export const URL_SOCKET = "http://localhost:5000";
 export const URL_API_CITY = "https://provinces.open-api.vn/api/";
-
+//localhost:8080/api/event/searchEvent
 //-------------------AUTH----------------------------
 export const URL_LOGIN = "/auth/login";
 export const URL_REGISTERUSER = "auth/resigterUser";

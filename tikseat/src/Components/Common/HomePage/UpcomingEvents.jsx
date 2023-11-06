@@ -4,10 +4,13 @@ import { UPCOMING_EVENTS } from "../../../Assets/Constant/Common/constCommon";
 import { colorIndigo } from "../../../Assets/CSS/Style/theme";
 import CardItem from "./CardItem";
 import { BoxPaginationStyle } from "../../../Assets/CSS/Style/style.const";
-import ApiCommon from "../../../API/Common/ApiCommon";
+import ApiClient from "../../../API/Client/ApiClient";
+import { useOpenStore } from "../../../Store/openStore";
+import ApiEvent from "../../../API/Event/ApiEvent";
 
 const UpcomingEvents = () => {
   const [page, setPage] = useState(1);
+  const { searchEvent } = useOpenStore();
   const [dataEvent, setDataEvent] = useState([]);
   console.log("dataEvent: ", dataEvent);
   const itemsPerPage = 12;
@@ -17,13 +20,23 @@ const UpcomingEvents = () => {
   };
 
   useEffect(() => {
-    async function getAllEvents() {
-      const responseEvents = await ApiCommon.getAllEvents({ page });
-      console.log("responseEvents: ", responseEvents);
-      setDataEvent(responseEvents.events);
+    if (searchEvent?.event_name?.length > 0 || searchEvent !== null) {
+      async function handleSearchEvent() {
+        const resDataSearchEvent = await ApiEvent.searchEvent(searchEvent);
+        setDataEvent(resDataSearchEvent.data);
+        console.log("resDataSearchEvent.events: ", resDataSearchEvent);
+      }
+      handleSearchEvent();
     }
-    getAllEvents();
-  }, [page]);
+    if (searchEvent === null || searchEvent?.event_name?.length === 0) {
+      async function getAllEvents() {
+        const responseEvents = await ApiClient.getAllEvents({ page });
+        console.log("responseEvents: ", responseEvents);
+        setDataEvent(responseEvents.events);
+      }
+      getAllEvents();
+    }
+  }, [page, searchEvent]);
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -59,7 +72,7 @@ const UpcomingEvents = () => {
         </Grid>
         <BoxPaginationStyle>
           <Pagination
-            count={Math.ceil(dataEvent.length / itemsPerPage)}
+            count={Math.ceil(dataEvent?.length / itemsPerPage)}
             page={page}
             onChange={handlePageChange}
             defaultPage={1}
