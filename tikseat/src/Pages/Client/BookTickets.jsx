@@ -60,6 +60,8 @@ const style = {
 const BookTickets = () => {
   const { id: idEvent } = useParams();
   const [age, setAge] = useState("");
+  const [openConfrm, setOpenConfirm] = React.useState(false);
+
   const [dataEvents, setDataEvents] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState();
   console.log("dataEventDetail: ", dataEventDetail);
@@ -147,10 +149,17 @@ const BookTickets = () => {
       if (response) {
         //chuyển trang qua trang của zalo
         window.location.href = response.data.order_url;
+        handleCloseConfirm();
       }
     } catch (e) {
       alert(e.response.data.message);
     }
+  };
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  };
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
   };
 
   useEffect(() => {
@@ -530,7 +539,7 @@ const BookTickets = () => {
           container
           spacing={2}
         >
-          <Grid item xs={8}>
+          <Grid item xs={12}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
@@ -542,45 +551,29 @@ const BookTickets = () => {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                {" "}
-                <Stack
-                  direction={"row"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                >
-                  <Typography variant="h4">About</Typography>
-                  <Stack
-                    direction={"row"}
-                    alignItems={"center"}
-                    alignSelf={"center"}
-                  >
-                    <FormControl sx={{ m: 1, minWidth: 200 }} size="medium">
-                      {/* <InputLabel id="demo-select-small-label">Age</InputLabel> */}
-                      <Select
-                        labelId="demo-select-small-label"
-                        id="demo-select-small"
-                        value={age || 10}
-                        defaultValue={10}
-                        // label="Thanh Pho"
-                        onChange={handleChange}
-                        // IconComponent={<LocationOnIcon />}
-                      >
-                        <MenuItem value={10}>Thanh pho HCM</MenuItem>
-                        <MenuItem value={20}>THanh pho HN</MenuItem>
-                        <MenuItem value={30}>Thanh Pho hai phong</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <Button
-                      startIcon={<MyLocationIcon />}
-                      size="medium"
-                      variant="outlined"
-                      style={{ height: "max-content", padding: "15px 20px" }}
+                <Grid container spacing={2} style={{ width: "100%" }}>
+                  <Grid item xs={5}>
+                    <Stack
+                      direction={"row"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
                     >
-                      Gần bạn
-                    </Button>
-                  </Stack>
-                </Stack>
-                <Stack>{dataEventDetail?.event_description}</Stack>
+                      <Typography variant="h4">About</Typography>
+                    </Stack>
+                    <Stack>{dataEventDetail?.event_description}</Stack>
+                  </Grid>
+                  <Grid item xs={7}>
+                    <div style={{ height: "400px" }}>
+                      <img
+                        style={{ objectFit: "cover" }}
+                        height={"100%"}
+                        src={dataEventDetail?.type_layout}
+                        alt=""
+                        loading="lazy"
+                      />
+                    </div>
+                  </Grid>
+                </Grid>
               </TabPanel>
               <TabPanel value="2">
                 <Stack>
@@ -954,17 +947,113 @@ const BookTickets = () => {
                             </Typography>
                           </Stack>
                           <Button
+                            disabled={selectChair?.length <= 0}
                             type="button"
                             style={{
-                              background: "#bfad17",
+                              background: `${
+                                selectChair?.length <= 0 ? "gray" : "#bfad17"
+                              }`,
                               color: "white",
                               fontWeight: "bold",
                               padding: "10px 20px",
                             }}
-                            onClick={(event) => handleBuyTickect(event)}
+                            onClick={(event) => handleOpenConfirm()}
                           >
-                            Buy Ticket
+                            Confirm
                           </Button>
+                          <Modal
+                            open={openConfrm}
+                            onClose={handleCloseConfirm}
+                            aria-labelledby="child-modal-title"
+                            aria-describedby="child-modal-description"
+                          >
+                            <Box
+                              sx={{
+                                ...style,
+                                width: 500,
+                                padding: "20px",
+                                borderRadius: "10px",
+                              }}
+                            >
+                              <Stack direction={"column"}>
+                                <Stack direction={"row"} padding={" 10px 0"}>
+                                  <label
+                                    htmlFor=""
+                                    style={{
+                                      fontWeight: "500",
+                                      fontSize: "18px",
+                                    }}
+                                  >
+                                    Confirm chair name:{" "}
+                                  </label>
+                                  <Stack
+                                    marginLeft={"10px"}
+                                    direction={"row"}
+                                    alignItems={"center"}
+                                  >
+                                    {selectChair.length > 0 && (
+                                      <>
+                                        <span
+                                          style={{
+                                            fontSize: "18px",
+                                            fontWeight: "700",
+                                          }}
+                                        >
+                                          {selectChair?.length > 0 &&
+                                            selectChair
+                                              .map((item) => {
+                                                return String(item.chair);
+                                              })
+                                              .join(",")}
+                                        </span>
+                                      </>
+                                    )}
+                                  </Stack>
+                                </Stack>
+                                <Stack
+                                  direction={"row"}
+                                  alignItems={"center"}
+                                  padding={" 10px 0"}
+                                >
+                                  <label
+                                    htmlFor=""
+                                    style={{
+                                      fontWeight: "500",
+                                      fontSize: "18px",
+                                    }}
+                                  >
+                                    Email recieve ticket:{" "}
+                                  </label>
+                                  <span style={{ marginLeft: "10px" }}>
+                                    {dataUser?.email}
+                                  </span>
+                                </Stack>
+                              </Stack>
+                              <Stack
+                                direction={"row"}
+                                spacing={2}
+                                marginTop={"30px"}
+                                justifyContent={"center"}
+                                alignItems={"center"}
+                              >
+                                <Button
+                                  type="button"
+                                  variant="outlined"
+                                  onClick={handleCloseConfirm}
+                                >
+                                  Close
+                                </Button>
+                                <Button
+                                  type="button"
+                                  style={{ backgroundColor: "#bfad17" }}
+                                  variant="contained"
+                                  onClick={(e) => handleBuyTickect(e)}
+                                >
+                                  Buy Ticket
+                                </Button>
+                              </Stack>
+                            </Box>
+                          </Modal>
                         </Stack>
                       </Stack>
                     </Box>
@@ -973,15 +1062,21 @@ const BookTickets = () => {
               </TabPanel>
             </TabContext>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12}>
             <Typography component={"div"} variant="h3">
               Events
             </Typography>
 
             <Stack
-              direction={"column"}
+              direction={"row"}
               gap={"20px"}
-              style={{ marginTop: "30px" }}
+              style={{
+                marginTop: "30px",
+                overflow: "auto",
+                width: "100%",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+              }}
             >
               {dataEvents?.length > 0 &&
                 dataEvents.map((event) => {
@@ -991,12 +1086,16 @@ const BookTickets = () => {
                         navigate(`/book-tickets/${event?._id}`);
                       }}
                       key={event._id}
-                      sx={{ display: "flex", gap: "20px" }}
+                      sx={{
+                        // display: "flex",
+                        gap: "20px",
+                        flexDirection: "column",
+                      }}
                     >
                       <CardMedia
                         component="img"
                         sx={{
-                          width: 100,
+                          width: 300,
                           height: 140,
                           borderRadius: "10px",
                           cursor: "pointer",
@@ -1007,7 +1106,7 @@ const BookTickets = () => {
                         }
                         alt="Live from space album cover"
                       />
-                      <Stack direction={"column"}>
+                      <Stack direction={"column"} style={{ padding: "20px" }}>
                         <CardContent
                           sx={{ flex: "1 0 auto" }}
                           style={{ padding: 0 }}

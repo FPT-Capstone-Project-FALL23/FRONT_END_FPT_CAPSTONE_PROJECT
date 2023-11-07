@@ -288,11 +288,17 @@ const Header = () => {
           </CarouselStyle>
         </div>
         <FormHeaderStyle>
-          <Grid container spacing={2} alignItems={"self-end"}>
+          <Grid
+            container
+            spacing={2}
+            alignItems={"self-end"}
+            position={"relative"}
+            style={{ height: "100%" }}
+          >
             <Grid item xs={2}>
               <TextFieldStyle
                 id="filled-helperText"
-                label="Search Event"
+                label="Event name"
                 onChange={(e) => setEventName(e.target.value)}
                 defaultValue={eventName}
                 variant="filled"
@@ -528,7 +534,7 @@ const Header = () => {
               <TextFieldStyle
                 id="filled-helperText"
                 select
-                label="Select"
+                label="Type Event"
                 defaultValue="option 1"
                 variant="filled"
               >
@@ -549,6 +555,18 @@ const Header = () => {
                 Search
               </Button>
             </Grid>
+            <div
+              style={{
+                position: "absolute",
+                top: "-25px",
+                left: "-25px",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "20px",
+              }}
+            >
+              Search Event
+            </div>
           </Grid>
         </FormHeaderStyle>
       </HeaderStyle>
