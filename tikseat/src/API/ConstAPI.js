@@ -9,6 +9,7 @@ export const URL_PROFILEOTGANIZER = "/auth/createOrganizer";
 export const URL_PROFILECLIENT = "/auth/createClient";
 export const URL_UPDATE_PROFILE = "/auth/updateClient";
 export const URL_CHANGEPASSWORD = "/auth/changePassword";
+export const URL_UPDATE_PROFILEORGANIZER = "auth/updateOrganizer";
 
 //-------------------SENDMAIL----------------------------
 export const URL_SENOTP = "/sendMail/sendOTPResign";
