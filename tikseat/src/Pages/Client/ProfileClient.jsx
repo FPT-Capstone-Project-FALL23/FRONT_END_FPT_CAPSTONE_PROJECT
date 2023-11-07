@@ -122,7 +122,6 @@ function ProfileClient() {
           const reader = new FileReader();
           reader.readAsDataURL(selectedFile);
           reader.onloadend = () => {
-            // Gửi hình ảnh mới lên máy chủ và sau đó cập nhật dữ liệu người dùng
             callApiUpdateProfile(_idClient, dataUpdate, reader.result);
           };
         } else {
@@ -133,12 +132,16 @@ function ProfileClient() {
       }
     } else {
       try {
-        const reader = new FileReader();
         const _idUser = dataUser._id;
-        reader.readAsDataURL(selectedFile);
-        reader.onloadend = () => {
-          callApiProfile(reader.result, _idUser, clientInfo);
-        };
+        if (selectedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedFile);
+          reader.onloadend = () => {
+            callApiProfile(reader.result, _idUser, clientInfo);
+          };
+        } else {
+          callApiProfile(null, _idUser, clientInfo);
+        }
       } catch (error) {
         console.log("error", error);
       }

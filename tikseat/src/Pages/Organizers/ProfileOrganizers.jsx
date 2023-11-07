@@ -30,8 +30,8 @@ import ApiCity from "../../API/City/ApiCity";
 import {
   getLocalStorageUserData,
   setLocalStorageUserInfo,
+  getLocalStorageUserInfo,
 } from "../../Store/userStore";
-// import { handleFileInputChange } from "../Client/ProfileClient";
 // import { Api } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -123,17 +123,18 @@ export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const objectUrl = URL.createObjectURL(selectedFile);
-    // console.log("objectUrl", objectUrl);
     setAvatar(objectUrl);
   }
 };
 
 function ProfileOrganizers() {
-  
   const dataUser = getLocalStorageUserData();
+  const dataInfo = getLocalStorageUserInfo();
 
-  console.log(dataUser._id);
-  const [avatar, setAvatar] = useState();
+  // console.log(dataInfo.address.city);
+
+  console.log(dataInfo);
+  const [avatar, setAvatar] = useState(dataInfo?.avatarImage || "");
   const [selectedFile, setSelectedFile] = useState(null);
   const [eventType, setEventType] = useState([]);
   const [allCity, setAllCity] = useState([]);
@@ -141,23 +142,32 @@ function ProfileOrganizers() {
   const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
 
-  const [selectCity, setSelectCity] = useState(null);
-  const [selectDistrict, setSelectDistrict] = useState(null);
-  const [selectWard, setSelectWard] = useState(null);
+  const [selectCity, setSelectCity] = useState(dataInfo?.address?.city || "");
+  console.log(selectCity);
+  const [selectDistrict, setSelectDistrict] = useState(
+    dataInfo?.address?.district || ""
+  );
+  const [selectWard, setSelectWard] = useState(dataInfo?.address?.ward || "");
+  const [specificAddress, setSpecificAddress] = useState(
+    dataInfo?.address?.specific_address || ""
+  );
+  // const foundedDate = new Date(dataInfo?.founded_date)
+  // .toISOString()
+  // .slice(0, 10);
 
   const [organizerInfo, setOrganizerInfo] = useState({
-    organizer_name: "",
-    organizer_type: eventType,
-    isActive: false,
-    phone: "",
-    website: "",
-    founded_date: today,
-    description: "",
+    organizer_name: dataInfo?.organizer_name || "",
+    organizer_type: dataInfo?.organizer_type || eventType,
+    isActive: dataInfo?.isActive || false,
+    phone: dataInfo?.phone || "",
+    website: dataInfo?.website || "",
+    description: dataInfo?.description || "",
+    founded_date: today || "",
     address: {
-      city: selectCity?.name,
-      district: selectDistrict?.name,
-      ward: selectWard?.name,
-      specific_address: "",
+      city: selectCity ? selectCity?.name : "",
+      district: selectDistrict ? selectDistrict?.name : "",
+      ward: selectWard ? selectWard?.name : "",
+      specific_address: specificAddress || "",
     },
   });
 
@@ -177,18 +187,22 @@ function ProfileOrganizers() {
     getAPICity(setAllCity);
   }, []);
 
-  //thêm thành phố, quận huyện, phường xã khi có thay đổi của nớ
+  //thêm thành phố, quận huyện, phường xã khi có thay đổi của nó
   useEffect(() => {
     setOrganizerInfo((prevOrganizerInfo) => ({
       ...prevOrganizerInfo,
       address: {
-        city: selectCity?.name,
-        district: selectDistrict?.name,
-        ward: selectWard?.name,
-        specific_address: null,
+        city: selectCity.name || dataInfo?.address?.city || selectCity?.name,
+        district:
+          selectDistrict.name ||
+          dataInfo?.address?.district ||
+          selectDistrict?.name,
+        ward: selectWard.name || dataInfo?.address?.ward || selectWard?.name,
+        specific_address: dataInfo?.address?.specific_address || "",
       },
     }));
   }, [selectCity, selectDistrict, selectWard]);
+  console.log(organizerInfo);
 
   const handleInputChange = (name, value) => {
     // const { name, value } = event.target;
@@ -211,15 +225,65 @@ function ProfileOrganizers() {
 
   const handleOrganizerInfo = async (e) => {
     e.preventDefault();
-    try {
-      const _idUser = dataUser._id;
-      const reader = new FileReader();
-      reader.readAsDataURL(selectedFile);
-      reader.onloadend = () => {
-        callApiProfileOrganizers(reader.result, _idUser, organizerInfo);
-      };
-    } catch (error) {
-      console.log("error", error);
+    const formData = new FormData();
+    formData.append("avatarImage", selectedFile);
+    if (dataInfo) {
+      try {
+        const _idOrganizer = dataInfo._id;
+        console.log(organizerInfo);
+        const dataUpdate = {
+          organizer_name: organizerInfo.organizer_name,
+          organizer_type: organizerInfo?.organizer_type || eventType,
+          isActive: organizerInfo?.isActive || false,
+          phone: organizerInfo?.phone || "",
+          website: organizerInfo?.website || "",
+          description: organizerInfo?.description || "",
+          founded_date: organizerInfo?.founded_date || today,
+          address: {
+            city:
+              organizerInfo?.address?.city ||
+              (selectCity ? selectCity?.name : ""),
+            district:
+              organizerInfo?.address?.district ||
+              (selectDistrict ? selectDistrict?.name : ""),
+            ward:
+              organizerInfo?.address?.ward ||
+              (selectWard ? selectWard?.name : ""),
+            specific_address: organizerInfo?.address?.specific_address || "",
+          },
+        };
+
+        if (selectedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedFile);
+          reader.onloadend = () => {
+            callApiUpdateProfileOrganizer(
+              _idOrganizer,
+              dataUpdate,
+              reader.result
+            );
+          };
+        } else {
+          callApiUpdateProfileOrganizer(_idOrganizer, dataUpdate);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const _idUser = dataUser._id;
+        if (selectedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedFile);
+          reader.onloadend = () => {
+            callApiProfileOrganizers(reader.result, _idUser, organizerInfo);
+          };
+        } else {
+          callApiProfileOrganizers(null,_idUser, organizerInfo);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
     }
   };
 
@@ -234,11 +298,30 @@ function ProfileOrganizers() {
         organizerInfo: organizerInfo,
         avatarImage: base64EncodedImage,
       });
-      console.log(respone.data)
+      console.log(respone.data);
       setLocalStorageUserInfo(respone.data);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const callApiUpdateProfileOrganizer = async (
+    _idOrganizer,
+    dataUpdate,
+    base64EncodedImage = null
+  ) => {
+    try {
+      const response = await ApiCommon.updateProfileOrganizer({
+        _idOrganizer: _idOrganizer,
+        organizerInfo: dataUpdate,
+        avatarImage: base64EncodedImage,
+      });
+      await setLocalStorageUserInfo(response.data);
+      console.log(response.data);
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -259,7 +342,7 @@ function ProfileOrganizers() {
       >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "45%" }}>
-            <Stack style={{marginBottom:"30px"}}>
+            <Stack style={{ marginBottom: "30px" }}>
               <InputCustom
                 type="text"
                 id="organizer_name"
@@ -274,7 +357,7 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginBottom:"30px"
+                marginBottom: "30px",
               }}
             >
               <Stack style={{ width: "47%" }}>
@@ -298,7 +381,7 @@ function ProfileOrganizers() {
                 />
               </Stack>
             </Stack>
-            <Stack style={{marginBottom:"30px"}}>
+            <Stack style={{ marginBottom: "30px" }}>
               <InputCustom
                 type="text"
                 id="website"
@@ -334,7 +417,9 @@ function ProfileOrganizers() {
                         setSelectWard
                       )
                     }
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) =>
+                      option.name || dataInfo?.address?.city || ""
+                    }
                     renderInput={(params) => (
                       <TextField {...params} required label="City" />
                     )}
@@ -357,7 +442,9 @@ function ProfileOrganizers() {
                         setSelectWard
                       )
                     }
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) =>
+                      option.name || dataInfo?.address?.district || ""
+                    }
                     renderInput={(params) => (
                       <TextField {...params} required label="Districts" />
                     )}
@@ -370,7 +457,7 @@ function ProfileOrganizers() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginBottom:"30px"
+                marginBottom: "30px",
               }}
             >
               <Stack style={{ width: "47%" }}>
@@ -382,7 +469,9 @@ function ProfileOrganizers() {
                     onChange={(event, newValue) =>
                       handleChangeWard(event, newValue, setSelectWard)
                     }
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) =>
+                      option.name || dataInfo?.address?.ward || ""
+                    }
                     options={allWardsOfDistricts}
                     renderInput={(params) => (
                       <TextField {...params} required label="Wards" />
