@@ -45,3 +45,34 @@ button {
   white-space: nowrap;
   background-image: linear-gradient(45deg, #867d62, #f5bd19);
 }
+
+.slider {
+  margin: 0 20px;
+  overflow: "hidden";
+  padding: 2rem 0;
+}
+
+.slider img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.react-multi-carousel-list {
+  padding: 0rem 0 2rem 0;
+}
+
+.react-multiple-carousel__arrow {
+  background-color: aliceblue !important;
+  box-shadow: 1px 1px 10px 2px #797979dd;
+}
+
+.react-multiple-carousel__arrow::before {
+  color: black !important;
+}
+.react-multiple-carousel__arrow--right {
+  right: 5px !important;
+}
+
+.react-multiple-carousel__arrow--left {
+  left: 5px !important;
+}
