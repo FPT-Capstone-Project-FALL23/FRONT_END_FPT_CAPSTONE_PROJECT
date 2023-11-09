@@ -21,82 +21,88 @@ function DefaultDashboard() {
 
   return (
     <>
-      <Grid>
-        <TotalRevenue />
-      </Grid>
-      <Grid
-        style={{
-          display: "flex",
-          marginTop: "30px",
-          justifyContent: "space-between",
-        }}
-      >
+      <Grid style={{ backgroundColor: "#ffffff", borderRadius: "10px", padding:"30px" }}>
+        <Grid>
+          <TotalRevenue />
+        </Grid>
         <Grid
           style={{
-            height: "450px",
-            width: "60%",
             display: "flex",
-            flexDirection: "column",
+            marginTop: "30px",
+            justifyContent: "space-between",
           }}
         >
-          <Grid item xs={12} md={7} lg={8}>
+          <Grid
+            style={{
+              height: "450px",
+              width: "60%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Grid item xs={12} md={7} lg={8}>
+              <Grid
+                container
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Grid item>
+                  <Typography variant="h5">Unique Visitor</Typography>
+                </Grid>
+                <Grid item>
+                  <Stack direction="row" alignItems="center" spacing={0}>
+                    <Button
+                      size="small"
+                      onClick={() => setSlot("month")}
+                      color={slot === "month" ? "primary" : "secondary"}
+                      variant={slot === "month" ? "outlined" : "text"}
+                    >
+                      Month
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => setSlot("week")}
+                      color={slot === "week" ? "primary" : "secondary"}
+                      variant={slot === "week" ? "outlined" : "text"}
+                    >
+                      Week
+                    </Button>
+                  </Stack>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid
+              style={{ border: "1px solid #ccc", borderRadius: "10px" }}
+              item
+              xs={12}
+              md={7}
+              lg={8}
+            >
+              <MonthChart slot={slot} />
+            </Grid>
+          </Grid>
+
+          <Grid
+            style={{
+              height: "450px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h5">Unique Visitor</Typography>
               </Grid>
-              <Grid item>
-                <Stack direction="row" alignItems="center" spacing={0}>
-                  <Button
-                    size="small"
-                    onClick={() => setSlot("month")}
-                    color={slot === "month" ? "primary" : "secondary"}
-                    variant={slot === "month" ? "outlined" : "text"}
-                  >
-                    Month
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => setSlot("week")}
-                    color={slot === "week" ? "primary" : "secondary"}
-                    variant={slot === "week" ? "outlined" : "text"}
-                  >
-                    Week
-                  </Button>
-                </Stack>
-              </Grid>
             </Grid>
-          </Grid>
-          <Grid
-            style={{ border: "1px solid #ccc", borderRadius: "10px" }}
-            item
-            xs={12}
-            md={7}
-            lg={8}
-          >
-            <MonthChart slot={slot} />
-          </Grid>
-        </Grid>
-
-        <Grid
-          style={{
-            height: "450px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <Typography variant="h5">Unique Visitor</Typography>
+            <Grid
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "10px",
+                paddingBottom: "15px",
+              }}
+            >
+              <DayChart />
             </Grid>
-          </Grid>
-          <Grid
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "10px",
-              paddingBottom: "15px",
-            }}
-          >
-            <DayChart />
           </Grid>
         </Grid>
       </Grid>
