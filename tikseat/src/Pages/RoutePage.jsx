@@ -17,32 +17,41 @@ const ProfileClient = lazy(() => import("./Client/ProfileClient"));
 const BookTickets = lazy(() => import("./Client/BookTickets"));
 // Trang tam thoi
 const HomePageClient = lazy(() => import("../Pages/Client/HomePageClient"));
-const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
 const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
-const Sidebar = lazy(() => import("../Pages/Organizers/Sidebar"))
+const Sidebar = lazy(() => import("../Pages/Organizers/Sidebar"));
+
+const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
+const ClientPageAdmin = lazy(() => import("../Pages/Admin/ClientPageAdmin"));
+const OrganizerPageAdmin = lazy(() =>
+  import("../Pages/Admin/OrganizerPageAdmin")
+);
 
 function RoutePage() {
   return (
     <Suspense fallback={<>loading</>}>
       <Routes>
-        <Route path="/homepageAdmin" element={<HomePageAdmin />} />
+        <Route path="/homePageAdmin" element={<HomePageAdmin />} />
+        <Route path="/clientPageAdmin" element={<ClientPageAdmin />} />
+        <Route path="/organizerPageAdmin" element={<OrganizerPageAdmin />} />
         {/* <Route path="/my-profile" element={<MyProfile />}></Route> */}
         <Route path="/change-password" element={<ChangePassword />}></Route>
         <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />
-        
+
         <Route path="/dashboard" element={<Sidebar />}></Route>
 
         <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
         <Route element={<SignUp />}>
-          <Route path="/createProfileOrganizers" element={<ProfileOrganizers />} />
+          <Route
+            path="/createProfileOrganizers"
+            element={<ProfileOrganizers />}
+          />
           <Route path="/createProfileClient" element={<ProfileClient />} />
         </Route>
         <Route
           element={
             <LayoutSign itemLeft={6} itemRight={6} direction="row-reverse" />
-          }
-        >
+          }>
           <Route path="/choose-access" element={<ChooseAccess />}></Route>
           <Route path="/verify-code" element={<VerifyCode />}></Route>
           <Route path="/forgot-password" element={<ForgetPassword />}></Route>

@@ -33,6 +33,12 @@ export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 export const URL_CITY = "?depth=1";
 export const URL_DISTRICT = "?depth=2";
 
+//-------------------ADMIN----------------------------
+export const URL_GET_ALL_CLIENTS = "/admin/getAllClient";
+export const URL_GET_DETAIL_CLIENT = "/admin/getDetailClient";
+export const URL_GET_ALL_ORGANIZAER = "/admin/getAllOrganizers";
+export const URL_GET_DETAIL_ORGANIZAER = "/admin/getDetailOrganizer";
+
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
 
