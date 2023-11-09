@@ -120,7 +120,7 @@ export const getAPICity = async (setAllCity) => {
   setAllCity(response);
 };
 
-function NewEvent() {
+const NewEvent = ({ onContinueClick }) => {
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState();
   const [eventType, setEventType] = useState([]);
@@ -189,21 +189,25 @@ function NewEvent() {
   };
 
   const handleClientClick = () => {
-    navigate("/create-ticket", {
-      state: {
-        newEvent,
-      },
-    });
+    const newData = newEvent;
+    onContinueClick(newData);
   };
 
   return (
     <>
-      <Grid fullwidth>
+      <Grid
+        fullwidth
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          padding: "30px",
+        }}
+      >
         <Grid style={{ display: "flex", justifyContent: "start" }}>
           <h1 style={{ marginTop: "0px" }}>New event</h1>
         </Grid>
         <Grid style={{ display: "flex", justifyContent: "start" }}>
-          <h3 style={{ marginTop: "30px" }}>Cover image</h3>
+          <h3 style={{ marginTop: "15px" }}>Cover image</h3>
         </Grid>
         <Grid
           style={{
@@ -527,7 +531,7 @@ function NewEvent() {
                 fontSize: "30px",
                 fontWeight: "bolder",
               }}
-              onClick={() => handleClientClick()}
+              onClick={handleClientClick}
             >
               continue
             </Button>
@@ -536,6 +540,6 @@ function NewEvent() {
       </Grid>
     </>
   );
-}
+};
 
 export default NewEvent;
