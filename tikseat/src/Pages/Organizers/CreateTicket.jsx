@@ -41,10 +41,12 @@ const style = {
   p: 4,
 };
 
-function CreateTicket() {
+const CreateTicket = ({ ticketData }) => {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  console.log(dataInfo);
+  // console.log(dataInfo);
+
+  // console.log("Received data in CreateTicket:", ticketData);
 
   const [countForm, setCountForm] = useState(1);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -52,8 +54,6 @@ function CreateTicket() {
   const [avatar, setAvatar] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-  const location = useLocation();
-  const { newEvent } = location.state;
   const today = new Date().toISOString().slice(0, 10);
 
   //socket
@@ -119,21 +119,21 @@ function CreateTicket() {
   });
 
   const [eventInfo, setEventInfo] = useState({
-    event_name: newEvent.event_name,
-    type_of_event: newEvent.type_of_event.join(", "),
-    eventImage: newEvent.eventImage,
+    event_name: ticketData.event_name,
+    type_of_event: ticketData.type_of_event.join(", "),
+    eventImage: ticketData.eventImage,
     type_layout: "",
-    event_description: newEvent.event_description,
+    event_description: ticketData.event_description,
     maxTicketInOrder: "",
     sales_date: {
       start_sales_date: saleDate.startSaleDate,
       end_sales_date: saleDate.endSaleDate,
     },
     event_location: {
-      city: newEvent.address.city,
-      district: newEvent.address.district,
-      ward: newEvent.address.ward,
-      specific_address: newEvent.address.specific_address,
+      city: ticketData.address.city,
+      district: ticketData.address.district,
+      ward: ticketData.address.ward,
+      specific_address: ticketData.address.specific_address,
     },
     event_date: [
       {
@@ -418,7 +418,14 @@ function CreateTicket() {
   console.log(eventInfo);
   return (
     <>
-      <Grid fullwidth>
+      <Grid
+        fullwidth
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          padding: "30px",
+        }}
+      >
         <FormSubmit onSubmit={handleFormSubmit}>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>Add Photo Layout</h3>
@@ -430,13 +437,15 @@ function CreateTicket() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-            }}>
+            }}
+          >
             <Avatar
               style={{
                 height: "500px",
                 width: "80%",
                 borderRadius: "0px",
-              }}>
+              }}
+            >
               <img
                 style={{
                   objectFit: "contain",
@@ -466,7 +475,9 @@ function CreateTicket() {
               }
             />
           </Grid>
-
+          <Grid style={{ display: "flex", justifyContent: "start" }}>
+            <h3>Add Information Ticket</h3>
+          </Grid>
           <Grid
             style={{
               padding: "30px",
@@ -560,7 +571,8 @@ function CreateTicket() {
                       color: "black",
                     }}
                     variant="contained"
-                    onClick={() => removeForm(form.date_number)}>
+                    onClick={() => removeForm(form.date_number)}
+                  >
                     Delete Form
                   </Button>
                 </Grid>
@@ -571,7 +583,8 @@ function CreateTicket() {
                       display: "flex",
                       width: "100%",
                       justifyContent: "center",
-                    }}>
+                    }}
+                  >
                     <p style={{ display: "flex", alignItems: "center" }}>
                       Date and time start &nbsp;&nbsp;
                     </p>
@@ -619,7 +632,8 @@ function CreateTicket() {
                           color: "black",
                         }}
                         variant="contained"
-                        onClick={() => removeTicket(formTicket.id)}>
+                        onClick={() => removeTicket(formTicket.id)}
+                      >
                         Delete Ticket
                       </Button>
                     </Grid>
@@ -629,7 +643,8 @@ function CreateTicket() {
                         className="boxTicket"
                         style={{
                           flexDirection: "column",
-                        }}>
+                        }}
+                      >
                         <p>Price &nbsp;(VND)</p>
                         <TextField
                           style={{
@@ -655,14 +670,16 @@ function CreateTicket() {
                         className="boxTicket"
                         style={{
                           flexDirection: "column",
-                        }}>
+                        }}
+                      >
                         <p>Total row</p>
                         <Grid
                           className="boxTicket"
                           style={{
                             flexDirection: "column",
                             border: "none",
-                          }}>
+                          }}
+                        >
                           <TextField
                             style={{
                               backgroundColor: "white",
@@ -688,7 +705,8 @@ function CreateTicket() {
                               open={open}
                               onClose={handleClose}
                               aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description">
+                              aria-describedby="modal-modal-description"
+                            >
                               <Box sx={style}>
                                 <Grid fullWidth>
                                   {formTicket.rows.map((row, index) => (
@@ -698,7 +716,8 @@ function CreateTicket() {
                                         justifyContent: "center",
                                         alignItems: "center",
                                       }}
-                                      key={row.id}>
+                                      key={row.id}
+                                    >
                                       <Typography style={{ width: "20%" }}>
                                         Row &nbsp;{row.row_name} &nbsp;
                                       </Typography>
@@ -734,13 +753,15 @@ function CreateTicket() {
                           display: "flex",
                           justifyContent: "ceter",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         <Button
                           style={{
                             backgroundColor: "#F5BD19",
                             color: "black",
                           }}
-                          onClick={() => handleOpen(formTicket.id)}>
+                          onClick={() => handleOpen(formTicket.id)}
+                        >
                           Enter seats
                         </Button>
                       </Grid>
@@ -757,7 +778,8 @@ function CreateTicket() {
                     }}
                     className="buttonCreateEvent"
                     fullWidth
-                    onClick={() => addTicket(form.date_number)}>
+                    onClick={() => addTicket(form.date_number)}
+                  >
                     <AddCircleIcon
                       style={{ fontSize: "35px", marginRight: "5px" }}
                     />
@@ -777,7 +799,8 @@ function CreateTicket() {
                 }}
                 className="buttonCreateEvent"
                 fullWidth
-                onClick={addForm}>
+                onClick={addForm}
+              >
                 <PostAddSharpIcon
                   style={{ fontSize: "35px", marginRight: "5px" }}
                 />
@@ -796,7 +819,8 @@ function CreateTicket() {
               }}
               className="buttonCreateEvent"
               fullWidth
-              type="submit">
+              type="submit"
+            >
               Create Event
             </Button>
           </Grid>
@@ -804,6 +828,6 @@ function CreateTicket() {
       </Grid>
     </>
   );
-}
+};
 
 export default CreateTicket;

@@ -22,8 +22,8 @@ const ApiEvent = {
     return axiosDefault.get(URL_GETEVENTBYID, { idOrganizer: id });
   },
 
-  searchEvent() {
-    return axiosDefault.get(URL_SEARCHEVENT);
+  searchEvent(data) {
+    return axiosDefault.post(URL_SEARCHEVENT, data);
   },
 
   createEvent(data) {
@@ -34,9 +34,9 @@ const ApiEvent = {
     return axiosDefault.post(URL_UPDATEEVENT, data);
   },
 
-  eventHistory(data){
+  eventHistory(data) {
     return axiosDefault.post(URL_EVENTHISTORY, data);
-  }
+  },
 };
 
 export default ApiEvent;

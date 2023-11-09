@@ -13,6 +13,10 @@ import {
   URL_RESENDOTP,
   URL_UPDATE_PROFILE,
   URL_CHANGEPASSWORD,
+  URL_GETALLEVENTS,
+  URL_GETEVENTBYID,
+  URL_GETDETAILEVENT,
+  URL_UPDATE_PROFILEORGANIZER,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -25,8 +29,8 @@ const ApiCommon = {
     return axiosDefault.post(URL_CHANGEPASSWORD, data);
   },
 
-  async updateProfileClient(data) {
-    return await axiosDefault.post(URL_UPDATE_PROFILE, data);
+  updateProfileClient(data) {
+    return axiosDefault.post(URL_UPDATE_PROFILE, data);
   },
   profileClient(data) {
     return axiosDefault.post(URL_PROFILECLIENT, data);
@@ -42,6 +46,10 @@ const ApiCommon = {
 
   profileOrganizer(data) {
     return axiosDefault.post(URL_PROFILEOTGANIZER, data);
+  },
+
+  updateProfileOrganizer(data) {
+    return axiosDefault.post(URL_UPDATE_PROFILEORGANIZER, data);
   },
 
   addPayment(data) {

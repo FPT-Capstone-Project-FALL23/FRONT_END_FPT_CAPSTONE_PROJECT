@@ -13,26 +13,12 @@ const SetPassword = lazy(() => import("./Common/SetPassword"));
 const VerifyEmail = lazy(() => import("./Common/VerifyEmail"));
 const SendEmail = lazy(() => import("./Common/SendEmail"));
 const ProfileOrganizers = lazy(() => import("./Organizers/ProfileOrganizers"));
-const UpdatePfrofileOrganizer = lazy(() =>
-  import("./Organizers/UpdatePfrofileOrganizer")
-);
 const ProfileClient = lazy(() => import("./Client/ProfileClient"));
-const BookTickets = lazy(() => import("./Common/BookTickets"));
+const BookTickets = lazy(() => import("./Client/BookTickets"));
 // Trang tam thoi
 const HomePageClient = lazy(() => import("../Pages/Client/HomePageClient"));
-const HomePageOrganizer = lazy(() =>
-  import("../Pages/Organizers/HomePageOrganizer")
-);
-const DefaultDashboard = lazy(() =>
-  import("../Pages/Organizers/DefaultDashboard")
-);
 const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
-
-const MyProfile = lazy(() => import("./Client/MyProfile"));
-const EventHistory = lazy(() => import("../Pages/Organizers/EventHistory"));
-const NewEvent = lazy(() => import("../Pages/Organizers/NewEvent"));
-const CreateTicket = lazy(() => import("../Pages/Organizers/CreateTicket"));
-const Notification = lazy(() => import("../Pages/Organizers/Notification"));
+const Sidebar = lazy(() => import("../Pages/Organizers/Sidebar"));
 
 const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
 const ClientPageAdmin = lazy(() => import("../Pages/Admin/ClientPageAdmin"));
@@ -44,7 +30,6 @@ function RoutePage() {
   return (
     <Suspense fallback={<>loading</>}>
       <Routes>
-        <Route path="/homepageOrganizer" element={<HomePageOrganizer />} />
         <Route path="/homePageAdmin" element={<HomePageAdmin />} />
         <Route path="/clientPageAdmin" element={<ClientPageAdmin />} />
         <Route path="/organizerPageAdmin" element={<OrganizerPageAdmin />} />
@@ -53,20 +38,9 @@ function RoutePage() {
         <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/notification" element={<Notification />}></Route>
+        <Route path="/dashboard" element={<Sidebar />}></Route>
 
-        <Route element={<HomePageOrganizer />}>
-          <Route
-            path="/UpdateProfileOrganizers"
-            element={<UpdatePfrofileOrganizer />}
-          />
-          <Route path="/add-payment" element={<AddPaymentMethod />}></Route>
-          <Route path="/dashboard" element={<DefaultDashboard />}></Route>
-          <Route path="/event-history" element={<EventHistory />}></Route>
-          <Route path="/create-event" element={<NewEvent />}></Route>
-          <Route path="/create-ticket" element={<CreateTicket />}></Route>
-        </Route>
-        <Route path="/book-tickets" element={<BookTickets />}></Route>
+        <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
         <Route element={<SignUp />}>
           <Route
             path="/createProfileOrganizers"

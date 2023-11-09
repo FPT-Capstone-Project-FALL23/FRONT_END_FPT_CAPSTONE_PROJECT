@@ -46,15 +46,16 @@ import {
   setLocalStorageUserData,
   setLocalStorageUserInfo,
 } from "../../../Store/userStore";
+import { useOpenStore } from "../../../Store/openStore";
 
 const Header = () => {
+  const { setSearchEvent } = useOpenStore();
   const dataUser = getLocalStorageUserData();
-  console.log("dataUser: ", dataUser);
   const dataInfo = getLocalStorageUserInfo();
-  console.log("dataInfo: ", dataInfo);
   const [isOpen, setIsOpen] = useState(false);
+
+  const [eventName, setEventName] = useState(null);
   const [selectsDistrict, setSelectsDistrict] = useState([]);
-  console.log("selectsDistrict: ", selectsDistrict);
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
@@ -82,9 +83,9 @@ const Header = () => {
   // }, []);
   const navigate = useNavigate();
   const ManagementUser = [
-    { content: `Xin chào ${dataUser?.email}` },
-    { url: "/createProfileClient", content: "Quản lý hồ sơ" },
-    { url: "/login", content: "Đăng xuất" },
+    { content: `Welcome ${dataUser?.email}` },
+    { url: "/createProfileClient", content: "My profile" },
+    { url: "/login", content: "Log out" },
   ];
   const dataDistrict = [
     { value: "tesst1", id: 1 },
@@ -99,6 +100,16 @@ const Header = () => {
     const currentDateTimestamp = new Date().getTime() / 1000;
     return date < currentDateTimestamp;
   };
+
+  const handleSearchEvent = () => {
+    setSearchEvent({
+      event_name: eventName || "",
+      type_of_event: "",
+      event_location: "",
+      event_date: "",
+    });
+  };
+
   const dataType = [
     {
       value: "option 1",
@@ -277,12 +288,19 @@ const Header = () => {
           </CarouselStyle>
         </div>
         <FormHeaderStyle>
-          <Grid container spacing={2} alignItems={"self-end"}>
+          <Grid
+            container
+            spacing={2}
+            alignItems={"self-end"}
+            position={"relative"}
+            style={{ height: "100%" }}
+          >
             <Grid item xs={2}>
               <TextFieldStyle
                 id="filled-helperText"
-                label="Search Event"
-                defaultValue="Konser Jazz"
+                label="Event name"
+                onChange={(e) => setEventName(e.target.value)}
+                defaultValue={eventName}
                 variant="filled"
                 size="medium"
               />
@@ -516,7 +534,7 @@ const Header = () => {
               <TextFieldStyle
                 id="filled-helperText"
                 select
-                label="Select"
+                label="Type Event"
                 defaultValue="option 1"
                 variant="filled"
               >
@@ -528,10 +546,27 @@ const Header = () => {
               </TextFieldStyle>
             </Grid>
             <Grid item xs={1}>
-              <Button variant="outlined" style={{ background: "white" }}>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={() => handleSearchEvent()}
+                style={{ background: "white" }}
+              >
                 Search
               </Button>
             </Grid>
+            <div
+              style={{
+                position: "absolute",
+                top: "-25px",
+                left: "-25px",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "20px",
+              }}
+            >
+              Search Event
+            </div>
           </Grid>
         </FormHeaderStyle>
       </HeaderStyle>

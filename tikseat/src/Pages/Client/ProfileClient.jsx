@@ -17,7 +17,6 @@ import {
   Chip,
   OutlinedInput,
   MenuItem,
-  TextField,
 } from "@mui/material";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
@@ -44,11 +43,9 @@ function getStyles(name, personName, theme) {
 export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
   // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
   const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const objectUrl = URL.createObjectURL(selectedFile);
-    // console.log("objectUrl", objectUrl);
     setAvatar(objectUrl);
   }
 };
@@ -59,29 +56,25 @@ function ProfileClient() {
   const today = new Date().toISOString().slice(0, 10);
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  console.log("dataInfo: ", dataInfo);
-  const [avatar, setAvatar] = useState("");
+  const [avatar, setAvatar] = useState(dataInfo?.avatarImage || "");
   const [selectedFile, setSelectedFile] = useState(null);
   console.log("selectedFile: ", selectedFile);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const handleIconClick = () => {
-    // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
   };
 
   const [clientInfo, setClientInfo] = useState({
-    email: dataUser.email,
-    full_name: dataInfo?.full_name,
-    phone: dataInfo?.phone,
-    birthday: today,
-    gender: dataInfo?.gender,
-    favorit_enres: dataInfo?.favorit_enres,
+    email: dataUser.email || "",
+    full_name: dataInfo?.full_name || "",
+    phone: dataInfo?.phone || "",
+    birthday: today || "",
+    gender: dataInfo?.gender || "",
+    favorit_enres: dataInfo?.favorit_enres || "",
   });
   console.log("clientInfo: ", clientInfo);
-
-  console.log(clientInfo);
 
   // Hàm xử lý khi người dùng nhập dữ liệu vào input
   const handleInputChange = (e) => {
@@ -93,6 +86,7 @@ function ProfileClient() {
       [name]: value,
     }));
   };
+
   const callApiProfile = async (base64EncodedImage, _idUser, clientInfo) => {
     try {
       const respone = await ApiCommon.profileClient({
@@ -100,6 +94,7 @@ function ProfileClient() {
         clientInfo: clientInfo,
         avatarImage: base64EncodedImage,
       });
+      console.log(respone.data);
       await setLocalStorageUserInfo(respone.data);
       navigate("/");
     } catch (err) {
@@ -109,55 +104,92 @@ function ProfileClient() {
 
   const handleClientInfo = async (e) => {
     e.preventDefault();
+    const base64EncodedImage = avatar;
     const formData = new FormData();
     formData.append("avatarImage", selectedFile);
-    try {
-      const _idUser = dataUser._id;
-      const dataUpdate = {
-        avatarImage: avatar || "",
-        _idClient: dataInfo?._id,
-        clientInfo: {
+    if (dataInfo) {
+      try {
+        const _idClient = dataInfo._id;
+        const dataUpdate = {
           full_name: clientInfo?.full_name || "",
           phone: clientInfo?.phone || "",
           birthday: clientInfo.birthday || "",
           gender: clientInfo.gender || "",
           favorit_enres: clientInfo.favorit_enres || "",
-        },
-      };
-      const response = await ApiCommon.updateProfileClient(dataUpdate);
-      if (response?.status) {
-        setLocalStorageUserInfo(response.data);
-      }
-      console.log("response: ", response);
-      if (!selectedFile) {
-        callApiProfile(null, _idUser, clientInfo);
-      }
-      // const reader = new FileReader();
-      // reader.readAsDataURL(selectedFile);
+        };
 
-      // reader.onloadend = () => {
-      //   callApiProfile(reader.result, _idUser, clientInfo);
-      // };
-    } catch (error) {
-      console.log("error", error);
+        if (selectedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedFile);
+          reader.onloadend = () => {
+            callApiUpdateProfile(_idClient, dataUpdate, reader.result);
+          };
+        } else {
+          callApiUpdateProfile(_idClient, dataUpdate);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    } else {
+      try {
+        const _idUser = dataUser._id;
+        if (selectedFile) {
+          const reader = new FileReader();
+          reader.readAsDataURL(selectedFile);
+          reader.onloadend = () => {
+            callApiProfile(reader.result, _idUser, clientInfo);
+          };
+        } else {
+          callApiProfile(null, _idUser, clientInfo);
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+  };
+
+  const callApiUpdateProfile = async (
+    _idClient,
+    dataUpdate,
+    base64EncodedImage = null
+  ) => {
+    try {
+      const response = await ApiCommon.updateProfileClient({
+        _idClient: _idClient,
+        clientInfo: dataUpdate,
+        avatarImage: base64EncodedImage, // Đường dẫn hình ảnh mới
+      });
+      // Sau khi cập nhật, có thể cần cập nhật dữ liệu người dùng với thông tin mới từ phản hồi
+      await setLocalStorageUserInfo(response.data);
+      console.log(response.data);
+      navigate("/");
+      // ...
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
     <>
-      <Grid style={{ display: "flex", justifyContent: "center" }}>
+      <Grid
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "50px",
+        }}
+      >
         <h1>Profile Client</h1>
       </Grid>
       <FormSubmit
-        onSubmit={handleClientInfo}
+        onSubmit={(e) => handleClientInfo(e)}
         style={{
           width: "100%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          marginTop: "20px",
-        }}>
+        }}
+      >
         <Grid style={{ display: "flex", justifyContent: "space-around" }}>
           <Grid style={{ width: "40%" }}>
             <Stack>
@@ -171,7 +203,7 @@ function ProfileClient() {
                 label="Email"
               />
             </Stack>
-            <Stack>
+            <Stack marginTop={"20px"}>
               <InputCustom
                 type="text"
                 name="full_name"
@@ -184,7 +216,8 @@ function ProfileClient() {
             <Stack
               direction="row"
               spacing={12}
-              style={{ marginBottom: "20px" }}>
+              style={{ marginBottom: "20px" }}
+            >
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Gender
@@ -194,7 +227,8 @@ function ProfileClient() {
                   value={clientInfo.gender}
                   onChange={handleInputChange}
                   row
-                  aria-labelledby="demo-row-radio-buttons-group-label">
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                >
                   <FormControlLabel
                     value="Female"
                     control={<Radio />}
@@ -215,7 +249,7 @@ function ProfileClient() {
             </Stack>
 
             <Stack style={{ marginBottom: "20px" }}>
-              <TextField
+              <InputCustom
                 type="text"
                 name="phone"
                 value={clientInfo.phone}
@@ -224,7 +258,7 @@ function ProfileClient() {
               />
             </Stack>
             <Stack>
-              <TextField
+              <InputCustom
                 type="date"
                 name="birthday"
                 value={clientInfo.birthday}
@@ -232,7 +266,7 @@ function ProfileClient() {
                 label="Day of birth"
               />
             </Stack>
-            <Stack>
+            <Stack marginTop={"20px"}>
               <FormControl fullWidth style={{ marginBottom: "20px" }}>
                 <InputLabel id="demo-multiple-chip-label">
                   Event Type
@@ -242,7 +276,11 @@ function ProfileClient() {
                   id="demo-multiple-chip"
                   multiple
                   name="favorit_enres"
-                  value={clientInfo?.favorit_enres}
+                  value={
+                    Array.isArray(clientInfo?.favorit_enres)
+                      ? clientInfo?.favorit_enres
+                      : []
+                  }
                   onChange={handleInputChange}
                   input={
                     <OutlinedInput
@@ -257,27 +295,22 @@ function ProfileClient() {
                       ))}
                     </Box>
                   )}
-                  MenuProps={MENUPROPS}>
+                  MenuProps={MENUPROPS}
+                >
                   {DATA_EVENT_TYPE.map((name) => (
                     <MenuItem
                       key={name}
                       value={name}
-                      style={getStyles(name, eventType, theme)}>
+                      style={getStyles(name, eventType, theme)}
+                    >
                       {name}
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>{" "}
-              <ButtonCustom
-                type="button"
-                onClick={() => navigate("/change-password")}
-                color="black"
-                content="Update password"
-                backgroundcolor="#F5BD19"
-              />
+              </FormControl>
             </Stack>
           </Grid>
-          <Grid>
+          <Grid marginTop={"20px"}>
             <Stack>
               <Avatar
                 style={{
@@ -315,21 +348,8 @@ function ProfileClient() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
-          {/* <div>
-            <FormControlLabel
-              style={{ fontSize: "14px", marginTop: "40px" }}
-              control={<Checkbox />}
-              label={
-                <span>
-                  I agree to all the{" "}
-                  <span style={{ color: "#F5BD19" }}>Terms</span> and
-                  <span style={{ color: "#F5BD19" }}> Privacy Policies</span>
-                </span>
-              }
-            />
-          </div> */}
-
+          }}
+        >
           <Stack style={{ width: "50%", marginTop: "20px" }}>
             <ButtonCustom
               color="black"

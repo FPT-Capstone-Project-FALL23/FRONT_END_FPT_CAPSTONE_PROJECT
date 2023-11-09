@@ -7,8 +7,6 @@ import {
   IconButton,
   Grid,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import MainListItems from "../../Components/Organizers/listItem";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
@@ -53,66 +51,24 @@ function Notification() {
   };
 
   return (
-    <Grid>
-      <AppBar position="fixed">
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6">Dashboard</Typography>
-        </Toolbar>
-      </AppBar>
+    <Grid maxWidth="100%" sx={{backgroundColor:"#ffffff", borderRadius:"10px", padding:"30px"}} >
+      <h1>Danh sách thông báo</h1>
       <Grid
         style={{
-          height: "100vh",
+          height: "70px",
           width: "100%",
-          borderRight: "2px solid #ccc",
+          backgroundColor: "yellow",
+          fontSize: "25px",
+          paddingLeft: "20px",
           display: "flex",
-        }}>
-        <Grid
-          style={{
-            position: "fixed",
-            top: "65px", // Đặt khoảng cách từ đỉnh của AppBar
-            height: "100%",
-            width: "20%",
-            backgroundColor: "rgb(255 239 137)",
-            overflowY: "auto", // Thêm thanh cuộn nếu cần thiết
-          }}>
-          <List component="nav">
-            <MainListItems notifications={notifications} />
-          </List>
-        </Grid>
-        <Grid
-          style={{
-            position: "absolute",
-            left: "20%",
-            top: "65px",
-            padding: "20px 50px 0px 50px",
-            width: "80%",
-          }}
-        >
-          <Grid maxWidth="100%">
-
-            <h1>Danh sách thông báo</h1>
-            <Grid
-              style={{
-                height: "70px",
-                width: "100%",
-                backgroundColor: "yellow",
-                fontSize: "25px",
-                paddingLeft: "20px",
-                display: "flex",
-                alignItems: "center",
-                borderRadius: "5px",
-                marginBottom: "15px",
-              }}
-            >
-              {notifications.map((n, index) => (
-                <Grid key={index}>{displayNotification(n)}</Grid>
-              ))}
-            </Grid>
-          </Grid>
-        </Grid>
+          alignItems: "center",
+          borderRadius: "5px",
+          marginBottom: "15px",
+        }}
+      >
+        {notifications.map((n, index) => (
+          <Grid key={index}>{displayNotification(n)}</Grid>
+        ))}
       </Grid>
     </Grid>
   );
