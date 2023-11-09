@@ -31,6 +31,13 @@ export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 export const URL_CITY = "?depth=1";
 export const URL_DISTRICT = "?depth=2";
 
+
+//-------------------ADMIN----------------------------
+export const URL_GET_ALL_CLIENTS = "/admin/getAllClient";
+export const URL_GET_DETAIL_CLIENT = "/admin/getDetailClient";
+export const URL_GET_ALL_ORGANIZAER = "/admin/getAllOrganizers";
+export const URL_GET_DETAIL_ORGANIZAER = "/admin/getDetailOrganizer";
+
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
 export const URL_FORGOTPASSWORD = "";

@@ -48,6 +48,8 @@ function FormLogin({
       navigate("/");
     } else if (jwtDecode(getLocalStorageToken()).role == ROLE[1]) {
       navigate("/dashboard");
+    } else {
+      navigate("/homepageAdmin");
     }
   };
 
@@ -78,23 +80,22 @@ function FormLogin({
   return (
     <>
       <FormSubmit onSubmit={handleLogin}>
-        <Grid style={{marginBottom:"30px"}}> 
-        <InputCustom
-          className="email"
-          label="Email"
-          placeholder="Email"
-          fullWidth
-          required
-          type="email"
-          value={email}
-          setValue={setEmail}
-        />
+        <Grid style={{ marginBottom: "30px" }}>
+          <InputCustom
+            className="email"
+            label="Email"
+            placeholder="Email"
+            fullWidth
+            required
+            type="email"
+            value={email}
+            setValue={setEmail}
+          />
         </Grid>
         <FormControl
           variant="outlined"
           fullWidth
-          style={{ marginBottom: "20px" }}
-        >
+          style={{ marginBottom: "20px" }}>
           <InputLabel htmlFor="outlined-adornment-password" required>
             Password
           </InputLabel>
@@ -109,8 +110,7 @@ function FormLogin({
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
+                  edge="end">
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -123,8 +123,7 @@ function FormLogin({
             display: "flex",
             justifyContent: "space-between",
             marginBottom: "20px",
-          }}
-        >
+          }}>
           <FormControlLabel control={<Checkbox />} label="Remember me" />
           <Link
             to={"/forgot-password"}
@@ -132,8 +131,7 @@ function FormLogin({
               padding: "10px",
               color: "#F5BD19",
               textDecoration: "none",
-            }}
-          >
+            }}>
             {FORGOT_PASSWORD}
           </Link>
         </div>
@@ -147,8 +145,7 @@ function FormLogin({
               fontSize: "18px",
             }}
             type="submit"
-            fullWidth
-          >
+            fullWidth>
             {LOGIN}
           </Button>
         </Grid>
@@ -163,8 +160,7 @@ function FormLogin({
               textDecoration: "none",
             }}
             to="/choose-access"
-            fullWidth
-          >
+            fullWidth>
             <Button
               style={{
                 padding: "10px",
@@ -173,8 +169,7 @@ function FormLogin({
                 fontWeight: "bold",
                 fontSize: "18px",
               }}
-              fullWidth
-            >
+              fullWidth>
               Sign Up
             </Button>
           </Link>
