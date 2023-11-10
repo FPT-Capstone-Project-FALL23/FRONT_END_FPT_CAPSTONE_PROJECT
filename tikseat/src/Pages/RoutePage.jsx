@@ -6,6 +6,7 @@ const LoginPage = lazy(() => import("./Common/LoginPage"));
 const SignUp = lazy(() => import("./Common/SignUp"));
 const LayoutSign = lazy(() => import("../Components/Common/Layout/LayoutSign"));
 const AddPaymentMethod = lazy(() => import("./Common/AddPaymentMethod"));
+const HistoryPayment = lazy(() => import("./Client/HistoryPayment"));
 const ChooseAccess = lazy(() => import("./Common/ChooseAccess"));
 const VerifyCode = lazy(() => import("./Common/VerifyCode"));
 const ForgetPassword = lazy(() => import("./Common/ForgotPassword"));
@@ -41,6 +42,7 @@ function RoutePage() {
         <Route path="/dashboard" element={<Sidebar />}></Route>
 
         <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
+        <Route path="my_history_payment" element={<HistoryPayment />}></Route>
         <Route element={<SignUp />}>
           <Route
             path="/createProfileOrganizers"
