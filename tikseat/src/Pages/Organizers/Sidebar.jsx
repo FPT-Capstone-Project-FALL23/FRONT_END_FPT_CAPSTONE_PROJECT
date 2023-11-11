@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
+import { Avatar, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -16,6 +17,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -31,13 +33,15 @@ import NewEvent from "./NewEvent";
 import Notification from "./Notification";
 import ProfileOrganizers from "./ProfileOrganizers";
 import AddPaymentMethod from "../Common/AddPaymentMethod";
+import CreateTicket from "./CreateTicket";
+import CheckingTicket from "./CheckingTicket";
+
+import "../../Assets/CSS/Organizer/Sidebar.css";
 
 import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-import { Avatar, Grid } from "@mui/material";
-import CreateTicket from "./CreateTicket";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -111,7 +115,7 @@ export default function MiniDrawer() {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const theme = useTheme();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [menuData, setMenuData] = useState("dashboard");
   const [ticketData, setTicketData] = useState(null);
   console.log("Received data:", ticketData);
@@ -124,6 +128,7 @@ export default function MiniDrawer() {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
+        className="appbar"
         position="fixed"
         elevation={4}
         sx={{ backgroundColor: "#ffffff", color: "black" }}
@@ -140,11 +145,17 @@ export default function MiniDrawer() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
+            <Typography
+              className="typrography"
+              variant="h6"
+              noWrap
+              component="div"
+            >
               DASHBOARD
             </Typography>
           </Grid>
           <Grid
+            className="welcome"
             sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}
           >
             <Typography variant="h6" noWrap component="div">
@@ -168,7 +179,9 @@ export default function MiniDrawer() {
           </Grid>
         </Toolbar>
       </AppBar>
+
       <Drawer
+        className="drawer"
         variant="permanent"
         open={open}
         sx={{ backgroundColor: "#87C4FF" }}
@@ -210,7 +223,7 @@ export default function MiniDrawer() {
               >
                 <DashboardIcon sx={styleIcon} />
               </ListItemIcon>
-              <ListItemText
+              <ListItemText 
                 sx={{ display: open ? "block" : "none" }}
                 primary="Dashboard"
               />
@@ -315,110 +328,145 @@ export default function MiniDrawer() {
               />
             </ListItemButton>
           </ListItem>
-        </List>
-        <Divider />
-        <ListItem
-          disablePadding
-          sx={{
-            display: "block",
-          }}
-          onClick={() => setMenuData("profile")}
-        >
-          <ListItemButton
+          <ListItem
+            disablePadding
             sx={{
-              minHeight: 50,
-              justifyContent: open ? "initial" : "center",
-              backgroundColor:
-                menuData === "profile" ? "#E0F4FF" : "transparent",
-              borderRadius: "10px",
-              margin: "5px 10px 5px 10px",
-              px: 2.5,
+              display: "block",
             }}
+            onClick={() => setMenuData("checkin")}
           >
-            <ListItemIcon
+            <ListItemButton
               sx={{
-                minWidth: 0,
-                mr: open ? 3 : 1.5,
-                justifyContent: "center",
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "checkin" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
               }}
             >
-              <AssignmentIndIcon sx={styleIcon} />
-            </ListItemIcon>
-            <ListItemText
-              sx={{ display: open ? "block" : "none" }}
-              primary="Profile"
-            />
-          </ListItemButton>
-        </ListItem>
-        <ListItem
-          disablePadding
-          sx={{
-            display: "block",
-          }}
-          onClick={() => setMenuData("bankAccount")}
-        >
-          <ListItemButton
-            sx={{
-              minHeight: 50,
-              justifyContent: open ? "initial" : "center",
-              backgroundColor:
-                menuData === "bankAccount" ? "#E0F4FF" : "transparent",
-              borderRadius: "10px",
-              margin: "5px 10px 5px 10px",
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : 1.5,
-                justifyContent: "center",
-              }}
-            >
-              <CurrencyExchangeIcon sx={styleIcon} />
-            </ListItemIcon>
-            <ListItemText
-              sx={{ display: open ? "block" : "none" }}
-              primary="Bank Account"
-            />
-          </ListItemButton>
-        </ListItem>
-        <ListItem
-          disablePadding
-          sx={{
-            display: "block",
-          }}
-          onClick={() => setMenuData("logOut")}
-        >
-          <ListItemButton
-            sx={{
-              minHeight: 50,
-              justifyContent: open ? "initial" : "center",
-              backgroundColor:
-                menuData === "logOut" ? "#E0F4FF" : "transparent",
-              borderRadius: "10px",
-              margin: "5px 10px 5px 10px",
-              px: 2.5,
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : 1.5,
-                justifyContent: "center",
-              }}
-            >
-              <LogoutIcon sx={styleIcon} />
-            </ListItemIcon>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}
+              >
+                <QrCodeScannerIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Check in"
+              />
+            </ListItemButton>
+          </ListItem>
 
-            <ListItemText
-              sx={{ display: open ? "block" : "none" }}
-              primary="Log Out"
-            />
-          </ListItemButton>
-        </ListItem>
+          <Divider />
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
+            onClick={() => setMenuData("profile")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "profile" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}
+              >
+                <AssignmentIndIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Profile"
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
+            onClick={() => setMenuData("bankAccount")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "bankAccount" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}
+              >
+                <CurrencyExchangeIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Bank Account"
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
+            onClick={() => setMenuData("logOut")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "logOut" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}
+              >
+                <LogoutIcon sx={styleIcon} />
+              </ListItemIcon>
+
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Log Out"
+              />
+            </ListItemButton>
+          </ListItem>
+        </List>
       </Drawer>
-      <Grid sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}>
+
+      <Grid className="box" sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}>
         <Box
           style={{
             height: "auto",
@@ -431,17 +479,19 @@ export default function MiniDrawer() {
           {menuData === "dashboard" && <DefaultDashboard />}
           {menuData === "newEvent" && (
             <NewEvent
-            onContinueClick={(data) => {
-              // console.log("data:", data);
-              setTicketData(data);
-              setMenuData("create-ticket");
-              
-            }}
+              onContinueClick={(data) => {
+                // console.log("data:", data);
+                setTicketData(data);
+                setMenuData("create-ticket");
+              }}
             />
           )}
-          {menuData === "create-ticket" && <CreateTicket ticketData={ticketData} />}
+          {menuData === "create-ticket" && (
+            <CreateTicket ticketData={ticketData} />
+          )}
           {menuData === "eventHistory" && <EventHistory />}
           {menuData === "notification" && <Notification />}
+          {menuData === "checkin" && <CheckingTicket />}
           {menuData === "profile" && <ProfileOrganizers />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
           {menuData === "logOut" && <DefaultDashboard />}

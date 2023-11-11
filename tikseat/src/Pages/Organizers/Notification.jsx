@@ -51,6 +51,7 @@ function Notification() {
   };
 
   return (
+    
     <Grid maxWidth="100%" sx={{backgroundColor:"#ffffff", borderRadius:"10px", padding:"30px"}} >
       <h1>Danh sách thông báo</h1>
       <Grid
