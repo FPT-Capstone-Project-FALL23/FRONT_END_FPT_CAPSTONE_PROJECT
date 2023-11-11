@@ -6,6 +6,9 @@ const LoginPage = lazy(() => import("./Common/LoginPage"));
 const SignUp = lazy(() => import("./Common/SignUp"));
 const LayoutSign = lazy(() => import("../Components/Common/Layout/LayoutSign"));
 const AddPaymentMethod = lazy(() => import("./Common/AddPaymentMethod"));
+
+const PaymentComplated = lazy(() => import("./Client/PaymentComplated"));
+
 const HistoryPayment = lazy(() => import("./Client/HistoryPayment"));
 const ChooseAccess = lazy(() => import("./Common/ChooseAccess"));
 const VerifyCode = lazy(() => import("./Common/VerifyCode"));
@@ -43,6 +46,8 @@ function RoutePage() {
 
         <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
         <Route path="my_history_payment" element={<HistoryPayment />}></Route>
+        <Route path="payment_completed" element={<PaymentComplated />} />
+
         <Route element={<SignUp />}>
           <Route
             path="/createProfileOrganizers"

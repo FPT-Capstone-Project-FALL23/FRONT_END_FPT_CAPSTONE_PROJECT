@@ -17,17 +17,19 @@ import {
   Typography,
   tableCellClasses,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
 import { navItems } from "../../Assets/Constant/Common/dataCommon";
 import { Link, useNavigate } from "react-router-dom";
 import { colorBlack } from "../../Assets/CSS/Style/theme";
 import {
   getLocalStorageUserData,
+  getLocalStorageUserInfo,
   setLocalStorageUserData,
   setLocalStorageUserInfo,
 } from "../../Store/userStore";
 import styled from "styled-components";
+import ApiClient from "../../API/Client/ApiClient";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -64,7 +66,12 @@ const style = {
 };
 const HistoryPayment = () => {
   const dataUser = getLocalStorageUserData();
+  const dataInfo = getLocalStorageUserInfo();
   const navigate = useNavigate();
+  const [dataOrderByClient, setDataOrderByClient] = useState([]);
+  const [idOrder, setIdOrder] = useState(null);
+  const [dataOrderDetail, setDataOrderDetail] = useState([]);
+  console.log("dataOrderByClient: ", dataOrderByClient);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -74,31 +81,33 @@ const HistoryPayment = () => {
     { url: "/login", content: "Log out" },
   ];
 
-  const rows = [
-    {
-      event_name: "tesst",
-      transaction_date: new Date().toLocaleString(),
-      price: "2222222",
-    },
-    {
-      event_name: "tesst2",
-      transaction_date: new Date().toLocaleString(),
-      price: "2222222",
-    },
-    {
-      event_name: "tesst3",
-      transaction_date: new Date().toLocaleString(),
-      price: "2222222",
-    },
-    {
-      event_name: "tesst4",
-      transaction_date: new Date().toLocaleString(),
-      price: "2222222",
-    },
-  ];
+  useEffect(() => {
+    if (idOrder) {
+      async function getDataOrdetDetail() {
+        const responseOrderDetail = await ApiClient.getOrderDetail({
+          _idOrder: idOrder,
+        });
+        console.log("responseOrderDetail: ", responseOrderDetail);
+        setDataOrderDetail(responseOrderDetail?.data);
+      }
+
+      getDataOrdetDetail();
+    }
+  }, [idOrder]);
+
+  useEffect(() => {
+    async function getDataOrderByClient() {
+      const response = await ApiClient.orderByClient({
+        _idClient: dataInfo?._id,
+      });
+      setDataOrderByClient(response?.orders);
+    }
+
+    getDataOrderByClient();
+  }, [dataInfo._id]);
+
   return (
     <div>
-      {" "}
       <AppBar
         style={{
           background: "white",
@@ -218,75 +227,94 @@ const HistoryPayment = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <StyledTableRow key={row.name}>
-                    <TableCell component="th" scope="row">
-                      {row.event_name}
-                    </TableCell>
-                    <TableCell align="left">{row.transaction_date}</TableCell>
-                    <TableCell align="left">{row.price}</TableCell>
-                    <TableCell align="left">
-                      <Button
-                        onClick={handleOpen}
-                        size="large"
-                        variant="contained"
-                      >
-                        Detail
-                      </Button>
-                      <Modal open={open} onClose={handleClose}>
-                        <Box sx={style}>
-                          <TableContainer component={Paper}>
-                            <Table size="medium" aria-label="a dense table">
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell
-                                    style={{
-                                      fontSize: "16px",
-                                      fontWeight: "bold",
-                                    }}
-                                    size="medium"
-                                    align="center"
-                                    colSpan={2}
-                                  >
-                                    View detail history payment
-                                  </TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                <TableRow>
-                                  <TableCell>Event name</TableCell>
-                                  <TableCell>AbC</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                  <TableCell>Event date</TableCell>
+                {dataOrderByClient?.length > 0 &&
+                  dataOrderByClient.map((row) => (
+                    <StyledTableRow key={row._id}>
+                      <TableCell component="th" scope="row">
+                        {row.event_name}
+                      </TableCell>
+                      <TableCell align="left">{row.transaction_date}</TableCell>
+                      <TableCell align="left">{row.totalAmount}</TableCell>
+                      <TableCell align="left">
+                        <Button
+                          onClick={() => {
+                            handleOpen();
+                            setIdOrder(row._id);
+                          }}
+                          size="large"
+                          variant="contained"
+                        >
+                          Detail
+                        </Button>
+                        <Modal open={open} onClose={handleClose}>
+                          <Box sx={style}>
+                            <TableContainer component={Paper}>
+                              <Table size="medium" aria-label="a dense table">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell
+                                      style={{
+                                        fontSize: "16px",
+                                        fontWeight: "bold",
+                                      }}
+                                      size="medium"
+                                      align="center"
+                                      colSpan={2}
+                                    >
+                                      View detail history payment
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  <TableRow>
+                                    <TableCell>Event name</TableCell>
+                                    <TableCell>
+                                      {dataOrderDetail?.eventName}
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>Event date</TableCell>
+                                    <TableCell>
+                                      {new Date(
+                                        dataOrderDetail?.eventDate
+                                      ).toLocaleString()}
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>Class ticket</TableCell>
+                                    <TableCell>
+                                      {dataOrderDetail?.classTicket}
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableCell>Chair name</TableCell>
                                   <TableCell>
-                                    {new Date().toLocaleString()}
+                                    {String(dataOrderDetail?.Chairs)}
                                   </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                  <TableCell>Class ticket</TableCell>
-                                  <TableCell>Vip</TableCell>
-                                </TableRow>
-                                <TableCell>Chair name</TableCell>
-                                <TableCell>b1, b2, b3</TableCell>
-                                <TableRow>
-                                  <TableCell>Total price</TableCell>
-                                  <TableCell>150.000 VND</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                  <TableCell>Transaction date</TableCell>
-                                  <TableCell>
-                                    {new Date().toLocaleString()}
-                                  </TableCell>
-                                </TableRow>
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </Box>
-                      </Modal>
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
+                                  <TableRow>
+                                    <TableCell>Total price</TableCell>
+                                    <TableCell>
+                                      {new Intl.NumberFormat("en-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      }).format(dataOrderDetail?.totalPrice)}
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow>
+                                    <TableCell>Transaction date</TableCell>
+                                    <TableCell>
+                                      {new Date(
+                                        dataOrderDetail?.transaction
+                                      ).toLocaleString()}
+                                    </TableCell>
+                                  </TableRow>
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Box>
+                        </Modal>
+                      </TableCell>
+                    </StyledTableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
