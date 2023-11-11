@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import ApiCity from "../../API/City/ApiCity";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
-import { handleFileInputChange } from "../Client/ProfileClient";
+// import { handleFileInputChange } from "../Client/ProfileClient";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import {
@@ -120,9 +120,24 @@ export const getAPICity = async (setAllCity) => {
   setAllCity(response);
 };
 
+export const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
+  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
+  const selectedFile = e.target.files[0];
+  console.log("a", selectedFile);
+  setSelectedFile(selectedFile);
+  if (selectedFile) {
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onloadend = () => {
+      setEventImage(reader.result);
+    };
+  }
+};
+
 const NewEvent = ({ onContinueClick }) => {
   const navigate = useNavigate();
-  const [avatar, setAvatar] = useState();
+  const [eventImage, setEventImage] = useState();
+  console.log(eventImage);
   const [eventType, setEventType] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const theme = useTheme();
@@ -143,7 +158,7 @@ const NewEvent = ({ onContinueClick }) => {
 
   const [newEvent, setNewEvent] = useState({
     event_name: null,
-    eventImage: null,
+    eventImage: eventImage || null,
     type_of_event: eventType,
     event_description: null,
     address: {
@@ -153,6 +168,14 @@ const NewEvent = ({ onContinueClick }) => {
       specific_address: null,
     },
   });
+
+  useEffect(() => {
+    setNewEvent(prevEvent => ({
+      ...prevEvent,
+      eventImage: eventImage || null,
+    }));
+  }, [eventImage]);
+
 
   console.log(newEvent);
 
@@ -231,7 +254,7 @@ const NewEvent = ({ onContinueClick }) => {
                 width: "100%",
                 height: "100%",
               }}
-              src={avatar}
+              src={eventImage}
               alt=""
             />
           </Avatar>
@@ -250,7 +273,7 @@ const NewEvent = ({ onContinueClick }) => {
             type="file"
             style={{ display: "none" }}
             onChange={(e) =>
-              handleFileInputChange(e, setSelectedFile, setAvatar)
+              handleFileInputChange(e, setSelectedFile, setEventImage)
             }
           />
         </Grid>

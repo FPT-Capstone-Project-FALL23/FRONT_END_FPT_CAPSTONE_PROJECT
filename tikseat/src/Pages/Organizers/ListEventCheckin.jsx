@@ -37,7 +37,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function EventHistory() {
+function ListEventCheckin() {
   const dataInfo = getLocalStorageUserInfo();
   const [eventHistory, setEventHistory] = useState([]);
   const [page, setPage] = useState(1);
@@ -160,4 +160,4 @@ function EventHistory() {
   );
 }
 
-export default EventHistory;
+export default ListEventCheckin;

@@ -149,9 +149,6 @@ function ProfileOrganizers() {
   const [specificAddress, setSpecificAddress] = useState(
     dataInfo?.address?.specific_address || ""
   );
-  // const foundedDate = new Date(dataInfo?.founded_date)
-  // .toISOString()
-  // .slice(0, 10);
 
   const [organizerInfo, setOrganizerInfo] = useState({
     organizer_name: dataInfo?.organizer_name || "",

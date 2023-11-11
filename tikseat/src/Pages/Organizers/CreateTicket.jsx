@@ -11,7 +11,7 @@ import {
   Stack,
 } from "@mui/material";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
-import { handleFileInputChange } from "../Client/ProfileClient";
+// import { handleFileInputChange } from "../Client/ProfileClient";
 import "../../Assets/CSS/Organizer/CreateTiket.css";
 import ApiEvent from "../../API/Event/ApiEvent";
 import InputCustom from "../../Components/Common/Input/InputCustom";
@@ -41,20 +41,31 @@ const style = {
   p: 4,
 };
 
+export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
+  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
+  const selectedFile = e.target.files[0];
+  console.log("a", selectedFile);
+  setSelectedFile(selectedFile);
+  if (selectedFile) {
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onloadend = () => {
+      setTypeLayout(reader.result);
+    };
+  }
+};
+
 const CreateTicket = ({ ticketData }) => {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   // console.log(dataInfo);
 
-  // console.log("Received data in CreateTicket:", ticketData);
-
-  const [countForm, setCountForm] = useState(1);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const [open, setOpen] = useState(false);
-  const [avatar, setAvatar] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const today = new Date().toISOString().slice(0, 10);
+  const [typeLayout, setTypeLayout] = useState();
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -80,8 +91,6 @@ const CreateTicket = ({ ticketData }) => {
   };
 
   const [maxTicket, setMaxTicket] = useState("");
-  console.log(maxTicket);
-
   const [eventDate, setEventDate] = useState([
     {
       date_number: 1,
@@ -122,7 +131,7 @@ const CreateTicket = ({ ticketData }) => {
     event_name: ticketData.event_name,
     type_of_event: ticketData.type_of_event.join(", "),
     eventImage: ticketData.eventImage,
-    type_layout: "",
+    type_layout: null,
     event_description: ticketData.event_description,
     maxTicketInOrder: "",
     sales_date: {
@@ -157,6 +166,13 @@ const CreateTicket = ({ ticketData }) => {
     isActive: false,
   });
 
+  useEffect(() => {
+    setEventInfo(prevEvent => ({
+      ...prevEvent,
+      type_layout: typeLayout || null,
+    }));
+  }, [typeLayout]);
+
   const updatedEventInfo = {
     ...eventInfo,
     maxTicketInOrder: maxTicket,
@@ -180,15 +196,42 @@ const CreateTicket = ({ ticketData }) => {
   };
 
   const addForm = () => {
+    // Create a new form with day_number equal to the length of event_date
     const newForm = {
-      date_number: countForm + 1,
+      date_number: eventDate.length + 1,
       dateEvent: "",
       tickets: [],
     };
-    setEventDate([...eventDate, newForm]);
-    setCountForm(countForm + 1);
-    setEventInfo(updatedEventInfo);
+  
+    // Use the callback version of setEventDate
+    setEventDate((prevEventDate) => {
+      const updatedEventDate = [...prevEventDate, newForm];
+  
+      // Update eventInfo based on the updatedEventDate
+      setEventInfo((prevEventInfo) => {
+        const updatedEventInfo = { ...prevEventInfo };
+        updatedEventInfo.event_date = updatedEventDate.map((form) => ({
+          day_number: form.date_number,
+          date: form.dateEvent,
+          event_areas: form.tickets.map((ticket) => ({
+            name_areas: ticket.name_ticket,
+            total_row: ticket.total_row,
+            ticket_price: ticket.ticket_price,
+            rows: ticket.rows.map((row) => ({
+              row_name: row.row_name,
+              total_chair: row.total_seat,
+            })),
+          })),
+        }));
+        return updatedEventInfo;
+      });
+  
+      // Return the updatedEventDate to be set as the new state
+      return updatedEventDate;
+    });
   };
+  
+  
 
   const addTicket = (formId) => {
     const updatedEventDates = eventDate.map((form) => {
@@ -216,19 +259,66 @@ const CreateTicket = ({ ticketData }) => {
   };
 
   const removeForm = (formId) => {
-    const updatedForms = eventDate.filter(
-      (form) => form.date_number !== formId
-    );
-    setEventDate(updatedForms);
+    setEventDate((prevEventDate) => {
+      const updatedEventDate = prevEventDate.filter(
+        (form) => form.date_number !== formId
+      );
+  
+      setEventInfo((prevEventInfo) => {
+        const updatedEventInfo = { ...prevEventInfo };
+        updatedEventInfo.event_date = updatedEventDate.map((form) => ({
+          day_number: form.date_number,
+          date: form.dateEvent,
+          event_areas: form.tickets.map((ticket) => ({
+            name_areas: ticket.name_ticket,
+            total_row: ticket.total_row,
+            ticket_price: ticket.ticket_price,
+            rows: ticket.rows.map((row) => ({
+              row_name: row.row_name,
+              total_chair: row.total_seat,
+            })),
+          })),
+        }));
+        return updatedEventInfo;
+      });
+  
+      return updatedEventDate;
+    });
   };
+  
 
-  //Lỗi ID form
-  const removeTicket = (ticketId) => {
-    const updateTicket = tickets.filter(
-      (formTicket) => formTicket.id !== ticketId
-    );
-    setTickets(updateTicket);
-  };
+
+  const removeTicket = (ticketIdToRemove, formId) => {
+  setEventDate((prevFormData) => {
+    const updatedFormData = [...prevFormData];
+    updatedFormData.forEach((form) => {
+      if (form.date_number === formId && form.tickets) {
+        form.tickets = form.tickets.filter(
+          (formTicket) => formTicket.id !== ticketIdToRemove
+        );
+      }
+    });
+    setEventInfo((prevEventInfo) => {
+      const updatedEventInfo = { ...prevEventInfo };
+      updatedEventInfo.event_date = updatedFormData.map((form) => ({
+        day_number: form.date_number,
+        date: form.dateEvent,
+        event_areas: form.tickets.map((ticket) => ({
+          name_areas: ticket.name_ticket,
+          total_row: ticket.total_row,
+          ticket_price: ticket.ticket_price,
+          rows: ticket.rows.map((row) => ({
+            row_name: row.row_name,
+            total_chair: row.total_seat,
+          })),
+        })),
+      }));
+      return updatedEventInfo;
+    });
+    return updatedFormData;
+  });
+};
+
 
   const handleSaleDateChange = (name, value) => {
     setSaleDate({ ...saleDate, [name]: value });
@@ -416,6 +506,7 @@ const CreateTicket = ({ ticketData }) => {
     callApiCreateEvent(organizerId, eventInfo);
   };
   console.log(eventInfo);
+
   return (
     <>
       <Grid
@@ -452,7 +543,7 @@ const CreateTicket = ({ ticketData }) => {
                   width: "100%",
                   height: "100%",
                 }}
-                src={avatar}
+                src={typeLayout}
                 alt=""
               />
             </Avatar>
@@ -471,7 +562,7 @@ const CreateTicket = ({ ticketData }) => {
               type="file"
               style={{ display: "none" }}
               onChange={(e) =>
-                handleFileInputChange(e, setSelectedFile, setAvatar)
+                handleFileInputChange(e, setSelectedFile, setTypeLayout)
               }
             />
           </Grid>
@@ -632,7 +723,7 @@ const CreateTicket = ({ ticketData }) => {
                           color: "black",
                         }}
                         variant="contained"
-                        onClick={() => removeTicket(formTicket.id)}
+                        onClick={() => removeTicket(formTicket.id, form.date_number)}
                       >
                         Delete Ticket
                       </Button>
