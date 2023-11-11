@@ -37,6 +37,9 @@ import { navItems } from "../../Assets/Constant/Common/dataCommon";
 import { colorBlack } from "../../Assets/CSS/Style/theme";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ApiClient from "../../API/Client/ApiClient";
+import ApiEvent from "../../API/Event/ApiEvent";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 import Carousel from "react-multi-carousel";
 const style = {
   position: "absolute",
@@ -58,7 +61,7 @@ const BookTickets = () => {
 
   const [dataEvents, setDataEvents] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState();
-  console.log("dataEventDetail: ", dataEventDetail);
+  // console.log("dataEventDetail: ", dataEventDetail);
   const [selectRows, setSelectRows] = useState([]);
   const [organizer, setOrganizer] = useState("");
   const navigate = useNavigate();
@@ -72,6 +75,52 @@ const BookTickets = () => {
   const [time, setTime] = useState(null);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+
+  const [bookingSeats, setBookingSeats] = useState([]);
+  
+
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+  
+  const handlebookSeat = (chairId) => {
+
+    // Kiểm tra xem có trong danh sách đang đặt ko
+    if(bookingSeats.includes(chairId.chairId)) {
+      // Hiển thị thông báo lỗi 
+      return;
+    }
+  
+    // Emit lên server để đặt ghế
+    socket.emit("book_seat", chairId);
+  
+  };
+
+    // Lắng nghe kết quả từ server
+    socket.on('booking_success', (chairId ) => {
+      // Thêm vào danh sách đang đặt
+      // console.log(chairId + 'là id của ghế bạn chọn'  );
+      setBookingSeats([...bookingSeats, chairId]);
+
+      console.log(bookingSeats + "ok");
+      console.log('booking_success: ', chairId);
+    });
+
+    socket.on('booking_timeend', (chairId, ) => {
+      console.log('booking_timeend: ', chairId);
+      const tmp = bookingSeats.filter(s => s !== chairId);
+      setBookingSeats(tmp);
+
+      console.log(selectChair);
+      const selectChairTmp = selectChair.filter(s => s._idChairName !== chairId);
+      setSelectChair(selectChairTmp);
+
+      setBookingSeats(bookingSeats.filter(s => s !== chairId));
+    });
+    
+    socket.on('booking_error', () => {
+      // Hiển thị lỗi
+    });
+  
+
 
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -149,6 +198,71 @@ const BookTickets = () => {
       alert(e.response.data.message);
     }
   };
+  const handleSelectChair = (item,selectRow, isCheckSelected)=>{
+    // console.log("A")
+    if (!countDown) {
+      setTime(600);
+      setCountDown(true);
+    }
+    const exists = selectChair.some(
+      (itemC) =>
+        itemC.chair ===
+        item.chair_name
+    );
+    if (!item.isBuy && !exists) {
+      setSelectChair([
+        ...selectChair,
+        {
+          _idChairName: item._id,
+          chair: item.chair_name,
+          price:
+            selectRow?.ticket_price,
+        },
+      ]);
+    }
+    if (isCheckSelected) {
+      setSelectChair(
+        selectChair.filter(
+          (check) =>
+            check._idChairName !==
+            item._id
+        )
+      );
+    }
+  }
+  const updateStatusChair = async (chairId, _idEvent) => {
+    try {
+      const response = await ApiEvent.updateStatus({
+        chairId : chairId,
+        _idEvent : _idEvent
+      });
+      setDataEvents(response.data);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    } 
+  }
+
+  function isSeatLocked(chairId) {
+    return bookingSeats.includes(chairId);
+  }
+
+  const handleClickChair =(item, selectRow, isCheckSelected, chairId) =>{
+    
+    const idEvent = dataEventDetail?._id;
+    if (isSeatLocked(chairId)) {
+      // Hiển thị thông báo hoặc xử lý trạng thái ở đây
+      return;
+    }
+
+    const data = {
+      chairId: chairId,
+      _idEvent: idEvent,
+    }
+    handleSelectChair(item, selectRow, isCheckSelected);
+    handlebookSeat(data);
+    updateStatusChair(chairId, idEvent)
+  }
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
   };
@@ -218,7 +332,7 @@ const BookTickets = () => {
       }
     }, 1000);
 
-    console.log("ododod");
+    // console.log("ododod");
     return () => clearInterval(intervalId);
   }, [dataEventDetail]);
   return (
@@ -684,41 +798,42 @@ const BookTickets = () => {
                                               return (
                                                 <div
                                                   onClick={() => {
-                                                    if (!countDown) {
-                                                      setTime(600);
-                                                      setCountDown(true);
-                                                    }
-                                                    const exists =
-                                                      selectChair.some(
-                                                        (itemC) =>
-                                                          itemC.chair ===
-                                                          item.chair_name
-                                                      );
-                                                    if (
-                                                      !item.isBuy &&
-                                                      !exists
-                                                    ) {
-                                                      setSelectChair([
-                                                        ...selectChair,
-                                                        {
-                                                          _idChairName:
-                                                            item._id,
-                                                          chair:
-                                                            item.chair_name,
-                                                          price:
-                                                            selectRow?.ticket_price,
-                                                        },
-                                                      ]);
-                                                    }
-                                                    if (isCheckSelected) {
-                                                      setSelectChair(
-                                                        selectChair.filter(
-                                                          (check) =>
-                                                            check._idChairName !==
-                                                            item._id
-                                                        )
-                                                      );
-                                                    }
+                                                    handleClickChair(item, selectRow, isCheckSelected, item?._id)
+                                                    // if (!countDown) {
+                                                    //   setTime(600);
+                                                    //   setCountDown(true);
+                                                    // }
+                                                    // const exists =
+                                                    //   selectChair.some(
+                                                    //     (itemC) =>
+                                                    //       itemC.chair ===
+                                                    //       item.chair_name
+                                                    //   );
+                                                    // if (
+                                                    //   !item.isBuy &&
+                                                    //   !exists
+                                                    // ) {
+                                                    //   setSelectChair([
+                                                    //     ...selectChair,
+                                                    //     {
+                                                    //       _idChairName:
+                                                    //         item._id,
+                                                    //       chair:
+                                                    //         item.chair_name,
+                                                    //       price:
+                                                    //         selectRow?.ticket_price,
+                                                    //     },
+                                                    //   ]);
+                                                    // }
+                                                    // if (isCheckSelected) {
+                                                    //   setSelectChair(
+                                                    //     selectChair.filter(
+                                                    //       (check) =>
+                                                    //         check._idChairName !==
+                                                    //         item._id
+                                                    //     )
+                                                    //   );
+                                                    // }
                                                   }}
                                                   key={index}
                                                   style={{
@@ -730,6 +845,11 @@ const BookTickets = () => {
                                                     alignItems: "center",
                                                     color: "white",
                                                     cursor: "pointer",
+                                                    pointerEvents: `${
+                                                      isCheckSelected || item.isBuy
+                                                      ? "none"
+                                                      : ""
+                                                    }`,
                                                     backgroundColor: `${
                                                       !item.isBuy
                                                         ? isCheckSelected
