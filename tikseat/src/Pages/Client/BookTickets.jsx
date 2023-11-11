@@ -14,18 +14,12 @@ import {
   Menu,
   MenuItem,
   Modal,
-  Select,
   Stack,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import MyLocationIcon from "@mui/icons-material/MyLocation";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
-import IconStar from "../../Components/Common/Icons/IconStar";
-import Carousel from "react-multi-carousel";
 import styled from "styled-components";
 import IconCircle from "../../Components/Common/Icons/IconCircle";
 import Tab from "@mui/material/Tab";
@@ -40,13 +34,13 @@ import {
 } from "../../Store/userStore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { navItems } from "../../Assets/Constant/Common/dataCommon";
-import { colorBlack, colorWhite } from "../../Assets/CSS/Style/theme";
-import ApiCommon from "../../API/Common/ApiCommon";
+import { colorBlack } from "../../Assets/CSS/Style/theme";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ApiClient from "../../API/Client/ApiClient";
 import ApiEvent from "../../API/Event/ApiEvent";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
+import Carousel from "react-multi-carousel";
 const style = {
   position: "absolute",
   top: "50%",
@@ -654,19 +648,20 @@ const BookTickets = () => {
           spacing={2}
         >
           <Grid item xs={12}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <TabList
-                  onChange={handleChangeTab}
-                  aria-label="lab API tabs example"
-                >
-                  <Tab label="About" value="1" />
-                  <Tab label="Ticket infomation" value="2" />
-                </TabList>
-              </Box>
-              <TabPanel value="1">
-                <Grid container spacing={2} style={{ width: "100%" }}>
-                  <Grid item xs={5}>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                {" "}
+                <TabContext value={value}>
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <TabList
+                      onChange={handleChangeTab}
+                      aria-label="lab API tabs example"
+                    >
+                      <Tab label="About" value="1" />
+                      <Tab label="Ticket infomation" value="2" />
+                    </TabList>
+                  </Box>
+                  <TabPanel value="1">
                     <Stack
                       direction={"row"}
                       alignItems={"center"}
@@ -675,508 +670,573 @@ const BookTickets = () => {
                       <Typography variant="h4">About</Typography>
                     </Stack>
                     <Stack>{dataEventDetail?.event_description}</Stack>
-                  </Grid>
-                  <Grid item xs={7}>
-                    <div style={{ height: "400px" }}>
-                      <img
-                        style={{ objectFit: "cover" }}
-                        height={"100%"}
-                        src={dataEventDetail?.type_layout}
-                        alt=""
-                        loading="lazy"
-                      />
-                    </div>
-                  </Grid>
-                </Grid>
-              </TabPanel>
-              <TabPanel value="2">
-                <Stack>
-                  <Stack marginTop={"30px"} direction={"column"} gap={"20px"}>
-                    {dataEventDetail?.event_date?.length > 0 &&
-                      dataEventDetail?.event_date[0]?.event_areas.map(
-                        (item, index) => {
-                          // console.log("item: ", item);
-                          return (
-                            <Stack
-                              key={index}
-                              direction={"row"}
-                              justifyContent={"space-between"}
-                              style={{
-                                cursor: "pointer",
-                                width: "100%",
-                                alignItems: "center",
-                              }}
-                              onClick={() => {
-                                handleOpen();
-                                setSelectRows(item?.rows);
-                              }}
-                            >
-                              <Typography variant="h4">
-                                {item.name_areas}
-                              </Typography>
-                              <Typography>
-                                {item.ticket_price} <sup>vnd</sup>
-                              </Typography>
-                            </Stack>
-                          );
-                        }
-                      )}
-                  </Stack>
-                  <ModalStyled open={open} onClose={handleClose}>
-                    <Box sx={{ ...style, width: "70%" }}>
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "60px",
-                          background: "#a9a90a",
-                          display: "flex",
-                          fontWeight: "bold",
-                          color: "white",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          position: "relative",
-                        }}
-                      >
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            left: "10px",
-                            color: "white",
-                            zIndex: 2,
-                            display: "flex",
-                            height: "30px",
-                            width: "30px",
-                          }}
-                          onClick={handleClose}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15.75 19.5L8.25 12l7.5-7.5"
-                            />
-                          </svg>
-                        </div>
-                        <span>Buy ticket</span>
-                      </div>
+                  </TabPanel>
+                  <TabPanel value="2">
+                    <Stack>
                       <Stack
+                        marginTop={"30px"}
                         direction={"column"}
-                        alignItems={"center"}
-                        style={{ background: "black", padding: "20px" }}
+                        gap={"20px"}
                       >
-                        <Box
-                          component={"div"}
-                          height={"300px"}
-                          width={"80%"}
-                          style={{ overflow: "auto" }}
-                        >
-                          <Stack direction={"column"} gap={"30px"}>
-                            {selectRows?.length > 0 &&
-                              selectRows?.map((selectRow) => {
-                                return (
-                                  <Stack
-                                    direction={"row"}
-                                    gap={"20px"}
-                                    key={selectRow._id}
-                                  >
-                                    <Stack direction={"column"} gap={"10px"}>
-                                      <Typography variant="h3" color={"white"}>
-                                        {selectRow?.row_name}
-                                      </Typography>
-                                    </Stack>
-                                    <Stack direction={"row"} gap={"15px"}>
-                                      {selectRow?.chairs?.map((item, index) => {
-                                        const isCheckSelected =
-                                          selectChair.find((itemc) => {
-                                            return (
-                                              itemc._idChairName === item._id
-                                            );
-                                          });
-                                        return (
-                                          <div
-                                            onClick={() => {
-                                              // handlebookSeat(item?._id);
-                                              // handleSelectChair(item, selectRow, isCheckSelected);
-                                              handleClickChair(item, selectRow, isCheckSelected, item?._id)
-                                            }}
-                                            key={index}
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                              borderRadius: "5px",
-                                              display: "flex",
-                                              justifyContent: "center",
-                                              alignItems: "center",
-                                              color: "white",
-                                              cursor: "pointer",
-                                              // backgroundColor: `${
-                                              //   item.isBuy
-                                              //     ? "#46494c" // Màu khi ghế đã chọn
-                                              //     : isCheckSelected
-                                              //     ? "#ff15a" // Màu khi ghế không thể bấm vào
-                                              //     : "#6908bd" // Màu khi ghế có thể bấm vào và chưa chọn
-                                              // }`,
-                                            pointerEvents: `${
-                                              isCheckSelected || item.isBuy
-                                              ? "none"
-                                              : ""
-                                            }`,
-                                            backgroundColor: `${
-                                                !item.isBuy
-                                                  ? isCheckSelected
-                                                    ? "#ff15a0"
-                                                    : "#6908bd"
-                                                  : "#46494c"
-                                              }`,
-                                            }}
-                                          >
-                                            {item.chair_name}
-                                          </div>
-                                        );
-                                      })}
-                                    </Stack>
-                                  </Stack>
-                                );
-                              })}
-                          </Stack>
-                        </Box>
-                        <Stack
-                          color={"white"}
-                          marginTop={"10px"}
-                          direction={"row"}
-                          gap={"40px"}
-                        >
-                          <Stack direction={"row"} gap={"10px"}>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"20px"}
-                            >
-                              <div
-                                style={{
-                                  background: "#46494c",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                }}
-                              ></div>
-                              <span>Đã đặt</span>
-                            </Stack>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                            >
-                              <div
-                                style={{
-                                  background: "#6908bd",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                }}
-                              ></div>
-                              <span>Chưa đặt</span>
-                            </Stack>
-                            <Stack
-                              direction={"row"}
-                              alignItems={"center"}
-                              gap={"10px"}
-                            >
-                              <div
-                                style={{
-                                  background: "#ff15a0",
-                                  height: "25px",
-                                  width: "25px",
-                                  borderRadius: "4px",
-                                }}
-                              ></div>
-                              <span>Ghế bạn chọn</span>
-                            </Stack>
-                          </Stack>
-                        </Stack>
-                        <Typography
-                          variant="body2"
-                          color={"white"}
-                          marginTop={"20px"}
-                        >
-                          Xem chi tiết hình ảnh và thông tin ghế
-                        </Typography>
-                      </Stack>
-                      <Stack padding={"20px"}>
-                        <Stack
-                          direction={"row"}
-                          gap={"20px"}
-                          alignItems={"center"}
-                        >
-                          {time > 0 && (
-                            <Typography variant="h4">
-                              Thời gian còn lại: {minutes < 10 ? "0" : ""}
-                              {minutes}:{seconds < 10 ? "0" : ""}
-                              {seconds}
-                            </Typography>
-                          )}
-                        </Stack>
-
-                        <Stack
-                          direction={"row"}
-                          padding={"15px 0"}
-                          style={{ color: "gray", width: "100%" }}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          flexWrap={"wrap"}
-                        >
-                          <Grid container spacing={3}>
-                            <Grid item sx={6} md={6}>
-                              <FormControl
-                                fullWidth
-                                sx={{ m: 1 }}
-                                variant="standard"
-                              >
-                                <InputLabel htmlFor="standard-adornment-amount">
-                                  Fullname
-                                </InputLabel>
-
-                                <Input
-                                  defaultValue={dataInfo?.full_name}
-                                  id="standard-adornment-amount"
-                                />
-                              </FormControl>
-                            </Grid>
-                            <Grid item sx={6} md={6}>
-                              <FormControl
-                                fullWidth
-                                sx={{ m: 1 }}
-                                variant="standard"
-                              >
-                                <InputLabel htmlFor="standard-adornment-amount">
-                                  Phone number
-                                </InputLabel>
-                                <Input
-                                  defaultValue={dataInfo?.phone}
-                                  id="standard-adornment-amount"
-                                />
-                              </FormControl>
-                            </Grid>
-                          </Grid>
-                          <Grid container spacing={3}>
-                            <Grid item sx={6} md={6}>
-                              <FormControl
-                                fullWidth
-                                sx={{ m: 1 }}
-                                variant="standard"
-                              >
-                                <InputLabel htmlFor="standard-adornment-amount">
-                                  Enter email
-                                </InputLabel>
-                                <Input
-                                  defaultValue={dataUser?.email}
-                                  id="standard-adornment-amount"
-                                />
-                              </FormControl>
-                            </Grid>
-                            <Grid item sx={6} md={6}>
-                              <Stack
-                                direction={"column"}
-                                alignSelf={"end"}
-                                borderBottom={"1px solid gray"}
-                              >
-                                <label htmlFor="" style={{ fontSize: "12px" }}>
-                                  chair name
-                                </label>
-                                <Stack>
-                                  <Stack
-                                    direction={"row"}
-                                    alignItems={"center"}
-                                    gap={"10px"}
-                                    style={{
-                                      padding: "5px 10px",
-                                      height: "38px",
-                                    }}
-                                  >
-                                    {selectChair.length > 0 && (
-                                      <>
-                                        <div>
-                                          {selectChair?.length > 0 &&
-                                            selectChair
-                                              .map((item) => {
-                                                return String(item.chair);
-                                              })
-                                              .join(",")}
-                                        </div>
-                                        <span
-                                          style={{
-                                            width: "20px",
-                                            height: "20px",
-                                            color: "red",
-                                          }}
-                                          onClick={() => setSelectChair([])}
-                                        >
-                                          <IconCircle />
-                                        </span>
-                                      </>
-                                    )}
-                                  </Stack>
+                        {dataEventDetail?.event_date?.length > 0 &&
+                          dataEventDetail?.event_date[0]?.event_areas.map(
+                            (item, index) => {
+                              console.log("item: ", item);
+                              return (
+                                <Stack
+                                  key={index}
+                                  direction={"row"}
+                                  justifyContent={"space-between"}
+                                  style={{
+                                    cursor: "pointer",
+                                    width: "100%",
+                                    alignItems: "center",
+                                  }}
+                                  onClick={() => {
+                                    handleOpen();
+                                    setSelectRows(item?.rows);
+                                  }}
+                                >
+                                  <Typography variant="h4">
+                                    {item.name_areas}
+                                  </Typography>
+                                  <Typography>
+                                    {item.ticket_price} <sup>vnd</sup>
+                                  </Typography>
                                 </Stack>
-                              </Stack>
-                            </Grid>
-                          </Grid>
-                        </Stack>
-
-                        <Divider />
-                        <Stack
-                          direction={"row"}
-                          justifyContent={"space-between"}
-                          marginTop={"15px"}
-                          alignItems={"center"}
-                        >
-                          <Stack>
-                            <Typography variant="body2" color={"gray"}>
-                              Tạm tính
-                            </Typography>
-                            <Typography variant="h6">
-                              {totalByTicket}
-                            </Typography>
-                          </Stack>
-                          <Button
-                            disabled={selectChair?.length <= 0}
-                            type="button"
+                              );
+                            }
+                          )}
+                      </Stack>
+                      <ModalStyled open={open} onClose={handleClose}>
+                        <Box sx={{ ...style, width: "70%" }}>
+                          <div
                             style={{
-                              background: `${
-                                selectChair?.length <= 0 ? "gray" : "#bfad17"
-                              }`,
-                              color: "white",
+                              width: "100%",
+                              height: "60px",
+                              background: "#a9a90a",
+                              display: "flex",
                               fontWeight: "bold",
-                              padding: "10px 20px",
+                              color: "white",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              position: "relative",
                             }}
-                            onClick={(event) => handleOpenConfirm()}
                           >
-                            Confirm
-                          </Button>
-                          <Modal
-                            open={openConfrm}
-                            onClose={handleCloseConfirm}
-                            aria-labelledby="child-modal-title"
-                            aria-describedby="child-modal-description"
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                left: "10px",
+                                color: "white",
+                                zIndex: 2,
+                                display: "flex",
+                                height: "30px",
+                                width: "30px",
+                              }}
+                              onClick={handleClose}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                                />
+                              </svg>
+                            </div>
+                            <span>Buy ticket</span>
+                          </div>
+                          <Stack
+                            direction={"column"}
+                            alignItems={"center"}
+                            style={{ background: "black", padding: "20px" }}
                           >
                             <Box
-                              sx={{
-                                ...style,
-                                width: 500,
-                                padding: "20px",
-                                borderRadius: "10px",
-                              }}
+                              component={"div"}
+                              height={"300px"}
+                              width={"80%"}
+                              style={{ overflow: "auto" }}
                             >
-                              <Stack direction={"column"}>
-                                <Stack direction={"row"} padding={" 10px 0"}>
-                                  <label
-                                    htmlFor=""
-                                    style={{
-                                      fontWeight: "500",
-                                      fontSize: "18px",
-                                    }}
-                                  >
-                                    Confirm chair name:{" "}
-                                  </label>
-                                  <Stack
-                                    marginLeft={"10px"}
-                                    direction={"row"}
-                                    alignItems={"center"}
-                                  >
-                                    {selectChair.length > 0 && (
-                                      <>
-                                        <span
-                                          style={{
-                                            fontSize: "18px",
-                                            fontWeight: "700",
-                                          }}
+                              <Stack direction={"column"} gap={"30px"}>
+                                {selectRows?.length > 0 &&
+                                  selectRows?.map((selectRow) => {
+                                    return (
+                                      <Stack
+                                        direction={"row"}
+                                        gap={"20px"}
+                                        key={selectRow._id}
+                                      >
+                                        <Stack
+                                          direction={"column"}
+                                          gap={"10px"}
                                         >
-                                          {selectChair?.length > 0 &&
-                                            selectChair
-                                              .map((item) => {
-                                                return String(item.chair);
-                                              })
-                                              .join(",")}
-                                        </span>
-                                      </>
-                                    )}
-                                  </Stack>
+                                          <Typography
+                                            variant="h3"
+                                            color={"white"}
+                                          >
+                                            {selectRow?.row_name}
+                                          </Typography>
+                                        </Stack>
+                                        <Stack direction={"row"} gap={"15px"}>
+                                          {selectRow?.chairs?.map(
+                                            (item, index) => {
+                                              const isCheckSelected =
+                                                selectChair.find((itemc) => {
+                                                  return (
+                                                    itemc._idChairName ===
+                                                    item._id
+                                                  );
+                                                });
+                                              return (
+                                                <div
+                                                  onClick={() => {
+                                                    handleClickChair(item, selectRow, isCheckSelected, item?._id)
+                                                    // if (!countDown) {
+                                                    //   setTime(600);
+                                                    //   setCountDown(true);
+                                                    // }
+                                                    // const exists =
+                                                    //   selectChair.some(
+                                                    //     (itemC) =>
+                                                    //       itemC.chair ===
+                                                    //       item.chair_name
+                                                    //   );
+                                                    // if (
+                                                    //   !item.isBuy &&
+                                                    //   !exists
+                                                    // ) {
+                                                    //   setSelectChair([
+                                                    //     ...selectChair,
+                                                    //     {
+                                                    //       _idChairName:
+                                                    //         item._id,
+                                                    //       chair:
+                                                    //         item.chair_name,
+                                                    //       price:
+                                                    //         selectRow?.ticket_price,
+                                                    //     },
+                                                    //   ]);
+                                                    // }
+                                                    // if (isCheckSelected) {
+                                                    //   setSelectChair(
+                                                    //     selectChair.filter(
+                                                    //       (check) =>
+                                                    //         check._idChairName !==
+                                                    //         item._id
+                                                    //     )
+                                                    //   );
+                                                    // }
+                                                  }}
+                                                  key={index}
+                                                  style={{
+                                                    width: "50px",
+                                                    height: "50px",
+                                                    borderRadius: "5px",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    color: "white",
+                                                    cursor: "pointer",
+                                                    pointerEvents: `${
+                                                      isCheckSelected || item.isBuy
+                                                      ? "none"
+                                                      : ""
+                                                    }`,
+                                                    backgroundColor: `${
+                                                      !item.isBuy
+                                                        ? isCheckSelected
+                                                          ? "#ff15a0"
+                                                          : "#6908bd"
+                                                        : "#46494c"
+                                                    }`,
+                                                  }}
+                                                >
+                                                  {item.chair_name}
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </Stack>
+                                      </Stack>
+                                    );
+                                  })}
+                              </Stack>
+                            </Box>
+                            <Stack
+                              color={"white"}
+                              marginTop={"10px"}
+                              direction={"row"}
+                              gap={"40px"}
+                            >
+                              <Stack direction={"row"} gap={"10px"}>
+                                <Stack
+                                  direction={"row"}
+                                  alignItems={"center"}
+                                  gap={"20px"}
+                                >
+                                  <div
+                                    style={{
+                                      background: "#46494c",
+                                      height: "25px",
+                                      width: "25px",
+                                      borderRadius: "4px",
+                                    }}
+                                  ></div>
+                                  <span>Đã đặt</span>
                                 </Stack>
                                 <Stack
                                   direction={"row"}
                                   alignItems={"center"}
-                                  padding={" 10px 0"}
+                                  gap={"10px"}
                                 >
-                                  <label
-                                    htmlFor=""
+                                  <div
                                     style={{
-                                      fontWeight: "500",
-                                      fontSize: "18px",
+                                      background: "#6908bd",
+                                      height: "25px",
+                                      width: "25px",
+                                      borderRadius: "4px",
                                     }}
-                                  >
-                                    Email recieve ticket:{" "}
-                                  </label>
-                                  <span style={{ marginLeft: "10px" }}>
-                                    {dataUser?.email}
-                                  </span>
+                                  ></div>
+                                  <span>Chưa đặt</span>
+                                </Stack>
+                                <Stack
+                                  direction={"row"}
+                                  alignItems={"center"}
+                                  gap={"10px"}
+                                >
+                                  <div
+                                    style={{
+                                      background: "#ff15a0",
+                                      height: "25px",
+                                      width: "25px",
+                                      borderRadius: "4px",
+                                    }}
+                                  ></div>
+                                  <span>Ghế bạn chọn</span>
                                 </Stack>
                               </Stack>
-                              <Stack
-                                direction={"row"}
-                                spacing={2}
-                                marginTop={"30px"}
-                                justifyContent={"center"}
-                                alignItems={"center"}
-                              >
-                                <Button
-                                  type="button"
-                                  variant="outlined"
-                                  onClick={handleCloseConfirm}
-                                >
-                                  Close
-                                </Button>
-                                <Button
-                                  type="button"
-                                  style={{ backgroundColor: "#bfad17" }}
-                                  variant="contained"
-                                  onClick={(e) => handleBuyTickect(e)}
-                                >
-                                  Buy Ticket
-                                </Button>
+                            </Stack>
+                            <Typography
+                              variant="body2"
+                              color={"white"}
+                              marginTop={"20px"}
+                            >
+                              Xem chi tiết hình ảnh và thông tin ghế
+                            </Typography>
+                          </Stack>
+                          <Stack padding={"20px"}>
+                            <Stack
+                              direction={"row"}
+                              gap={"20px"}
+                              alignItems={"center"}
+                            >
+                              {time > 0 && (
+                                <Typography variant="h4">
+                                  Thời gian còn lại: {minutes < 10 ? "0" : ""}
+                                  {minutes}:{seconds < 10 ? "0" : ""}
+                                  {seconds}
+                                </Typography>
+                              )}
+                            </Stack>
+
+                            <Stack
+                              direction={"row"}
+                              padding={"15px 0"}
+                              style={{ color: "gray", width: "100%" }}
+                              alignItems={"center"}
+                              justifyContent={"space-between"}
+                              flexWrap={"wrap"}
+                            >
+                              <Grid container spacing={3}>
+                                <Grid item sx={6} md={6}>
+                                  <FormControl
+                                    fullWidth
+                                    sx={{ m: 1 }}
+                                    variant="standard"
+                                  >
+                                    <InputLabel htmlFor="standard-adornment-amount">
+                                      Fullname
+                                    </InputLabel>
+
+                                    <Input
+                                      defaultValue={dataInfo?.full_name}
+                                      id="standard-adornment-amount"
+                                    />
+                                  </FormControl>
+                                </Grid>
+                                <Grid item sx={6} md={6}>
+                                  <FormControl
+                                    fullWidth
+                                    sx={{ m: 1 }}
+                                    variant="standard"
+                                  >
+                                    <InputLabel htmlFor="standard-adornment-amount">
+                                      Phone number
+                                    </InputLabel>
+                                    <Input
+                                      defaultValue={dataInfo?.phone}
+                                      id="standard-adornment-amount"
+                                    />
+                                  </FormControl>
+                                </Grid>
+                              </Grid>
+                              <Grid container spacing={3}>
+                                <Grid item sx={6} md={6}>
+                                  <FormControl
+                                    fullWidth
+                                    sx={{ m: 1 }}
+                                    variant="standard"
+                                  >
+                                    <InputLabel htmlFor="standard-adornment-amount">
+                                      Enter email
+                                    </InputLabel>
+                                    <Input
+                                      defaultValue={dataUser?.email}
+                                      id="standard-adornment-amount"
+                                    />
+                                  </FormControl>
+                                </Grid>
+                                <Grid item sx={6} md={6}>
+                                  <Stack
+                                    direction={"column"}
+                                    alignSelf={"end"}
+                                    borderBottom={"1px solid gray"}
+                                  >
+                                    <label
+                                      htmlFor=""
+                                      style={{ fontSize: "12px" }}
+                                    >
+                                      chair name
+                                    </label>
+                                    <Stack>
+                                      <Stack
+                                        direction={"row"}
+                                        alignItems={"center"}
+                                        gap={"10px"}
+                                        style={{
+                                          padding: "5px 10px",
+                                          height: "38px",
+                                        }}
+                                      >
+                                        {selectChair.length > 0 && (
+                                          <>
+                                            <div>
+                                              {selectChair?.length > 0 &&
+                                                selectChair
+                                                  .map((item) => {
+                                                    return String(item.chair);
+                                                  })
+                                                  .join(",")}
+                                            </div>
+                                            <span
+                                              style={{
+                                                width: "20px",
+                                                height: "20px",
+                                                color: "red",
+                                              }}
+                                              onClick={() => setSelectChair([])}
+                                            >
+                                              <IconCircle />
+                                            </span>
+                                          </>
+                                        )}
+                                      </Stack>
+                                    </Stack>
+                                  </Stack>
+                                </Grid>
+                              </Grid>
+                            </Stack>
+
+                            <Divider />
+                            <Stack
+                              direction={"row"}
+                              justifyContent={"space-between"}
+                              marginTop={"15px"}
+                              alignItems={"center"}
+                            >
+                              <Stack>
+                                <Typography variant="body2" color={"gray"}>
+                                  Tạm tính
+                                </Typography>
+                                <Typography variant="h6">
+                                  {totalByTicket}
+                                </Typography>
                               </Stack>
-                            </Box>
-                          </Modal>
-                        </Stack>
-                      </Stack>
-                    </Box>
-                  </ModalStyled>
-                </Stack>
-              </TabPanel>
-            </TabContext>
+                              <Button
+                                disabled={selectChair?.length <= 0}
+                                type="button"
+                                style={{
+                                  background: `${
+                                    selectChair?.length <= 0
+                                      ? "gray"
+                                      : "#bfad17"
+                                  }`,
+                                  color: "white",
+                                  fontWeight: "bold",
+                                  padding: "10px 20px",
+                                }}
+                                onClick={(event) => handleOpenConfirm()}
+                              >
+                                Confirm
+                              </Button>
+                              <Modal
+                                open={openConfrm}
+                                onClose={handleCloseConfirm}
+                                aria-labelledby="child-modal-title"
+                                aria-describedby="child-modal-description"
+                              >
+                                <Box
+                                  sx={{
+                                    ...style,
+                                    width: 500,
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  <Stack direction={"column"}>
+                                    <Stack
+                                      direction={"row"}
+                                      padding={" 10px 0"}
+                                    >
+                                      <label
+                                        htmlFor=""
+                                        style={{
+                                          fontWeight: "500",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        Confirm chair name:{" "}
+                                      </label>
+                                      <Stack
+                                        marginLeft={"10px"}
+                                        direction={"row"}
+                                        alignItems={"center"}
+                                      >
+                                        {selectChair.length > 0 && (
+                                          <>
+                                            <span
+                                              style={{
+                                                fontSize: "18px",
+                                                fontWeight: "700",
+                                              }}
+                                            >
+                                              {selectChair?.length > 0 &&
+                                                selectChair
+                                                  .map((item) => {
+                                                    return String(item.chair);
+                                                  })
+                                                  .join(",")}
+                                            </span>
+                                          </>
+                                        )}
+                                      </Stack>
+                                    </Stack>
+                                    <Stack
+                                      direction={"row"}
+                                      alignItems={"center"}
+                                      padding={" 10px 0"}
+                                    >
+                                      <label
+                                        htmlFor=""
+                                        style={{
+                                          fontWeight: "500",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        Email recieve ticket:{" "}
+                                      </label>
+                                      <span style={{ marginLeft: "10px" }}>
+                                        {dataUser?.email}
+                                      </span>
+                                    </Stack>
+                                  </Stack>
+                                  <Stack
+                                    direction={"row"}
+                                    spacing={2}
+                                    marginTop={"30px"}
+                                    justifyContent={"center"}
+                                    alignItems={"center"}
+                                  >
+                                    <Button
+                                      type="button"
+                                      variant="outlined"
+                                      onClick={handleCloseConfirm}
+                                    >
+                                      Close
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      style={{ backgroundColor: "#bfad17" }}
+                                      variant="contained"
+                                      onClick={(e) => handleBuyTickect(e)}
+                                    >
+                                      Buy Ticket
+                                    </Button>
+                                  </Stack>
+                                </Box>
+                              </Modal>
+                            </Stack>
+                          </Stack>
+                        </Box>
+                      </ModalStyled>
+                    </Stack>
+                  </TabPanel>
+                </TabContext>
+              </Grid>
+              <Grid item xs={7}>
+                <div style={{ height: "400px", marginTop: "50px" }}>
+                  <img
+                    style={{ objectFit: "cover" }}
+                    height={"100%"}
+                    src={dataEventDetail?.type_layout}
+                    alt=""
+                    loading="lazy"
+                  />
+                </div>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
             <Typography component={"div"} variant="h3">
               Events
             </Typography>
-
-            <Stack
-              direction={"row"}
-              gap={"20px"}
-              style={{
-                marginTop: "30px",
-                overflow: "auto",
-                width: "100%",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
+            <Carousel
+              arrows
+              // customLeftArrow={<CustomPrevArrow />}
+              // customRightArrow={<CustomNextArrow />}
+              autoPlaySpeed={3000}
+              centerMode={false}
+              containerClass="container-with-dots"
+              focusOnSelect={false}
+              infinite
+              keyBoardControl
+              pauseOnHover
+              renderDotsOutside={false}
+              responsive={{
+                desktop: {
+                  breakpoint: {
+                    max: 3000,
+                    min: 1024,
+                  },
+                  items: 4,
+                },
               }}
+              rewind={false}
+              shouldResetAutoplay
+              showDots={false}
+              slidesToSlide={1}
+              autoPlay={true}
+              swipeable={true}
+              draggable={true}
+              partialVisible={false}
             >
               {dataEvents?.length > 0 &&
                 dataEvents.map((event) => {
@@ -1187,16 +1247,17 @@ const BookTickets = () => {
                       }}
                       key={event._id}
                       sx={{
-                        // display: "flex",
-                        gap: "20px",
+                        display: "flex",
+                        gap: "10px",
                         flexDirection: "column",
+                        margin: "10px",
                       }}
                     >
                       <CardMedia
                         component="img"
                         sx={{
-                          width: 300,
-                          height: 140,
+                          // width: 300,
+                          // height: 140,
                           borderRadius: "10px",
                           cursor: "pointer",
                         }}
@@ -1237,7 +1298,8 @@ const BookTickets = () => {
                     </Card>
                   );
                 })}
-            </Stack>
+            </Carousel>
+            <div style={{ height: "200px" }}></div>
           </Grid>
         </Grid>
       </div>
@@ -1245,6 +1307,15 @@ const BookTickets = () => {
   );
 };
 
+// const CustomPrevArrow = ({ onClick }) => (
+//   <button onClick={onClick} className="custom-arrow custom-prev-arrow"></button>
+// );
+
+// const CustomNextArrow = ({ onClick }) => (
+//   <button onClick={onClick} className="custom-arrow custom-next-arrow">
+//     {">"}
+//   </button>
+// );
 const ModalStyled = styled(Modal)`
   .MuiBox-root {
     border: none;

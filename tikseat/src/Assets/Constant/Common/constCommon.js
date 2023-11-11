@@ -25,7 +25,7 @@ export const NAME_LOGO = "TIKSEAT";
 export const TITLE_LOGIN = "Login to access your TikSeat account";
 export const LOGIN = "Login";
 export const FORGOT_PASSWORD = "Forgot password ?";
-export const ROLE = ["client", "organizer"];
+export const ROLE = ["client", "organizer", "admin"];
 export const SET_PASSWORD = "Set a password";
 export const TITLE_PAGE_SETPASSWORD =
   "Your previous password has been reseted. Please set a new password for your account.";

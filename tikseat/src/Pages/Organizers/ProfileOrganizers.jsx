@@ -4,8 +4,6 @@ import { useState, useRef } from "react";
 import {
   Box,
   Grid,
-  Checkbox,
-  FormControlLabel,
   Stack,
   FormControl,
   InputLabel,
@@ -279,7 +277,7 @@ function ProfileOrganizers() {
             callApiProfileOrganizers(reader.result, _idUser, organizerInfo);
           };
         } else {
-          callApiProfileOrganizers(null,_idUser, organizerInfo);
+          callApiProfileOrganizers(null, _idUser, organizerInfo);
         }
       } catch (error) {
         console.log("error", error);
@@ -327,296 +325,289 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid style={{ display: "flex", justifyContent: "center" }}>
-        <h1>Profile Organizer</h1>
-      </Grid>
-      <FormSubmit
-        onSubmit={handleOrganizerInfo}
-        style={{
-          width: "100%",
-          height: "90%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <Grid style={{ display: "flex", justifyContent: "space-around" }}>
-          <Grid style={{ width: "45%" }}>
-            <Stack style={{ marginBottom: "30px" }}>
-              <InputCustom
-                type="text"
-                id="organizer_name"
-                name="organizer_name"
-                value={organizerInfo.organizer_name}
-                setValue={(value) => handleInputChange("organizer_name", value)}
-                label="Organizer Name"
-              />
-            </Stack>
-            <Stack
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: "30px",
-              }}
-            >
-              <Stack style={{ width: "47%" }}>
+      <Grid style={{backgroundColor:"#ffffff", borderRadius:"10px"}}>
+        <Grid style={{ display: "flex", justifyContent: "center", paddingTop:"30px" }}>
+          <h1>Profile Organizer</h1>
+        </Grid>
+        <FormSubmit
+          onSubmit={handleOrganizerInfo}
+          style={{
+            width: "100%",
+            height: "90%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Grid style={{ display: "flex", justifyContent: "space-around" }}>
+            <Grid style={{ width: "45%" }}>
+              <Stack style={{ marginBottom: "30px" }}>
                 <InputCustom
                   type="text"
-                  id="phone"
-                  name="phone"
-                  value={organizerInfo.phone}
-                  setValue={(value) => handleInputChange("phone", value)}
-                  label="Phone number"
-                />
-              </Stack>
-              <Stack style={{ width: "47%" }}>
-                <InputCustom
-                  type="date"
-                  id="founded_date"
-                  name="founded_date"
-                  value={organizerInfo.founded_date}
-                  setValue={(value) => handleInputChange("founded_date", value)}
-                  label="Founded Date"
-                />
-              </Stack>
-            </Stack>
-            <Stack style={{ marginBottom: "30px" }}>
-              <InputCustom
-                type="text"
-                id="website"
-                name="website"
-                value={organizerInfo.website}
-                setValue={(value) => handleInputChange("website", value)}
-                label="Website"
-              />
-            </Stack>
-            <Stack
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: "20px",
-              }}
-            >
-              <Stack style={{ width: "47%" }}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    id="select-city"
-                    options={allCity}
-                    value={selectCity}
-                    onChange={(event, newValue) =>
-                      handleChangeCity(
-                        event,
-                        newValue,
-                        setSelectCity,
-                        setAllDistrictsOfCity,
-                        setAllWardsOfDistricts,
-                        setSelectDistrict,
-                        setSelectWard
-                      )
-                    }
-                    getOptionLabel={(option) =>
-                      option.name || dataInfo?.address?.city || ""
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} required label="City" />
-                    )}
-                  />
-                </FormControl>
-              </Stack>
-              <Stack style={{ width: "47%" }}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    id="select-districts"
-                    options={allDistrictsOfCity}
-                    value={selectDistrict}
-                    onChange={(event, newValue) =>
-                      handleChangeDistrict(
-                        event,
-                        newValue,
-                        setSelectDistrict,
-                        setAllWardsOfDistricts,
-                        setSelectWard
-                      )
-                    }
-                    getOptionLabel={(option) =>
-                      option.name || dataInfo?.address?.district || ""
-                    }
-                    renderInput={(params) => (
-                      <TextField {...params} required label="Districts" />
-                    )}
-                  />
-                </FormControl>
-              </Stack>
-            </Stack>
-            <Stack
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginBottom: "30px",
-              }}
-            >
-              <Stack style={{ width: "47%" }}>
-                <FormControl fullWidth>
-                  <Autocomplete
-                    freeSolo
-                    id="select-wards"
-                    value={selectWard}
-                    onChange={(event, newValue) =>
-                      handleChangeWard(event, newValue, setSelectWard)
-                    }
-                    getOptionLabel={(option) =>
-                      option.name || dataInfo?.address?.ward || ""
-                    }
-                    options={allWardsOfDistricts}
-                    renderInput={(params) => (
-                      <TextField {...params} required label="Wards" />
-                    )}
-                  />
-                </FormControl>
-              </Stack>
-              <Stack style={{ width: "47%" }}>
-                <InputCustom
-                  type="text"
-                  name="specific_address"
-                  value={organizerInfo.address.specific_address}
-                  setValue={(value) => handleSpecificAddressChange(value)}
-                  label="Specific address"
-                />
-              </Stack>
-            </Stack>
-            <Stack>
-              <FormControl fullWidth style={{ marginBottom: "20px" }}>
-                <InputLabel id="demo-multiple-chip-label">
-                  Event Type
-                </InputLabel>
-                <Select
-                  labelId="demo-multiple-chip-label"
-                  multiple
-                  id="organizer_type"
-                  name="organizer_type"
-                  value={organizerInfo.organizer_type}
-                  onChange={(e) =>
-                    setOrganizerInfo({
-                      ...organizerInfo,
-                      organizer_type: e.target.value,
-                    })
+                  id="organizer_name"
+                  name="organizer_name"
+                  value={organizerInfo.organizer_name}
+                  setValue={(value) =>
+                    handleInputChange("organizer_name", value)
                   }
-                  input={
-                    <OutlinedInput
-                      id="select-multiple-chip"
-                      label="Event Type"
+                  label="Organizer Name"
+                />
+              </Stack>
+              <Stack
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: "30px",
+                }}
+              >
+                <Stack style={{ width: "47%" }}>
+                  <InputCustom
+                    type="text"
+                    id="phone"
+                    name="phone"
+                    value={organizerInfo.phone}
+                    setValue={(value) => handleInputChange("phone", value)}
+                    label="Phone number"
+                  />
+                </Stack>
+                <Stack style={{ width: "47%" }}>
+                  <InputCustom
+                    type="date"
+                    id="founded_date"
+                    name="founded_date"
+                    value={organizerInfo.founded_date}
+                    setValue={(value) =>
+                      handleInputChange("founded_date", value)
+                    }
+                    label="Founded Date"
+                  />
+                </Stack>
+              </Stack>
+              <Stack style={{ marginBottom: "30px" }}>
+                <InputCustom
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={organizerInfo.website}
+                  setValue={(value) => handleInputChange("website", value)}
+                  label="Website"
+                />
+              </Stack>
+              <Stack
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: "20px",
+                }}
+              >
+                <Stack style={{ width: "47%" }}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      freeSolo
+                      id="select-city"
+                      options={allCity}
+                      value={selectCity}
+                      onChange={(event, newValue) =>
+                        handleChangeCity(
+                          event,
+                          newValue,
+                          setSelectCity,
+                          setAllDistrictsOfCity,
+                          setAllWardsOfDistricts,
+                          setSelectDistrict,
+                          setSelectWard
+                        )
+                      }
+                      getOptionLabel={(option) =>
+                        option.name || dataInfo?.address?.city || ""
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} required label="City" />
+                      )}
                     />
+                  </FormControl>
+                </Stack>
+                <Stack style={{ width: "47%" }}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      freeSolo
+                      id="select-districts"
+                      options={allDistrictsOfCity}
+                      value={selectDistrict}
+                      onChange={(event, newValue) =>
+                        handleChangeDistrict(
+                          event,
+                          newValue,
+                          setSelectDistrict,
+                          setAllWardsOfDistricts,
+                          setSelectWard
+                        )
+                      }
+                      getOptionLabel={(option) =>
+                        option.name || dataInfo?.address?.district || ""
+                      }
+                      renderInput={(params) => (
+                        <TextField {...params} required label="Districts" />
+                      )}
+                    />
+                  </FormControl>
+                </Stack>
+              </Stack>
+              <Stack
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: "30px",
+                }}
+              >
+                <Stack style={{ width: "47%" }}>
+                  <FormControl fullWidth>
+                    <Autocomplete
+                      freeSolo
+                      id="select-wards"
+                      value={selectWard}
+                      onChange={(event, newValue) =>
+                        handleChangeWard(event, newValue, setSelectWard)
+                      }
+                      getOptionLabel={(option) =>
+                        option.name || dataInfo?.address?.ward || ""
+                      }
+                      options={allWardsOfDistricts}
+                      renderInput={(params) => (
+                        <TextField {...params} required label="Wards" />
+                      )}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack style={{ width: "47%" }}>
+                  <InputCustom
+                    type="text"
+                    name="specific_address"
+                    value={organizerInfo.address.specific_address}
+                    setValue={(value) => handleSpecificAddressChange(value)}
+                    label="Specific address"
+                  />
+                </Stack>
+              </Stack>
+              <Stack>
+                <FormControl fullWidth style={{ marginBottom: "20px" }}>
+                  <InputLabel id="demo-multiple-chip-label">
+                    Event Type
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-chip-label"
+                    multiple
+                    id="organizer_type"
+                    name="organizer_type"
+                    value={organizerInfo.organizer_type}
+                    onChange={(e) =>
+                      setOrganizerInfo({
+                        ...organizerInfo,
+                        organizer_type: e.target.value,
+                      })
+                    }
+                    input={
+                      <OutlinedInput
+                        id="select-multiple-chip"
+                        label="Event Type"
+                      />
+                    }
+                    renderValue={(selected) => (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} />
+                        ))}
+                      </Box>
+                    )}
+                    MenuProps={MENUPROPS}
+                  >
+                    {DATA_EVENT_TYPE.map((name) => (
+                      <MenuItem
+                        key={name}
+                        value={name}
+                        style={getStyles(name, eventType, theme)}
+                      >
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Grid>
+
+            <Grid
+              style={{ width: "45%", display: "flex", flexDirection: "column" }}
+            >
+              <Grid
+                style={{
+                  width: "100%",
+                  marginBottom: "40px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar
+                  style={{ height: "300px", width: "300px" }}
+                  alt="Remy Sharp"
+                  src={avatar}
+                />
+                <MonochromePhotosIcon
+                  style={{
+                    marginLeft: "185px",
+                    fontSize: "60px",
+                    marginTop: "-50px",
+                    position: "relative",
+                  }}
+                  onClick={handleIconClick}
+                />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={(e) =>
+                    handleFileInputChange(e, setSelectedFile, setAvatar)
                   }
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
-                  )}
-                  MenuProps={MENUPROPS}
-                >
-                  {DATA_EVENT_TYPE.map((name) => (
-                    <MenuItem
-                      key={name}
-                      value={name}
-                      style={getStyles(name, eventType, theme)}
-                    >
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
+                />
+              </Grid>
+              <Stack>
+                <TextareaAutosize
+                  style={{ width: "100%" }}
+                  minRows={6}
+                  placeholder="Description"
+                  id="description"
+                  name="description"
+                  value={organizerInfo.description}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
+                />
+              </Stack>
+            </Grid>
           </Grid>
 
           <Grid
-            style={{ width: "45%", display: "flex", flexDirection: "column" }}
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              bottom: "10px",
+            }}
           >
-            <Grid
-              style={{
-                width: "100%",
-                marginBottom: "40px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Avatar
-                style={{ height: "300px", width: "300px" }}
-                alt="Remy Sharp"
-                src={avatar}
-              />
-              <MonochromePhotosIcon
-                style={{
-                  marginLeft: "185px",
-                  fontSize: "60px",
-                  marginTop: "-50px",
-                  position: "relative",
-                }}
-                onClick={handleIconClick}
-              />
-              <input
-                ref={fileInputRef}
-                type="file"
-                style={{ display: "none" }}
-                onChange={(e) =>
-                  handleFileInputChange(e, setSelectedFile, setAvatar)
-                }
-              />
-            </Grid>
-            <Stack>
-              <TextareaAutosize
-                style={{ width: "100%" }}
-                minRows={6}
-                placeholder="Description"
-                id="description"
-                name="description"
-                value={organizerInfo.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
+            <Stack style={{ width: "50%" }}>
+              <ButtonCustom
+                color="black"
+                content="Update account"
+                backgroundcolor="#F5BD19"
               />
             </Stack>
           </Grid>
-        </Grid>
-
-        <Grid
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            bottom: "10px",
-          }}
-        >
-          <div>
-            <FormControlLabel
-              style={{ fontSize: "14px", marginTop: "20px" }}
-              control={<Checkbox />}
-              label={
-                <span>
-                  I agree to all the{" "}
-                  <span style={{ color: "#F5BD19" }}>Terms</span> and
-                  <span style={{ color: "#F5BD19" }}> Privacy Policies</span>
-                </span>
-              }
-            />
-          </div>
-          <Stack style={{ width: "50%" }}>
-            <ButtonCustom
-              color="black"
-              content="Create account"
-              backgroundcolor="#F5BD19"
-            />
-          </Stack>
-        </Grid>
-      </FormSubmit>
+        </FormSubmit>
+      </Grid>
     </>
   );
 }

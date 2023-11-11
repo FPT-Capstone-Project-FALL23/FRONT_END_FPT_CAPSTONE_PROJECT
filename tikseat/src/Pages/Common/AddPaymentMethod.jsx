@@ -65,6 +65,9 @@ const AddPaymentMethod = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          padding: "30px",
       }}
     >
       <PageNameStyle variant="h4" component={"h5"}>
@@ -80,7 +83,7 @@ const AddPaymentMethod = () => {
             label="Card Number"
           />
 
-          <Stack direction="row" spacing={6}>
+          <Stack style={{margin:"20px 0px 20px 0px"}} direction="row" spacing={6}>
             <InputCustom
               type="date"
               setValue={setDate}
@@ -100,7 +103,7 @@ const AddPaymentMethod = () => {
             label="Country or Region"
             defaultValue="EUR"
             helperText="Please select your currency"
-            style={{ width: "100%" }}
+            style={{ width: "100%", marginTop:"20px" }}
           >
             {currencies.map((option) => (
               <MenuItem key={option.value} value={option.value}>
