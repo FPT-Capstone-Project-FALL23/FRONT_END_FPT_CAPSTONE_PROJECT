@@ -28,6 +28,8 @@ export const URL_CREATEEVENT = "/event/createEvent";
 export const URL_UPDATEEVENT = "/event/updateEvent";
 
 export const URL_EVENTHISTORY = "/event/listEventOrganizer";
+export const URL_UPDATESTATUS = "/event/updateChairStatus";
+
 
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";

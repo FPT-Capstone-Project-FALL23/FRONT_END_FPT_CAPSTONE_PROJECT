@@ -7,6 +7,7 @@ import {
   URL_CREATEEVENT,
   URL_UPDATEEVENT,
   URL_EVENTHISTORY,
+  URL_UPDATESTATUS,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -36,6 +37,9 @@ const ApiEvent = {
 
   eventHistory(data) {
     return axiosDefault.post(URL_EVENTHISTORY, data);
+  },
+  updateStatus(data) {
+    return axiosDefault.post(URL_UPDATESTATUS, data);
   },
 };
 
