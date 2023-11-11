@@ -41,7 +41,8 @@ export const URL_GET_DETAIL_ORGANIZAER = "/admin/getDetailOrganizer";
 
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
-
+export const URL_ORDER_BY_CLIENT = "/order/getOrdersByClient";
+export const URL_ORDER_DETAIL = "/order/getOrderDetail";
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
 export const URL_FORGOTPASSWORD = "";
