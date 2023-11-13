@@ -81,7 +81,7 @@ const CreateTicket = ({ ticketData }) => {
     console.log("ran 1st");
     socket.emit("new_event", {
       senderName: organizerName,
-      receiverName: "64f20a070f3feb00f7f2f4f7",
+      receiverName: "6544b5f73dd2f66548b5d85a",
     });
   };
 
@@ -509,6 +509,8 @@ const CreateTicket = ({ ticketData }) => {
 
   return (
     <>
+    <Grid>
+    </Grid>
       <Grid
         fullwidth
         style={{

@@ -1,7 +1,7 @@
 import React from "react";
 import { useTheme } from "@mui/material/styles";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Grid,
   Stack,
@@ -20,7 +20,12 @@ import {
 } from "@mui/material";
 import ApiCity from "../../API/City/ApiCity";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
-// import { handleFileInputChange } from "../Client/ProfileClient";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
+import Typography from "@mui/material/Typography";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import {
@@ -37,6 +42,18 @@ const MenuProps = {
       width: 250,
     },
   },
+};
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
 };
 
 function getStyles(name, eventType, theme) {
@@ -135,6 +152,10 @@ export const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
 };
 
 const NewEvent = ({ onContinueClick }) => {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const navigate = useNavigate();
   const [eventImage, setEventImage] = useState();
   console.log(eventImage);
@@ -170,12 +191,11 @@ const NewEvent = ({ onContinueClick }) => {
   });
 
   useEffect(() => {
-    setNewEvent(prevEvent => ({
+    setNewEvent((prevEvent) => ({
       ...prevEvent,
       eventImage: eventImage || null,
     }));
   }, [eventImage]);
-
 
   console.log(newEvent);
 
@@ -278,6 +298,91 @@ const NewEvent = ({ onContinueClick }) => {
           />
         </Grid>
 
+        <Grid sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid sx={{ display: "flex" }}>
+            <WarningAmberRoundedIcon sx={{ fontSize: 35 }} color="warning" />
+            &nbsp;
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              color={"black"}
+            >
+              Vui lòng đọc kỹ &nbsp;
+              <Link
+                component="button"
+                style={{
+                  color: "#F5BD19",
+                  fontWeight: "500",
+                  textDecoration: "none",
+                }}
+                onClick={handleOpen}
+              >
+                Lưu ý khi cập nhật sự kiện
+              </Link>
+            </Typography>
+          </Grid>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={open}>
+              <Box sx={style}>
+                <Typography
+                  sx={{
+                    marginBottom: "30px",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                  id="transition-modal-title"
+                  variant="h5"
+                  component="h2"
+                  color={"#7CA629"}
+                  fontWeight={600}
+                >
+                  LƯU Ý KHI ĐĂNG TẢI SỰ KIỆN
+                </Typography>
+                <ul>
+                  <li>
+                    1.&nbsp;&nbsp; Vui lòng{" "}
+                    <strong>
+                      không hiển thị thông tin liên lạc của Ban Tổ Chức
+                    </strong>{" "}
+                    (ví dụ: Số điện thoại/ Email/ Website/ Facebook/ Instagram…){" "}
+                    <strong>trên banner và trong nội dung bài đăng.</strong> Chỉ
+                    sử dụng duy nhất Hotline TickSeat - 1900.6408.
+                  </li>
+                  <li>
+                    2.&nbsp;&nbsp; Trong trường hợp Ban tổ chức{" "}
+                    <strong>
+                      tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu
+                      trên, Ticketbox có quyền từ chối phê duyệt sự kiện.
+                    </strong>
+                  </li>
+                  <li>
+                    3.&nbsp;&nbsp; Ticketbox sẽ liên tục kiểm tra thông tin các
+                    sự kiện đang được hiển thị trên nền tảng,{" "}
+                    <strong>
+                      nếu phát hiện có sai phạm liên quan đến hình ảnh/ nội dung
+                      bài đăng, TickSeat có quyền gỡ bỏ hoặc từ chối cung cấp
+                      dịch vụ đối với các sự kiện này,
+                    </strong>{" "}
+                    dựa theo điều khoản trong Hợp đồng dịch vụ.
+                  </li>
+                </ul>
+              </Box>
+            </Fade>
+          </Modal>
+        </Grid>
         <Grid fullwidth>
           <Grid style={{ display: "flex", justifyContent: "space-around" }}>
             <Grid style={{ width: "100%" }}>

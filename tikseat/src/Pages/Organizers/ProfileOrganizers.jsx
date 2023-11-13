@@ -595,7 +595,7 @@ function ProfileOrganizers() {
               bottom: "10px",
             }}
           >
-            <Stack style={{ width: "50%" }}>
+            <Stack style={{ width: "50%", marginBottom:"20px" }}>
               <ButtonCustom
                 color="black"
                 content="Update account"
