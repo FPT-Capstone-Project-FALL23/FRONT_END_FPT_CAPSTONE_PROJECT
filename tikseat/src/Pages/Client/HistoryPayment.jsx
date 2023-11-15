@@ -1,9 +1,6 @@
 import {
-  AppBar,
   Box,
   Button,
-  Menu,
-  MenuItem,
   Modal,
   Paper,
   Stack,
@@ -13,21 +10,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Toolbar,
   Typography,
   tableCellClasses,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
-import { navItems } from "../../Assets/Constant/Common/dataCommon";
-import { Link, useNavigate } from "react-router-dom";
-import { colorBlack } from "../../Assets/CSS/Style/theme";
-import {
-  getLocalStorageUserData,
-  getLocalStorageUserInfo,
-  setLocalStorageUserData,
-  setLocalStorageUserInfo,
-} from "../../Store/userStore";
+import { getLocalStorageUserInfo } from "../../Store/userStore";
 import styled from "styled-components";
 import ApiClient from "../../API/Client/ApiClient";
 
@@ -65,9 +52,7 @@ const style = {
   p: 4,
 };
 const HistoryPayment = () => {
-  const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  const navigate = useNavigate();
   const [dataOrderByClient, setDataOrderByClient] = useState([]);
   const [idOrder, setIdOrder] = useState(null);
   const [dataOrderDetail, setDataOrderDetail] = useState([]);
@@ -75,11 +60,6 @@ const HistoryPayment = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const ManagementUser = [
-    { content: `Welcome ${dataUser?.email}` },
-    { url: "/createProfileClient", content: "My profile" },
-    { url: "/login", content: "Log out" },
-  ];
 
   useEffect(() => {
     if (idOrder) {
@@ -108,95 +88,6 @@ const HistoryPayment = () => {
 
   return (
     <div>
-      <AppBar
-        style={{
-          background: "white",
-          position: "relative",
-          padding: "0 150px",
-          color: "black",
-        }}
-        component="nav"
-      >
-        <Toolbar style={{ width: "100%", justifyContent: "space-between" }}>
-          <Typography variant="h3" className="logo" component="h4">
-            {NAME_LOGO}
-          </Typography>
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                md: "flex",
-                gap: "40px",
-                alignItems: "center",
-              },
-            }}
-          >
-            <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
-              {navItems?.map((item, index) => (
-                <Link
-                  to={item.url}
-                  key={index}
-                  style={{ color: `${colorBlack}`, fontWeight: "500" }}
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </Box>
-            <Menu
-              id="menu-appbar"
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              {ManagementUser?.map((item, index) => {
-                if (!item?.url) {
-                  return (
-                    <MenuItem
-                      style={{
-                        cursor: "text",
-                        backgroundColor: "transparent",
-                      }}
-                      key={index}
-                    >
-                      <Typography
-                        textAlign="center"
-                        onClick={() => navigate(item?.url)}
-                      >
-                        {item.content}
-                      </Typography>
-                    </MenuItem>
-                  );
-                }
-                return (
-                  <MenuItem key={index}>
-                    <Typography
-                      textAlign="center"
-                      style={{ color: "black" }}
-                      onClick={() => {
-                        if (item?.url === "/login") {
-                          navigate(item?.url);
-                          setLocalStorageUserData("");
-                          setLocalStorageUserInfo("");
-                        } else {
-                          navigate(item?.url);
-                        }
-                      }}
-                    >
-                      {item.content}
-                    </Typography>
-                  </MenuItem>
-                );
-              })}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
       <Box width={"100%"} display={"flex"} marginTop={"20px"}>
         <Stack direction={"column"} margin={"0 auto"}>
           <Typography variant="h2" textAlign={"center"}>
