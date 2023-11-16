@@ -51,7 +51,7 @@ const CardItem = ({ dataEventItem }) => {
       <CardActionArea>
         <CardMedia
           component="img"
-          height="140"
+          style={{ height: "300px" }}
           image={
             dataEventItem.eventImage ||
             "https://www.its.ac.id/tmesin/wp-content/uploads/sites/22/2022/07/no-image.png"
@@ -126,11 +126,13 @@ const CardItem = ({ dataEventItem }) => {
               <Typography
                 gutterBottom
                 component="p"
+                title={dataEventItem.event_description}
                 style={{
                   fontSize: "14px",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  width: "200px",
                 }}
               >
                 {dataEventItem.event_description}

@@ -61,7 +61,7 @@ const BookTickets = () => {
 
   const [dataEvents, setDataEvents] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState();
-  // console.log("dataEventDetail: ", dataEventDetail);
+  console.log("dataEventDetail: ", dataEventDetail);
   const [selectRows, setSelectRows] = useState([]);
   const [organizer, setOrganizer] = useState("");
   const navigate = useNavigate();
@@ -77,50 +77,47 @@ const BookTickets = () => {
   const [seconds, setSeconds] = useState(0);
 
   const [bookingSeats, setBookingSeats] = useState([]);
-  
 
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
-  
-  const handlebookSeat = (chairId) => {
 
+  const handlebookSeat = (chairId) => {
     // Kiểm tra xem có trong danh sách đang đặt ko
-    if(bookingSeats.includes(chairId.chairId)) {
-      // Hiển thị thông báo lỗi 
+    if (bookingSeats.includes(chairId.chairId)) {
+      // Hiển thị thông báo lỗi
       return;
     }
-  
+
     // Emit lên server để đặt ghế
     socket.emit("book_seat", chairId);
-  
   };
 
-    // Lắng nghe kết quả từ server
-    socket.on('booking_success', (chairId ) => {
-      // Thêm vào danh sách đang đặt
-      // console.log(chairId + 'là id của ghế bạn chọn'  );
-      setBookingSeats([...bookingSeats, chairId]);
+  // Lắng nghe kết quả từ server
+  socket.on("booking_success", (chairId) => {
+    // Thêm vào danh sách đang đặt
+    // console.log(chairId + 'là id của ghế bạn chọn'  );
+    setBookingSeats([...bookingSeats, chairId]);
 
-      console.log(bookingSeats + "ok");
-      console.log('booking_success: ', chairId);
-    });
+    console.log(bookingSeats + "ok");
+    console.log("booking_success: ", chairId);
+  });
 
-    socket.on('booking_timeend', (chairId, ) => {
-      console.log('booking_timeend: ', chairId);
-      const tmp = bookingSeats.filter(s => s !== chairId);
-      setBookingSeats(tmp);
+  socket.on("booking_timeend", (chairId) => {
+    console.log("booking_timeend: ", chairId);
+    const tmp = bookingSeats.filter((s) => s !== chairId);
+    setBookingSeats(tmp);
 
-      console.log(selectChair);
-      const selectChairTmp = selectChair.filter(s => s._idChairName !== chairId);
-      setSelectChair(selectChairTmp);
+    console.log(selectChair);
+    const selectChairTmp = selectChair.filter(
+      (s) => s._idChairName !== chairId
+    );
+    setSelectChair(selectChairTmp);
 
-      setBookingSeats(bookingSeats.filter(s => s !== chairId));
-    });
-    
-    socket.on('booking_error', () => {
-      // Hiển thị lỗi
-    });
-  
+    setBookingSeats(bookingSeats.filter((s) => s !== chairId));
+  });
 
+  socket.on("booking_error", () => {
+    // Hiển thị lỗi
+  });
 
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -198,57 +195,47 @@ const BookTickets = () => {
       alert(e.response.data.message);
     }
   };
-  const handleSelectChair = (item,selectRow, isCheckSelected)=>{
+  const handleSelectChair = (item, selectRow, isCheckSelected) => {
     // console.log("A")
     if (!countDown) {
       setTime(600);
       setCountDown(true);
     }
-    const exists = selectChair.some(
-      (itemC) =>
-        itemC.chair ===
-        item.chair_name
-    );
+    const exists = selectChair.some((itemC) => itemC.chair === item.chair_name);
     if (!item.isBuy && !exists) {
       setSelectChair([
         ...selectChair,
         {
           _idChairName: item._id,
           chair: item.chair_name,
-          price:
-            selectRow?.ticket_price,
+          price: selectRow?.ticket_price,
         },
       ]);
     }
     if (isCheckSelected) {
       setSelectChair(
-        selectChair.filter(
-          (check) =>
-            check._idChairName !==
-            item._id
-        )
+        selectChair.filter((check) => check._idChairName !== item._id)
       );
     }
-  }
+  };
   const updateStatusChair = async (chairId, _idEvent) => {
     try {
       const response = await ApiEvent.updateStatus({
-        chairId : chairId,
-        _idEvent : _idEvent
+        chairId: chairId,
+        _idEvent: _idEvent,
       });
       setDataEvents(response.data);
       console.log(response);
     } catch (error) {
       console.log(error);
-    } 
-  }
+    }
+  };
 
   function isSeatLocked(chairId) {
     return bookingSeats.includes(chairId);
   }
 
-  const handleClickChair =(item, selectRow, isCheckSelected, chairId) =>{
-    
+  const handleClickChair = (item, selectRow, isCheckSelected, chairId) => {
     const idEvent = dataEventDetail?._id;
     if (isSeatLocked(chairId)) {
       // Hiển thị thông báo hoặc xử lý trạng thái ở đây
@@ -258,11 +245,11 @@ const BookTickets = () => {
     const data = {
       chairId: chairId,
       _idEvent: idEvent,
-    }
+    };
     handleSelectChair(item, selectRow, isCheckSelected);
     handlebookSeat(data);
-    updateStatusChair(chairId, idEvent)
-  }
+    updateStatusChair(chairId, idEvent);
+  };
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
   };
@@ -657,21 +644,11 @@ const BookTickets = () => {
                       onChange={handleChangeTab}
                       aria-label="lab API tabs example"
                     >
-                      <Tab label="About" value="1" />
-                      <Tab label="Ticket infomation" value="2" />
+                      <Tab label="Ticket infomation" value="1" />
+                      <Tab label="About" value="2" />
                     </TabList>
                   </Box>
                   <TabPanel value="1">
-                    <Stack
-                      direction={"row"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Typography variant="h4">About</Typography>
-                    </Stack>
-                    <Stack>{dataEventDetail?.event_description}</Stack>
-                  </TabPanel>
-                  <TabPanel value="2">
                     <Stack>
                       <Stack
                         marginTop={"30px"}
@@ -681,7 +658,6 @@ const BookTickets = () => {
                         {dataEventDetail?.event_date?.length > 0 &&
                           dataEventDetail?.event_date[0]?.event_areas.map(
                             (item, index) => {
-                              console.log("item: ", item);
                               return (
                                 <Stack
                                   key={index}
@@ -700,9 +676,34 @@ const BookTickets = () => {
                                   <Typography variant="h4">
                                     {item.name_areas}
                                   </Typography>
-                                  <Typography>
-                                    {item.ticket_price} <sup>vnd</sup>
-                                  </Typography>
+                                  <Stack
+                                    style={{
+                                      border: "2px solid orange",
+                                      borderRadius: "5px",
+                                      padding: "7px 10px",
+                                      color: "orange",
+                                    }}
+                                    direction={"row"}
+                                    gap={"10px"}
+                                    alignItems={"center"}
+                                  >
+                                    <Typography style={{ fontWeight: "700" }}>
+                                      Buy ticket
+                                    </Typography>
+                                    -
+                                    <Typography
+                                      style={{
+                                        fontWeight: "500",
+                                        color: "gray",
+                                      }}
+                                    >
+                                      {String(item.ticket_price).replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )}{" "}
+                                      <sup>vnd</sup>
+                                    </Typography>
+                                  </Stack>
                                 </Stack>
                               );
                             }
@@ -798,7 +799,12 @@ const BookTickets = () => {
                                               return (
                                                 <div
                                                   onClick={() => {
-                                                    handleClickChair(item, selectRow, isCheckSelected, item?._id)
+                                                    handleClickChair(
+                                                      item,
+                                                      selectRow,
+                                                      isCheckSelected,
+                                                      item?._id
+                                                    );
                                                     // if (!countDown) {
                                                     //   setTime(600);
                                                     //   setCountDown(true);
@@ -846,9 +852,10 @@ const BookTickets = () => {
                                                     color: "white",
                                                     cursor: "pointer",
                                                     pointerEvents: `${
-                                                      isCheckSelected || item.isBuy
-                                                      ? "none"
-                                                      : ""
+                                                      isCheckSelected ||
+                                                      item.isBuy
+                                                        ? "none"
+                                                        : ""
                                                     }`,
                                                     backgroundColor: `${
                                                       !item.isBuy
@@ -1067,7 +1074,10 @@ const BookTickets = () => {
                                   Tạm tính
                                 </Typography>
                                 <Typography variant="h6">
-                                  {totalByTicket}
+                                  {String(totalByTicket).replace(
+                                    /\B(?=(\d{3})+(?!\d))/g,
+                                    ","
+                                  )}
                                 </Typography>
                               </Stack>
                               <Button
@@ -1189,13 +1199,22 @@ const BookTickets = () => {
                       </ModalStyled>
                     </Stack>
                   </TabPanel>
+                  <TabPanel value="2">
+                    <Stack
+                      direction={"row"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <Typography variant="h4">About</Typography>
+                    </Stack>
+                    <Stack>{dataEventDetail?.event_description}</Stack>
+                  </TabPanel>
                 </TabContext>
               </Grid>
               <Grid item xs={7}>
-                <div style={{ height: "400px", marginTop: "50px" }}>
+                <div style={{ marginTop: "50px", height: "500px" }}>
                   <img
-                    style={{ objectFit: "cover" }}
-                    height={"100%"}
+                    style={{ objectFit: "fill" }}
                     src={dataEventDetail?.type_layout}
                     alt=""
                     loading="lazy"
