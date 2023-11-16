@@ -57,16 +57,17 @@ const CreateTicket = ({ ticketData }) => {
   const today = new Date().toISOString().slice(0, 10);
 
   //socket
-  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+ const socket = io(URL_SOCKET, { transports: ["websocket"] });
   const organizerId = dataInfo._id;
   const organizerName = dataInfo.organizer_name;
 
   useEffect(() => {
+    console.log("socket"+organizerId)
     socket?.emit("organizerId", organizerId);
   }, [socket, organizerId]);
 
   //Thay receiverName === idAdmin
-  const handleNewEvent = () => {
+   const handleNewEvent = () => {
     console.log("ran 1st");
     socket.emit("new_event", {
       senderName: organizerName,
