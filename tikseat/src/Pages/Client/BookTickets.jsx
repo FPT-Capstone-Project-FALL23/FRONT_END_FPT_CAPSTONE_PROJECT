@@ -203,6 +203,7 @@ const BookTickets = () => {
   const [value, setValue] = React.useState("1");
 
   function handleSeatColor(item, isCheckSelected) {
+    console.log("isCheckSelected: ", isCheckSelected);
     if (isCheckSelected) {
       if (isCheckSelected.email === dataUser?.email) return "#ff15a0";
       return "#BDBDBD";
@@ -277,6 +278,7 @@ const BookTickets = () => {
       setTime(null);
     }
   }, [selectChair]);
+
   useEffect(() => {
     if (!open) {
       setSelectChair([]);
@@ -342,99 +344,6 @@ const BookTickets = () => {
   }, [dataEventDetail]);
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        style={{
-          background: "white",
-          position: "relative",
-          padding: "0 150px",
-          color: "black",
-        }}
-        component="nav"
-      >
-        <Toolbar style={{ width: "100%", justifyContent: "space-between" }}>
-          <Typography variant="h3" className="logo" component="h4">
-            {NAME_LOGO}
-          </Typography>
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                md: "flex",
-                gap: "40px",
-                alignItems: "center",
-              },
-            }}
-          >
-            <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
-              {navItems?.map((item, index) => (
-                <Link
-                  to={item.url}
-                  key={index}
-                  style={{ color: `${colorBlack}`, fontWeight: "500" }}
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </Box>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {ManagementUser?.map((item, index) => {
-                if (!item?.url) {
-                  return (
-                    <MenuItem
-                      style={{
-                        cursor: "text",
-                        backgroundColor: "transparent",
-                      }}
-                      key={index}
-                      onClick={handleCloseUserMenu}
-                    >
-                      <Typography
-                        textAlign="center"
-                        onClick={() => navigate(item?.url)}
-                      >
-                        {item.content}
-                      </Typography>
-                    </MenuItem>
-                  );
-                }
-                return (
-                  <MenuItem key={index} onClick={handleCloseUserMenu}>
-                    <Typography
-                      textAlign="center"
-                      style={{ color: "black" }}
-                      onClick={() => {
-                        if (item?.url === "/login") {
-                          navigate(item?.url);
-                          setLocalStorageUserData("");
-                          setLocalStorageUserInfo("");
-                        } else {
-                          navigate(item?.url);
-                        }
-                      }}
-                    >
-                      {item.content}
-                    </Typography>
-                  </MenuItem>
-                );
-              })}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
       <div
         style={{
           width: "100%",
@@ -655,28 +564,17 @@ const BookTickets = () => {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item xs={5}>
-                {" "}
                 <TabContext value={value}>
                   <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                     <TabList
                       onChange={handleChangeTab}
                       aria-label="lab API tabs example"
                     >
-                      <Tab label="About" value="1" />
-                      <Tab label="Ticket infomation" value="2" />
+                      <Tab label="Ticket infomation" value="1" />
+                      <Tab label="About" value="2" />
                     </TabList>
                   </Box>
                   <TabPanel value="1">
-                    <Stack
-                      direction={"row"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Typography variant="h4">About</Typography>
-                    </Stack>
-                    <Stack>{dataEventDetail?.event_description}</Stack>
-                  </TabPanel>
-                  <TabPanel value="2">
                     <Stack>
                       <Stack
                         marginTop={"30px"}
@@ -698,18 +596,43 @@ const BookTickets = () => {
                                     alignItems: "center",
                                   }}
                                   onClick={() => {
-                                    setSelectedItem(item);
                                     handleOpen();
-                                    //console.log(handleOpen);
                                     setSelectRows(item?.rows);
                                   }}
                                 >
                                   <Typography variant="h4">
                                     {item.name_areas}
                                   </Typography>
-                                  <Typography>
-                                    {item.ticket_price} <sup>vnd</sup>
-                                  </Typography>
+                                  <Stack
+                                    style={{
+                                      border: "2px solid orange",
+                                      borderRadius: "5px",
+                                      padding: "7px 10px",
+                                      color: "orange",
+                                      width: "250px",
+                                    }}
+                                    justifyContent={"center"}
+                                    direction={"row"}
+                                    gap={"10px"}
+                                    alignItems={"center"}
+                                  >
+                                    <Typography style={{ fontWeight: "900" }}>
+                                      Buy ticket
+                                    </Typography>
+                                    -
+                                    <Typography
+                                      style={{
+                                        fontWeight: "500",
+                                        color: "gray",
+                                      }}
+                                    >
+                                      {String(item.ticket_price).replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ","
+                                      )}{" "}
+                                      <sup>vnd</sup>
+                                    </Typography>
+                                  </Stack>
                                 </Stack>
                               );
                             }
@@ -1180,12 +1103,22 @@ const BookTickets = () => {
                       </ModalStyled>
                     </Stack>
                   </TabPanel>
+                  <TabPanel value="2">
+                    <Stack
+                      direction={"row"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <Typography variant="h4">About</Typography>
+                    </Stack>
+                    <Stack>{dataEventDetail?.event_description}</Stack>
+                  </TabPanel>
                 </TabContext>
               </Grid>
               <Grid item xs={7}>
-                <div style={{ height: "400px", marginTop: "50px" }}>
+                <div style={{ height: "500px", marginTop: "50px" }}>
                   <img
-                    style={{ objectFit: "cover" }}
+                    style={{ objectFit: "fill" }}
                     height={"100%"}
                     src={dataEventDetail?.type_layout}
                     alt=""
@@ -1248,9 +1181,10 @@ const BookTickets = () => {
                         component="img"
                         sx={{
                           // width: 300,
-                          // height: 140,
+                          height: "250px",
                           borderRadius: "10px",
                           cursor: "pointer",
+                          objectFit: "fill",
                         }}
                         image={
                           event.eventImage ||

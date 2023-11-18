@@ -46,9 +46,9 @@ function RoutePage() {
         <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Sidebar />}></Route>
-        <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
 
         <Route element={<LayoutClient />}>
+          <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
           <Route path="my_ticket" element={<MyTicket />}></Route>
           <Route path="my_history_payment" element={<HistoryPayment />}></Route>
           <Route path="payment_completed" element={<PaymentComplated />} />
