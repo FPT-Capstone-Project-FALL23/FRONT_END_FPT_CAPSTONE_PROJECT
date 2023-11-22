@@ -17,6 +17,7 @@ import {
   URL_GETEVENTBYID,
   URL_GETDETAILEVENT,
   URL_UPDATE_PROFILEORGANIZER,
+  URL_RESETPASSWORD,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -75,10 +76,12 @@ const ApiCommon = {
   login(data) {
     return axiosDefault.post(URL_LOGIN, data);
   },
-
   resendOTP(data) {
     return axiosDefault.post(URL_RESENDOTP, data);
   },
+  resetPassword(data){
+    return axiosDefault.post(URL_RESETPASSWORD, data);
+  }
 };
 
 export default ApiCommon;

@@ -9,10 +9,7 @@ const LayoutSign = lazy(() => import("../Components/Common/Layout/LayoutSign"));
 const PaymentComplated = lazy(() => import("./Client/PaymentComplated"));
 const HistoryPayment = lazy(() => import("./Client/HistoryPayment"));
 const ChooseAccess = lazy(() => import("./Common/ChooseAccess"));
-const VerifyCode = lazy(() => import("./Common/VerifyCode"));
 const ForgetPassword = lazy(() => import("./Common/ForgotPassword"));
-const SetPassword = lazy(() => import("./Common/SetPassword"));
-const SendEmail = lazy(() => import("./Common/SendEmail"));
 const ProfileOrganizers = lazy(() => import("./Organizers/ProfileOrganizers"));
 const ProfileClient = lazy(() => import("./Client/ProfileClient"));
 const BookTickets = lazy(() => import("./Client/BookTickets"));
@@ -58,10 +55,7 @@ function RoutePage() {
             <LayoutSign itemLeft={6} itemRight={6} direction="row-reverse" />
           }>
           
-          <Route path="/verify-code" element={<VerifyCode />}></Route>
           <Route path="/forgot-password" element={<ForgetPassword />}></Route>
-          <Route path="/set-password" element={<SetPassword />}></Route>
-          <Route path="/send-email" element={<SendEmail />}></Route>
         </Route>
         <Route path="/" element={<HomePage />}></Route>
       </Routes>

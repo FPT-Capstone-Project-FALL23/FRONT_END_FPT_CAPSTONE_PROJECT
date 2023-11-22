@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Grid,
-  TextField,
   FormControl,
   InputLabel,
   OutlinedInput,
@@ -9,7 +8,6 @@ import {
   IconButton,
   InputAdornment,
   Button,
-  FormControlLabel,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -122,10 +120,9 @@ function FormLogin({
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            flexDirection:"row-reverse",
             marginBottom: "20px",
           }}>
-          <FormControlLabel control={<Checkbox />} label="Remember me" />
           <Link
             to={"/forgot-password"}
             style={{

@@ -13,7 +13,7 @@ import {
   // setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,7 +37,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function EventHistory() {
+function EventHistory({ onEventDetail }) {
   const dataInfo = getLocalStorageUserInfo();
   const [eventHistory, setEventHistory] = useState([]);
   const [page, setPage] = useState(1);
@@ -59,11 +59,17 @@ function EventHistory() {
         console.log(error);
       }
     };
-
+    
     dataEventHistory();
   }, []);
 
   console.log(eventHistory);
+
+  const handleEventDetail = (row) => {
+    // const eventId = row._idEvent;
+    console.log(row)
+    onEventDetail(row);
+  }
   return (
     <>
       <TableContainer component={Paper}>
@@ -149,7 +155,7 @@ function EventHistory() {
                   </Grid>
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <button>Action</button>
+                  <Button onClick={() => handleEventDetail(row)}>Action</Button>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

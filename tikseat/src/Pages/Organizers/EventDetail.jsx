@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
-import TotalRevenue from "../../Components/Organizers/AllDetailChart/TotalRevenue";
-import DayChart from "../../Components/Organizers/AllDetailChart/DayChart";
-import BasicArea from "../../Components/Organizers/AllDetailChart/BasicArea";
+import TotalRevenueEvent from "../../Components/Organizers/EventChart/TotalRevenueEvent";
+import DayChartEvent from "../../Components/Organizers/EventChart/DayChart";
+import BasicAreaEvent from "../../Components/Organizers/EventChart/BasicArea";
 import { Grid, Typography } from "@mui/material";
-
-import {
-  getLocalStorageUserData,
-  setLocalStorageUserInfo,
-  getLocalStorageUserInfo,
-} from "../../Store/userStore";
 import ApiEvent from "../../API/Event/ApiEvent";
-import CheckinChart from "../../Components/Organizers/AllDetailChart/CheckinChart";
+import CheckinOneChart from "../../Components/Organizers/EventChart/CheckinOneChart";
 
-function DefaultDashboard() {
-  const dataInfo = getLocalStorageUserInfo();
-  console.log(dataInfo._id);
+function EventDetail({ eventDetail }) {
+  const idEvent = eventDetail._idEvent;
+
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,
     totalRevenue: null,
@@ -27,8 +21,8 @@ function DefaultDashboard() {
   useEffect(() => {
     const dataTotalEvent = async () => {
       try {
-        const response = await ApiEvent.getTotalAllEvent({
-          _idOrganizer: dataInfo._id,
+        const response = await ApiEvent.getTotalOneEvent({
+          _idEvent: idEvent,
         });
         console.log("data", response);
         if (response.status === true) {
@@ -51,7 +45,9 @@ function DefaultDashboard() {
     };
 
     dataTotalEvent();
-  }, [dataInfo._id]);
+  }, []);
+
+  console.log(allDataEvent);
 
   return (
     <>
@@ -63,7 +59,7 @@ function DefaultDashboard() {
         }}
       >
         <Grid>
-          <TotalRevenue dataAllEventDetail={allDataEvent} />
+          <TotalRevenueEvent eventTotalDetail={allDataEvent} />
         </Grid>
         <Grid
           style={{
@@ -83,7 +79,7 @@ function DefaultDashboard() {
             <Grid
               sx={{ border: "1px solid", borderRadius: "10px", width: "100%" }}
             >
-              <BasicArea />
+              <BasicAreaEvent />
             </Grid>
           </Grid>
 
@@ -96,6 +92,11 @@ function DefaultDashboard() {
             }}
           >
             <Grid
+              container
+              alignItems="center"
+              justifyContent="space-between"
+            ></Grid>
+            <Grid
               style={{
                 border: "1px solid",
                 borderRadius: "10px",
@@ -103,7 +104,7 @@ function DefaultDashboard() {
                 marginBottom:"17px",
               }}
             >
-              <DayChart dataAllEventDetail={allDataEvent}/>
+              <DayChartEvent detailOneEvent={allDataEvent} />
             </Grid>
             <Grid
               style={{
@@ -112,7 +113,7 @@ function DefaultDashboard() {
                 width: "100%",
               }}
             >
-              <CheckinChart dataAllEventDetail={allDataEvent}/>
+              <CheckinOneChart detailOneEvent={allDataEvent} />
             </Grid>
           </Grid>
         </Grid>
@@ -121,4 +122,4 @@ function DefaultDashboard() {
   );
 }
 
-export default DefaultDashboard;
+export default EventDetail;

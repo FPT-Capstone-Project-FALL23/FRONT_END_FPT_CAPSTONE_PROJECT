@@ -8,9 +8,25 @@ import {
   URL_UPDATEEVENT,
   URL_EVENTHISTORY,
   URL_UPDATESTATUS,
+  URL_TOTALALLEVENT,
+  URL_TOTALONEEVENT,
+  URL_LISTEVENTTODAY,
+  URL_CHECKIN,
 } from "../ConstAPI";
 
 const ApiEvent = {
+  getListEventToday(data) {
+    return axiosDefault.post(URL_LISTEVENTTODAY, data);
+  },
+  checkIn(data){
+    return axiosDefault.post(URL_CHECKIN, data);
+  },
+  getTotalAllEvent(data) {
+    return axiosDefault.post(URL_TOTALALLEVENT, data);
+  },
+  getTotalOneEvent(data) {
+    return axiosDefault.post(URL_TOTALONEEVENT, data);
+  },
   getEventByType() {
     return axiosDefault.get(URL_GETEVENTBYTYPE);
   },
