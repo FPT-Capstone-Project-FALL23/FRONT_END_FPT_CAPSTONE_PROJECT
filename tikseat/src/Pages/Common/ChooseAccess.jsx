@@ -254,8 +254,17 @@ const ChooseAccess = () => {
                 </Grid>
                 <Grid sx={{ marginTop: "40px" }}>
                   {selectedRole && (
-                    <Button onClick={handleResetSelection}>
-                      Reset Selection
+                    <Button
+                      style={{
+                        padding: "10px",
+                        color: "black",
+                        fontWeight: "bold",
+                        fontSize: "15px",
+                        backgroundColor:"#f5bd19"
+                      }}
+                      onClick={handleResetSelection}
+                    >
+                      Reset Choose ROLE
                     </Button>
                   )}
                 </Grid>
@@ -269,85 +278,88 @@ const ChooseAccess = () => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              padding: "30px",
             }}
           >
-            <Grid>
-              <Grid sx={{ marginBottom: "30px" }}>
-                <h2>User Account</h2>
-              </Grid>
-              <Grid style={{ marginBottom: "30px" }}>
-                <InputCustom type="email" setValue={setEmail} label="Email" />
-              </Grid>
-
-              <InputCustom
-                type="password"
-                setValue={setNewPassword}
-                label="New Password"
-              />
-              <InputCustom
-                type="password"
-                setValue={setConfirmPassword}
-                label=" Re-enter Password"
-              />
-
-              <Grid sx={{ display: displayCode }}>
-                <TextField
-                  fullWidth
-                  type={showPassword ? "text" : "password"}
-                  onChange={(e) => setVerifyCode(e.target.value)}
-                  // setValue={setVerifyCode}
-                  value={verifyCode === undefined ? "" : verifyCode}
-                  label="Enter Code"
-                />
-                <IconButton
-                  sx={{
-                    float: "right",
-                    marginTop: "-48px",
-                    marginRight: "2px",
-                  }}
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  // onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-                <Stack
-                  spacing={1}
-                  alignItems={"center"}
-                  direction={"row"}
-                  style={{ fontSize: "18px", margin: "20px", display:"flex", flexDirection:"row-reverse" }}
-                >
-                  <Link
-                    component="button"
-                    onClick={handleResendOTP}
-                    style={{
-                      color: "#F5BD19",
-                      fontWeight: "500",
-                      textDecoration: "none",
-                      
-                    }}
-                  >
-                    RESEND
-                  </Link>
-                </Stack>
-              </Grid>
-              <Grid className="btnLogin">
-                <Button
-                  style={{
-                    padding: "10px",
-                    color: "black",
-                    fontWeight: "bold",
-                    fontSize: "18px",
-                  }}
-                  type="submit"
-                  fullWidth
-                >
-                  {callAPI}
-                </Button>
-              </Grid>
-              <ToastContainer />
+            <Grid sx={{ marginBottom: "30px", color:"black" }}>
+              <h2>User Account</h2>
             </Grid>
+            <Grid style={{ marginBottom: "30px" }}>
+              <InputCustom type="email" setValue={setEmail} label="Email" />
+            </Grid>
+
+            <InputCustom
+              type="password"
+              setValue={setNewPassword}
+              label="New Password"
+            />
+            <InputCustom
+              type="password"
+              setValue={setConfirmPassword}
+              label=" Re-enter Password"
+            />
+
+            <Grid sx={{ display: displayCode }}>
+              <TextField
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                onChange={(e) => setVerifyCode(e.target.value)}
+                // setValue={setVerifyCode}
+                value={verifyCode === undefined ? "" : verifyCode}
+                label="Enter Code"
+              />
+              <IconButton
+                sx={{
+                  float: "right",
+                  marginTop: "-48px",
+                  marginRight: "2px",
+                }}
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                // onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+              <Stack
+                spacing={1}
+                alignItems={"center"}
+                direction={"row"}
+                style={{
+                  fontSize: "18px",
+                  margin: "20px",
+                  display: "flex",
+                  flexDirection: "row-reverse",
+                }}
+              >
+                <Link
+                  component="button"
+                  onClick={handleResendOTP}
+                  style={{
+                    color: "#F5BD19",
+                    fontWeight: "500",
+                    textDecoration: "none",
+                  }}
+                >
+                  RESEND
+                </Link>
+              </Stack>
+            </Grid>
+            <Grid className="btnLogin">
+              <Button
+                style={{
+                  padding: "10px",
+                  color: "black",
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+                type="submit"
+                fullWidth
+              >
+                {callAPI}
+              </Button>
+            </Grid>
+            <ToastContainer />
           </Grid>
         </Grid>
       </FormSubmit>

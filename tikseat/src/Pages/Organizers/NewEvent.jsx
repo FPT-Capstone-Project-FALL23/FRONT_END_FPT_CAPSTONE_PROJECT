@@ -365,7 +365,7 @@ const NewEvent = ({ onContinueClick }) => {
                     2.&nbsp;&nbsp; Trong trường hợp Ban tổ chức{" "}
                     <strong>
                       tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu
-                      trên, Ticketbox có quyền từ chối phê duyệt sự kiện.
+                      trên, TickSeat có quyền từ chối phê duyệt sự kiện.
                     </strong>
                   </li>
                   <li>
