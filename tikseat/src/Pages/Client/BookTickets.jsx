@@ -596,6 +596,7 @@ const BookTickets = () => {
                                     alignItems: "center",
                                   }}
                                   onClick={() => {
+                                    setSelectedItem(item);
                                     handleOpen();
                                     setSelectRows(item?.rows);
                                   }}
