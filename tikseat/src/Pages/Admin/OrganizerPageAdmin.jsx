@@ -42,31 +42,28 @@ function OrganizerPageAdmin() {
       console.log(error);
     }
   };
-  const handleToggleStatus = (row) => {
-    // Perform the logic to toggle the status (change isActive from true to false or vice versa)
-    // You can use the row._id or any other identifier to update the status in your data
-    console.log("Toggling status for user with ID:", row._id);
-  };
 
   return (
     <>
-        <Box height={70} />
-        <Box sx={{ display: "flex" }}>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <TableList
-              dataTableClient={dataTableOrganizer}
-              handleDetailClick={handleDetailClick}
-              selectedDetail={selectedOrganizer}
-              detailOpen={organizerDetailOpen}
-              setDetailOpen={setOrganizerDetailOpen}
-              nameColumns={NAME_COLUMNS_ORGANIZAER}
-              isClient={false}
-              nameList={NAME_ORGANIZER}
-              nameTitle={ORGANIZER}
-              handleToggleStatus={handleToggleStatus}
-            />
-          </Box>
+      <Box height={70} />
+      <Box sx={{ display: "flex" }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <TableList
+            dataTable={dataTableOrganizer}
+            handleClick={handleDetailClick}
+            selectedUser={selectedOrganizer}
+            detailOpen={organizerDetailOpen}
+            setDetailOpen={setOrganizerDetailOpen}
+            nameColumns={NAME_COLUMNS_ORGANIZAER}
+            isClient={false}
+            nameList={NAME_ORGANIZER}
+            nameTitle={ORGANIZER}
+            isIconSeen={true}
+            isDetail={true}
+            isMaxWith={false}
+          />
         </Box>
+      </Box>
     </>
   );
 }

@@ -40,6 +40,12 @@ export const URL_GET_ALL_CLIENTS = "/admin/getAllClient";
 export const URL_GET_DETAIL_CLIENT = "/admin/getDetailClient";
 export const URL_GET_ALL_ORGANIZAER = "/admin/getAllOrganizers";
 export const URL_GET_DETAIL_ORGANIZAER = "/admin/getDetailOrganizer";
+export const URL_GET_ALL_ORGANIZAER_ISACTIVE_FALSE = "/admin/getAllOrganizersIsAtivecFalse";
+export const URL_GET_ALL_EVENT_ISACTIVE_FALSE = "/admin/getAllEventIsAtivecFalse";
+export const URL_SET_IS_ACTIVE_ORGANIZAER = "/admin/setIsActiveOrganizer";
+export const URL_GET_DETAIL_EVENT = "/admin/getDetailEventActiveIsFalse";
+export const URL_SET_IS_ACTIVE_EVENT = "/admin/setIsActiveEvent";
+export const URL_SET_IS_HOT = "/admin/setIsHotEvent";
 
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";

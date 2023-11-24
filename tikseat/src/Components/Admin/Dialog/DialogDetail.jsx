@@ -12,6 +12,7 @@ import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
 import { Avatar, Typography } from "@mui/material";
 import DialogListContent from "./DialogListContent";
+import DialogConfirm from "./DialogConfirm";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -51,47 +52,63 @@ export const StyledChip = styled(Chip)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-const DialogDetail = ({
+const DialogComponent = ({
   open,
-  selectedClient,
+  selectedUser,
   onClose,
   isClient,
   nameTitle,
+  isDetail,
+  onConfirm,
+  isConfirmEvent,
 }) => {
   return (
     <BootstrapDialog
       open={open}
       onClose={onClose}
       aria-labelledby="customized-dialog-title">
-      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-        Detail Profile {nameTitle}
-      </DialogTitle>
-      <IconButton
-        aria-label="close"
-        onClick={onClose}
-        sx={{
-          position: "absolute",
-          right: 8,
-          top: 8,
-          color: (theme) => theme.palette.grey[500],
-        }}>
-        <CloseIcon />
-      </IconButton>
-      <DialogContent>
-        <StyledCard>
-          <DialogListContent
-            selectedDetail={selectedClient}
-            isClient={isClient}
+      {isDetail ? (
+        <>
+          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+            Detail Profile {nameTitle}
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}>
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <StyledCard>
+              <DialogListContent
+                selectedDetail={selectedUser}
+                isClient={isClient}
+              />
+            </StyledCard>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onClose} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </>
+      ) : (
+        <>
+          <DialogConfirm
+            onClose={onClose}
+            onConfirm={onConfirm}
+            isConfirmEvent={isConfirmEvent}
+            event={selectedUser}
           />
-        </StyledCard>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Close
-        </Button>
-      </DialogActions>
+        </>
+      )}
     </BootstrapDialog>
   );
 };
 
-export default DialogDetail;
+export default DialogComponent;

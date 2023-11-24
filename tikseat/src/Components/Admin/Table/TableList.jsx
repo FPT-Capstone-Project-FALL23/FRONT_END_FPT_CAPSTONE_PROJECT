@@ -11,8 +11,8 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { Box, Divider } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import UserDetailDialog from "../Dialog/DialogDetail";
 import TableBodyList from "./TableBodyList";
+import DialogComponent from "../Dialog/DialogDetail";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -25,16 +25,20 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export default function TableList({
-  dataTableClient,
-  handleDetailClick,
-  selectedDetail,
+  dataTable,
+  handleClick,
+  selectedUser,
   detailOpen,
   setDetailOpen,
   nameColumns,
   isClient,
   nameList,
   nameTitle,
-  handleToggleStatus,
+  isIconSeen,
+  isDetail,
+  onConfirm,
+  isMaxWith,
+  isConfirmEvent,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -44,7 +48,7 @@ export default function TableList({
     // Simulate a 10-second loading delay
     const delay = setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(delay);
   }, []);
@@ -97,14 +101,18 @@ export default function TableList({
                       <StyledTableCell
                         key={column.id}
                         align={column.align}
-                        style={{ minWidth: column.minWidth }}>
+                        style={
+                          isMaxWith
+                            ? { minWidth: column?.minWidth }
+                            : { maxWidth: column?.minWidth }
+                        }>
                         {column.label}
                       </StyledTableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {dataTableClient
+                  {dataTable
                     ?.slice(
                       page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage
@@ -114,9 +122,8 @@ export default function TableList({
                         <TableBodyList
                           row={row}
                           index={index}
-                          handleDetailClick={handleDetailClick}
-                          isClient={isClient}
-                          handleToggleStatus={handleToggleStatus}
+                          handleClick={handleClick}
+                          isIconSeen={isIconSeen}
                         />
                       );
                     })}
@@ -126,18 +133,21 @@ export default function TableList({
             <TablePagination
               rowsPerPageOptions={[10, 25, 100]}
               component="div"
-              count={dataTableClient?.length}
+              count={dataTable?.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
-            <UserDetailDialog
+            <DialogComponent
               open={detailOpen}
-              selectedClient={selectedDetail}
+              selectedUser={selectedUser}
               onClose={handlClientDetailClose}
               isClient={isClient}
               nameTitle={nameTitle}
+              isDetail={isDetail}
+              onConfirm={onConfirm}
+              isConfirmEvent={isConfirmEvent}
             />
           </>
         )}
