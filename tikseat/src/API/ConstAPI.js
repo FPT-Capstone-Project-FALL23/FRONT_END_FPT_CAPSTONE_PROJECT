@@ -53,3 +53,8 @@ export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
 export const URL_FORGOTPASSWORD = "/sendMail/sendOTPForResetPassword";
 export const URL_RESETPASSWORD = "auth/resetPassword";
+export const URL_CREATETICKET = "/ticket/createTicket";
+
+//-------------------REFUND-ODER--------------------------------
+export const URL_GET_LIST_REFUND = "/refund/getListRefund";
+export const URL_ACCEPTREFUND = "/refund/acceptRefund";

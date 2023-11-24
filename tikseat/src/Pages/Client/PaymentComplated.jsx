@@ -1,123 +1,66 @@
-import {
-  AppBar,
-  Box,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  getLocalStorageUserData,
-  setLocalStorageUserData,
-  setLocalStorageUserInfo,
-} from "../../Store/userStore";
-import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
-import { navItems } from "../../Assets/Constant/Common/dataCommon";
-import { colorBlack } from "../../Assets/CSS/Style/theme";
+import ApiClient from "../../API/Client/ApiClient";
 
 const PaymentComplated = () => {
-  const dataUser = getLocalStorageUserData();
   const navigate = useNavigate();
 
-  const ManagementUser = [
-    { content: `Welcome ${dataUser?.email}` },
-    { url: "/createProfileClient", content: "My profile" },
-    { url: "/login", content: "Log out" },
-  ];
+  const [statusPayment, setStatusPayment] = useState(null);
+  const [borderColor, setBorderColor] = useState(null);
+  const [borderboxShadow, setBorderBoxShadow] = useState(null);
+  const [textColor, setTextColor] = useState(null);
+  const [sendEmail, setSendEmail] = useState("block");
+  const [changePage, setChangePage] = useState("/my_ticket");
+  const [buttonChangePage, setButtonChangePage] = useState("Go To List");
+
+  var currentURL = window.location.href;
+  var urlObject = new URL(currentURL);
+  var apptransid = urlObject.searchParams.get("apptransid");
+  var totalAmount = urlObject.searchParams.get("amount");
+  var statusPay = urlObject.searchParams.get("status");
+
+
+  useEffect(() => {
+    if (statusPay === "1") {
+      setStatusPayment("Payment Completed !");
+      setBorderColor("2px solid green");
+      setBorderBoxShadow("2px 3px 2px 2px green");
+      setTextColor("green");
+
+      const handleCreateTicket = async () => {
+        try {
+          const response = await ApiClient.getCreateTicket({
+            _idClient: "65471aae8affb3a630584681",
+            _idEvent: "655e12c9d0bbad3b2f975b71",
+            chairIds: ["655e12c9d0bbad3b2f975b78", "655e12c9d0bbad3b2f975b79"],
+            totalAmount: totalAmount,
+            email: "tanlinh.ace@gmail.com",
+            app_trans_id: apptransid,
+          });
+          if (response.status === true) {
+            console.log("aaaaa");
+          } else {
+            console.log("error");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+  
+      handleCreateTicket();
+    } else {
+      setStatusPayment("Payment Failed !");
+      setBorderColor("2px solid red");
+      setBorderBoxShadow("2px 3px 2px 2px red");
+      setTextColor("red");
+      setChangePage("/");
+      setButtonChangePage("Go To Home");
+      setSendEmail("none");
+    }
+  }, []);
 
   return (
     <div>
-      <AppBar
-        style={{
-          background: "white",
-          position: "relative",
-          padding: "0 150px",
-          color: "black",
-        }}
-        component="nav"
-      >
-        <Toolbar style={{ width: "100%", justifyContent: "space-between" }}>
-          <Typography variant="h3" className="logo" component="h4">
-            {NAME_LOGO}
-          </Typography>
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                md: "flex",
-                gap: "40px",
-                alignItems: "center",
-              },
-            }}
-          >
-            <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
-              {navItems?.map((item, index) => (
-                <Link
-                  to={item.url}
-                  key={index}
-                  style={{ color: `${colorBlack}`, fontWeight: "500" }}
-                >
-                  {item.title}
-                </Link>
-              ))}
-            </Box>
-            <Menu
-              id="menu-appbar"
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-            >
-              {ManagementUser?.map((item, index) => {
-                if (!item?.url) {
-                  return (
-                    <MenuItem
-                      style={{
-                        cursor: "text",
-                        backgroundColor: "transparent",
-                      }}
-                      key={index}
-                    >
-                      <Typography
-                        textAlign="center"
-                        onClick={() => navigate(item?.url)}
-                      >
-                        {item.content}
-                      </Typography>
-                    </MenuItem>
-                  );
-                }
-                return (
-                  <MenuItem key={index}>
-                    <Typography
-                      textAlign="center"
-                      style={{ color: "black" }}
-                      onClick={() => {
-                        if (item?.url === "/login") {
-                          navigate(item?.url);
-                          setLocalStorageUserData("");
-                          setLocalStorageUserInfo("");
-                        } else {
-                          navigate(item?.url);
-                        }
-                      }}
-                    >
-                      {item.content}
-                    </Typography>
-                  </MenuItem>
-                );
-              })}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
       <div
         style={{
           display: "flex",
@@ -128,15 +71,16 @@ const PaymentComplated = () => {
       >
         <div
           style={{
+            fontSize: "25px",
             fontWeight: "bold",
-            color: "#23abe3",
+            color: textColor,
             borderRadius: "10px",
-            border: "2px solid #23abe3",
+            border: borderColor,
             padding: "14px 50px",
-            boxShadow: "2px 3px 2px 2px blue",
+            boxShadow: borderboxShadow,
           }}
         >
-          Completed !
+          {statusPayment}
         </div>
         <div style={{ width: "500px", marginTop: "20px" }}>
           <img
@@ -151,8 +95,8 @@ const PaymentComplated = () => {
             alignItems: "center",
           }}
         >
-          <h2>Ticket have been sent to</h2>
-          <span style={{ color: "#23abe3" }}>thuy@gmail.com</span>
+          <h2 style={{display: sendEmail}}>Ticket have been sent to</h2>
+          <span style={{ color: "#23abe3", display: sendEmail }}>thuy@gmail.com</span>
         </div>
         <div
           style={{
@@ -162,8 +106,8 @@ const PaymentComplated = () => {
             marginTop: "40px",
           }}
         >
-          <h4>Go to the list you purchased</h4>
-          <div
+          <h4 style={{display: sendEmail}}>Go to the list you purchased</h4>
+          <Link
             style={{
               padding: "10px 40px",
               border: "1px solid #23abe3",
@@ -172,9 +116,10 @@ const PaymentComplated = () => {
               color: "#23abe3",
               marginTop: "10px",
             }}
+            to={changePage}
           >
-            Go To List
-          </div>
+            {buttonChangePage}
+          </Link>
         </div>
       </div>
     </div>
