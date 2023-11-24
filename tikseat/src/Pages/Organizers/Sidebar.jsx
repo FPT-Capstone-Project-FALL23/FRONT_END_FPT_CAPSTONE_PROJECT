@@ -26,6 +26,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import ListEventToday from "./ListEventToday";
 
 import DefaultDashboard from "./DefaultDashboard";
 import EventHistory from "./EventHistory";
@@ -34,7 +35,8 @@ import Notification from "./Notification";
 import ProfileOrganizers from "./ProfileOrganizers";
 import AddPaymentMethod from "../Common/AddPaymentMethod";
 import CreateTicket from "./CreateTicket";
-import CheckingTicket from "./CheckingTicket";
+import CheckinTicket from "./CheckinTicket";
+import { useNavigate } from "react-router-dom";
 
 import "../../Assets/CSS/Organizer/Sidebar.css";
 
@@ -42,6 +44,7 @@ import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
+import EventDetail from "./EventDetail";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -120,8 +123,18 @@ export default function MiniDrawer() {
   const [ticketData, setTicketData] = useState(null);
   console.log("Received data:", ticketData);
 
+  const [eventDetail, setEventDetail] = useState(null);
+  const [eventCheckin, setEventCheckin] = useState(null);
+
+  const navigate = useNavigate();
+
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleLogOut = () => {
+    window.localStorage.clear();
+    navigate("/login");
   };
 
   return (
@@ -223,7 +236,7 @@ export default function MiniDrawer() {
               >
                 <DashboardIcon sx={styleIcon} />
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 sx={{ display: open ? "block" : "none" }}
                 primary="Dashboard"
               />
@@ -295,7 +308,7 @@ export default function MiniDrawer() {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             disablePadding
             sx={{
               display: "block",
@@ -327,7 +340,7 @@ export default function MiniDrawer() {
                 primary="Notification"
               />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
           <ListItem
             disablePadding
             sx={{
@@ -434,7 +447,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("logOut")}
+            onClick={() => handleLogOut()}
           >
             <ListItemButton
               sx={{
@@ -466,7 +479,10 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
 
-      <Grid className="box" sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}>
+      <Grid
+        className="box"
+        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}
+      >
         <Box
           style={{
             height: "auto",
@@ -486,12 +502,29 @@ export default function MiniDrawer() {
               }}
             />
           )}
+
           {menuData === "create-ticket" && (
             <CreateTicket ticketData={ticketData} />
           )}
-          {menuData === "eventHistory" && <EventHistory />}
-          {menuData === "notification" && <Notification />}
-          {menuData === "checkin" && <CheckingTicket />}
+
+          {menuData === "eventHistory" && (
+            <EventHistory
+              onEventDetail={(data) => {
+                setEventDetail(data);
+                setMenuData("eventDetail");
+              }}
+            />
+          )}
+          {menuData === "eventDetail" && (
+            <EventDetail eventDetail={eventDetail} />
+          )}
+          {menuData === "checkinTicket" && <CheckinTicket CheckingTicket={eventCheckin} />}
+          {menuData === "checkin" && (
+            <ListEventToday onClickCheckin={(data) => {
+              setEventCheckin(data);
+              setMenuData("checkinTicket")
+            }} />
+          )}
           {menuData === "profile" && <ProfileOrganizers />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
           {menuData === "logOut" && <DefaultDashboard />}

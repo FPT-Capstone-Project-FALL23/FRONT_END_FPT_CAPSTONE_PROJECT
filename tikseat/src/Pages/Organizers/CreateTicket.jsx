@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Grid,
   Button,
@@ -11,7 +11,9 @@ import {
   Stack,
 } from "@mui/material";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
-// import { handleFileInputChange } from "../Client/ProfileClient";
+import { ToastContainer, toast } from "react-toastify";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import "react-toastify/dist/ReactToastify.css";
 import "../../Assets/CSS/Organizer/CreateTiket.css";
 import ApiEvent from "../../API/Event/ApiEvent";
 import InputCustom from "../../Components/Common/Input/InputCustom";
@@ -58,7 +60,7 @@ export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
 const CreateTicket = ({ ticketData }) => {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  // console.log(dataInfo);
+  const navigate = useNavigate();
 
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const [open, setOpen] = useState(false);
@@ -68,16 +70,17 @@ const CreateTicket = ({ ticketData }) => {
   const [typeLayout, setTypeLayout] = useState();
 
   //socket
-  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+ const socket = io(URL_SOCKET, { transports: ["websocket"] });
   const organizerId = dataInfo._id;
   const organizerName = dataInfo.organizer_name;
 
   useEffect(() => {
+    console.log("socket"+organizerId)
     socket?.emit("organizerId", organizerId);
   }, [socket, organizerId]);
 
   //Thay receiverName === idAdmin
-  const handleNewEvent = () => {
+   const handleNewEvent = () => {
     console.log("ran 1st");
     socket.emit("new_event", {
       senderName: organizerName,
@@ -494,10 +497,13 @@ const CreateTicket = ({ ticketData }) => {
         eventInfo: eventInfo,
       });
       handleNewEvent();
+      toast.success("New Event success!", toastOptions)
+      navigate("/dashboard")
       console.log(respont.status);
       console.log(respont.data);
     } catch (error) {
       console.log(error);
+      toast.error(error, toastOptions);
     }
   };
 

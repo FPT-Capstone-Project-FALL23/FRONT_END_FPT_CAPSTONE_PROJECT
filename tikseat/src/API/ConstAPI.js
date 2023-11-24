@@ -29,6 +29,10 @@ export const URL_UPDATEEVENT = "/event/updateEvent";
 
 export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 export const URL_UPDATESTATUS = "/event/updateChairStatus";
+export const URL_TOTALALLEVENT = "/event/statisticalEvent";
+export const URL_TOTALONEEVENT = "/event/statisticalOneEvent";
+export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
+export const URL_CHECKIN = "/checkin/check_in";
 
 
 //-------------------CITY----------------------------
@@ -53,5 +57,5 @@ export const URL_ORDER_BY_CLIENT = "/order/getOrdersByClient";
 export const URL_ORDER_DETAIL = "/order/getOrderDetail";
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
-export const URL_FORGOTPASSWORD = "";
-export const URL_SETPASSWORD = "";
+export const URL_FORGOTPASSWORD = "/sendMail/sendOTPForResetPassword";
+export const URL_RESETPASSWORD = "auth/resetPassword";
