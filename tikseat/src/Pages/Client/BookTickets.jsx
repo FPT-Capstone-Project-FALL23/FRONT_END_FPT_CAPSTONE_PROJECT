@@ -96,6 +96,10 @@ const BookTickets = () => {
     const eventRowKey = `${idEvent}_${selectedItem?._id}`;
 
     if (!isCheckSelected) {
+      if (item.isBuy) {
+        alert("Ghế này đã được mua!");
+        return;
+      }
       socket?.emit("SELECT_SEAT", {
         seat,
         eventRowKey,
