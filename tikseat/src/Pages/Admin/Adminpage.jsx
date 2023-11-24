@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Avatar, Grid, Button } from "@mui/material";
+import { Avatar, Grid, Button, Collapse } from "@mui/material";
 import Box from "@mui/material/Box";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MuiDrawer from "@mui/material/Drawer";
@@ -19,9 +19,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Badge from "@mui/material/Badge";
-
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
 
@@ -37,9 +38,16 @@ import {
 } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
+import ListMenu from "../../Components/Admin/ListMenu";
+import {
+  LIST_APPROVED,
+  LIST_NAME_MENU,
+} from "../../Assets/Constant/Admin/dataAdmin";
+import ApprovedOrganizer from "./ApprovedOrganizer";
+import ApprovedEvent from "./ApprovedEvent";
 
 const drawerWidth = 300;
-const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
+export const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -127,6 +135,7 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [menuData, setMenuData] = useState("homeAdmin");
+  const [openCollapse, setOpenCollape] = useState(false);
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -179,8 +188,7 @@ export default function MiniDrawer() {
           padding: "10px",
           margin: "5px",
           borderRadius: "10px",
-        }}
-      >{`${senderName} đã tạo một sự kiện mới.`}</span>
+        }}>{`${senderName} đã tạo một sự kiện mới.`}</span>
     );
   };
 
@@ -196,8 +204,7 @@ export default function MiniDrawer() {
         className="appbar"
         position="fixed"
         elevation={4}
-        sx={{ backgroundColor: "#ffffff", color: "black" }}
-      >
+        sx={{ backgroundColor: "#ffffff", color: "black" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
@@ -206,8 +213,7 @@ export default function MiniDrawer() {
               onClick={() => {
                 setOpen(!open);
               }}
-              edge="start"
-            >
+              edge="start">
               <MenuIcon />
             </IconButton>
             <Typography variant="h3" className="logo" component="h4">
@@ -216,8 +222,7 @@ export default function MiniDrawer() {
           </Grid>
           <Grid
             className="welcome"
-            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}
-          >
+            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}>
             <Typography variant="h6" noWrap component="div">
               Welcome Back <span style={{ color: "yellow" }}>Admin</span>
             </Typography>
@@ -227,8 +232,7 @@ export default function MiniDrawer() {
                   size="large"
                   aria-label="show 17 new notifications"
                   color="inherit"
-                  onClick={() => setOpenNotification(!openNotification)}
-                >
+                  onClick={() => setOpenNotification(!openNotification)}>
                   {notifications.length > 0 && (
                     <Badge
                       sx={{
@@ -251,8 +255,7 @@ export default function MiniDrawer() {
                 width: "60px",
                 borderRadius: "50%",
                 marginLeft: "20px",
-              }}
-            >
+              }}>
               <Avatar
                 sx={{ width: "100%", height: "100%" }}
                 alt="Remy Sharp"
@@ -273,8 +276,7 @@ export default function MiniDrawer() {
                 display: "flex",
                 flexDirection: "column",
                 padding: "10px",
-              }}
-            >
+              }}>
               {notifications.map((n) => displayNotification(n))}
               <Button onClick={handleRead}> Read</Button>
             </Grid>
@@ -286,8 +288,7 @@ export default function MiniDrawer() {
         className="drawer"
         variant="permanent"
         open={open}
-        sx={{ backgroundColor: "#87C4FF" }}
-      >
+        sx={{ backgroundColor: "#87C4FF" }}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -300,109 +301,22 @@ export default function MiniDrawer() {
         <Divider />
 
         <List style={{ border: "none" }}>
-          <ListItem
-            disablePadding
-            sx={{ display: "block", border: "none" }}
-            onClick={() => setMenuData("homeAdmin")}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 50,
-                justifyContent: open ? "initial" : "center",
-                backgroundColor:
-                  menuData === "homeAdmin" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
-                margin: "5px 10px 5px 10px",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 1.5,
-                  justifyContent: "center",
-                }}
-              >
-                <DashboardIcon sx={styleIcon} />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ display: open ? "block" : "none" }}
-                primary="Admin"
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            disablePadding
-            sx={{ display: "block", border: "none" }}
-            onClick={() => setMenuData("clientManage")}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 50,
-                justifyContent: open ? "initial" : "center",
-                backgroundColor:
-                  menuData === "clientManage" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
-                margin: "5px 10px 5px 10px",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 1.5,
-                  justifyContent: "center",
-                }}
-              >
-                <DashboardIcon sx={styleIcon} />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ display: open ? "block" : "none" }}
-                primary="Client Manager"
-              />
-            </ListItemButton>
-          </ListItem>
-          <ListItem
-            disablePadding
-            sx={{ display: "block", border: "none" }}
-            onClick={() => setMenuData("organizerManage")}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 50,
-                justifyContent: open ? "initial" : "center",
-                backgroundColor:
-                  menuData === "organizerManage" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
-                margin: "5px 10px 5px 10px",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 1.5,
-                  justifyContent: "center",
-                }}
-              >
-                <DashboardIcon sx={styleIcon} />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ display: open ? "block" : "none" }}
-                primary="Organizer Manager"
-              />
-            </ListItemButton>
-          </ListItem>
-
-          <Divider />
-
+          {LIST_NAME_MENU.map((value, index) => (
+            <ListMenu
+              setMenuData={setMenuData}
+              menuData={menuData}
+              open={open}
+              nameMenu={value.nameMenu}
+              titleMenu={value.titleMenu}
+              icon={value.icon}
+            />
+          ))}
           <ListItem
             disablePadding
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("logOut")}
-          >
+            onClick={() => setOpenCollape(!openCollapse)}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -412,15 +326,62 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
+                <LibraryAddCheckIcon />
+              </ListItemIcon>
+
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Approved"
+              />
+              {open ? (
+                <>{openCollapse ? <ExpandLess /> : <ExpandMore />}</>
+              ) : (
+                <></>
+              )}
+            </ListItemButton>
+            <Collapse in={openCollapse} timeout="auto">
+              {LIST_APPROVED.map((value, index) => (
+                <ListMenu
+                  setMenuData={setMenuData}
+                  menuData={menuData}
+                  open={open}
+                  nameMenu={value.nameList}
+                  titleMenu={value.titleList}
+                  icon={value.icon}
+                />
+              ))}
+            </Collapse>
+          </ListItem>
+          <Divider />
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
+            onClick={() => setMenuData("logOut")}>
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "logOut" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}>
                 <LogoutIcon sx={styleIcon} />
               </ListItemIcon>
 
@@ -435,8 +396,7 @@ export default function MiniDrawer() {
 
       <Grid
         className="box"
-        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}
-      >
+        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}>
         <Box
           style={{
             height: "auto",
@@ -444,11 +404,12 @@ export default function MiniDrawer() {
             backgroundColor: "#E0F4FF",
           }}
           component="main"
-          sx={{ flexGrow: 1, p: 3 }}
-        >
+          sx={{ flexGrow: 1, p: 3 }}>
           {menuData === "homeAdmin" && <HomePageAdmin />}
           {menuData === "clientManage" && <ClientManage />}
           {menuData === "organizerManage" && <OrganigerManage />}
+          {menuData === "approvedOrganizer" && <ApprovedOrganizer />}
+          {menuData === "approvedEvent" && <ApprovedEvent />}
         </Box>
       </Grid>
     </Box>

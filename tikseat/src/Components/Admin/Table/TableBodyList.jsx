@@ -2,9 +2,11 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import TableRow from "@mui/material/TableRow";
 import { StyledTableCell } from "./TableList";
-import { Chip } from "@mui/material";
+import { Avatar, Chip } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { StyledChip } from "../Dialog/DialogDetail";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -16,99 +18,80 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function TableBodyList({
-  row,
-  index,
-  handleDetailClick,
-  isClient,
-  handleToggleStatus,
-}) {
+function TableBodyList({ row, index, handleClick, isIconSeen }) {
   console.log("row", row);
-  //render client
-  const RenderTableCellClient = ({ row, index, handleDetailClick }) => {
+
+  const RenderAvatar = ({ keyName }) => {
     return (
-      <>
-        <StyledTableCell key={index} align="left">
-          {row?.email}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.full_name}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.phone}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.age}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          <Chip
-            color={row?.gender == "Male" ? "success" : "secondary"}
-            label={row?.gender}
-          />
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          <IconButton
-            color="primary"
-            onClick={() => handleDetailClick(row?._id)}>
-            <RemoveRedEyeIcon />
-          </IconButton>
-        </StyledTableCell>
-      </>
+      <StyledTableCell>
+        <Avatar src={row[keyName]} alt="Avatar" />
+      </StyledTableCell>
+    );
+  };
+  const RenderChip = ({ index }) => {
+    return (
+      <StyledTableCell key={index} align="left">
+        <Chip color="success" label="Active" />
+      </StyledTableCell>
     );
   };
 
-  //render organizer
-  const RenderTableCellOrganizer = ({ row, index, handleDetailClick }) => {
+  const RenderTableCell = ({ row, index, handleClick }) => {
     return (
       <>
-        <StyledTableCell key={index} align="left">
-          {row?.email}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.organizer_name}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.phone}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.founded_date}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          {row?.website}
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          <Chip
-            color={row?.isActive ? "success" : "error"}
-            label={row?.isActive ? "Active" : "Inactive"}
-            onClick={() => handleToggleStatus(row)}
-          />
-        </StyledTableCell>
-        <StyledTableCell key={index} align="left">
-          <IconButton
-            color="primary"
-            onClick={() => handleDetailClick(row?._id)}>
-            <RemoveRedEyeIcon />
-          </IconButton>
-        </StyledTableCell>
+        {Object.keys(row).map((keyName) => {
+          if (keyName !== "_id") {
+            if (keyName == "avatarImage") {
+              return <RenderAvatar keyName={keyName} />;
+            }
+            if (keyName === "isActive") {
+              return <RenderChip index={index} />;
+            }
+            if (keyName === "organizer_type") {
+              return (
+                <StyledTableCell key={index} align="left">
+                  {row[keyName].map((value, index) => {
+                    return (
+                      <StyledChip
+                        label={value}
+                        variant="outlined"
+                        color="primary"
+                      />
+                    );
+                  })}
+                </StyledTableCell>
+              );
+            }
+            return (
+              <StyledTableCell key={index} align="left">
+                {row[keyName]}
+              </StyledTableCell>
+            );
+          }
+          return null; // Loại trừ thuộc tính _id khỏi hiển thị
+        })}
+        {isIconSeen ? (
+          <StyledTableCell key={index} align="left">
+            <IconButton color="primary" onClick={() => handleClick(row?._id)}>
+              <RemoveRedEyeIcon />
+            </IconButton>
+          </StyledTableCell>
+        ) : (
+          <>
+            <StyledTableCell key={index} align="left">
+              <IconButton color="primary" onClick={() => handleClick(row?._id)}>
+                <CheckCircleIcon />
+              </IconButton>
+            </StyledTableCell>
+          </>
+        )}
       </>
     );
   };
 
   return (
     <StyledTableRow hover role="checkbox" tabIndex={-1}>
-      {isClient ? (
-        <RenderTableCellClient
-          row={row}
-          index={index}
-          handleDetailClick={handleDetailClick}
-        />
-      ) : (
-        <RenderTableCellOrganizer
-          row={row}
-          index={index}
-          handleDetailClick={handleDetailClick}
-        />
-      )}
+      <RenderTableCell row={row} index={index} handleClick={handleClick} />
     </StyledTableRow>
   );
 }
