@@ -1,4 +1,5 @@
 import {
+  URL_CREATEREFUND,
   URL_GETALLEVENTS,
   URL_GETDETAILEVENT,
   URL_ORDER_BY_CLIENT,
@@ -30,7 +31,10 @@ const ApiClient = {
   },
   getCreateTicket(data){
     return axiosDefault.post(URL_CREATETICKET, data);
-  }
+  },
+  createRefund(data) {
+    return axiosDefault.post(URL_CREATEREFUND, data);
+  },
 };
 
 export default ApiClient;

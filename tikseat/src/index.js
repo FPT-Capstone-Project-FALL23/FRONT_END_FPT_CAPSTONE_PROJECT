@@ -5,9 +5,12 @@ import App from "./App";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import reportWebVitals from "./reportWebVitals";
 import "react-multi-carousel/lib/styles.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <ToastContainer />
     <App />
   </React.StrictMode>
 );
