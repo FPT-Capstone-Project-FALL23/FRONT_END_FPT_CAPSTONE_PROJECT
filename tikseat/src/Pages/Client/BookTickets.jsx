@@ -29,6 +29,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
+  setLocalStorageEventId,
+  setLocalStorageListChairId,
   setLocalStorageUserData,
   setLocalStorageUserInfo,
 } from "../../Store/userStore";
@@ -253,8 +255,9 @@ const BookTickets = () => {
     event.preventDefault();
     try {
       const listChairIds = selectChair?.map((item) => item._id);
+      const eventId = dataEventDetail._id;
       const requestData = {
-        _idEvent: dataEventDetail._id,
+        _idEvent: eventId,
         chairIds: listChairIds,
         amount: totalByTicket,
       };
@@ -264,6 +267,8 @@ const BookTickets = () => {
         //chuyển trang qua trang của zalo
         window.location.href = response.data.order_url;
         handleCloseConfirm();
+        setLocalStorageListChairId(listChairIds);
+        setLocalStorageEventId(eventId);
       }
     } catch (e) {
       alert(e.response.data.message);
