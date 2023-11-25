@@ -237,7 +237,7 @@ const MyTicket = () => {
                             >
                               {!refundTickets ? (
                                 <Stack direction={"row"} gap={"10px"}>
-                                  {ViewDetailRow?.isRefund ? (
+                                  {!ViewDetailRow?.isRefund ? (
                                     <Button
                                       onClick={() => {
                                         handleOpen();
