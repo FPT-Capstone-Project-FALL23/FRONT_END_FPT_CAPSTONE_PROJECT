@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import {
   Box,
   Button,
@@ -16,7 +17,9 @@ import {
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
-
+import Checkbox from "@mui/material/Checkbox";
+import { toast } from "react-toastify";
+import { createPortal } from "react-dom";
 const style = {
   position: "absolute",
   top: "50%",
@@ -27,10 +30,12 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const MyTicket = () => {
   const dataInfo = getLocalStorageUserInfo();
   const [dataMyTicket, setDataMyTicket] = useState([]);
+  const [checkResRefund, setCheckResRefund] = React.useState(false);
+
   console.log("dataOrderByClient: ", dataMyTicket);
 
   useEffect(() => {
@@ -39,26 +44,38 @@ const MyTicket = () => {
         _idClient: dataInfo?._id,
       });
       setDataMyTicket(response?.orders);
+      setCheckResRefund(false);
     }
 
     getDataOrderByClient();
-  }, [dataInfo._id]);
+  }, [dataInfo._id, checkResRefund]);
 
   const mappingDataMyTicket =
     dataMyTicket?.length > 0 &&
     dataMyTicket.map((item) => {
       return {
-        eventName: item.event_name,
-        eventDate: item.event_date,
+        eventName: item?.event_name,
+        eventDate: item?.event_date,
         city: item.event_location,
         ViewDetail: item.tickets,
+        zp_trans_id: item.zp_trans_id,
+        orderId: item._id,
+        event_location: item.event_location,
       };
     });
 
   function Row(props) {
     const { row } = props;
+    const [selectAll, setSelectAll] = useState(false);
+    const checkRefund = row.ViewDetail.filter((item) => {
+      return !item.isRefund;
+    });
+    const [dataRow, setDataRow] = useState(checkRefund);
+    const [chairRefund, setchairRefund] = useState([]);
     const [open, setOpen] = React.useState(false);
+    const [refundTickets, setRefundTickets] = React.useState(false);
     const [openViewDetail, setOpenViewDetail] = React.useState(false);
+    const [confirmRefund, setConfirmRefund] = React.useState(false);
     const [viewDetail, setViewDetail] = React.useState("");
     const handleOpen = () => setOpenViewDetail(true);
     const handleClose = () => setOpenViewDetail(false);
@@ -74,22 +91,100 @@ const MyTicket = () => {
       link.click();
       document.body.removeChild(link);
     };
+
+    const handleCheckboxChange = (id) => {
+      const updatedCheckboxes = dataRow?.map((checkbox) =>
+        checkbox._id === id
+          ? { ...checkbox, isRefund: !checkbox.isRefund }
+          : checkbox
+      );
+      const filterChair = updatedCheckboxes?.filter((item) => {
+        return item.isRefund;
+      });
+      setchairRefund(filterChair);
+      setDataRow(updatedCheckboxes);
+      setSelectAll(updatedCheckboxes.every((checkbox) => checkbox.isRefund));
+    };
+
+    const handleSelectAllChange = () => {
+      const updatedCheckboxes = dataRow?.map((checkbox) => ({
+        ...checkbox,
+        isRefund: !selectAll,
+      }));
+      setchairRefund(updatedCheckboxes);
+      setDataRow(updatedCheckboxes);
+      setSelectAll(!selectAll);
+    };
+    const result =
+      chairRefund?.length > 0 &&
+      chairRefund?.reduce((accumulator, currentElement) => {
+        if (currentElement.isRefund) {
+          return accumulator + currentElement.ticket_price;
+        }
+        return accumulator;
+      }, 0);
+
+    const chairIds =
+      chairRefund?.length > 0 &&
+      chairRefund
+        .filter((row) => {
+          return row.isRefund;
+        })
+        .map((chair) => {
+          return chair.chair_id;
+        });
+
+    const moneyRefund = (result / 100) * 70;
+    const handleConfirmRefund = async () => {
+      const dataRef = {
+        _idOrder: row.orderId,
+        money_refund: moneyRefund,
+        zp_trans_id: row?.zp_trans_id,
+        chairIds: chairIds,
+      };
+      const responseRefund = await ApiClient.createRefund(dataRef);
+      console.log("responseRefund: ", responseRefund);
+      if (responseRefund.status) {
+        setCheckResRefund(true);
+        toast.success("Ticket refund requested");
+      }
+    };
+    const mappingSeat = chairRefund?.map((item) => {
+      return item.chairName;
+    });
+
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
           <TableCell component="th" scope="row">
-            {row.eventName}
+            {row?.eventName}
           </TableCell>
           <TableCell align="left">{row.eventDate}</TableCell>
           <TableCell align="left">{row.city}</TableCell>
           <TableCell>
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={() => setOpen(!open)}
-            >
-              {open ? "collapse" : "Show more"}
-            </Button>
+            <Stack direction={"row"} gap={"10px"}>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={() => {
+                  setOpen(!open);
+                  setRefundTickets(false);
+                }}
+              >
+                {open ? "collapse" : "Show more"}
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                size="large"
+                onClick={() => {
+                  setOpen(!open);
+                  setRefundTickets(true);
+                }}
+              >
+                Refund tickets
+              </Button>
+            </Stack>
           </TableCell>
         </TableRow>
         <TableRow>
@@ -99,66 +194,277 @@ const MyTicket = () => {
                 <Table size="small" aria-label="purchases">
                   <TableHead>
                     <TableRow>
-                      <TableCell width={"5%"}></TableCell>
-                      <TableCell width={"35%"}></TableCell>
-                      <TableCell width={"20%"}></TableCell>
-                      <TableCell width={"40%"} />
+                      <TableCell width={"5%"} />
+                      <TableCell width={"25%"} />
+                      <TableCell width={"20%"} />
+                      <TableCell width={"20%"} />
+                      <TableCell width={"20%"}>
+                        {refundTickets && dataRow.length > 0 && (
+                          <Button
+                            onClick={() => handleSelectAllChange()}
+                            variant="outlined"
+                            color="secondary"
+                            size="small"
+                          >
+                            Refund all
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {row?.ViewDetail.map((ViewDetailRow, index) => (
-                      <TableRow key={ViewDetailRow._id}>
-                        <TableCell component="th" scope="row">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell>
-                          Class ticket: {ViewDetailRow.classTicket}
-                        </TableCell>
-                        <TableCell align="left">
-                          Chair: {ViewDetailRow.ChairName}
-                        </TableCell>
-                        <TableCell align="left" style={{ cursor: "pointer" }}>
-                          <Stack direction={"row"} gap={"10px"}>
-                            <Button
-                              onClick={() => {
-                                handleOpen();
-                                setViewDetail(ViewDetailRow.ticket);
-                              }}
-                              size="large"
-                              variant="contained"
-                              color="success"
+                    {row?.ViewDetail?.length > 0 &&
+                      row.ViewDetail?.map((ViewDetailRow, index) => {
+                        console.log("ViewDetailRow: ", ViewDetailRow);
+
+                        return (
+                          <TableRow checkboxSelection key={ViewDetailRow._id}>
+                            <TableCell component="th" scope="row">
+                              {index + 1}
+                            </TableCell>
+                            <TableCell>
+                              Class ticket: {ViewDetailRow.classTicket}
+                            </TableCell>
+                            <TableCell align="left">
+                              Chair: {ViewDetailRow.chairName}
+                            </TableCell>
+                            <TableCell align="left">
+                              Price: {ViewDetailRow.ticket_price}
+                            </TableCell>
+                            <TableCell
+                              align="left"
+                              style={{ cursor: "pointer" }}
                             >
-                              View detail
-                            </Button>
-                            <Button variant="contained" size="large">
-                              Return ticket
-                            </Button>
-                          </Stack>
-                          <Modal
-                            open={openViewDetail}
-                            onClose={handleClose}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
-                          >
-                            <Box sx={style}>
-                              <img
-                                id="downloadImage"
-                                src={viewDetail}
-                                alt="image ticket"
-                              />
-                              <Button
-                                onClick={handleDownload}
-                                variant="contained"
-                                size="large"
-                                color="primary"
+                              {!refundTickets ? (
+                                <Stack direction={"row"} gap={"10px"}>
+                                  {ViewDetailRow?.isRefund ? (
+                                    <Button
+                                      onClick={() => {
+                                        handleOpen();
+                                        setViewDetail(ViewDetailRow.ticket);
+                                      }}
+                                      size="large"
+                                      variant="contained"
+                                      color="success"
+                                    >
+                                      View detail
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      onClick={() => {}}
+                                      size="large"
+                                      variant="contained"
+                                      color="error"
+                                    >
+                                      Tickets refund
+                                    </Button>
+                                  )}
+                                </Stack>
+                              ) : (
+                                <>
+                                  {!ViewDetailRow?.isRefund && (
+                                    <Checkbox
+                                      checked={dataRow[index]?.isRefund}
+                                      onChange={() =>
+                                        handleCheckboxChange(ViewDetailRow._id)
+                                      }
+                                      {...label}
+                                      sx={{
+                                        "& .MuiSvgIcon-root": { fontSize: 28 },
+                                      }}
+                                    />
+                                  )}
+                                </>
+                              )}
+                              <Modal
+                                open={openViewDetail}
+                                onClose={handleClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
                               >
-                                Download
-                              </Button>
-                            </Box>
-                          </Modal>
+                                <Box sx={style}>
+                                  <img
+                                    id="downloadImage"
+                                    src={viewDetail}
+                                    alt="image ticket"
+                                  />
+                                  <Button
+                                    onClick={handleDownload}
+                                    variant="contained"
+                                    size="large"
+                                    color="primary"
+                                  >
+                                    Download
+                                  </Button>
+                                </Box>
+                              </Modal>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    {refundTickets && (
+                      <TableRow>
+                        <TableCell colSpan={3} component="th" scope="row" />
+                        <TableCell
+                          style={{ whiteSpace: "nowrap" }}
+                          colSpan={1}
+                          component="th"
+                          scope="row"
+                        >
+                          Amount you will receive:{" "}
+                          {moneyRefund.toLocaleString("vi-VN") + " VND"}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          <Button
+                            variant="outlined"
+                            disabled={chairRefund?.length <= 0}
+                            onClick={() => {
+                              if (chairIds.length > 0) {
+                                setConfirmRefund(true);
+                              }
+                            }}
+                            size="large"
+                          >
+                            Confirm
+                          </Button>
+                          <>
+                            {confirmRefund &&
+                              createPortal(
+                                <>
+                                  <div
+                                    onClick={() => setConfirmRefund(false)}
+                                    style={{
+                                      position: "fixed",
+                                      inset: 0,
+                                      zIndex: 2222,
+                                      background: "#adadad9e",
+                                    }}
+                                  ></div>
+                                  <div
+                                    style={{
+                                      position: "fixed",
+                                      width: "50%",
+                                      top: "200px",
+                                      background: "white",
+                                      padding: "20px",
+                                      borderRadius: "10px",
+                                      boxShadow: "0 0 10px 2px black",
+
+                                      zIndex: 2332,
+                                      left: "50%",
+                                      transform: "translateX(-50%)",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="h4"
+                                      textAlign={"center"}
+                                    >
+                                      Ticket refund confirmation
+                                    </Typography>
+
+                                    <Box>
+                                      <Stack direction={"row"} gap={"10px"}>
+                                        <Typography variant="body2">
+                                          Event name:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {dataRow?.eventName}
+                                        </Typography>
+                                      </Stack>
+                                      <Stack direction={"row"} gap={"10px"}>
+                                        <Typography variant="body2">
+                                          Date:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {new Date(
+                                            dataRow?.eventDate
+                                          ).toUTCString()}
+                                        </Typography>
+                                      </Stack>
+                                      <Stack direction={"row"} gap={"10px"}>
+                                        <Typography variant="body2">
+                                          location:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {dataRow?.event_location}
+                                        </Typography>
+                                      </Stack>
+                                      <Stack direction={"row"} gap={"10px"}>
+                                        <Typography variant="body2">
+                                          Class ticket:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {chairRefund?.classTicket}
+                                        </Typography>
+                                      </Stack>
+                                      <Stack direction={"row"} gap={"10px"}>
+                                        <Typography variant="body2">
+                                          Seat:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {String(mappingSeat)}
+                                        </Typography>
+                                      </Stack>
+                                      <Stack direction={"row"} gap={"10px"}>
+                                        <Typography variant="body2">
+                                          Amount you will receive:
+                                        </Typography>
+                                        <Typography variant="body2">
+                                          {moneyRefund.toLocaleString("vi-VN") +
+                                            " VND"}
+                                        </Typography>
+                                      </Stack>
+                                      <Typography
+                                        textAlign={"center"}
+                                        fontSize={"20px"}
+                                        color={"red"}
+                                        marginTop={"10px"}
+                                      >
+                                        If you confirm a refund, the ticket
+                                        cannot be canneled you will receive
+                                        monney into your zalopay account after 5
+                                        - 7 days
+                                      </Typography>
+                                      <Stack
+                                        direction={"row"}
+                                        justifyContent={"space-evenly"}
+                                      >
+                                        <Button
+                                          variant="outlined"
+                                          onClick={() =>
+                                            setConfirmRefund(false)
+                                          }
+                                          color="error"
+                                        >
+                                          Close
+                                        </Button>
+                                        <Button
+                                          onClick={() => {
+                                            handleConfirmRefund();
+                                            setConfirmRefund(false);
+                                          }}
+                                          variant="outlined"
+                                        >
+                                          Confirm
+                                        </Button>
+                                      </Stack>
+                                    </Box>
+                                  </div>
+                                </>,
+                                document.body
+                              )}
+                          </>
+                          {/* <ModalMyTicket
+                            handleConfirm={handleConfirmRefund}
+                            moneyRefund={moneyRefund}
+                            ViewDetailChair={dataRow}
+                            confirmRefund={confirmRefund}
+                            setConfirmRefund={setConfirmRefund}
+                            data={row}
+                          ></ModalMyTicket> */}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    )}
                   </TableBody>
                 </Table>
               </Box>

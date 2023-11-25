@@ -26,7 +26,7 @@ const LayoutClient = () => {
     { url: "/login", content: "Log out" },
   ];
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <AppBar
         style={{
           background: "white",

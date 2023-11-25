@@ -26,6 +26,7 @@ export const URL_GETDETAILEVENT = "/event/getDetailEvent";
 export const URL_SEARCHEVENT = "/event/searchEvent";
 export const URL_CREATEEVENT = "/event/createEvent";
 export const URL_UPDATEEVENT = "/event/updateEvent";
+export const URL_CREATEREFUND = "/refund/createRefund";
 
 export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 export const URL_UPDATESTATUS = "/event/updateChairStatus";
@@ -33,7 +34,6 @@ export const URL_TOTALALLEVENT = "/event/statisticalEvent";
 export const URL_TOTALONEEVENT = "/event/statisticalOneEvent";
 export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
 export const URL_CHECKIN = "/checkin/check_in";
-
 
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";
