@@ -18,14 +18,14 @@ function DayChart({ dataAllEventDetail }) {
               {
                 id: 0,
                 value: dataAllEventDetail.totalSoldChairs,
-                label: "series A",
+                label: "Tickets purchased",
               },
               {
                 id: 1,
                 value:
                   dataAllEventDetail.totalChairs -
                   dataAllEventDetail.totalSoldChairs,
-                label: "series B",
+                label: "Remaining tickets",
               },
             ],
           },

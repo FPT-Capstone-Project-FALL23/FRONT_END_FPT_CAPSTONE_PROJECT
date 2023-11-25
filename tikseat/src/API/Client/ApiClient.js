@@ -4,6 +4,7 @@ import {
   URL_ORDER_BY_CLIENT,
   URL_ORDER_DETAIL,
   URL_PAYTICKET_OF_EVENT,
+  URL_CREATETICKET,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -27,6 +28,9 @@ const ApiClient = {
   geDetailEvent(data) {
     return axiosDefault.post(URL_GETDETAILEVENT, data);
   },
+  getCreateTicket(data){
+    return axiosDefault.post(URL_CREATETICKET, data);
+  }
 };
 
 export default ApiClient;

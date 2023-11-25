@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import { Avatar, Grid } from "@mui/material";
+import { Avatar, Badge, Button, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -26,6 +26,8 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+
 import ListEventToday from "./ListEventToday";
 
 import DefaultDashboard from "./DefaultDashboard";
@@ -37,6 +39,8 @@ import AddPaymentMethod from "../Common/AddPaymentMethod";
 import CreateTicket from "./CreateTicket";
 import CheckinTicket from "./CheckinTicket";
 import { useNavigate } from "react-router-dom";
+import ChangePassword from "../Common/ChangePassword";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import "../../Assets/CSS/Organizer/Sidebar.css";
 
@@ -45,6 +49,7 @@ import {
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
 import EventDetail from "./EventDetail";
+import ListRefund from "./ListRefund";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -115,16 +120,18 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer() {
+  
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [menuData, setMenuData] = useState("dashboard");
   const [ticketData, setTicketData] = useState(null);
-  console.log("Received data:", ticketData);
-
   const [eventDetail, setEventDetail] = useState(null);
   const [eventCheckin, setEventCheckin] = useState(null);
+
+  const [notifications, setNotifications] = useState([1,2]);
+  const [openNotification, setOpenNotification] = useState(false);
 
   const navigate = useNavigate();
 
@@ -135,6 +142,11 @@ export default function MiniDrawer() {
   const handleLogOut = () => {
     window.localStorage.clear();
     navigate("/login");
+  };
+
+  const handleRead = () => {
+    setNotifications([]);
+    setOpenNotification(false);
   };
 
   return (
@@ -175,6 +187,29 @@ export default function MiniDrawer() {
               Welcome Back{" "}
               <span style={{ color: "yellow" }}>{dataInfo.organizer_name}</span>
             </Typography>
+            <Grid>
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <IconButton
+                  size="large"
+                  aria-label="show 17 new notifications"
+                  color="inherit"
+                  onClick={() => setOpenNotification(!openNotification)}
+                >
+                  {notifications.length > 0 && (
+                    <Badge
+                      sx={{
+                        position: "absolute",
+                        marginBottom: "20px",
+                        marginLeft: "20px",
+                      }}
+                      badgeContent={notifications.length}
+                      color="error"
+                    />
+                  )}
+                  <NotificationsIcon sx={{ width: "35px", height: "35px" }} />
+                </IconButton>
+              </Box>
+            </Grid>
             <Grid
               sx={{
                 height: "60px",
@@ -190,6 +225,26 @@ export default function MiniDrawer() {
               />
             </Grid>
           </Grid>
+          {openNotification && (
+            <Grid
+              style={{
+                position: "absolute",
+                width: "400px",
+                top: "64px",
+                right: "0",
+                backgroundColor: "white",
+                color: "black",
+                fontWeight: "300",
+                display: "flex",
+                flexDirection: "column",
+                padding: "10px",
+              }}
+            >
+              {/* {notifications.map((n) => displayNotification(n))} */}
+              aaaaaaa
+              <Button onClick={handleRead}> Read</Button>
+            </Grid>
+          )}
         </Toolbar>
       </AppBar>
 
@@ -409,7 +464,7 @@ export default function MiniDrawer() {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem
+          {/* <ListItem
             disablePadding
             sx={{
               display: "block",
@@ -439,6 +494,72 @@ export default function MiniDrawer() {
               <ListItemText
                 sx={{ display: open ? "block" : "none" }}
                 primary="Bank Account"
+              />
+            </ListItemButton>
+          </ListItem> */}
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
+            onClick={() => setMenuData("listRefund")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "listRefund" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}
+              >
+                <CurrencyExchangeIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="List Refund"
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
+            onClick={() => setMenuData("changePass")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "bankAccount" ? "#E0F4FF" : "transparent",
+                borderRadius: "10px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}
+              >
+                <VpnKeyIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Change password"
               />
             </ListItemButton>
           </ListItem>
@@ -526,8 +647,11 @@ export default function MiniDrawer() {
             }} />
           )}
           {menuData === "profile" && <ProfileOrganizers />}
+          {menuData === "changePass" && <ChangePassword />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
+          {menuData === "listRefund" && <ListRefund />}
           {menuData === "logOut" && <DefaultDashboard />}
+
         </Box>
       </Grid>
     </Box>

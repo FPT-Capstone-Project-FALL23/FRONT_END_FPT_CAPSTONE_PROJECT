@@ -14,7 +14,6 @@ import CheckinChart from "../../Components/Organizers/AllDetailChart/CheckinChar
 
 function DefaultDashboard() {
   const dataInfo = getLocalStorageUserInfo();
-  console.log(dataInfo._id);
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,
     totalRevenue: null,

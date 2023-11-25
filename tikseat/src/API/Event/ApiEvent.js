@@ -12,6 +12,8 @@ import {
   URL_TOTALONEEVENT,
   URL_LISTEVENTTODAY,
   URL_CHECKIN,
+  URL_ACCEPTREFUND,
+  URL_GET_LIST_REFUND,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -57,6 +59,12 @@ const ApiEvent = {
   updateStatus(data) {
     return axiosDefault.post(URL_UPDATESTATUS, data);
   },
+  getListRefund(data){
+    return axiosDefault.post(URL_GET_LIST_REFUND, data);
+  },
+  acceptRefund(data){
+    return axiosDefault.post(URL_ACCEPTREFUND, data);
+  }
 };
 
 export default ApiEvent;
