@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ApiClient from "../../API/Client/ApiClient";
+import {
+  getLocalStorageEventId,
+  getLocalStorageListChairId,
+  setLocalStorageEventId,
+  setLocalStorageListChairId,
+  getLocalStorageUserData,
+  getLocalStorageUserInfo,
+} from "../../Store/userStore";
 
 const PaymentComplated = () => {
   const navigate = useNavigate();
+  const listChairId = getLocalStorageListChairId();
+  const eventId = getLocalStorageEventId();
+  const dataInfo = getLocalStorageUserInfo();
+  const dataUser = getLocalStorageUserData();
 
   const [statusPayment, setStatusPayment] = useState(null);
   const [borderColor, setBorderColor] = useState(null);
@@ -30,11 +42,11 @@ const PaymentComplated = () => {
       const handleCreateTicket = async () => {
         try {
           const response = await ApiClient.getCreateTicket({
-            _idClient: "65471aae8affb3a630584681",
-            _idEvent: "655e12c9d0bbad3b2f975b71",
-            chairIds: ["655e12c9d0bbad3b2f975b78", "655e12c9d0bbad3b2f975b79"],
+            _idClient: dataInfo._id,
+            _idEvent: eventId,
+            chairIds: listChairId,
             totalAmount: totalAmount,
-            email: "tanlinh.ace@gmail.com",
+            email: dataUser.email,
             app_trans_id: apptransid,
           });
           if (response.status === true) {
@@ -56,6 +68,8 @@ const PaymentComplated = () => {
       setChangePage("/");
       setButtonChangePage("Go To Home");
       setSendEmail("none");
+      setLocalStorageEventId([]);
+      setLocalStorageListChairId([]);
     }
   }, []);
 

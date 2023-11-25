@@ -55,3 +55,39 @@ export function removeLocalStorageDataInfo() {
     console.error("Error removing from localStorage:", error);
   }
 }
+
+export function setLocalStorageListChairId(value) {
+  try {
+    localStorage.setItem("listchairId", JSON.stringify(value));
+  } catch (error) {
+    console.error("Error setting localStorage:", error);
+  }
+}
+
+export function getLocalStorageListChairId() {
+  try {
+    const valueUserInfo = localStorage.getItem("listchairId");
+    return valueUserInfo ? JSON.parse(valueUserInfo) : null;
+  } catch (error) {
+    console.error("Error getting localStorage:", error);
+    return null;
+  }
+}
+
+export function setLocalStorageEventId(value) {
+  try {
+    localStorage.setItem("eventId", JSON.stringify(value));
+  } catch (error) {
+    console.error("Error setting localStorage:", error);
+  }
+}
+
+export function getLocalStorageEventId() {
+  try {
+    const valueUserInfo = localStorage.getItem("eventId");
+    return valueUserInfo ? JSON.parse(valueUserInfo) : null;
+  } catch (error) {
+    console.error("Error getting localStorage:", error);
+    return null;
+  }
+}

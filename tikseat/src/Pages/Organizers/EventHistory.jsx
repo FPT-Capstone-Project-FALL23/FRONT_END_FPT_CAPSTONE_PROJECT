@@ -102,7 +102,7 @@ function EventHistory({ onEventDetail }) {
                   {row.eventName}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {new Date(row.startDay).toISOString().slice(0, 10)}
+                  {new Date(row.startDay).toLocaleString()}
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   {row.totalEstimated}
