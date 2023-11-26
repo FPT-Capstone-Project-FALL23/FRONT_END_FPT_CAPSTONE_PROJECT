@@ -15,6 +15,7 @@ import {
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
 import { Button, Grid } from "@mui/material";
+import Rating from "@mui/material/Rating";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -79,6 +80,7 @@ function EventHistory({ onEventDetail }) {
           <TableHead>
             <TableRow>
               <StyledTableCell>Name event</StyledTableCell>
+              <StyledTableCell>TotalRating</StyledTableCell>
               <StyledTableCell align="center">Start Day&nbsp;</StyledTableCell>
               <StyledTableCell align="center">
                 Total Estimated&nbsp;
@@ -100,6 +102,14 @@ function EventHistory({ onEventDetail }) {
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   {row.eventName}
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                <Rating
+                name="customized-empty"
+                value={row.totalRating}
+                precision={0.5}
+                readOnly
+              />
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   {new Date(row.startDay).toLocaleString()}
