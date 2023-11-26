@@ -16,10 +16,11 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
-import { getLocalStorageUserInfo } from "../../Store/userStore";
+import { getLocalStorageUserInfo, getLocalStorageUserData } from "../../Store/userStore";
 import Checkbox from "@mui/material/Checkbox";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
+import Rating from '@mui/material/Rating';
 const style = {
   position: "absolute",
   top: "50%",
@@ -33,6 +34,7 @@ const style = {
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const MyTicket = () => {
   const dataInfo = getLocalStorageUserInfo();
+  const dataUser = getLocalStorageUserData();
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [checkResRefund, setCheckResRefund] = React.useState(false);
 
@@ -54,6 +56,7 @@ const MyTicket = () => {
     dataMyTicket?.length > 0 &&
     dataMyTicket.map((item) => {
       return {
+        eventId: item.event_id,
         eventName: item?.event_name,
         eventDate: item?.event_date,
         city: item.event_location,
@@ -70,6 +73,9 @@ const MyTicket = () => {
     const checkRefund = row.ViewDetail.filter((item) => {
       return !item.isRefund;
     });
+    const [rating, setRating] = useState(0);
+    const [ratingSent, setRatingSent] = useState(false);
+    const [apiRating, setApiRating] = useState(null);
     const [dataRow, setDataRow] = useState(checkRefund);
     const [chairRefund, setchairRefund] = useState([]);
     const [open, setOpen] = React.useState(false);
@@ -90,6 +96,38 @@ const MyTicket = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    };
+
+    useEffect(() => {
+      // Lấy số sao đánh giá từ localStorage khi component được mount
+      const isRated = localStorage.getItem(`rating_${row.eventId}`) === 'rated';
+      const storedRating = localStorage.getItem(`rating_${row.eventId}_value`);
+      setRatingSent(isRated);
+      setApiRating(storedRating); // Sử dụng giá trị lưu trữ từ localStorage nếu có
+    }, [row.eventId]);
+
+    const handleSendRating = async () => {
+      const eventId = row.eventId;
+      const userId = dataUser._id;
+      console.log(eventId, userId);
+  
+      try {
+          const response = await ApiClient.rating({
+              eventId,
+              userId,
+              star: rating, 
+          });
+          console.log(response);
+          // Lưu trạng thái đã đánh giá và số sao đánh giá vào localStorage
+          localStorage.setItem(`rating_${eventId}`, 'rated');
+          localStorage.setItem(`rating_${eventId}_value`, rating);
+
+          // Cập nhật state để đánh dấu là đã gửi đánh giá thành công
+          setRatingSent(true);
+          setApiRating(rating); // Cập nhật số sao từ API
+      } catch (error) {
+          console.error('Lỗi khi gửi xếp hạng:', error);
+      }
     };
 
     const handleCheckboxChange = (id) => {
@@ -173,6 +211,23 @@ const MyTicket = () => {
               >
                 {open ? "collapse" : "Show more"}
               </Button>
+              {ratingSent ? (
+              <Rating value= {apiRating} readOnly />
+            ) : (
+              <React.Fragment>
+                <Rating
+                  value={rating}
+                  onChange={(event, newValue) => setRating(newValue)}
+                />
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleSendRating}
+                >
+                  Send
+                </Button>
+              </React.Fragment>
+            )}
               <Button
                 variant="outlined"
                 color="error"
