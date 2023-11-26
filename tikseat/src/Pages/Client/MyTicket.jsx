@@ -211,23 +211,24 @@ const MyTicket = () => {
               >
                 {open ? "collapse" : "Show more"}
               </Button>
-              {ratingSent ? (
-              <Rating value= {apiRating} readOnly />
-            ) : (
-              <React.Fragment>
-                <Rating
+              {
+                !ratingSent && new Date() > new Date(row.eventDate) ? (
+                <React.Fragment>
+                <Rating 
                   value={rating}
                   onChange={(event, newValue) => setRating(newValue)}
                 />
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={handleSendRating}
-                >
+                <Button variant="contained" onClick={handleSendRating}>
                   Send
                 </Button>
-              </React.Fragment>
-            )}
+                </React.Fragment>
+                ) : ratingSent ? (
+                <Rating 
+                  value={apiRating} 
+                  readOnly 
+                />
+                ) : null
+              }
               <Button
                 variant="outlined"
                 color="error"
@@ -270,7 +271,7 @@ const MyTicket = () => {
                   <TableBody>
                     {row?.ViewDetail?.length > 0 &&
                       row.ViewDetail?.map((ViewDetailRow, index) => {
-                        console.log("ViewDetailRow: ", ViewDetailRow);
+                        //console.log("ViewDetailRow: ", ViewDetailRow);
 
                         return (
                           <TableRow checkboxSelection key={ViewDetailRow._id}>
