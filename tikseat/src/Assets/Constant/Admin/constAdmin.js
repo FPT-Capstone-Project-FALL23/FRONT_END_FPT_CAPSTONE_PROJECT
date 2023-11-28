@@ -15,3 +15,7 @@ export const TITLE_CONFIRM_APPROVAL_ORGANIZATIONS = "Confirm Approval Organizati
 export const CONTENT_CONFIRM_APPROVAL_ORGANIZATIONS = "Do you want to accept this organization";
 export const TITLE_CONFIRM_REFUND_USER = "Confirm Refund For Customers";
 export const CONTENT_CONFIRM_REFUND_USER = "Do you want to refund this customers";
+export const TOTAL_AMOUNT_SOLD = "Total Amount Sold"
+export const TOTAL_ADMIN_EARNINGS = "Total Income Of The Administrator"
+export const TOTAL_MONEY_REFUND = "Total Money Refund"
+export const TOTAL_ADMIN_EAR_REFUND = "Total Admin Refund Amount"

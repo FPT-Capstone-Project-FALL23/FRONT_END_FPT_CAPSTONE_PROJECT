@@ -42,7 +42,7 @@ function ClientPageAdmin() {
       <Box sx={{ display: "flex" }}>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <TableList
-            dataTableClient={dataTableClient}
+            dataTable={dataTableClient}
             handleDetailClick={handleDetailClick}
             selectedDetail={selectedClient}
             detailOpen={clientDetailOpen}
