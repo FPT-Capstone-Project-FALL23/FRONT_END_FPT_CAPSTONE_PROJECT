@@ -38,22 +38,22 @@ function ClientPageAdmin() {
 
   return (
     <>
-        <Box height={70} />
-        <Box sx={{ display: "flex" }}>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <TableList
-              dataTableClient={dataTableClient}
-              handleDetailClick={handleDetailClick}
-              selectedDetail={selectedClient}
-              detailOpen={clientDetailOpen}
-              setDetailOpen={setClientDetailOpen}
-              nameColumns={NAME_COLUMNS_CLIENT}
-              isClient={true}
-              nameList={NAME_CLIENT}
-              nameTitle={CLIENT}
-            />
-          </Box>
+      <Box height={70} />
+      <Box sx={{ display: "flex" }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <TableList
+            dataTableClient={dataTableClient}
+            handleDetailClick={handleDetailClick}
+            selectedDetail={selectedClient}
+            detailOpen={clientDetailOpen}
+            setDetailOpen={setClientDetailOpen}
+            nameColumns={NAME_COLUMNS_CLIENT}
+            isClient={true}
+            nameList={NAME_CLIENT}
+            nameTitle={CLIENT}
+          />
         </Box>
+      </Box>
     </>
   );
 }

@@ -39,6 +39,8 @@ export default function TableList({
   onConfirm,
   isMaxWith,
   isConfirmEvent,
+  dialogTitle,
+  dialogContent,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -148,6 +150,8 @@ export default function TableList({
               isDetail={isDetail}
               onConfirm={onConfirm}
               isConfirmEvent={isConfirmEvent}
+              dialogTitle={dialogTitle}
+              dialogContent={dialogContent}
             />
           </>
         )}

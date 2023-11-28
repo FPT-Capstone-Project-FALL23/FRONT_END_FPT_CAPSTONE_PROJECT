@@ -25,9 +25,11 @@ export default function DialogConfirm({
   onConfirm,
   isConfirmEvent,
   event,
+  dialogTitle,
+  dialogContent,
 }) {
   const [expandedArea, setExpandedArea] = useState(null);
-  const [isHot, setIsHot] = useState(event.isHot);
+  const [isHot, setIsHot] = useState(event?.isHot);
 
   const handleAccordionChange = (areaId) => {
     setExpandedArea(areaId === expandedArea ? null : areaId);
@@ -133,14 +135,12 @@ export default function DialogConfirm({
     );
   };
 
-  const RenderConfirmOrganizations = () => {
+  const RenderConfirmOrganizations = ({ dialogTitle, dialogContent }) => {
     return (
       <>
-        <DialogTitle>Confirm Approval Organizations</DialogTitle>
+        <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Do you want to accept this organization
-          </DialogContentText>
+          <DialogContentText>{dialogContent}</DialogContentText>
         </DialogContent>
       </>
     );
@@ -148,7 +148,14 @@ export default function DialogConfirm({
 
   return (
     <>
-      {isConfirmEvent ? <RenderConfirmEvent /> : <RenderConfirmOrganizations />}
+      {isConfirmEvent ? (
+        <RenderConfirmEvent />
+      ) : (
+        <RenderConfirmOrganizations
+          dialogTitle={dialogTitle}
+          dialogContent={dialogContent}
+        />
+      )}
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button
