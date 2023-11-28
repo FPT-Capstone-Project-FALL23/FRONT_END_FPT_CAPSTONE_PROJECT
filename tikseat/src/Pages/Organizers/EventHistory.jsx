@@ -14,7 +14,8 @@ import {
   // setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Pagination, Stack } from "@mui/material";
+import Rating from "@mui/material/Rating";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,6 +43,8 @@ function EventHistory({ onEventDetail }) {
   const dataInfo = getLocalStorageUserInfo();
   const [eventHistory, setEventHistory] = useState([]);
   const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(null);
+  console.log(page);
 
   useEffect(() => {
     const dataEventHistory = async () => {
@@ -50,10 +53,9 @@ function EventHistory({ onEventDetail }) {
           _idOrganizer: dataInfo._id,
           page: page,
         });
-        console.log("data: ", response);
         if (response.status === true) {
-          console.log(response.data);
           setEventHistory(response.data);
+          setTotalPage(response.totalPages);
         } else {
           console.log("error!");
         }
@@ -63,22 +65,36 @@ function EventHistory({ onEventDetail }) {
     };
 
     dataEventHistory();
-  }, []);
+  }, [page]);
 
   console.log(eventHistory);
 
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
   const handleEventDetail = (row) => {
-    // const eventId = row._idEvent;
-    console.log(row);
     onEventDetail(row);
   };
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+      <TableContainer
+        sx={{
+          height: "600px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+        component={Paper}
+      >
+        <Table
+          sx={{ borderBottom: "1px solid #ccc" }}
+          aria-label="customized table"
+        >
           <TableHead>
             <TableRow>
               <StyledTableCell>Name event</StyledTableCell>
+              <StyledTableCell>TotalRating</StyledTableCell>
               <StyledTableCell align="center">Start Day&nbsp;</StyledTableCell>
               <StyledTableCell align="center">
                 Total Estimated&nbsp;
@@ -100,6 +116,14 @@ function EventHistory({ onEventDetail }) {
               <StyledTableRow key={index}>
                 <StyledTableCell component="th" scope="row">
                   {row.eventName}
+                </StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                <Rating
+                name="customized-empty"
+                value={row.totalRating}
+                precision={0.5}
+                readOnly
+              />
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   {new Date(row.startDay).toLocaleString()}
@@ -125,7 +149,7 @@ function EventHistory({ onEventDetail }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        height:"100%",
+                        height: "100%",
                         width: "70%",
                         borderRadius: "5px",
                         margin: "0px 10% 0px 10%",
@@ -186,6 +210,29 @@ function EventHistory({ onEventDetail }) {
             ))}
           </TableBody>
         </Table>
+        <Grid
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "8px",
+            backgroundColor: "#ffffff",
+            borderTop: "1px solid #ccc",
+            position: "flxed",
+            bottom: "11px",
+            width: "100%",
+          }}
+        >
+          <Stack spacing={2}>
+            <Pagination
+              count={totalPage}
+              page={page}
+              color="primary"
+              onChange={handleChange}
+              variant="outlined"
+              shape="rounded"
+            />
+          </Stack>
+        </Grid>
       </TableContainer>
     </>
   );

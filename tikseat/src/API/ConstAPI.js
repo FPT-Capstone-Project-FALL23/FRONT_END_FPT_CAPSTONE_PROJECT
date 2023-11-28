@@ -36,6 +36,9 @@ export const URL_TOTALONEEVENT = "/event/statisticalOneEvent";
 export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
 export const URL_CHECKIN = "/checkin/check_in";
 
+//-------------------RATING----------------------------
+export const URL_RATING = "/rating/createRating"
+
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";
 export const URL_DISTRICT = "?depth=2";

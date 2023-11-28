@@ -55,7 +55,7 @@ const SignUp = () => {
             </Button>
           </Grid>
 
-          <Grid style={{marginTop:"20px"}}>
+          <Grid >
             <Outlet />
           </Grid>
         </Grid>
