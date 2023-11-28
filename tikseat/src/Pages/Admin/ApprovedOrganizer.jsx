@@ -4,7 +4,11 @@ import "../../Assets/CSS/Admin/PageAdmin.css";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
 import TableList from "../../Components/Admin/Table/TableList";
 import { NAME_COLUMNS_APPROVED_OGANIZAER } from "../../Assets/Constant/Admin/dataAdmin";
-import { NAME_LIST_APPROVED_ORGANIZER } from "../../Assets/Constant/Admin/constAdmin";
+import {
+  CONTENT_CONFIRM_APPROVAL_ORGANIZATIONS,
+  NAME_LIST_APPROVED_ORGANIZER,
+  TITLE_CONFIRM_APPROVAL_ORGANIZATIONS,
+} from "../../Assets/Constant/Admin/constAdmin";
 
 function ApprovedOrganizer() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
@@ -61,6 +65,8 @@ function ApprovedOrganizer() {
             selectedUser={selected_id}
             onConfirm={handleClickComfirn}
             isMaxWith={false}
+            dialogTitle={TITLE_CONFIRM_APPROVAL_ORGANIZATIONS}
+            dialogContent={CONTENT_CONFIRM_APPROVAL_ORGANIZATIONS}
           />
         </Box>
       </Box>

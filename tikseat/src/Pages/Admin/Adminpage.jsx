@@ -23,6 +23,7 @@ import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 
 import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
 
@@ -41,10 +42,14 @@ import { io } from "socket.io-client";
 import ListMenu from "../../Components/Admin/ListMenu";
 import {
   LIST_APPROVED,
+  LIST_COLLAPSE,
   LIST_NAME_MENU,
+  LIST_PAYMENT,
 } from "../../Assets/Constant/Admin/dataAdmin";
 import ApprovedOrganizer from "./ApprovedOrganizer";
 import ApprovedEvent from "./ApprovedEvent";
+import PurchaseList from "./PurchaseList";
+import RefundList from "./RefundList";
 
 const drawerWidth = 300;
 export const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -113,6 +118,70 @@ const Drawer = styled(MuiDrawer, {
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
 }));
+
+export const NestedListItem = ({
+  LIST_COLLAPSE,
+  openCollapse,
+  setOpenCollape,
+  menuData,
+  setMenuData,
+  nameCollapse,
+  IconCollapse,
+  open,
+}) => {
+  const handleClick = () => {
+    setOpenCollape(!openCollapse);
+  };
+  return (
+    <>
+      <ListItem
+        disablePadding
+        sx={{
+          display: "block",
+          border: "none",
+        }}
+        onClick={handleClick}>
+        <ListItemButton
+          sx={{
+            minHeight: 50,
+            justifyContent: open ? "initial" : "center",
+            backgroundColor: menuData === "logOut" ? "#E0F4FF" : "transparent",
+            borderRadius: "10px",
+            margin: "5px 10px 5px 10px",
+            px: 2.5,
+          }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 1.5,
+              justifyContent: "center",
+            }}>
+            {IconCollapse}
+          </ListItemIcon>
+
+          <ListItemText
+            sx={{ display: open ? "block" : "none" }}
+            primary={nameCollapse}
+          />
+          {open ? <>{openCollapse ? <ExpandLess /> : <ExpandMore />}</> : <></>}
+        </ListItemButton>
+        <Collapse in={openCollapse} timeout="auto">
+          {LIST_COLLAPSE.map((value, index) => (
+            <ListMenu
+              setMenuData={setMenuData}
+              menuData={menuData}
+              open={open}
+              nameMenu={value.nameList}
+              titleMenu={value.titleList}
+              icon={value.icon}
+              isCollapse={true}
+            />
+          ))}
+        </Collapse>
+      </ListItem>
+    </>
+  );
+};
 
 export default function MiniDrawer() {
   const [socket, setSocket] = useState(null);
@@ -309,56 +378,29 @@ export default function MiniDrawer() {
               nameMenu={value.nameMenu}
               titleMenu={value.titleMenu}
               icon={value.icon}
+              isCollapse={false}
             />
           ))}
-          <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-            }}
-            onClick={() => setOpenCollape(!openCollapse)}>
-            <ListItemButton
-              sx={{
-                minHeight: 50,
-                justifyContent: open ? "initial" : "center",
-                backgroundColor:
-                  menuData === "logOut" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
-                margin: "5px 10px 5px 10px",
-                px: 2.5,
-              }}>
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 1.5,
-                  justifyContent: "center",
-                }}>
-                <LibraryAddCheckIcon />
-              </ListItemIcon>
-
-              <ListItemText
-                sx={{ display: open ? "block" : "none" }}
-                primary="Approved"
-              />
-              {open ? (
-                <>{openCollapse ? <ExpandLess /> : <ExpandMore />}</>
-              ) : (
-                <></>
-              )}
-            </ListItemButton>
-            <Collapse in={openCollapse} timeout="auto">
-              {LIST_APPROVED.map((value, index) => (
-                <ListMenu
-                  setMenuData={setMenuData}
-                  menuData={menuData}
-                  open={open}
-                  nameMenu={value.nameList}
-                  titleMenu={value.titleList}
-                  icon={value.icon}
-                />
-              ))}
-            </Collapse>
-          </ListItem>
+          <NestedListItem
+            LIST_COLLAPSE={LIST_APPROVED}
+            menuData={menuData}
+            openCollapse={openCollapse}
+            setOpenCollape={setOpenCollape}
+            setMenuData={setMenuData}
+            nameCollapse="Approved"
+            IconCollapse={<LibraryAddCheckIcon />}
+            open={open}
+          />
+          <NestedListItem
+            LIST_COLLAPSE={LIST_PAYMENT}
+            menuData={menuData}
+            openCollapse={openCollapse}
+            setOpenCollape={setOpenCollape}
+            setMenuData={setMenuData}
+            nameCollapse="Payment"
+            IconCollapse={<LocalAtmIcon />}
+            open={open}
+          />
           <Divider />
           <ListItem
             disablePadding
@@ -410,6 +452,8 @@ export default function MiniDrawer() {
           {menuData === "organizerManage" && <OrganigerManage />}
           {menuData === "approvedOrganizer" && <ApprovedOrganizer />}
           {menuData === "approvedEvent" && <ApprovedEvent />}
+          {menuData === "purchaseList" && <PurchaseList />}
+          {menuData === "refundList" && <RefundList />}
         </Box>
       </Grid>
     </Box>

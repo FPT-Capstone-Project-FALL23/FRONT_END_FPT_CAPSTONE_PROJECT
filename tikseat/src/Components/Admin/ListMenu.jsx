@@ -4,7 +4,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-function ListMenu({ setMenuData, menuData, open, nameMenu, titleMenu, icon }) {
+function ListMenu({
+  setMenuData,
+  menuData,
+  open,
+  nameMenu,
+  titleMenu,
+  icon,
+  isCollapse,
+}) {
   return (
     <ListItem
       disablePadding
@@ -18,6 +26,7 @@ function ListMenu({ setMenuData, menuData, open, nameMenu, titleMenu, icon }) {
           borderRadius: "10px",
           margin: "5px 10px 5px 10px",
           px: 2.5,
+          pl: isCollapse ? 4 : "null",
         }}>
         <ListItemIcon
           sx={{

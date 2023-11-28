@@ -61,6 +61,8 @@ const DialogComponent = ({
   isDetail,
   onConfirm,
   isConfirmEvent,
+  dialogTitle,
+  dialogContent,
 }) => {
   return (
     <BootstrapDialog
@@ -104,6 +106,8 @@ const DialogComponent = ({
             onConfirm={onConfirm}
             isConfirmEvent={isConfirmEvent}
             event={selectedUser}
+            dialogTitle={dialogTitle}
+            dialogContent={dialogContent}
           />
         </>
       )}

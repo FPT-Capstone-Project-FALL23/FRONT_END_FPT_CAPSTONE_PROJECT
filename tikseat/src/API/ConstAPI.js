@@ -1,3 +1,4 @@
+// export const BASE_URL = "http://ec2-3-26-32-42.ap-southeast-2.compute.amazonaws.com:8080/api";
 export const BASE_URL = "http://localhost:8080/api";
 export const URL_SOCKET = "http://localhost:5000";
 export const URL_API_CITY = "https://provinces.open-api.vn/api/";
@@ -53,6 +54,7 @@ export const URL_SET_IS_ACTIVE_ORGANIZAER = "/admin/setIsActiveOrganizer";
 export const URL_GET_DETAIL_EVENT = "/admin/getDetailEventActiveIsFalse";
 export const URL_SET_IS_ACTIVE_EVENT = "/admin/setIsActiveEvent";
 export const URL_SET_IS_HOT = "/admin/setIsHotEvent";
+export const URL_GET_ALL_ODRERS = "/admin/getAllOrders";
 
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
@@ -67,3 +69,5 @@ export const URL_CREATETICKET = "/ticket/createTicket";
 //-------------------REFUND-ODER--------------------------------
 export const URL_GET_LIST_REFUND = "/refund/getListRefund";
 export const URL_ACCEPTREFUND = "/refund/acceptRefund";
+export const URL_GET_IS_REFUND = "/refund/listIsRefund";
+export const URL_REFUND_MONEY = "/refund/refundMoney";
