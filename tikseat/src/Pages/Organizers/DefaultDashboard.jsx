@@ -29,7 +29,6 @@ function DefaultDashboard() {
         const response = await ApiEvent.getTotalAllEvent({
           _idOrganizer: dataInfo._id,
         });
-        console.log("data", response);
         if (response.status === true) {
           const allEvent = {
             ...allDataEvent,

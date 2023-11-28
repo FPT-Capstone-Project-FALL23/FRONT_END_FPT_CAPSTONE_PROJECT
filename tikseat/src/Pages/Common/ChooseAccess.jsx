@@ -132,11 +132,11 @@ const ChooseAccess = () => {
 
   return (
     <>
-      <FormSubmit onSubmit={handleSumit} style={{ marginTop: "40px" }}>
+      <FormSubmit onSubmit={handleSumit}>
         <Grid
           sx={{
             display: "flex",
-            marginTop: "90px",
+            marginTop: "50px",
             height: "100%",
             justifyContent: "space-around",
           }}

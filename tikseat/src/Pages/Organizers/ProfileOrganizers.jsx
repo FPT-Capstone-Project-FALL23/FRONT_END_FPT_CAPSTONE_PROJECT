@@ -24,6 +24,9 @@ import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
 import { MENUPROPS } from "../../Assets/Constant/Client/constClient";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
+import { ToastContainer, toast } from "react-toastify";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import "react-toastify/dist/ReactToastify.css";
 import ApiCity from "../../API/City/ApiCity";
 import {
   getLocalStorageUserData,
@@ -315,6 +318,7 @@ function ProfileOrganizers() {
       await setLocalStorageUserInfo(response.data);
       console.log(response.data);
       navigate("/dashboard");
+      toast.success("Update profile success!", toastOptions);
     } catch (error) {
       console.log(error);
     }

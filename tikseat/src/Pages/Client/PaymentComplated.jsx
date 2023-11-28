@@ -110,7 +110,7 @@ const PaymentComplated = () => {
           }}
         >
           <h2 style={{display: sendEmail}}>Ticket have been sent to</h2>
-          <span style={{ color: "#23abe3", display: sendEmail }}>thuy@gmail.com</span>
+          <span style={{ color: "#23abe3", display: sendEmail }}>{dataUser.email}</span>
         </div>
         <div
           style={{
