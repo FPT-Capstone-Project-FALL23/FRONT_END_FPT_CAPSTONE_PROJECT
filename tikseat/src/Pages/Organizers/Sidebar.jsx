@@ -131,6 +131,7 @@ export default function MiniDrawer() {
   const [eventCheckin, setEventCheckin] = useState(null);
 
   const [notifications, setNotifications] = useState([1,2]);
+  const [notificationRefund, setNotificationRefund] = useState([1,2]);
   const [openNotification, setOpenNotification] = useState(false);
 
   const navigate = useNavigate();
@@ -148,6 +149,11 @@ export default function MiniDrawer() {
     setNotifications([]);
     setOpenNotification(false);
   };
+
+  const handleClickRefund = () => {
+    setMenuData("listRefund");
+    setNotificationRefund([]);
+  }
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -502,7 +508,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("listRefund")}
+            onClick={() => handleClickRefund()}
           >
             <ListItemButton
               sx={{
@@ -522,6 +528,17 @@ export default function MiniDrawer() {
                   justifyContent: "center",
                 }}
               >
+                {notificationRefund.length > 0 && (
+                    <Badge
+                      sx={{
+                        position: "absolute",
+                        marginTop: "5px",
+                        marginLeft: "40px",
+                      }}
+                      badgeContent={notificationRefund.length}
+                      color="error"
+                    />
+                  )}
                 <CurrencyExchangeIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -606,7 +623,6 @@ export default function MiniDrawer() {
       >
         <Box
           style={{
-            height: "auto",
             padding: "100px 40px 40px 40px",
             backgroundColor: "#E0F4FF",
           }}
@@ -617,7 +633,6 @@ export default function MiniDrawer() {
           {menuData === "newEvent" && (
             <NewEvent
               onContinueClick={(data) => {
-                // console.log("data:", data);
                 setTicketData(data);
                 setMenuData("create-ticket");
               }}

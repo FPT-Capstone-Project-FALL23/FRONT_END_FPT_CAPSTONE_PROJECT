@@ -1,7 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import AnalyticEcommerce from "../../../Components/Cards/AnalyticEcommerce";
-import Typography from "@mui/material/Typography";
 
 function TotalRevenueEvent({ eventTotalDetail }) {
 
@@ -10,9 +9,6 @@ function TotalRevenueEvent({ eventTotalDetail }) {
   return (
     <>
       <Grid>
-        <Grid style={{ marginBottom: "20px" }} item xs={12} sx={{ mb: 0 }}>
-          <Typography variant="h4">Total Statistics</Typography>
-        </Grid>
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
           <Grid>
             <AnalyticEcommerce

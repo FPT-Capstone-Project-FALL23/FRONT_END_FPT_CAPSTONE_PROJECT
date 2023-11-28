@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, TextField, Button, Box, Typography } from "@mui/material";
+import { Grid, TextField, Button } from "@mui/material";
 import QRCode from "qrcode";
 import QrReader from "react-qr-reader";
 import "../../Assets/CSS/Organizer/Checkin.css";
@@ -14,14 +14,14 @@ function CheckingTicket({ CheckingTicket }) {
   const idEvent = CheckingTicket;
 
   const [open, setOpen] = useState(false);
+  const[checkin, setCheckin] = useState(true);
   // const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const [text, setText] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [scanResultWebCam, setScanResultWebCam] = useState("");
+  // const [scanResultWebCam, setScanResultWebCam] = useState("");
   const [parsedResult, setParsedResult] = useState(null);
-  const [prevParsedResult, setPrevParsedResult] = useState(null);
   const [responseMess, setResponseMess] = useState("");
   const [borderModal, setBorderModal] = useState("2px solid #000");
   const [colorModal, setColorModal] = useState("black");
@@ -42,8 +42,6 @@ function CheckingTicket({ CheckingTicket }) {
 
   const handleScanWebCam = (result) => {
     if (result) {
-      setScanResultWebCam(result);
-      // Parse chuỗi JSON và lưu vào state mới
       try {
         const parsedResult = JSON.parse(result);
         setParsedResult(parsedResult);
@@ -54,38 +52,42 @@ function CheckingTicket({ CheckingTicket }) {
   };
 
   useEffect(() => {
-    const checkinTicketToday = async () => {
-      try {
-        const response = await ApiEvent.checkIn({
-          _idEventDB: idEvent,
-          QR: parsedResult, // Use parsedResult directly here
-        });
-        console.log("data: ", response);
-        if (response.status === true) {
-          console.log("aaaa");
-          setResponseMess(response.message);
-          setBorderModal("5px solid green");
-          setColorModal("green");
+    if (checkin === true && parsedResult !== null) {
+      const checkinTicketToday = async () => {
+        try {
+          const response = await ApiEvent.checkIn({
+            _idEventDB: idEvent,
+            QR: parsedResult, // Use parsedResult directly here
+          });
+          console.log("data: ", response);
+          if (response.status === true) {
+            setResponseMess(response.message);
+            setBorderModal("5px solid green");
+            setColorModal("green");
+            setOpen(true);
+            setIconModal(true);
+            setCheckin(false);
+          } else {
+            console.log("error");
+          }
+        } catch (response) {
+          console.log(response);
+          setResponseMess(response.response.data.message);
+          setBorderModal("5px solid red");
+          setColorModal("red");
           setOpen(true);
-          setIconModal(true);
-        } else {
-          console.log("error");
+          setIconModal(false);
         }
-      } catch (response) {
-        console.log(response);
-        setResponseMess(response.response.data.message);
-        setBorderModal("5px solid red");
-        setColorModal("red");
-        setOpen(true);
-        setIconModal(false);
-      }
-    };
-
-    if (parsedResult !== null && parsedResult !== prevParsedResult) {
+      };
       checkinTicketToday();
-      setPrevParsedResult(parsedResult);
     }
-  }, [parsedResult, prevParsedResult]);
+    
+  }, [parsedResult]);
+
+  const handleCheckin = () => {
+    setOpen(false);
+    setCheckin(true);
+  }
 
   return (
     <Grid
@@ -156,7 +158,7 @@ function CheckingTicket({ CheckingTicket }) {
             <span className="textModal">{responseMess}</span>
             <Button
               sx={{ width: "100%", marginTop: "20px" }}
-              onClick={() => setOpen(false)}
+              onClick={() => handleCheckin()}
             >
               {iconModal ? (
                 <OfflinePinIcon sx={{ color: colorModal, fontSize: "50px" }} />

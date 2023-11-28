@@ -8,6 +8,10 @@ import CheckinOneChart from "../../Components/Organizers/EventChart/CheckinOneCh
 
 function EventDetail({ eventDetail }) {
   const idEvent = eventDetail._idEvent;
+  console.log(eventDetail);
+  const dateEvent = eventDetail.startDay;
+  const formattedDate = new Date(dateEvent).toLocaleString();
+  console.log(formattedDate);
 
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,
@@ -53,8 +57,26 @@ function EventDetail({ eventDetail }) {
     <>
       <Grid
         style={{
+          backgroundColor: "#ccc",
+          padding: "20px",
+          borderRadius: "10px 10px 0px 0px",
+          display:"flex",
+          justifyContent:"space-between",
+          alignItems:"center"
+        }}
+      >
+        <Typography variant="h4">
+          <span style={{ color: "yellow" }}>{eventDetail.eventName}</span>
+          {" "}event
+        </Typography>
+        <Typography variant="h5">
+          <span style={{ color: "black" }}>{formattedDate}</span>
+        </Typography>
+      </Grid>
+      <Grid
+        style={{
           backgroundColor: "#ffffff",
-          borderRadius: "10px",
+          borderRadius: "0px 0px 10px 10px",
           padding: "30px",
         }}
       >
@@ -101,7 +123,7 @@ function EventDetail({ eventDetail }) {
                 border: "1px solid",
                 borderRadius: "10px",
                 width: "100%",
-                marginBottom:"17px",
+                marginBottom: "17px",
               }}
             >
               <DayChartEvent detailOneEvent={allDataEvent} />
