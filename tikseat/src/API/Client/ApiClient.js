@@ -6,6 +6,7 @@ import {
   URL_ORDER_DETAIL,
   URL_PAYTICKET_OF_EVENT,
   URL_CREATETICKET,
+  URL_RATING
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -34,6 +35,9 @@ const ApiClient = {
   },
   createRefund(data) {
     return axiosDefault.post(URL_CREATEREFUND, data);
+  },
+  rating(data) {
+    return axiosDefault.post(URL_RATING, data);
   },
 };
 
