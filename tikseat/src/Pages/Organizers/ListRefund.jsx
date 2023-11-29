@@ -88,7 +88,6 @@ function ListRefund() {
     }
   };
 
-
   const handleChange = (event, value) => {
     setPage(value);
   };
@@ -192,14 +191,11 @@ function ListRefund() {
           </Table>
           <Grid
             style={{
-              position: "absolute",
               display: "flex",
               justifyContent: "center",
               padding: "10px",
               backgroundColor: "#ffffff",
               borderTop: "1px solid #ccc",
-              bottom: "40px",
-              width: "89%",
             }}
           >
             <Stack spacing={2}>
