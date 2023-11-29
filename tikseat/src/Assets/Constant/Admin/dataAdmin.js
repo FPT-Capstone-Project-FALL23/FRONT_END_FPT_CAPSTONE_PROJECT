@@ -59,12 +59,12 @@ export const LIST_NAME_MENU = [
 ]
 
 export const LIST_APPROVED = [
-    { nameList: "approvedOrganizer", titleList: "Approved Organizer", icon: <HowToRegIcon /> },
-    { nameList: "approvedEvent", titleList: "Approved Event", icon: <TaskIcon /> },
+    { nameMenu: "approvedOrganizer", titleMenu: "Approved Organizer", icon: <HowToRegIcon /> },
+    { nameMenu: "approvedEvent", titleMenu: "Approved Event", icon: <TaskIcon /> },
 ]
 export const LIST_PAYMENT = [
-    { nameList: "purchaseList", titleList: "Purchase List", icon: <MonetizationOnIcon /> },
-    { nameList: "refundList", titleList: "Refund List", icon: <CurrencyExchangeIcon /> },
+    { nameMenu: "purchaseList", titleMenu: "Purchase List", icon: <MonetizationOnIcon /> },
+    { nameMenu: "refundList", titleMenu: "Refund List", icon: <CurrencyExchangeIcon /> },
 ]
 
 export const NAME_COLUMNS_TRANSACTION = [

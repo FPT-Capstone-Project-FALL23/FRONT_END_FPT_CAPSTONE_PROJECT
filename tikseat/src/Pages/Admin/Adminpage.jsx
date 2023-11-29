@@ -145,7 +145,7 @@ export const NestedListItem = ({
           sx={{
             minHeight: 50,
             justifyContent: open ? "initial" : "center",
-            backgroundColor: menuData === "logOut" ? "#E0F4FF" : "transparent",
+            backgroundColor: menuData === setMenuData ? "#E0F4FF" : "transparent",
             borderRadius: "10px",
             margin: "5px 10px 5px 10px",
             px: 2.5,
@@ -171,8 +171,8 @@ export const NestedListItem = ({
               setMenuData={setMenuData}
               menuData={menuData}
               open={open}
-              nameMenu={value.nameList}
-              titleMenu={value.titleList}
+              nameMenu={value.nameMenu}
+              titleMenu={value.titleMenu}
               icon={value.icon}
               isCollapse={true}
             />
@@ -202,9 +202,11 @@ export default function MiniDrawer() {
   const adminId = dataUser?._id;
 
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [menuData, setMenuData] = useState("homeAdmin");
-  const [openCollapse, setOpenCollape] = useState(false);
+  console.log(menuData);
+  const [openApproved, setOpenApproved] = useState(false);
+  const [openPayment, setOpenPayment] = useState(false);
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -381,21 +383,23 @@ export default function MiniDrawer() {
               isCollapse={false}
             />
           ))}
+          <Divider />
           <NestedListItem
             LIST_COLLAPSE={LIST_APPROVED}
             menuData={menuData}
-            openCollapse={openCollapse}
-            setOpenCollape={setOpenCollape}
+            openCollapse={openApproved}
+            setOpenCollape={setOpenApproved}
             setMenuData={setMenuData}
             nameCollapse="Approved"
             IconCollapse={<LibraryAddCheckIcon />}
             open={open}
           />
+          <Divider />
           <NestedListItem
             LIST_COLLAPSE={LIST_PAYMENT}
             menuData={menuData}
-            openCollapse={openCollapse}
-            setOpenCollape={setOpenCollape}
+            openCollapse={openPayment}
+            setOpenCollape={setOpenPayment}
             setMenuData={setMenuData}
             nameCollapse="Payment"
             IconCollapse={<LocalAtmIcon />}
@@ -407,7 +411,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("logOut")}>
+            onClick={() => setMenuData("purchaseList")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -441,7 +445,6 @@ export default function MiniDrawer() {
         sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}>
         <Box
           style={{
-            height: "auto",
             padding: "100px 40px 40px 40px",
             backgroundColor: "#E0F4FF",
           }}
