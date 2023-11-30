@@ -7,12 +7,11 @@ import { NAME_COLUMNS_ORGANIZAER } from "../../Assets/Constant/Admin/dataAdmin";
 import {
   CONTENT_BLOCK_ORGANIZATIONS,
   NAME_BLOCK_ORGANIZER,
-  NAME_ORGANIZER,
   ORGANIZER,
   TITLE_BLOCK_ORGANIZATIONS,
 } from "../../Assets/Constant/Admin/constAdmin";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import BlockIcon from "@mui/icons-material/Block";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 
 function BlockOrganizerList() {
@@ -22,7 +21,7 @@ function BlockOrganizerList() {
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
 
-  const getAllOrganizer = async () => {
+  const getAllOrganizerBlock = async () => {
     try {
       const respones = await ApiAdmin.getAllOrganizers();
       setDataTableOrganizer(respones.data);
@@ -32,7 +31,7 @@ function BlockOrganizerList() {
   };
 
   useEffect(() => {
-    getAllOrganizer();
+    getAllOrganizerBlock();
   }, []);
 
   const handleDetailClick = async (_idUser) => {
@@ -63,7 +62,7 @@ function BlockOrganizerList() {
       if (respones) {
         alert("oke");
         setOrganizerDetailOpen(false);
-        getAllOrganizer();
+        getAllOrganizerBlock();
       }
     } catch (error) {
       console.log(error);
@@ -84,7 +83,7 @@ function BlockOrganizerList() {
     },
     {
       name: "IsBlock",
-      icon: <BlockIcon />,
+      icon: <LockOpenIcon />,
       color: "primary",
       onClick: (row) => handleClickShowConfirm(row?._id),
     },

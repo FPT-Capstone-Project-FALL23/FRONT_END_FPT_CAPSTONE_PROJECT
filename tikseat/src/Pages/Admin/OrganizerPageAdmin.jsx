@@ -11,7 +11,7 @@ import {
   TITLE_BLOCK_ORGANIZATIONS,
 } from "../../Assets/Constant/Admin/constAdmin";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import BlockIcon from "@mui/icons-material/Block";
+import LockIcon from "@mui/icons-material/Lock";
 import Typography from "@mui/material/Typography";
 
 function OrganizerPageAdmin() {
@@ -83,7 +83,7 @@ function OrganizerPageAdmin() {
     },
     {
       name: "IsBlock",
-      icon: <BlockIcon />,
+      icon: <LockIcon />,
       color: "primary",
       onClick: (row) => handleClickShowConfirm(row?._id),
     },
