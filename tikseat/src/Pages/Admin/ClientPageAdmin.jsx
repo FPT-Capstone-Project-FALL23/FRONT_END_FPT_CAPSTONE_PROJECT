@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../Components/Admin/Navbar";
-import { Box } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import "../../Assets/CSS/Admin/PageAdmin.css";
-import Sidenav from "../../Components/Admin/Sidenav";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
 import TableList from "../../Components/Admin/Table/TableList";
 import { NAME_COLUMNS_CLIENT } from "../../Assets/Constant/Admin/dataAdmin";
 import { CLIENT, NAME_CLIENT } from "../../Assets/Constant/Admin/constAdmin";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import Typography from "@mui/material/Typography";
 
 function ClientPageAdmin() {
   const [dataTableClient, setDataTableClient] = useState();
@@ -36,21 +36,46 @@ function ClientPageAdmin() {
     }
   };
 
+  const cellComponentsClient = {
+    avatarImage: (avatarUrl) => <Avatar src={avatarUrl} />,
+  };
+
+  const actionClient = [
+    {
+      name: "Seen",
+      icon: <RemoveRedEyeIcon />,
+      color: "primary",
+      onClick: (row) => handleDetailClick(row?._id),
+    },
+  ];
+
   return (
     <>
-      <Box height={70} />
       <Box sx={{ display: "flex" }}>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "10px",
+            }}>
+            <Typography variant="h4" component="div">
+              {NAME_CLIENT}
+            </Typography>
+          </div>
           <TableList
             dataTable={dataTableClient}
-            handleDetailClick={handleDetailClick}
-            selectedDetail={selectedClient}
+            selectedUser={selectedClient}
             detailOpen={clientDetailOpen}
             setDetailOpen={setClientDetailOpen}
             nameColumns={NAME_COLUMNS_CLIENT}
             isClient={true}
-            nameList={NAME_CLIENT}
             nameTitle={CLIENT}
+            isIconSeen={true}
+            isDetail={true}
+            actions={actionClient}
+            cellComponents={cellComponentsClient}
           />
         </Box>
       </Box>

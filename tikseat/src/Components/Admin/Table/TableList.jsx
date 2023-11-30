@@ -9,10 +9,12 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, IconButton } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import TableBodyList from "./TableBodyList";
-import DialogComponent from "../Dialog/DialogDetail";
+import DialogComponent, {
+  StyledAvatar,
+  StyledChip,
+} from "../Dialog/DialogDetail";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -24,23 +26,32 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
+export const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
 export default function TableList({
   dataTable,
-  handleClick,
   selectedUser,
   detailOpen,
   setDetailOpen,
   nameColumns,
   isClient,
-  nameList,
   nameTitle,
-  isIconSeen,
   isDetail,
   onConfirm,
   isMaxWith,
   isConfirmEvent,
   dialogTitle,
   dialogContent,
+  actions,
+  cellComponents,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -70,17 +81,6 @@ export default function TableList({
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "10px",
-        }}>
-        <Typography variant="h4" component="div">
-          {nameList}
-        </Typography>
-      </div>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <Divider />
         {loading ? (
@@ -111,6 +111,13 @@ export default function TableList({
                         {column.label}
                       </StyledTableCell>
                     ))}
+                    {actions && (
+                      <StyledTableCell
+                        align="left"
+                        style={{ maxWidth: "100px" }}>
+                        Actions
+                      </StyledTableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -121,19 +128,35 @@ export default function TableList({
                     )
                     ?.map((row, index) => {
                       return (
-                        <TableBodyList
-                          row={row}
-                          index={index}
-                          handleClick={handleClick}
-                          isIconSeen={isIconSeen}
-                        />
+                        <StyledTableRow key={row.id}>
+                          {nameColumns.map((column) => (
+                            <StyledTableCell key={column.id}>
+                              {cellComponents && cellComponents[column.id]
+                                ? cellComponents[column.id](row[column.id])
+                                : row[column.id]}
+                            </StyledTableCell>
+                          ))}
+                          {actions && (
+                            <StyledTableCell>
+                              {actions.map((action) => (
+                                <IconButton
+                                  key={action.name}
+                                  color={action.color}
+                                  onClick={() => action.onClick(row)}>
+                                  {action.icon}
+                                </IconButton>
+                              ))}
+                            </StyledTableCell>
+                          )}
+                        </StyledTableRow>
                       );
                     })}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
+              rowsPerPageOptions={[5, 10, 25]}
+              colSpan={3}
               component="div"
               count={dataTable?.length}
               rowsPerPage={rowsPerPage}

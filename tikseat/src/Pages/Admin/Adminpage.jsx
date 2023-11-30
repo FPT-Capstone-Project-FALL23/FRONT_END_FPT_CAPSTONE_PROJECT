@@ -43,6 +43,7 @@ import ListMenu from "../../Components/Admin/ListMenu";
 import {
   LIST_APPROVED,
   LIST_COLLAPSE,
+  LIST_HOME_ADMIN,
   LIST_NAME_MENU,
   LIST_PAYMENT,
 } from "../../Assets/Constant/Admin/dataAdmin";
@@ -50,6 +51,9 @@ import ApprovedOrganizer from "./ApprovedOrganizer";
 import ApprovedEvent from "./ApprovedEvent";
 import PurchaseList from "./PurchaseList";
 import RefundList from "./RefundList";
+import { handleLogOut } from "../Organizers/Sidebar";
+import { useNavigate } from "react-router-dom";
+import BlockOrganizerList from "./BlockOrganizerList";
 
 const drawerWidth = 300;
 export const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -121,16 +125,15 @@ const Drawer = styled(MuiDrawer, {
 
 export const NestedListItem = ({
   LIST_COLLAPSE,
-  openCollapse,
-  setOpenCollape,
   menuData,
   setMenuData,
   nameCollapse,
   IconCollapse,
   open,
 }) => {
+  const [openCollapse, setOpenCollapse] = useState(false);
   const handleClick = () => {
-    setOpenCollape(!openCollapse);
+    setOpenCollapse(!openCollapse);
   };
   return (
     <>
@@ -145,7 +148,8 @@ export const NestedListItem = ({
           sx={{
             minHeight: 50,
             justifyContent: open ? "initial" : "center",
-            backgroundColor: menuData === setMenuData ? "#E0F4FF" : "transparent",
+            backgroundColor:
+              menuData === setMenuData ? "#E0F4FF" : "transparent",
             borderRadius: "10px",
             margin: "5px 10px 5px 10px",
             px: 2.5,
@@ -207,6 +211,7 @@ export default function MiniDrawer() {
   console.log(menuData);
   const [openApproved, setOpenApproved] = useState(false);
   const [openPayment, setOpenPayment] = useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -266,6 +271,11 @@ export default function MiniDrawer() {
   const handleRead = () => {
     setNotifications([]);
     setOpenNotification(false);
+  };
+
+  const checkCollapse = (nameCollapse) => {
+    if (nameCollapse) {
+    }
   };
 
   return (
@@ -384,27 +394,21 @@ export default function MiniDrawer() {
             />
           ))}
           <Divider />
-          <NestedListItem
-            LIST_COLLAPSE={LIST_APPROVED}
-            menuData={menuData}
-            openCollapse={openApproved}
-            setOpenCollape={setOpenApproved}
-            setMenuData={setMenuData}
-            nameCollapse="Approved"
-            IconCollapse={<LibraryAddCheckIcon />}
-            open={open}
-          />
-          <Divider />
-          <NestedListItem
-            LIST_COLLAPSE={LIST_PAYMENT}
-            menuData={menuData}
-            openCollapse={openPayment}
-            setOpenCollape={setOpenPayment}
-            setMenuData={setMenuData}
-            nameCollapse="Payment"
-            IconCollapse={<LocalAtmIcon />}
-            open={open}
-          />
+          {LIST_HOME_ADMIN.map((value, index) => {
+            return (
+              <>
+                <NestedListItem
+                  LIST_COLLAPSE={value.LIST_COLLAPSE}
+                  mrenuData={menuData}
+                  setMenuData={setMenuData}
+                  nameCollapse={value.nameCollapse}
+                  IconCollapse={value.icon}
+                  open={open}
+                />
+                <Divider />
+              </>
+            );
+          })}
           <Divider />
           <ListItem
             disablePadding
@@ -434,6 +438,7 @@ export default function MiniDrawer() {
               <ListItemText
                 sx={{ display: open ? "block" : "none" }}
                 primary="Log Out"
+                onClick={() => handleLogOut(navigate)}
               />
             </ListItemButton>
           </ListItem>
@@ -453,6 +458,7 @@ export default function MiniDrawer() {
           {menuData === "homeAdmin" && <HomePageAdmin />}
           {menuData === "clientManage" && <ClientManage />}
           {menuData === "organizerManage" && <OrganigerManage />}
+          {menuData === "blockOrganizerList" && <BlockOrganizerList />}
           {menuData === "approvedOrganizer" && <ApprovedOrganizer />}
           {menuData === "approvedEvent" && <ApprovedEvent />}
           {menuData === "purchaseList" && <PurchaseList />}

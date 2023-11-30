@@ -6,6 +6,7 @@ import TableList from "../../Components/Admin/Table/TableList";
 import { NAME_COLUMNS_ORGANIZAER } from "../../Assets/Constant/Admin/dataAdmin";
 import {
   CONTENT_BLOCK_ORGANIZATIONS,
+  NAME_BLOCK_ORGANIZER,
   NAME_ORGANIZER,
   ORGANIZER,
   TITLE_BLOCK_ORGANIZATIONS,
@@ -14,7 +15,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import BlockIcon from "@mui/icons-material/Block";
 import Typography from "@mui/material/Typography";
 
-function OrganizerPageAdmin() {
+function BlockOrganizerList() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
@@ -101,7 +102,7 @@ function OrganizerPageAdmin() {
               margin: "10px",
             }}>
             <Typography variant="h4" component="div">
-              {NAME_ORGANIZER}
+              {NAME_BLOCK_ORGANIZER}
             </Typography>
           </div>
           <TableList
@@ -127,4 +128,4 @@ function OrganizerPageAdmin() {
   );
 }
 
-export default OrganizerPageAdmin;
+export default BlockOrganizerList;

@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Chip, Typography } from "@mui/material";
 import "../../Assets/CSS/Admin/PageAdmin.css";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
 import TableList from "../../Components/Admin/Table/TableList";
-import {
-  NAME_COLUMNS_APPROVED_EVENT,
-  NAME_COLUMNS_APPROVED_OGANIZAER,
-} from "../../Assets/Constant/Admin/dataAdmin";
-import {
-  NAME_LIST_APPROVED_EVENT,
-  NAME_LIST_APPROVED_ORGANIZER,
-} from "../../Assets/Constant/Admin/constAdmin";
+import { NAME_COLUMNS_APPROVED_EVENT } from "../../Assets/Constant/Admin/dataAdmin";
+import { NAME_LIST_APPROVED_EVENT } from "../../Assets/Constant/Admin/constAdmin";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 function ApprovedEvent() {
   const [dataTableEvent, setDataTableEvent] = useState();
@@ -58,24 +53,52 @@ function ApprovedEvent() {
     }
   };
 
+  const cellComponentsEvent = {
+    type_of_event: (tags) => (
+      <div>
+        <Chip variant="outlined" color="primary" key={tags} label={tags} />
+      </div>
+    ),
+  };
+
+  const actionEvent = [
+    {
+      name: "IsActive",
+      icon: <CheckCircleIcon />,
+      color: "primary",
+      onClick: (row) => handleDetailClick(row?._id),
+    },
+  ];
+
   return (
     <>
-      <Box height={70} />
       <Box sx={{ display: "flex" }}>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "10px",
+            }}>
+            <Typography variant="h4" component="div">
+              {NAME_LIST_APPROVED_EVENT}
+            </Typography>
+          </div>
           <TableList
             dataTable={dataTableEvent}
             nameColumns={NAME_COLUMNS_APPROVED_EVENT}
             nameList={NAME_LIST_APPROVED_EVENT}
             isClient={false}
             isDetail={false}
-            handleClick={handleDetailClick}
             setDetailOpen={setOpenComfirn}
             detailOpen={openComfirn}
             selectedUser={selected_event}
             isConfirmEvent={true}
             onConfirm={handleClickComfirn}
             isMaxWith={true}
+            actions={actionEvent}
+            cellComponents={cellComponentsEvent}
           />
         </Box>
       </Box>

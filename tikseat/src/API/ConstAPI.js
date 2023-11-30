@@ -56,6 +56,7 @@ export const URL_SET_IS_ACTIVE_EVENT = "/admin/setIsActiveEvent";
 export const URL_SET_IS_HOT = "/admin/setIsHotEvent";
 export const URL_GET_ALL_ODRERS = "/admin/getAllOrders";
 export const URL_GET_TOTAL_AMOUNT_AND_ADMIN_EARNING = "/admin/getTotalAmountSoldAllEventAndAdminEarnings";
+export const URL_BLOCK_USER = "/admin/blockedUser"
 
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
