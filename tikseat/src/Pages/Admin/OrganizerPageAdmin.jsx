@@ -21,10 +21,13 @@ function OrganizerPageAdmin() {
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
 
+  console.log(selected_id);
+
   const getAllOrganizer = async () => {
     try {
       const respones = await ApiAdmin.getAllOrganizers();
       setDataTableOrganizer(respones.data);
+      console.log(respones.data);
     } catch (error) {
       console.log(error);
     }
@@ -48,8 +51,8 @@ function OrganizerPageAdmin() {
     }
   };
 
-  const handleClickShowConfirm = async (_idUser) => {
-    const id = { _idUser: _idUser };
+  const handleClickShowConfirm = async (_idUser, isBlocked) => {
+    const id = { _idUser: _idUser, isBlocked: isBlocked };
     setSelected_id(id);
     setIsDetail(false);
     setOrganizerDetailOpen(true);
@@ -85,7 +88,7 @@ function OrganizerPageAdmin() {
       name: "IsBlock",
       icon: <LockIcon />,
       color: "primary",
-      onClick: (row) => handleClickShowConfirm(row?._id),
+      onClick: (row) => handleClickShowConfirm(row?._id, row?.isBlocked),
     },
   ];
 

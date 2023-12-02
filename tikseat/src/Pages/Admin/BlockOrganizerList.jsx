@@ -15,16 +15,23 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 
 function BlockOrganizerList() {
-  const [dataTableOrganizer, setDataTableOrganizer] = useState();
+  const [dataTableOrganizerBlock, setDataTableOrganizerBlock] = useState();
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
 
+  console.log(selected_id);
+
   const getAllOrganizerBlock = async () => {
     try {
-      const respones = await ApiAdmin.getAllOrganizers();
-      setDataTableOrganizer(respones.data);
+      const respones = await ApiAdmin.getListOrganizerBlock();
+      if (respones.status === true) {
+        setDataTableOrganizerBlock(respones.data);
+        console.log(respones);
+      } else {
+        console.log("error");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -48,8 +55,8 @@ function BlockOrganizerList() {
     }
   };
 
-  const handleClickShowConfirm = async (_idUser) => {
-    const id = { _idUser: _idUser };
+  const handleClickShowConfirm = async (_idUser, isBlocked) => {
+    const id = { _idUser: _idUser, isBlocked: isBlocked };
     setSelected_id(id);
     setIsDetail(false);
     setOrganizerDetailOpen(true);
@@ -85,7 +92,7 @@ function BlockOrganizerList() {
       name: "IsBlock",
       icon: <LockOpenIcon />,
       color: "primary",
-      onClick: (row) => handleClickShowConfirm(row?._id),
+      onClick: (row) => handleClickShowConfirm(row?._id, row?.isBlocked),
     },
   ];
 
@@ -105,7 +112,7 @@ function BlockOrganizerList() {
             </Typography>
           </div>
           <TableList
-            dataTable={dataTableOrganizer}
+            dataTable={dataTableOrganizerBlock}
             selectedUser={selectedOrganizer}
             detailOpen={organizerDetailOpen}
             setDetailOpen={setOrganizerDetailOpen}
