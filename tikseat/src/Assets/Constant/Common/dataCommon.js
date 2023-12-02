@@ -59,7 +59,7 @@ export const listLogoSocialNetwork = [
 
 export const navItems = [
   { title: "My ticket", url: "/my_ticket" },
-  { title: "My sell", url: "/my_sell" },
+  { title: "Refundable tickets", url: "/refundable_tickets" },
   { title: "My History payment", url: "/my_history_payment" },
 ];
 
