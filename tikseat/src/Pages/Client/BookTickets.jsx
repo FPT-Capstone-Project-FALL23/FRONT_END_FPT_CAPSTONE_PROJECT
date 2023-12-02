@@ -55,7 +55,6 @@ const BookTickets = () => {
 
   const [dataEvents, setDataEvents] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState();
-  // console.log("dataEventDetail: ", dataEventDetail);
   const [selectedItem, setSelectedItem] = useState();
   const [selectRows, setSelectRows] = useState([]);
   const [organizer, setOrganizer] = useState("");
@@ -63,7 +62,6 @@ const BookTickets = () => {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const [selectChair, setSelectChair] = useState([]);
-  console.log("selectChair: ", selectChair);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   // const [checkDay, setCheckDay] = useState(1);
 
@@ -71,16 +69,15 @@ const BookTickets = () => {
   const [time, setTime] = useState(null);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [statusConfrim, setStatusConfrim] = useState(true);
 
   const [id, setId] = useState("");
 
   const [socket, setSocket] = useState(null);
-  console.log("socket: ", socket);
 
   const handlebookSeat = (item, seat, isCheckSelected, selectRow) => {
-    console.log("selectRow: ", selectRow);
+
     if (!socket) {
-      console.log("socket not initialized");
       return;
     }
     if (!dataUser) {
@@ -97,8 +94,10 @@ const BookTickets = () => {
       socket?.emit("SELECT_SEAT", {
         seat,
         eventRowKey,
+        price: selectRow?.ticket_price,
         _idChairName: item?._id,
         ...item,
+        email: dataUser?.email,
       });
       setSelectChair([
         ...selectChair,
@@ -116,7 +115,7 @@ const BookTickets = () => {
         alert("This seat is already booked by others!");
         return;
       }
-
+      
       setSelectChair(selectChair?.filter((item) => item.seat !== seat));
       socket?.emit("UNSELECT_SEAT", {
         seat,
@@ -138,21 +137,21 @@ const BookTickets = () => {
 
   useEffect(() => {
     const eventRowKey = `${idEvent}_${selectedItem?._id}`;
-    console.log("selectedItem: ", selectedItem);
-    console.log("Initializing socket connection");
+    // console.log("selectedItem: ", selectedItem);
+    // console.log("Initializing socket connection");
 
     const socket = io(URL_SOCKET, {
       transports: ["websocket"],
       query: { email: dataUser?.email },
     });
-    console.log("socketcheck: ", socket);
+    // console.log("socketcheck: ", socket);
     setSocket(socket);
     socket.on("connect", () => setId(socket.id));
     socket.on("disconnect", () => console.log("socket disconnected!"));
     socket.emit("join_booking_room", eventRowKey);
     socket.on("update_booking_room", (data) => {
-      console.log("update_booking_room: ", data);
-      // setSelectChair(data);
+      // console.log("update_booking_room: ", data);
+      setSelectChair(data);
     });
     return () => {
       setSocket(null);
@@ -213,9 +212,11 @@ const BookTickets = () => {
 
   function handleSeatColor(item, isCheckSelected) {
     if (isCheckSelected) {
-      // if (isCheckSelected.email === dataUser?.email) return "#ff15a0";
-      // return "#BDBDBD";
-      return "#ff15a0";
+      if (isCheckSelected.email === dataUser?.email) {
+        return "#ff15a0";
+      }
+      return "#BDBDBD";
+      // return "#ff15a0";
     }
     if (item.isBuy) {
       return "#46494c";
@@ -229,12 +230,17 @@ const BookTickets = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const totalByTicket = selectChair?.reduce(
+  const totalByTicket = selectChair?.filter(
+    (item) =>
+      item.email ===
+      dataUser?.email
+  )
+  .reduce(
     (accumulator, seat) => accumulator + seat.price,
     0
   );
 
-  console.log("totalByTicket: ", totalByTicket);
+  // console.log("totalByTicket: ", totalByTicket);
   const [ticketBooker, setTicketBooker] = useState({
     email: dataUser?.email,
     phone: dataInfo?.phone,
@@ -245,8 +251,13 @@ const BookTickets = () => {
   //call api create payment
   const handleBuyTickect = async (event) => {
     event.preventDefault();
-    try {
-      const listChairIds = selectChair?.map((item) => item._id);
+      try {
+        const listChairIds =  selectChair
+        .filter(
+          (item) =>
+            item.email ===
+            dataUser?.email
+        ).map((item) => item._id)
       const eventId = dataEventDetail._id;
       const requestData = {
         _idEvent: eventId,
@@ -277,6 +288,20 @@ const BookTickets = () => {
     handleSelectChair(item, selectRow, isCheckSelected);
     handlebookSeat(item, seat, isCheckSelected, selectRow);
   };
+
+  function checkStatusConfirm(selectChair, dataUser){
+    const checkaaa = selectChair.filter((item) => item.email === dataUser?.email)
+    
+    if(checkaaa.length > 0){
+      setStatusConfrim(false)
+    }else{
+      setStatusConfrim(true)
+    }
+  }
+
+  useEffect(()=>{
+    checkStatusConfirm(selectChair, dataUser)
+  },[selectChair])
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -617,7 +642,6 @@ const BookTickets = () => {
                       >
                         {dataEventDetail?.event_date?.length > 0 &&
                           dataEventDetail?.event_date?.map((itemEvent) => {
-                            console.log("itemEvent: ", itemEvent);
                             return (
                               <Box key={itemEvent._id}>
                                 <Stack
@@ -772,7 +796,6 @@ const BookTickets = () => {
                               <Stack direction={"column"} gap={"30px"}>
                                 {selectRows?.length > 0 &&
                                   selectRows?.map((selectRow) => {
-                                    console.log("selectRow: ", selectRow);
                                     return (
                                       <Stack
                                         direction={"row"}
@@ -793,7 +816,6 @@ const BookTickets = () => {
                                         <Stack direction={"row"} gap={"15px"}>
                                           {selectRow?.chairs?.map(
                                             (item, index) => {
-                                              console.log("itemc: ", item);
                                               const isCheckSelected =
                                                 selectChair?.length > 0 &&
                                                 selectChair?.find((itemc) => {
@@ -1028,7 +1050,7 @@ const BookTickets = () => {
                                                   })
                                                   .join(",")}
                                             </div>
-                                            <span
+                                            {/* <span
                                               style={{
                                                 width: "20px",
                                                 height: "20px",
@@ -1037,7 +1059,7 @@ const BookTickets = () => {
                                               onClick={() => setSelectChair([])}
                                             >
                                               <IconCircle />
-                                            </span>
+                                            </span> */}
                                           </>
                                         )}
                                       </Stack>
@@ -1063,11 +1085,11 @@ const BookTickets = () => {
                                 </Typography>
                               </Stack>
                               <Button
-                                disabled={selectChair?.length <= 0}
+                                disabled={statusConfrim}
                                 type="button"
                                 style={{
                                   background: `${
-                                    selectChair?.length <= 0
+                                    statusConfrim
                                       ? "gray"
                                       : "#bfad17"
                                   }`,
@@ -1122,11 +1144,12 @@ const BookTickets = () => {
                                             >
                                               {selectChair?.length > 0 &&
                                                 selectChair
+                                                .filter(
+                                                  (item) =>
+                                                    item.email ===
+                                                    dataUser?.email
+                                                )
                                                   .map((item) => {
-                                                    console.log(
-                                                      "itemtext: ",
-                                                      item
-                                                    );
                                                     return String(
                                                       item.chair_name
                                                     );
