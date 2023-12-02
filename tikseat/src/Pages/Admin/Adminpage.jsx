@@ -415,7 +415,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("purchaseList")}>
+            onClick={() => handleLogOut(navigate)}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -438,7 +438,7 @@ export default function MiniDrawer() {
               <ListItemText
                 sx={{ display: open ? "block" : "none" }}
                 primary="Log Out"
-                onClick={() => handleLogOut(navigate)}
+                
               />
             </ListItemButton>
           </ListItem>
