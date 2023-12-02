@@ -97,8 +97,10 @@ const BookTickets = () => {
       socket?.emit("SELECT_SEAT", {
         seat,
         eventRowKey,
+        price: selectRow?.ticket_price,
         _idChairName: item?._id,
         ...item,
+        email: dataUser?.email,
       });
       setSelectChair([
         ...selectChair,
@@ -152,7 +154,7 @@ const BookTickets = () => {
     socket.emit("join_booking_room", eventRowKey);
     socket.on("update_booking_room", (data) => {
       console.log("update_booking_room: ", data);
-      // setSelectChair(data);
+      setSelectChair(data);
     });
     return () => {
       setSocket(null);
@@ -213,9 +215,9 @@ const BookTickets = () => {
 
   function handleSeatColor(item, isCheckSelected) {
     if (isCheckSelected) {
-      // if (isCheckSelected.email === dataUser?.email) return "#ff15a0";
-      // return "#BDBDBD";
-      return "#ff15a0";
+      if (isCheckSelected.email === dataUser?.email) return "#ff15a0";
+      return "#BDBDBD";
+      // return "#ff15a0";
     }
     if (item.isBuy) {
       return "#46494c";
@@ -229,7 +231,12 @@ const BookTickets = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const totalByTicket = selectChair?.reduce(
+  const totalByTicket = selectChair?.filter(
+    (item) =>
+      item.email ===
+      dataUser?.email
+  )
+  .reduce(
     (accumulator, seat) => accumulator + seat.price,
     0
   );
@@ -245,8 +252,13 @@ const BookTickets = () => {
   //call api create payment
   const handleBuyTickect = async (event) => {
     event.preventDefault();
-    try {
-      const listChairIds = selectChair?.map((item) => item._id);
+      try {
+        const listChairIds =  selectChair
+        .filter(
+          (item) =>
+            item.email ===
+            dataUser?.email
+        ).map((item) => item._id)
       const eventId = dataEventDetail._id;
       const requestData = {
         _idEvent: eventId,
@@ -279,6 +291,13 @@ const BookTickets = () => {
   };
 
   const handleOpenConfirm = () => {
+    if (selectChair .filter(
+      (item) =>
+        item.email ===
+        dataUser?.email).length == 0) {
+          alert("Bạn chưa chọn ghế")
+          return
+        }
     setOpenConfirm(true);
   };
   const handleCloseConfirm = () => {
@@ -1028,7 +1047,7 @@ const BookTickets = () => {
                                                   })
                                                   .join(",")}
                                             </div>
-                                            <span
+                                            {/* <span
                                               style={{
                                                 width: "20px",
                                                 height: "20px",
@@ -1037,7 +1056,7 @@ const BookTickets = () => {
                                               onClick={() => setSelectChair([])}
                                             >
                                               <IconCircle />
-                                            </span>
+                                            </span> */}
                                           </>
                                         )}
                                       </Stack>
@@ -1122,6 +1141,11 @@ const BookTickets = () => {
                                             >
                                               {selectChair?.length > 0 &&
                                                 selectChair
+                                                .filter(
+                                                  (item) =>
+                                                    item.email ===
+                                                    dataUser?.email
+                                                )
                                                   .map((item) => {
                                                     console.log(
                                                       "itemtext: ",
