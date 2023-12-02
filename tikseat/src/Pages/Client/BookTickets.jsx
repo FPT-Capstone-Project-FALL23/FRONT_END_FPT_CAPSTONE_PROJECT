@@ -290,9 +290,9 @@ const BookTickets = () => {
   };
 
   function checkStatusConfirm(selectChair, dataUser){
-    const checkaaa = selectChair.filter((item) => item.email === dataUser?.email)
+    const checkEmail = selectChair.filter((item) => item.email === dataUser?.email)
     
-    if(checkaaa.length > 0){
+    if(checkEmail.length > 0){
       setStatusConfrim(false)
     }else{
       setStatusConfrim(true)
