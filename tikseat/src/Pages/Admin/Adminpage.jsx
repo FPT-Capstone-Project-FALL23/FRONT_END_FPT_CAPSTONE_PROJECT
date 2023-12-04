@@ -54,6 +54,7 @@ import RefundList from "./RefundList";
 import { handleLogOut } from "../Organizers/Sidebar";
 import { useNavigate } from "react-router-dom";
 import BlockOrganizerList from "./BlockOrganizerList";
+import PayBusiness from "./PayBusiness";
 
 const drawerWidth = 300;
 export const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -438,7 +439,6 @@ export default function MiniDrawer() {
               <ListItemText
                 sx={{ display: open ? "block" : "none" }}
                 primary="Log Out"
-                
               />
             </ListItemButton>
           </ListItem>
@@ -463,6 +463,7 @@ export default function MiniDrawer() {
           {menuData === "approvedEvent" && <ApprovedEvent />}
           {menuData === "purchaseList" && <PurchaseList />}
           {menuData === "refundList" && <RefundList />}
+          {menuData === "payBusiness" && <PayBusiness />}
         </Box>
       </Grid>
     </Box>

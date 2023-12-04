@@ -52,6 +52,7 @@ export default function TableList({
   dialogContent,
   actions,
   cellComponents,
+  selectedDataEvent,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -175,6 +176,7 @@ export default function TableList({
               isConfirmEvent={isConfirmEvent}
               dialogTitle={dialogTitle}
               dialogContent={dialogContent}
+              selectedDataEvent={selectedDataEvent}
             />
           </>
         )}

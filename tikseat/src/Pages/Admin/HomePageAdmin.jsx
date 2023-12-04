@@ -15,6 +15,7 @@ import {
   TOTAL_MONEY_REFUND,
 } from "../../Assets/Constant/Admin/constAdmin";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
+import ChartBars from "../../Components/Admin/Chart/ChartBars";
 
 function HomePageAdmin() {
   const [totalAmountSold, setTotalAmountSold] = useState(0);
@@ -121,20 +122,36 @@ function HomePageAdmin() {
               </Stack>
             </Grid>
           </Grid>
-          <Box height={20} />
+          <Box height={50}></Box>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Card sx={{ height: 56 + "vh" }}>
-                <CardContent></CardContent>
+                <CardContent>
+                  <Typography sx={{ margin: "10px 10px" }}>
+                    Statistics on transaction amount by day
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                    <ChartBars />
+                  </Box>
+                </CardContent>
               </Card>
             </Grid>
             <Grid item xs={6}>
               <Card sx={{ height: 56 + "vh" }}>
-                <CardContent></CardContent>
+                <CardContent>
+                  <Typography>
+                    Statistics of trading transactions by daysss
+                  </Typography>
+                  <ChartBars />
+                </CardContent>
               </Card>
             </Grid>
           </Grid>
-          {/* </Box> */}
         </Box>
       </div>
     </>

@@ -1,5 +1,4 @@
-// UserDetailDialog.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import { styled } from "@mui/material/styles";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -21,21 +20,26 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
+  "& .MuiDialog-paper": {
+    maxWidth: "90%",
+    maxHeight: "90%",
+  },
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: "400px", // Adjust the desired width
+  width: "100%", // Adjust the desired width
+  height: "100%",
   padding: theme.spacing(2),
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
+  // display: "flex",
+  // flexDirection: "column",
+  // alignItems: "center",
   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
   borderRadius: theme.spacing(1),
 }));
 
 export const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  width: "120px",
-  height: "120px",
+  width: "200px",
+  height: "200px",
 }));
 
 export const StyledName = styled(Typography)(({ theme }) => ({
@@ -63,12 +67,42 @@ const DialogComponent = ({
   isConfirmEvent,
   dialogTitle,
   dialogContent,
+  selectedDataEvent,
 }) => {
+  const [dialogWidth, setDialogWidth] = useState("600px");
+  const [dialogHeight, setDialogHeight] = useState("400px");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const maxWidth = window.innerWidth * 0.9;
+      const maxHeight = window.innerHeight * 0.9;
+      setDialogWidth(`${maxWidth}px`);
+      setDialogHeight(`${maxHeight}px`);
+    };
+
+    // Set initial dimensions on component mount
+    handleResize();
+
+    // Update dimensions on window resize
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      // Clean up event listener on component unmount
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <BootstrapDialog
       open={open}
       onClose={onClose}
-      aria-labelledby="customized-dialog-title">
+      aria-labelledby="customized-dialog-title"
+      sx={{
+        "& .MuiDialog-paper": {
+          width: dialogWidth,
+          height: dialogHeight,
+        },
+      }}>
       {isDetail ? (
         <>
           <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
@@ -90,6 +124,7 @@ const DialogComponent = ({
               <DialogListContent
                 selectedDetail={selectedUser}
                 isClient={isClient}
+                selectedDataEvent={selectedDataEvent}
               />
             </StyledCard>
           </DialogContent>

@@ -11,6 +11,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import GroupsIcon from '@mui/icons-material/Groups';
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 
 export const SIDENAV_ADMIN = [
     { title: "Home", url: "/homePageAdmin", icon: <HomeIcon /> },
@@ -67,6 +68,7 @@ export const LIST_APPROVED = [
 export const LIST_PAYMENT = [
     { nameMenu: "purchaseList", titleMenu: "Purchase List", icon: <MonetizationOnIcon /> },
     { nameMenu: "refundList", titleMenu: "Refund List", icon: <CurrencyExchangeIcon /> },
+    { nameMenu: "payBusiness", titleMenu: "Pay Business List", icon: <ShoppingCartCheckoutIcon /> },
 ]
 export const LIST_CLIENT_MANAGER = [
     { nameMenu: "clientManage", titleMenu: "List Client", icon: <PersonIcon /> },

@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 function OrganizerPageAdmin() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
+  const [selectedDataEvent, setSelectedDataEvent] = useState(null);
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
@@ -43,8 +44,10 @@ function OrganizerPageAdmin() {
       const respones = await ApiAdmin.getDetailOrganizer(id);
       console.log("respones", respones);
       if (respones) {
-        setSelectedOrganizer(respones.data);
+        setSelectedOrganizer(respones.data.organizationalInformation);
+        setSelectedDataEvent(respones.data.organizationalEvents);
         setOrganizerDetailOpen(true);
+        setIsDetail(true);
       }
     } catch (error) {
       console.log(error);
@@ -123,6 +126,7 @@ function OrganizerPageAdmin() {
             dialogTitle={TITLE_BLOCK_ORGANIZATIONS}
             dialogContent={CONTENT_BLOCK_ORGANIZATIONS}
             onConfirm={handleComfirmBlock}
+            selectedDataEvent={selectedDataEvent}
           />
         </Box>
       </Box>
