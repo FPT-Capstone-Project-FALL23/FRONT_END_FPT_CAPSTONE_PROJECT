@@ -35,6 +35,7 @@ import { io } from "socket.io-client";
 import Carousel from "react-multi-carousel";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import ModalLogin from "../../Components/modalLogin/ModalLogin";
 const style = {
   position: "absolute",
   top: "50%",
@@ -52,7 +53,7 @@ const BookTickets = () => {
   const { id: idEvent } = useParams();
   const [age, setAge] = useState("");
   const [openConfrm, setOpenConfirm] = React.useState(false);
-
+  const [showLogin, setShowLogin] = useState(false);
   const [dataEvents, setDataEvents] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState();
   const [selectedItem, setSelectedItem] = useState();
@@ -76,12 +77,7 @@ const BookTickets = () => {
   const [socket, setSocket] = useState(null);
 
   const handlebookSeat = (item, seat, isCheckSelected, selectRow) => {
-
     if (!socket) {
-      return;
-    }
-    if (!dataUser) {
-      alert("Vui lòng đăng nhập để book chỗ");
       return;
     }
     const eventRowKey = `${idEvent}_${selectedItem?._id}`;
@@ -115,7 +111,7 @@ const BookTickets = () => {
         alert("This seat is already booked by others!");
         return;
       }
-      
+
       setSelectChair(selectChair?.filter((item) => item.seat !== seat));
       socket?.emit("UNSELECT_SEAT", {
         seat,
@@ -129,10 +125,10 @@ const BookTickets = () => {
   useEffect(() => {
     if (!idEvent || !selectedItem || !dataInfo) return;
 
-    if (!dataUser) {
-      alert("Vui lòng đăng nhập để book chỗ");
-      return;
-    }
+    // if (!dataUser) {
+    //   alert("Vui lòng đăng nhập để book chỗ");
+    //   return;
+    // }
   }, [dataInfo, dataUser, idEvent, selectedItem]);
 
   useEffect(() => {
@@ -169,7 +165,7 @@ const BookTickets = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     if (!dataInfo) {
-      alert("Vui lòng đăng nhập để book chỗ");
+      setShowLogin(true);
       return;
     }
     setOpen(true);
@@ -230,15 +226,9 @@ const BookTickets = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const totalByTicket = selectChair?.filter(
-    (item) =>
-      item.email ===
-      dataUser?.email
-  )
-  .reduce(
-    (accumulator, seat) => accumulator + seat.price,
-    0
-  );
+  const totalByTicket = selectChair
+    ?.filter((item) => item.email === dataUser?.email)
+    .reduce((accumulator, seat) => accumulator + seat.price, 0);
 
   // console.log("totalByTicket: ", totalByTicket);
   const [ticketBooker, setTicketBooker] = useState({
@@ -251,13 +241,10 @@ const BookTickets = () => {
   //call api create payment
   const handleBuyTickect = async (event) => {
     event.preventDefault();
-      try {
-        const listChairIds =  selectChair
-        .filter(
-          (item) =>
-            item.email ===
-            dataUser?.email
-        ).map((item) => item._id)
+    try {
+      const listChairIds = selectChair
+        .filter((item) => item.email === dataUser?.email)
+        .map((item) => item._id);
       const eventId = dataEventDetail._id;
       const requestData = {
         _idEvent: eventId,
@@ -289,19 +276,21 @@ const BookTickets = () => {
     handlebookSeat(item, seat, isCheckSelected, selectRow);
   };
 
-  function checkStatusConfirm(selectChair, dataUser){
-    const checkEmail = selectChair.filter((item) => item.email === dataUser?.email)
-    
-    if(checkEmail.length > 0){
-      setStatusConfrim(false)
-    }else{
-      setStatusConfrim(true)
+  function checkStatusConfirm(selectChair, dataUser) {
+    const checkEmail = selectChair.filter(
+      (item) => item.email === dataUser?.email
+    );
+
+    if (checkEmail.length > 0) {
+      setStatusConfrim(false);
+    } else {
+      setStatusConfrim(true);
     }
   }
 
-  useEffect(()=>{
-    checkStatusConfirm(selectChair, dataUser)
-  },[selectChair])
+  useEffect(() => {
+    checkStatusConfirm(selectChair, dataUser);
+  }, [selectChair]);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -1089,9 +1078,7 @@ const BookTickets = () => {
                                 type="button"
                                 style={{
                                   background: `${
-                                    statusConfrim
-                                      ? "gray"
-                                      : "#bfad17"
+                                    statusConfrim ? "gray" : "#bfad17"
                                   }`,
                                   color: "white",
                                   fontWeight: "bold",
@@ -1144,11 +1131,11 @@ const BookTickets = () => {
                                             >
                                               {selectChair?.length > 0 &&
                                                 selectChair
-                                                .filter(
-                                                  (item) =>
-                                                    item.email ===
-                                                    dataUser?.email
-                                                )
+                                                  .filter(
+                                                    (item) =>
+                                                      item.email ===
+                                                      dataUser?.email
+                                                  )
                                                   .map((item) => {
                                                     return String(
                                                       item.chair_name
@@ -1334,6 +1321,10 @@ const BookTickets = () => {
             <div style={{ height: "200px" }}></div>
           </Grid>
         </Grid>
+        <ModalLogin
+          setShowLogin={setShowLogin}
+          showLogin={showLogin}
+        ></ModalLogin>
       </div>
     </Box>
   );

@@ -341,7 +341,6 @@ function ProfileClient() {
             </Stack>
           </Grid>
         </Grid>
-
         <Grid
           style={{
             width: "100%",
@@ -350,6 +349,14 @@ function ProfileClient() {
             alignItems: "center",
           }}
         >
+          <Stack style={{ width: "50%", marginTop: "20px" }}>
+            <ButtonCustom
+              onClick={() => navigate("/change-password")}
+              color="black"
+              content="Change password"
+              backgroundcolor="#F5BD19"
+            />
+          </Stack>
           <Stack style={{ width: "50%", marginTop: "20px" }}>
             <ButtonCustom
               color="black"

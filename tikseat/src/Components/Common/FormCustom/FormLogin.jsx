@@ -17,7 +17,7 @@ import {
 } from "../../../Assets/Constant/Common/constCommon";
 import { useNavigate, Link } from "react-router-dom";
 import ApiCommon from "../../../API/Common/ApiCommon";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormSubmit from "./FormSubmit";
 import jwtDecode from "jwt-decode";
@@ -94,7 +94,8 @@ function FormLogin({
         <FormControl
           variant="outlined"
           fullWidth
-          style={{ marginBottom: "20px" }}>
+          style={{ marginBottom: "20px" }}
+        >
           <InputLabel htmlFor="outlined-adornment-password" required>
             Password
           </InputLabel>
@@ -109,7 +110,8 @@ function FormLogin({
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
-                  edge="end">
+                  edge="end"
+                >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -120,16 +122,18 @@ function FormLogin({
         <div
           style={{
             display: "flex",
-            flexDirection:"row-reverse",
+            flexDirection: "row-reverse",
             marginBottom: "20px",
-          }}>
+          }}
+        >
           <Link
             to={"/forgot-password"}
             style={{
               padding: "10px",
               color: "#F5BD19",
               textDecoration: "none",
-            }}>
+            }}
+          >
             {FORGOT_PASSWORD}
           </Link>
         </div>
@@ -143,12 +147,11 @@ function FormLogin({
               fontSize: "18px",
             }}
             type="submit"
-            fullWidth>
+            fullWidth
+          >
             {LOGIN}
           </Button>
         </Grid>
-
-        <ToastContainer />
 
         <Grid className="btnLogin">
           <Link
@@ -158,7 +161,8 @@ function FormLogin({
               textDecoration: "none",
             }}
             to="/choose-access"
-            fullWidth>
+            fullWidth
+          >
             <Button
               style={{
                 padding: "10px",
@@ -167,7 +171,8 @@ function FormLogin({
                 fontWeight: "bold",
                 fontSize: "18px",
               }}
-              fullWidth>
+              fullWidth
+            >
               Sign Up
             </Button>
           </Link>

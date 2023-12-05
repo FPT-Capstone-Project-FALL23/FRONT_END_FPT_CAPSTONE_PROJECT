@@ -133,7 +133,7 @@ const ChangePassword = () => {
                   window.history.back();
                 }}
                 color="black"
-                content="Black"
+                content="Back"
                 backgroundcolor="skyblue"
               />
             </Stack>
