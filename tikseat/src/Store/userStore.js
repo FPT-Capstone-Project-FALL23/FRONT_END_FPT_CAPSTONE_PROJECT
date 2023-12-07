@@ -91,3 +91,39 @@ export function getLocalStorageEventId() {
     return null;
   }
 }
+
+export function setLocalStorageEventInfo(value) {
+  try {
+    localStorage.setItem("eventInfo", JSON.stringify(value));
+  } catch (error) {
+    console.error("Error setting localStorage:", error);
+  }
+}
+
+export function getLocalStorageEventInfo() {
+  try {
+    const valueUserInfo = localStorage.getItem("eventInfo");
+    return valueUserInfo ? JSON.parse(valueUserInfo) : null;
+  } catch (error) {
+    console.error("Error getting localStorage:", error);
+    return null;
+  }
+}
+
+export function setLocalStorageTicketInfo(value) {
+  try {
+    localStorage.setItem("ticketInfo", JSON.stringify(value));
+  } catch (error) {
+    console.error("Error setting localStorage:", error);
+  }
+}
+
+export function getLocalStorageTicketInfo() {
+  try {
+    const valueUserInfo = localStorage.getItem("ticketInfo");
+    return valueUserInfo ? JSON.parse(valueUserInfo) : null;
+  } catch (error) {
+    console.error("Error getting localStorage:", error);
+    return null;
+  }
+}

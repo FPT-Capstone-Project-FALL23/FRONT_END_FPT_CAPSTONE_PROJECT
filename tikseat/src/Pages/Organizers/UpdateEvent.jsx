@@ -24,9 +24,9 @@ import Modal from "@mui/material/Modal";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import OfflinePinIcon from "@mui/icons-material/OfflinePin";
 import WarningIcon from "@mui/icons-material/Warning";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 import InputCustom from "../../Components/Common/Input/InputCustom";
@@ -36,6 +36,7 @@ import {
   setLocalStorageEventInfo,
   getLocalStorageEventInfo,
 } from "../../Store/userStore";
+import ApiEvent from "../../API/Event/ApiEvent";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -155,20 +156,17 @@ export const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
   }
 };
 
-const NewEvent = ({ onContinueClick }) => {
+function UpdateEvent({ onContinueClick }) {
   const eventInfomation = getLocalStorageEventInfo();
-
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   const [eventImage, setEventImage] = useState(
-    eventInfomation?.eventImage || ""
+    eventInfomation?.eventImage || null
   );
   const [eventType, setEventType] = useState([]);
-  const [selectedFile, setSelectedFile] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   const theme = useTheme();
   const [allCity, setAllCity] = useState([]);
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
@@ -188,31 +186,30 @@ const NewEvent = ({ onContinueClick }) => {
   const [specificAddress, setSpecificAddress] = useState(
     eventInfomation?.address?.specific_address || ""
   );
-  const fileInputRef = useRef("");
+
+  const fileInputRef = useRef(null);
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
   };
 
   const [newEvent, setNewEvent] = useState({
-    event_name: eventInfomation?.event_name || "",
-    eventImage: eventInfomation?.eventImage || eventImage || "",
+    event_name: eventInfomation?.event_name || null,
+    eventImage: eventImage,
     type_of_event: eventInfomation?.type_of_event || eventType,
-    event_description: eventInfomation?.event_description || "",
+    event_description: eventInfomation?.event_description || null,
     address: {
-      city: selectCity || "",
-      district: selectDistrict || "",
-      ward: selectWard || "",
+      city: selectCity ? selectCity?.name : "",
+      district: selectDistrict ? selectDistrict?.name : "",
+      ward: selectWard ? selectWard?.name : "",
       specific_address: specificAddress || "",
     },
   });
 
-  console.log(newEvent);
-
   useEffect(() => {
     setNewEvent((prevEvent) => ({
       ...prevEvent,
-      eventImage: eventImage || "",
+      eventImage: eventImage || null,
     }));
   }, [eventImage]);
 
@@ -221,14 +218,15 @@ const NewEvent = ({ onContinueClick }) => {
     getAPICity(setAllCity);
   }, []);
 
+  //thêm thành phố, quận huyện, phường xã khi có thay đổi của nớ
   useEffect(() => {
     setNewEvent((prevNewEvent) => ({
       ...prevNewEvent,
       address: {
-        city: selectCity?.name || "",
-        district: selectDistrict?.name || "",
-        ward: selectWard?.name || "",
-        specific_address: specificAddress || "",
+        city: selectCity?.name || selectCity,
+        district: selectDistrict?.name || selectDistrict,
+        ward: selectWard?.name || selectWard,
+        specific_address: specificAddress,
       },
     }));
   }, [selectCity, selectDistrict, selectWard, specificAddress]);
@@ -249,6 +247,7 @@ const NewEvent = ({ onContinueClick }) => {
 
   useEffect(() => {
     setLocalStorageEventInfo(newEvent);
+    // setNewEvent(newEvent);
   }, [newEvent]);
 
   const handleClientClick = () => {
@@ -267,10 +266,10 @@ const NewEvent = ({ onContinueClick }) => {
       >
         <Grid style={{ display: "flex", justifyContent: "start" }}>
           {newEvent.eventImage !== "" ? (
-            <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
-          ) : (
-            <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
-          )}
+              <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
+            ) : (
+              <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
+            )}
           <h3>Cover image</h3>
         </Grid>
         <Grid
@@ -329,7 +328,7 @@ const NewEvent = ({ onContinueClick }) => {
               component="h2"
               color={"black"}
             >
-              Vui lòng đọc kỹ &nbsp;
+              Please read the Notes carefully &nbsp;
               <Link
                 component="button"
                 style={{
@@ -339,16 +338,15 @@ const NewEvent = ({ onContinueClick }) => {
                 }}
                 onClick={handleOpen}
               >
-                Lưu ý khi cập nhật sự kiện
+                when updating events
               </Link>
             </Typography>
           </Grid>
           <Modal
-            sx={{ backgroundColor: "#000", opacity: "0.9" }}
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
             open={open}
-            // onClose={handleClose}
+            onClose={handleClose}
             closeAfterTransition
             slots={{ backdrop: Backdrop }}
             slotProps={{
@@ -371,55 +369,36 @@ const NewEvent = ({ onContinueClick }) => {
                   color={"#7CA629"}
                   fontWeight={600}
                 >
-                  NOTE WHEN UPLOADING AN EVENT
+                  LƯU Ý KHI ĐĂNG TẢI SỰ KIỆN
                 </Typography>
-                <Grid>
-                  <ul>
-                    <li>
-                      1.&nbsp;&nbsp; Please{" "}
-                      <strong>
-                        do not display contact information of the Organizer
-                      </strong>{" "}
-                      (eg: Phone number/ Email/ Website/ Facebook/ Instagram…){" "}
-                      <strong>on the banner and in the content.</strong> Only
-                      use Hotline TickSeat - 1900.6408.
-                    </li>
-                    <li>
-                      2.&nbsp;&nbsp; In case the Organizer{" "}
-                      <strong>
-                        creates or updates the event not in accordance with the
-                        above provisions, TickSeat has the right to refuse to
-                        approve the event.
-                      </strong>
-                    </li>
-                    <li>
-                      3.&nbsp;&nbsp; TickSeat will continuously check the
-                      information of events being displayed on the platform,{" "}
-                      <strong>
-                        if it detects that there is an error related to the
-                        image / post content, TickSeat has the right to remove
-                        or refuse to provide the service,
-                      </strong>{" "}
-                      subject to clause 2.9 of the Service Agreement.
-                    </li>
-                  </ul>
-                </Grid>
-                <Grid sx={{ display: "flex", justifyContent: "center" }}>
-                  <Button
-                    style={{
-                      width: "20%",
-                      marginTop: "20px",
-                      padding: "10px",
-                      color: "#fff",
-                      fontSize: "20px",
-                      fontWeight: "bolder",
-                      backgroundColor: "#7CA629",
-                    }}
-                    onClick={handleClose}
-                  >
-                    Oke
-                  </Button>
-                </Grid>
+                <ul>
+                  <li>
+                    1.&nbsp;&nbsp; Vui lòng{" "}
+                    <strong>
+                      không hiển thị thông tin liên lạc của Ban Tổ Chức
+                    </strong>{" "}
+                    (ví dụ: Số điện thoại/ Email/ Website/ Facebook/ Instagram…){" "}
+                    <strong>trên banner và trong nội dung bài đăng.</strong> Chỉ
+                    sử dụng duy nhất Hotline TickSeat - 1900.6408.
+                  </li>
+                  <li>
+                    2.&nbsp;&nbsp; Trong trường hợp Ban tổ chức{" "}
+                    <strong>
+                      tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu
+                      trên, TickSeat có quyền từ chối phê duyệt sự kiện.
+                    </strong>
+                  </li>
+                  <li>
+                    3.&nbsp;&nbsp; Ticketbox sẽ liên tục kiểm tra thông tin các
+                    sự kiện đang được hiển thị trên nền tảng,{" "}
+                    <strong>
+                      nếu phát hiện có sai phạm liên quan đến hình ảnh/ nội dung
+                      bài đăng, TickSeat có quyền gỡ bỏ hoặc từ chối cung cấp
+                      dịch vụ đối với các sự kiện này,
+                    </strong>{" "}
+                    dựa theo điều khoản trong Hợp đồng dịch vụ.
+                  </li>
+                </ul>
               </Box>
             </Fade>
           </Modal>
@@ -513,9 +492,9 @@ const NewEvent = ({ onContinueClick }) => {
               <Grid style={{ display: "flex", justifyContent: "start" }}>
                 <h3 style={{ marginTop: "20px" }}>
                   {newEvent.address.city !== "" && newEvent.address.district !== "" 
-                  && newEvent.address.specific_address !== "" && newEvent.address.ward !== ""  ? (
-                    <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
-                  ) : (
+                    && newEvent.address.specific_address !== "" && newEvent.address.ward !== ""  ? (
+                      <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
+                    ) : (
                     <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
                   )}
                   Address
@@ -628,19 +607,20 @@ const NewEvent = ({ onContinueClick }) => {
                 </Stack>
               </Grid>
               <Grid style={{ display: "flex", justifyContent: "start" }}>
-                <h3 style={{ marginTop: "20px" }}>{newEvent.event_description !== "" ? (
+                <h3 style={{ marginTop: "20px" }}> 
+                  {newEvent.event_description !== "" ? (
                   <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
                     ) : (
                       <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
                     )} 
-                    Event Description
-                  </h3>
+                Event Information</h3>
               </Grid>
               <Stack>
                 <TextareaAutosize
                   style={{ fontSize: "20px" }}
                   fullWidth
                   minRows={6}
+                  placeholder="Description"
                   name="event_description"
                   value={newEvent.event_description}
                   onChange={(e) =>
@@ -734,6 +714,6 @@ const NewEvent = ({ onContinueClick }) => {
       </Grid>
     </>
   );
-};
+}
 
-export default NewEvent;
+export default UpdateEvent;

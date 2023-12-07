@@ -40,6 +40,7 @@ import CreateTicket from "./CreateTicket";
 import CheckinTicket from "./CheckinTicket";
 import { useNavigate } from "react-router-dom";
 import ChangePassword from "../Common/ChangePassword";
+import CreateEventDefault from "./CreateEventDefault";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import "../../Assets/CSS/Organizer/Sidebar.css";
@@ -50,6 +51,7 @@ import {
 } from "../../Store/userStore";
 import EventDetail from "./EventDetail";
 import ListRefund from "./ListRefund";
+import UpdateEventDefault from "./UpdateEventDefault";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -124,7 +126,7 @@ export default function MiniDrawer() {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [menuData, setMenuData] = useState("dashboard");
   const [ticketData, setTicketData] = useState(null);
   const [eventDetail, setEventDetail] = useState(null);
@@ -369,39 +371,6 @@ export default function MiniDrawer() {
               />
             </ListItemButton>
           </ListItem>
-          {/* <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-            }}
-            onClick={() => setMenuData("notification")}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 50,
-                justifyContent: open ? "initial" : "center",
-                backgroundColor:
-                  menuData === "notification" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
-                margin: "5px 10px 5px 10px",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 1.5,
-                  justifyContent: "center",
-                }}
-              >
-                <NotificationsActiveIcon sx={styleIcon} />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ display: open ? "block" : "none" }}
-                primary="Notification"
-              />
-            </ListItemButton>
-          </ListItem> */}
           <ListItem
             disablePadding
             sx={{
@@ -435,7 +404,6 @@ export default function MiniDrawer() {
               />
             </ListItemButton>
           </ListItem>
-
           <Divider />
           <ListItem
             disablePadding
@@ -470,39 +438,6 @@ export default function MiniDrawer() {
               />
             </ListItemButton>
           </ListItem>
-          {/* <ListItem
-            disablePadding
-            sx={{
-              display: "block",
-            }}
-            onClick={() => setMenuData("bankAccount")}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 50,
-                justifyContent: open ? "initial" : "center",
-                backgroundColor:
-                  menuData === "bankAccount" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
-                margin: "5px 10px 5px 10px",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 1.5,
-                  justifyContent: "center",
-                }}
-              >
-                <CurrencyExchangeIcon sx={styleIcon} />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ display: open ? "block" : "none" }}
-                primary="Bank Account"
-              />
-            </ListItemButton>
-          </ListItem> */}
           <ListItem
             disablePadding
             sx={{
@@ -532,8 +467,8 @@ export default function MiniDrawer() {
                     <Badge
                       sx={{
                         position: "absolute",
-                        marginTop: "5px",
-                        marginLeft: "40px",
+                        marginTop: open ? "6%" : "10%",
+                        marginLeft: open ? "152%" : "70%",
                       }}
                       badgeContent={notificationRefund.length}
                       color="error"
@@ -619,7 +554,7 @@ export default function MiniDrawer() {
 
       <Grid
         className="box"
-        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}
+        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF", zIndex: 1, }}
       >
         <Box
           style={{
@@ -630,30 +565,28 @@ export default function MiniDrawer() {
           sx={{ flexGrow: 1, p: 3 }}
         >
           {menuData === "dashboard" && <DefaultDashboard />}
-          {menuData === "newEvent" && (
-            <NewEvent
-              onContinueClick={(data) => {
-                setTicketData(data);
-                setMenuData("create-ticket");
-              }}
-            />
-          )}
-
-          {menuData === "create-ticket" && (
-            <CreateTicket ticketData={ticketData} />
-          )}
-
+          {menuData === "newEvent" && <CreateEventDefault />}
           {menuData === "eventHistory" && (
             <EventHistory
-              onEventDetail={(data) => {
-                setEventDetail(data);
+            onEventDetail={(data, actionType) => {
+              setEventDetail(data);
+              if (actionType === "statistics") {
                 setMenuData("eventDetail");
+              } else {
+                setMenuData("updateEvent");
+              }
               }}
             />
           )}
           {menuData === "eventDetail" && (
             <EventDetail eventDetail={eventDetail} />
           )}
+
+          {menuData === "updateEvent" && (
+            <UpdateEventDefault eventDetail={eventDetail} />
+          )}
+
+
           {menuData === "checkinTicket" && <CheckinTicket CheckingTicket={eventCheckin} />}
           {menuData === "checkin" && (
             <ListEventToday onClickCheckin={(data) => {
