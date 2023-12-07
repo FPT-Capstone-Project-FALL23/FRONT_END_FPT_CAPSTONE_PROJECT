@@ -6,36 +6,39 @@ import TableList from "../../Components/Admin/Table/TableList";
 import { NAME_COLUMNS_ORGANIZAER } from "../../Assets/Constant/Admin/dataAdmin";
 import {
   CONTENT_BLOCK_ORGANIZATIONS,
-  NAME_ORGANIZER,
+  NAME_BLOCK_ORGANIZER,
   ORGANIZER,
   TITLE_BLOCK_ORGANIZATIONS,
 } from "../../Assets/Constant/Admin/constAdmin";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 
-function OrganizerPageAdmin() {
-  const [dataTableOrganizer, setDataTableOrganizer] = useState();
+function BlockOrganizerList() {
+  const [dataTableOrganizerBlock, setDataTableOrganizerBlock] = useState();
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
-  const [selectedDataEvent, setSelectedDataEvent] = useState(null);
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
 
   console.log(selected_id);
 
-  const getAllOrganizer = async () => {
+  const getAllOrganizerBlock = async () => {
     try {
-      const respones = await ApiAdmin.getAllOrganizers();
-      setDataTableOrganizer(respones.data);
-      console.log(respones.data);
+      const respones = await ApiAdmin.getListOrganizerBlock();
+      if (respones.status === true) {
+        setDataTableOrganizerBlock(respones.data);
+        console.log(respones);
+      } else {
+        console.log("error");
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getAllOrganizer();
+    getAllOrganizerBlock();
   }, []);
 
   const handleDetailClick = async (_idUser) => {
@@ -44,10 +47,8 @@ function OrganizerPageAdmin() {
       const respones = await ApiAdmin.getDetailOrganizer(id);
       console.log("respones", respones);
       if (respones) {
-        setSelectedOrganizer(respones.data.organizationalInformation);
-        setSelectedDataEvent(respones.data.organizationalEvents);
+        setSelectedOrganizer(respones.data);
         setOrganizerDetailOpen(true);
-        setIsDetail(true);
       }
     } catch (error) {
       console.log(error);
@@ -68,7 +69,7 @@ function OrganizerPageAdmin() {
       if (respones) {
         alert("oke");
         setOrganizerDetailOpen(false);
-        getAllOrganizer();
+        getAllOrganizerBlock();
       }
     } catch (error) {
       console.log(error);
@@ -89,7 +90,7 @@ function OrganizerPageAdmin() {
     },
     {
       name: "IsBlock",
-      icon: <LockIcon />,
+      icon: <LockOpenIcon />,
       color: "primary",
       onClick: (row) => handleClickShowConfirm(row?._id, row?.isBlocked),
     },
@@ -107,11 +108,11 @@ function OrganizerPageAdmin() {
               margin: "10px",
             }}>
             <Typography variant="h4" component="div">
-              {NAME_ORGANIZER}
+              {NAME_BLOCK_ORGANIZER}
             </Typography>
           </div>
           <TableList
-            dataTable={dataTableOrganizer}
+            dataTable={dataTableOrganizerBlock}
             selectedUser={selectedOrganizer}
             detailOpen={organizerDetailOpen}
             setDetailOpen={setOrganizerDetailOpen}
@@ -126,7 +127,6 @@ function OrganizerPageAdmin() {
             dialogTitle={TITLE_BLOCK_ORGANIZATIONS}
             dialogContent={CONTENT_BLOCK_ORGANIZATIONS}
             onConfirm={handleComfirmBlock}
-            selectedDataEvent={selectedDataEvent}
           />
         </Box>
       </Box>
@@ -134,4 +134,4 @@ function OrganizerPageAdmin() {
   );
 }
 
-export default OrganizerPageAdmin;
+export default BlockOrganizerList;

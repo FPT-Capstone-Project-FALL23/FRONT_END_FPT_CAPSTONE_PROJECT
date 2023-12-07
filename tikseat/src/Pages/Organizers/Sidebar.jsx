@@ -26,7 +26,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 import ListEventToday from "./ListEventToday";
 
@@ -121,8 +121,12 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+export const handleLogOut = (navigate) => {
+  window.localStorage.clear();
+  navigate("/login");
+};
+
 export default function MiniDrawer() {
-  
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const theme = useTheme();
@@ -132,19 +136,14 @@ export default function MiniDrawer() {
   const [eventDetail, setEventDetail] = useState(null);
   const [eventCheckin, setEventCheckin] = useState(null);
 
-  const [notifications, setNotifications] = useState([1,2]);
-  const [notificationRefund, setNotificationRefund] = useState([1,2]);
+  const [notifications, setNotifications] = useState([1, 2]);
+  const [notificationRefund, setNotificationRefund] = useState([1, 2]);
   const [openNotification, setOpenNotification] = useState(false);
 
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
     setOpen(false);
-  };
-
-  const handleLogOut = () => {
-    window.localStorage.clear();
-    navigate("/login");
   };
 
   const handleRead = () => {
@@ -155,7 +154,7 @@ export default function MiniDrawer() {
   const handleClickRefund = () => {
     setMenuData("listRefund");
     setNotificationRefund([]);
-  }
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -164,8 +163,7 @@ export default function MiniDrawer() {
         className="appbar"
         position="fixed"
         elevation={4}
-        sx={{ backgroundColor: "#ffffff", color: "black" }}
-      >
+        sx={{ backgroundColor: "#ffffff", color: "black" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
@@ -174,23 +172,20 @@ export default function MiniDrawer() {
               onClick={() => {
                 setOpen(!open);
               }}
-              edge="start"
-            >
+              edge="start">
               <MenuIcon />
             </IconButton>
             <Typography
               className="typrography"
               variant="h6"
               noWrap
-              component="div"
-            >
+              component="div">
               DASHBOARD
             </Typography>
           </Grid>
           <Grid
             className="welcome"
-            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}
-          >
+            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}>
             <Typography variant="h6" noWrap component="div">
               Welcome Back{" "}
               <span style={{ color: "yellow" }}>{dataInfo.organizer_name}</span>
@@ -201,8 +196,7 @@ export default function MiniDrawer() {
                   size="large"
                   aria-label="show 17 new notifications"
                   color="inherit"
-                  onClick={() => setOpenNotification(!openNotification)}
-                >
+                  onClick={() => setOpenNotification(!openNotification)}>
                   {notifications.length > 0 && (
                     <Badge
                       sx={{
@@ -224,8 +218,7 @@ export default function MiniDrawer() {
                 width: "60px",
                 borderRadius: "50%",
                 marginLeft: "20px",
-              }}
-            >
+              }}>
               <Avatar
                 sx={{ width: "100%", height: "100%" }}
                 alt="Remy Sharp"
@@ -246,8 +239,7 @@ export default function MiniDrawer() {
                 display: "flex",
                 flexDirection: "column",
                 padding: "10px",
-              }}
-            >
+              }}>
               {/* {notifications.map((n) => displayNotification(n))} */}
               aaaaaaa
               <Button onClick={handleRead}> Read</Button>
@@ -260,8 +252,7 @@ export default function MiniDrawer() {
         className="drawer"
         variant="permanent"
         open={open}
-        sx={{ backgroundColor: "#87C4FF" }}
-      >
+        sx={{ backgroundColor: "#87C4FF" }}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -277,8 +268,7 @@ export default function MiniDrawer() {
           <ListItem
             disablePadding
             sx={{ display: "block", border: "none" }}
-            onClick={() => setMenuData("dashboard")}
-          >
+            onClick={() => setMenuData("dashboard")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -288,15 +278,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <DashboardIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -310,8 +298,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("newEvent")}
-          >
+            onClick={() => setMenuData("newEvent")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -321,15 +308,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <AddCircleIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -343,8 +328,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("eventHistory")}
-          >
+            onClick={() => setMenuData("eventHistory")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -354,15 +338,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <WorkHistoryIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -376,8 +358,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("checkin")}
-          >
+            onClick={() => setMenuData("checkin")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -387,15 +368,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <QrCodeScannerIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -410,8 +389,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("profile")}
-          >
+            onClick={() => setMenuData("profile")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -421,15 +399,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <AssignmentIndIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -443,8 +419,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => handleClickRefund()}
-          >
+            onClick={() => handleClickRefund()}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -454,15 +429,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 {notificationRefund.length > 0 && (
                     <Badge
                       sx={{
@@ -487,8 +460,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("changePass")}
-          >
+            onClick={() => setMenuData("changePass")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -498,15 +470,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <VpnKeyIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -520,8 +490,7 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => handleLogOut()}
-          >
+            onClick={() => handleLogOut(navigate)}>
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -531,15 +500,13 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}
-            >
+              }}>
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}
-              >
+                }}>
                 <LogoutIcon sx={styleIcon} />
               </ListItemIcon>
 
@@ -562,8 +529,7 @@ export default function MiniDrawer() {
             backgroundColor: "#E0F4FF",
           }}
           component="main"
-          sx={{ flexGrow: 1, p: 3 }}
-        >
+          sx={{ flexGrow: 1, p: 3 }}>
           {menuData === "dashboard" && <DefaultDashboard />}
           {menuData === "newEvent" && <CreateEventDefault />}
           {menuData === "eventHistory" && (
@@ -581,25 +547,24 @@ export default function MiniDrawer() {
           {menuData === "eventDetail" && (
             <EventDetail eventDetail={eventDetail} />
           )}
-
           {menuData === "updateEvent" && (
             <UpdateEventDefault eventDetail={eventDetail} />
           )}
-
-
           {menuData === "checkinTicket" && <CheckinTicket CheckingTicket={eventCheckin} />}
+
           {menuData === "checkin" && (
-            <ListEventToday onClickCheckin={(data) => {
-              setEventCheckin(data);
-              setMenuData("checkinTicket")
-            }} />
+            <ListEventToday
+              onClickCheckin={(data) => {
+                setEventCheckin(data);
+                setMenuData("checkinTicket");
+              }}
+            />
           )}
           {menuData === "profile" && <ProfileOrganizers />}
           {menuData === "changePass" && <ChangePassword />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
           {menuData === "listRefund" && <ListRefund />}
           {menuData === "logOut" && <DefaultDashboard />}
-
         </Box>
       </Grid>
     </Box>

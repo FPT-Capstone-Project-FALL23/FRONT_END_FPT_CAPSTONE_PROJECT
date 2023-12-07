@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import("./Common/LoginPage"));
 const SignUp = lazy(() => import("./Common/SignUp"));
 const LayoutSign = lazy(() => import("../Components/Common/Layout/LayoutSign"));
 const MyTicket = lazy(() => import("./Client/MyTicket"));
+const RefundableTickets = lazy(() => import("./Client/RefundableTickets"));
 const PaymentComplated = lazy(() => import("./Client/PaymentComplated"));
 const HistoryPayment = lazy(() => import("./Client/HistoryPayment"));
 const ChooseAccess = lazy(() => import("./Common/ChooseAccess"));
@@ -45,7 +46,11 @@ function RoutePage() {
         <Route path="/dashboard" element={<Sidebar />}></Route>
 
         <Route element={<LayoutClient />}>
-          <Route path="/book-tickets/:id" element={<BookTickets />}></Route>
+          <Route path="/book-tickets/:id" element={<BookTickets />}></Route>{" "}
+          <Route
+            path="refundable_tickets"
+            element={<RefundableTickets />}
+          ></Route>
           <Route path="my_ticket" element={<MyTicket />}></Route>
           <Route path="my_history_payment" element={<HistoryPayment />}></Route>
           <Route path="payment_completed" element={<PaymentComplated />} />
@@ -62,8 +67,8 @@ function RoutePage() {
         <Route
           element={
             <LayoutSign itemLeft={6} itemRight={6} direction="row-reverse" />
-          }>
-          
+          }
+        >
           <Route path="/forgot-password" element={<ForgetPassword />}></Route>
         </Route>
         <Route path="/" element={<HomePage />}></Route>

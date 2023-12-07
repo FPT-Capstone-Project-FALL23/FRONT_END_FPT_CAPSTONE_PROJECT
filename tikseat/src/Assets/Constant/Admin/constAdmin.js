@@ -1,5 +1,7 @@
 export const NAME_CLIENT = "List Client";
 export const NAME_ORGANIZER = "List Organizer";
+export const NAME_BLOCK_ORGANIZER = "List of organizations that have been blocked";
+export const NAME_BLOCK_CLIENT = "List of clients that have been blocked";
 export const NAME_LIST_APPROVED_ORGANIZER = "List of Organizations that need approval";
 export const NAME_LIST_APPROVED_EVENT = "List of Event that need approval";
 export const LIST_NAME_CONTENT_DAILOG_ORGANIZER = ["Email: ", "Phone: ", "Founded Date: ", "Website: ", "Address: ", "Organizer Type: ", "Status: ", "Description: "];
@@ -19,3 +21,5 @@ export const TOTAL_AMOUNT_SOLD = "Total Amount Sold"
 export const TOTAL_ADMIN_EARNINGS = "Total Income Of The Administrator"
 export const TOTAL_MONEY_REFUND = "Total Money Refund"
 export const TOTAL_ADMIN_EAR_REFUND = "Total Admin Refund Amount"
+export const TITLE_BLOCK_ORGANIZATIONS = "Block Organizations";
+export const CONTENT_BLOCK_ORGANIZATIONS = "Do you want to block this organization";

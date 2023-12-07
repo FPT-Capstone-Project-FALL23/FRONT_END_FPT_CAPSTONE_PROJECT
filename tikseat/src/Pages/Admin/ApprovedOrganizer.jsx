@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Avatar, Box, Chip, Typography } from "@mui/material";
 import "../../Assets/CSS/Admin/PageAdmin.css";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
 import TableList from "../../Components/Admin/Table/TableList";
@@ -9,6 +9,7 @@ import {
   NAME_LIST_APPROVED_ORGANIZER,
   TITLE_CONFIRM_APPROVAL_ORGANIZATIONS,
 } from "../../Assets/Constant/Admin/constAdmin";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 function ApprovedOrganizer() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
@@ -48,18 +49,46 @@ function ApprovedOrganizer() {
     }
   };
 
+  const cellComponentsOrganizerIsFalse = {
+    organizer_type: (tags) => (
+      <div>
+        {tags?.map((tag) => (
+          <Chip variant="outlined" color="primary" key={tag} label={tag} />
+        ))}
+      </div>
+    ),
+    avatarImage: (avatarUrl) => <Avatar src={avatarUrl} />,
+  };
+
+  const actionOrganizerIsFalse = [
+    {
+      name: "IsActive",
+      icon: <CheckCircleIcon />,
+      color: "primary",
+      onClick: (row) => handleClickShowComfirn(row?._id),
+    },
+  ];
+
   return (
     <>
-      <Box height={70} />
       <Box sx={{ display: "flex" }}>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "10px",
+            }}>
+            <Typography variant="h4" component="div">
+              {NAME_LIST_APPROVED_ORGANIZER}
+            </Typography>
+          </div>
           <TableList
             dataTable={dataTableOrganizer}
             nameColumns={NAME_COLUMNS_APPROVED_OGANIZAER}
-            nameList={NAME_LIST_APPROVED_ORGANIZER}
             isClient={false}
             isDetail={false}
-            handleClick={handleClickShowComfirn}
             setDetailOpen={setOpenComfirn}
             detailOpen={openComfirn}
             selectedUser={selected_id}
@@ -67,6 +96,8 @@ function ApprovedOrganizer() {
             isMaxWith={false}
             dialogTitle={TITLE_CONFIRM_APPROVAL_ORGANIZATIONS}
             dialogContent={CONTENT_CONFIRM_APPROVAL_ORGANIZATIONS}
+            cellComponents={cellComponentsOrganizerIsFalse}
+            actions={actionOrganizerIsFalse}
           />
         </Box>
       </Box>

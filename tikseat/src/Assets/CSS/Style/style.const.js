@@ -221,8 +221,8 @@ export const AppBarStyle = styled(AppBar)`
 export const ButtonLoginStyle = styled(Link)`
   padding: 10px 30px;
   border-radius: 50px;
-  border: 1px solid ${colorWhite};
-  color: ${colorWhite};
+  border: 1px solid ${(props) => props.color};
+  color: ${(props) => props.color};
   line-height: 21px;
 `;
 

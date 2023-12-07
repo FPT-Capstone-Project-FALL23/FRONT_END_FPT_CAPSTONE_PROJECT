@@ -16,11 +16,16 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
-import { getLocalStorageUserInfo, getLocalStorageUserData } from "../../Store/userStore";
+import {
+  getLocalStorageUserInfo,
+  getLocalStorageUserData,
+} from "../../Store/userStore";
 import Checkbox from "@mui/material/Checkbox";
 import { toast } from "react-toastify";
 import { createPortal } from "react-dom";
-import Rating from '@mui/material/Rating';
+import Rating from "@mui/material/Rating";
+
+import { ToastContainer } from "react-toastify";
 const style = {
   position: "absolute",
   top: "50%",
@@ -74,6 +79,7 @@ const MyTicket = () => {
       return !item.isRefund;
     });
     const [rating, setRating] = useState(0);
+    const [openRating, setOpenRating] = useState(false);
     const [ratingSent, setRatingSent] = useState(false);
     const [apiRating, setApiRating] = useState(null);
     const [dataRow, setDataRow] = useState(checkRefund);
@@ -98,9 +104,14 @@ const MyTicket = () => {
       document.body.removeChild(link);
     };
 
+    const eventDate = new Date(row.eventDate);
+    const currentDate = new Date();
+
+    const isEnded = currentDate > eventDate;
+
     useEffect(() => {
       // Lấy số sao đánh giá từ localStorage khi component được mount
-      const isRated = localStorage.getItem(`rating_${row.eventId}`) === 'rated';
+      const isRated = localStorage.getItem(`rating_${row.eventId}`) === "rated";
       const storedRating = localStorage.getItem(`rating_${row.eventId}_value`);
       setRatingSent(isRated);
       setApiRating(storedRating); // Sử dụng giá trị lưu trữ từ localStorage nếu có
@@ -110,23 +121,24 @@ const MyTicket = () => {
       const eventId = row.eventId;
       const userId = dataUser._id;
       console.log(eventId, userId);
-  
-      try {
-          const response = await ApiClient.rating({
-              eventId,
-              userId,
-              star: rating, 
-          });
-          console.log(response);
-          // Lưu trạng thái đã đánh giá và số sao đánh giá vào localStorage
-          localStorage.setItem(`rating_${eventId}`, 'rated');
-          localStorage.setItem(`rating_${eventId}_value`, rating);
 
-          // Cập nhật state để đánh dấu là đã gửi đánh giá thành công
-          setRatingSent(true);
-          setApiRating(rating); // Cập nhật số sao từ API
+      try {
+        const response = await ApiClient.rating({
+          eventId,
+          userId,
+          star: rating,
+        });
+        console.log(response);
+        toast.success("Đánh giá thành công!");
+        // Lưu trạng thái đã đánh giá và số sao đánh giá vào localStorage
+        localStorage.setItem(`rating_${eventId}`, "rated");
+        localStorage.setItem(`rating_${eventId}_value`, rating);
+
+        // Cập nhật state để đánh dấu là đã gửi đánh giá thành công
+        setRatingSent(true);
+        setApiRating(rating); // Cập nhật số sao từ API
       } catch (error) {
-          console.error('Lỗi khi gửi xếp hạng:', error);
+        console.error("Lỗi khi gửi xếp hạng:", error);
       }
     };
 
@@ -211,24 +223,64 @@ const MyTicket = () => {
               >
                 {open ? "collapse" : "Show more"}
               </Button>
-              {
-                !ratingSent && new Date() > new Date(row.eventDate) ? (
-                <React.Fragment>
-                <Rating 
-                  value={rating}
-                  onChange={(event, newValue) => setRating(newValue)}
-                />
-                <Button variant="contained" onClick={handleSendRating}>
-                  Send
-                </Button>
-                </React.Fragment>
-                ) : ratingSent ? (
-                <Rating 
-                  value={apiRating} 
-                  readOnly 
-                />
-                ) : null
-              }
+              <>
+                {(isEnded && !ratingSent) || (isEnded && ratingSent) ? (
+                  <Button
+                    variant="outlined"
+                    onClick={() => setOpenRating(true)}
+                  >
+                    Vote
+                  </Button>
+                ) : null}
+
+                <Modal open={openRating} onClose={() => setOpenRating(false)}>
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: 400,
+                      bgcolor: "background.paper",
+                      border: "2px solid #000",
+                      boxShadow: 24,
+                      p: 4,
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Typography variant="h6">
+                      Đánh giá sự kiện: {row.eventName}
+                    </Typography>
+
+                    {ratingSent ? (
+                      <Rating value={apiRating} readOnly />
+                    ) : (
+                      <>
+                        <Rating
+                          onChange={(e, newRating) => setRating(newRating)}
+                        />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                          }}
+                        ></Box>
+                        <Button
+                          style={{ alignSelf: "flex-end" }}
+                          onClick={handleSendRating}
+                        >
+                          Gửi đánh giá
+                        </Button>
+                      </>
+                    )}
+
+                    {/* <Button style={{ alignSelf: 'flex-end' }} onClick={handleSendRating}>
+          Gửi đánh giá
+        </Button> */}
+                  </Box>
+                </Modal>
+              </>
+
               <Button
                 variant="outlined"
                 color="error"
@@ -272,7 +324,9 @@ const MyTicket = () => {
                     {row?.ViewDetail?.length > 0 &&
                       row.ViewDetail?.map((ViewDetailRow, index) => {
                         //console.log("ViewDetailRow: ", ViewDetailRow);
-
+                        if (ViewDetailRow?.isRefund) {
+                          return null;
+                        }
                         return (
                           <TableRow checkboxSelection key={ViewDetailRow._id}>
                             <TableCell component="th" scope="row">
@@ -532,24 +586,37 @@ const MyTicket = () => {
   }
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Event Name</TableCell>
-            <TableCell align="left">Event Date</TableCell>
-            <TableCell align="left">City</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {mappingDataMyTicket?.length > 0 &&
-            mappingDataMyTicket.map((row, index) => (
-              <Row key={index} row={row} />
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Event Name</TableCell>
+              <TableCell align="left">Event Date</TableCell>
+              <TableCell align="left">City</TableCell>
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {mappingDataMyTicket?.length > 0 &&
+              mappingDataMyTicket.map((row, index) => (
+                <Row key={index} row={row} />
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+    </>
   );
 };
 

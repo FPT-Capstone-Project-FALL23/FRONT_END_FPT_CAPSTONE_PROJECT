@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import CircularProgress from "@mui/material/CircularProgress";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import {
   CONTENT_CONFIRM_REFUND_USER,
   TITLE_CONFIRM_REFUND_USER,
@@ -13,14 +13,12 @@ import { CardTransactions, TableTransactions } from "./PurchaseList";
 import { NAME_COLUMNS_REFUND } from "../../Assets/Constant/Admin/dataAdmin";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
 import DialogComponent from "../../Components/Admin/Dialog/DialogDetail";
+import TableList from "../../Components/Admin/Table/TableList";
 
 function RefundList() {
   const [totalTransactions, setTotalTransactions] = useState();
   const [totalRefundAmount, setTotalRefundmount] = useState();
   const [dataTable, setDataTable] = useState();
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openComfirn, setOpenComfirn] = useState(false);
   const [selected_id, setSelected_id] = useState();
 
@@ -39,32 +37,13 @@ function RefundList() {
 
   useEffect(() => {
     getAllIsRefund();
-    // Simulate a 10-second loading delay
-    const delay = setTimeout(() => {
-      setLoading(false);
-    }, 2500);
-
-    return () => clearTimeout(delay);
   }, []);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   const handleClickShowComfirn = async (_idRefund) => {
     const id = { _idRefund: _idRefund };
     console.log("_idRefund", _idRefund);
     setSelected_id(id);
     setOpenComfirn(true);
-  };
-
-  const handlDetailClose = () => {
-    setOpenComfirn(false);
   };
 
   const handleConfrim = async () => {
@@ -81,9 +60,18 @@ function RefundList() {
     }
   };
 
+  const actionRefund = [
+    {
+      name: "IsCheck",
+      icon: <PriceCheckIcon />,
+      color: "primary",
+      onClick: (row) => handleClickShowComfirn(row?._id),
+    },
+  ];
+
   return (
     <>
-      <Box sx={{ display: "flex" }}></Box>
+      <Box sx={{ display: "flex" }} />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}></Box>
       <div
         style={{
@@ -94,58 +82,34 @@ function RefundList() {
           {TITLE_REFUND}
         </Typography>
       </div>
-      {loading ? (
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}>
-          <CircularProgress size={64} />
-        </Box>
-      ) : (
-        <>
-          <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <CardTransactions
-                  nameSubtitle={TOTAL_TRANSACTIONS}
-                  total={totalTransactions}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <CardTransactions
-                  nameSubtitle={TOTAL_REFUND_AMOUNT}
-                  total={totalRefundAmount}
-                />
-              </Grid>
-            </Grid>
-          </Box>
-          <Box sx={{ marginTop: "10px" }}>
-            <TableTransactions
-              nameColumns={NAME_COLUMNS_REFUND}
-              dataTable={dataTable}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              handleChangePage={handleChangePage}
-              handleChangeRowsPerPage={handleChangeRowsPerPage}
-              isAction={true}
-              handClick={handleClickShowComfirn}
-            />
-            <DialogComponent
-              open={openComfirn}
-              isDetail={false}
-              isClient={false}
-              onClose={handlDetailClose}
-              dialogTitle={TITLE_CONFIRM_REFUND_USER}
-              dialogContent={CONTENT_CONFIRM_REFUND_USER}
-              isConfirmEvent={false}
-              onConfirm={handleConfrim}
-            />
-          </Box>
-        </>
-      )}
+      <Grid container spacing={2} sx={{ marginBottom: "15px" }}>
+        <Grid item xs={6}>
+          <CardTransactions
+            nameSubtitle={TOTAL_TRANSACTIONS}
+            total={totalTransactions}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <CardTransactions
+            nameSubtitle={TOTAL_REFUND_AMOUNT}
+            total={totalRefundAmount}
+          />
+        </Grid>
+      </Grid>
+      <Box sx={{ marginTop: "10px" }}>
+        <TableList
+          dataTable={dataTable}
+          nameColumns={NAME_COLUMNS_REFUND}
+          actions={actionRefund}
+          detailOpen={openComfirn}
+          isDetail={false}
+          isClient={false}
+          dialogTitle={TITLE_CONFIRM_REFUND_USER}
+          dialogContent={CONTENT_CONFIRM_REFUND_USER}
+          isConfirmEvent={false}
+          onConfirm={handleConfrim}
+        />
+      </Box>
     </>
   );
 }
