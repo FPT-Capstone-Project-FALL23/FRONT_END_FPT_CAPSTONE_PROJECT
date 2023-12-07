@@ -162,14 +162,12 @@ function ProfileOrganizers() {
     description: dataInfo?.description || "",
     founded_date: today || "",
     address: {
-      city: selectCity ? selectCity?.name : "",
-      district: selectDistrict ? selectDistrict?.name : "",
-      ward: selectWard ? selectWard?.name : "",
+      city: selectCity || "",
+      district: selectDistrict || "",
+      ward: selectWard || "",
       specific_address: specificAddress || "",
     },
   });
-
-  console.log(organizerInfo);
 
   const theme = useTheme();
   const fileInputRef = useRef(null);
@@ -190,21 +188,16 @@ function ProfileOrganizers() {
     setOrganizerInfo((prevOrganizerInfo) => ({
       ...prevOrganizerInfo,
       address: {
-        city: selectCity.name || dataInfo?.address?.city || selectCity?.name,
-        district:
-          selectDistrict.name ||
-          dataInfo?.address?.district ||
-          selectDistrict?.name,
-        ward: selectWard.name || dataInfo?.address?.ward || selectWard?.name,
-        specific_address: dataInfo?.address?.specific_address || "",
+        city: selectCity?.name || "",
+        district: selectDistrict?.name || "",
+        ward: selectWard?.name || "",
+        specific_address: specificAddress || "",
       },
     }));
-  }, [selectCity, selectDistrict, selectWard]);
+  }, [selectCity, selectDistrict, selectWard, specificAddress]);
   console.log(organizerInfo);
 
   const handleInputChange = (name, value) => {
-    // const { name, value } = event.target;
-    // Sử dụng spread operator để cập nhật state mà không làm thay đổi các thuộc tính khác
     setOrganizerInfo({
       ...organizerInfo,
       [name]: value,
@@ -326,8 +319,14 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid style={{backgroundColor:"#ffffff", borderRadius:"10px"}}>
-        <Grid style={{ display: "flex", justifyContent: "center", paddingTop:"30px" }}>
+      <Grid style={{ backgroundColor: "#ffffff", borderRadius: "10px" }}>
+        <Grid
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            paddingTop: "30px",
+          }}
+        >
           <h1>Profile Organizer</h1>
         </Grid>
         <FormSubmit
@@ -599,7 +598,7 @@ function ProfileOrganizers() {
               bottom: "10px",
             }}
           >
-            <Stack style={{ width: "50%", marginBottom:"20px" }}>
+            <Stack style={{ width: "50%", marginBottom: "20px" }}>
               <ButtonCustom
                 color="black"
                 content="Update account"

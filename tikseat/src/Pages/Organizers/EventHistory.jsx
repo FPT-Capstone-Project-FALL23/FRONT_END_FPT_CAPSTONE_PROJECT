@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import EditIcon from "@mui/icons-material/Edit";
 import ApiEvent from "../../API/Event/ApiEvent";
 import {
   // getLocalStorageUserData,
@@ -44,7 +45,7 @@ function EventHistory({ onEventDetail }) {
   const [eventHistory, setEventHistory] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
-  console.log(page);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const dataEventHistory = async () => {
@@ -67,20 +68,20 @@ function EventHistory({ onEventDetail }) {
     dataEventHistory();
   }, [page]);
 
-  console.log(eventHistory);
-
   const handleChange = (event, value) => {
     setPage(value);
   };
 
-  const handleEventDetail = (row) => {
-    onEventDetail(row);
+  const handleEventDetail = (row, actionType) => {
+    setSelectedEvent(row);
+    onEventDetail(row, actionType);
   };
+
   return (
     <>
       <TableContainer
         sx={{
-          height: "600px",
+          height: "85vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -117,13 +118,13 @@ function EventHistory({ onEventDetail }) {
                 <StyledTableCell component="th" scope="row">
                   {row.eventName}
                 </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                <Rating
-                name="customized-empty"
-                value={row.totalRating}
-                precision={0.5}
-                readOnly
-              />
+                <StyledTableCell align="center">
+                  <Rating
+                    name="customized-empty"
+                    value={row.totalRating}
+                    precision={0.5}
+                    readOnly
+                  />
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   {new Date(row.startDay).toLocaleString()}
@@ -141,7 +142,8 @@ function EventHistory({ onEventDetail }) {
                       display: "flex",
                       justifyContent: "center",
                       width: "100%",
-                      height: "80%",
+                      height: "100%",
+                      fontSize: "15px",
                     }}
                   >
                     <Grid
@@ -150,21 +152,15 @@ function EventHistory({ onEventDetail }) {
                         alignItems: "center",
                         justifyContent: "center",
                         height: "100%",
-                        width: "70%",
-                        borderRadius: "5px",
+                        width: "100%",
                         margin: "0px 10% 0px 10%",
+                        fontWeight: "500",
                         backgroundColor:
                           row.eventStatus === "UPCOMING"
                             ? "#A0E9FF"
                             : row.eventStatus === "FINISHED"
                             ? "#E49393"
                             : "#FFFD8C",
-                        boxShadow:
-                          row.eventStatus === "UPCOMING"
-                            ? "0px 0px 7px 5px #A0E9FF"
-                            : row.eventStatus === "FINISHED"
-                            ? "0px 0px 7px 5px #E49393"
-                            : "0px 0px 7px 5px #FFFD8C",
                       }}
                     >
                       {row.eventStatus}
@@ -177,34 +173,71 @@ function EventHistory({ onEventDetail }) {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      height: "80%",
+                      height: "100%",
+                      fontWeight: "500",
                       width: "100%",
-                      borderRadius: "5px",
                       backgroundColor: row.isActive ? "#A0E9FF" : "#E49393",
-                      boxShadow: row.isActive
-                        ? "0px 0px 7px 5px #A0E9FF"
-                        : "0px 0px 7px 5px #E49393",
                     }}
                   >
                     {row.isActive ? "approved" : "waiting"}
                   </Grid>
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Button
-                    style={{ border: "solid 1px" }}
-                    onClick={() => handleEventDetail(row)}
-                  >
-                    <span
+                <StyledTableCell
+                  align="center"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    padding: "12px",
+                  }}
+                >
+                  <Grid sx={{ width: "48%" }}>
+                    <Button
                       style={{
-                        fontSize: "16px",
-                        marginRight: "5px",
-                        paddingTop: "8px",
+                        border: "solid 1px",
+                        height: "100%",
+                        width: "90%",
                       }}
+                      onClick={() => handleEventDetail(row, "statistics")}
                     >
-                      Statistics
-                    </span>
-                    <LeaderboardIcon />
-                  </Button>
+                      <span
+                        style={{
+                          fontSize: "16px",
+                          marginRight: "5px",
+                          paddingTop: "8px",
+                        }}
+                      >
+                        Statistics
+                      </span>
+                      <LeaderboardIcon />
+                    </Button>
+                  </Grid>
+                  <Grid
+                    sx={{
+                      width: "48%",
+                      display:
+                        row.eventStatus !== "FINISHED" ? "block" : "none",
+                    }}
+                  >
+                    <Button
+                      style={{
+                        border: "solid 1px",
+                        width: "90%",
+                        height: "100%",
+                      }}
+                      onClick={() => handleEventDetail(row, "update")}
+                    >
+                      <span
+                        style={{
+                          fontSize: "16px",
+                          marginRight: "5px",
+                          paddingTop: "8px",
+                        }}
+                      >
+                        Update
+                      </span>
+                      <EditIcon />
+                    </Button>
+                  </Grid>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -214,7 +247,7 @@ function EventHistory({ onEventDetail }) {
           style={{
             display: "flex",
             justifyContent: "center",
-            padding: "8px",
+            padding: "11px",
             backgroundColor: "#ffffff",
             borderTop: "1px solid #ccc",
             position: "flxed",

@@ -47,6 +47,7 @@ function ListRefund() {
   const navigate = useNavigate();
   const dataInfo = getLocalStorageUserInfo();
   const [refunds, setRefunds] = useState([]);
+  console.log("aaaaaaa", refunds);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
 
@@ -57,8 +58,9 @@ function ListRefund() {
         page: page,
       });
       if (response.status === true) {
-        setRefunds(response.refund);
-        setTotalPage(response.totalPages);
+        setRefunds(response.data.results);
+        setTotalPage(response.data.totalPages);
+        console.log("data", response.data.results);
       } else {
         console.log("error!");
       }
@@ -70,6 +72,7 @@ function ListRefund() {
   useEffect(() => {
     listRefund();
   }, [page]);
+
   const handleAcceptRefund = async (row) => {
     console.log(row._id);
     try {
@@ -133,10 +136,10 @@ function ListRefund() {
                     {new Date(row.refund_date).toLocaleString()}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.tickets[0].classTicket}
+                    {row.classTicket}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.tickets.map((ticket) => ticket.chairName).join(", ")}
+                    {row.chair_name.join(", ")}
                   </StyledTableCell>
                   <StyledTableCell align="center">
                     {row.money_refund}
@@ -147,21 +150,14 @@ function ListRefund() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        height: "80%",
+                        height: "100%",
                         width: "100%",
-                        borderRadius: "5px",
                         backgroundColor:
                           row.refunded === true
                             ? "#A0E9FF"
                             : row.refunded === false
-                            ? "#E49393"
-                            : "#FFFD8C",
-                        boxShadow:
-                          row.refunded === true
-                            ? "0px 0px 7px 5px #A0E9FF"
-                            : row.refunded === false
-                            ? "0px 0px 7px 5px #E49393"
-                            : "0px 0px 7px 5px #FFFD8C",
+                              ? "#E49393"
+                              : "#FFFD8C",
                       }}
                     >
                       {row.refunded.toLocaleString()}

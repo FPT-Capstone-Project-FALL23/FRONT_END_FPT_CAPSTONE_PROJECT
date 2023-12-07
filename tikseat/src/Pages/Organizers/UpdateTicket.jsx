@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 import {
   Grid,
   Button,
@@ -31,11 +32,8 @@ import {
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 
-
 export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
-  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
   const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const reader = new FileReader();
@@ -46,7 +44,7 @@ export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
   }
 };
 
-const CreateTicket = () => {
+function UpdateTicket({ event }) {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
 
@@ -56,25 +54,57 @@ const CreateTicket = () => {
   }
   // Sự kiện storage sẽ được kích hoạt mỗi khi có thay đổi trong localStorage
   window.addEventListener("storage", (event) => {
-    if (event.key === "eventInfo") {
+    if (event.key === "ticketInfo") {
       updateDataEventInfo();
     }
   });
   // Khởi tạo dataEventInfo ban đầu
   let dataEventInfo = getLocalStorageEventInfo();
 
+  function updateDataEventInfo() {
+    const newDataTicketInfo = getLocalStorageTicketInfo();
+    dataTicket = newDataTicketInfo;
+  }
+  // Sự kiện storage sẽ được kích hoạt mỗi khi có thay đổi trong localStorage
+  window.addEventListener("storage", (event) => {
+    if (event.key === "eventInfo") {
+      updateDataEventInfo();
+    }
+  });
+  let dataTicket = getLocalStorageTicketInfo();
+
   const navigate = useNavigate();
 
   const alphabet = "ABCDEFGHIJKLMNOPQRST".split("");
-  const [selectedFile, setSelectedFile] = useState("");
-  const fileInputRef = useRef("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
   const today = new Date().toISOString().slice(0, 10);
-  const [typeLayout, setTypeLayout] = useState();
+  const [typeLayout, setTypeLayout] = useState(dataTicket?.type_layout || null);
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
   const organizerId = dataInfo._id;
   const organizerName = dataInfo.organizer_name;
+
+  useEffect(() => {
+    socket?.emit("organizerId", organizerId);
+  }, [socket, organizerId]);
+
+  const handleNewEvent = () => {
+    console.log("ran 1st");
+    socket.emit("new_event", {
+      senderName: organizerName,
+      receiverName: "6544b5f73dd2f66548b5d85a",
+    });
+  };
+
+  const handleIconClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const [maxTicket, setMaxTicket] = useState(
+    dataTicket?.maxTicketInOrder || "5"
+  );
 
   function formatNumber(n) {
     // Check if n is a string
@@ -94,55 +124,46 @@ const CreateTicket = () => {
     }
   }
 
-  useEffect(() => {
-    console.log("1")
-    socket?.emit("organizerId", organizerId);
-  }, [socket, organizerId]);
+  const defaultEventDate = dataTicket.event_date.map((eventDate) => {
+    const trimmedDateEvent = moment(eventDate.dateEvent).format(
+      "YYYY-MM-DDTkk:mm"
+    );
+    return {
+      date_number: eventDate.date_number,
+      dateEvent: trimmedDateEvent,
+      tickets: eventDate.event_areas.map((ticket) => {
+        return {
+          id_ticket: ticket.id_areas,
+          name_ticket: ticket.name_areas,
+          total_row: ticket.total_row,
+          ticket_price: ticket.ticket_price,
+          rows: ticket.rows.map((row) => {
+            return {
+              row_name: row.row_name,
+              total_seat: row.total_chair,
+            };
+          }),
+        };
+      }),
+    };
+  });
+  const [eventDate, setEventDate] = useState(defaultEventDate);
 
-  const handleNewEvent = () => {
-    socket.emit("new_event", {
-      senderName: organizerName,
-      receiverName: "6544b5f73dd2f66548b5d85a",
-    });
-  };
+  const startSaleDate = new Date(dataTicket?.sales_date?.start_sales_date);
+  const endSaleDate = new Date(dataTicket?.sales_date?.end_sales_date);
 
-  const handleIconClick = () => {
-    // Kích hoạt sự kiện click trên thẻ input
-    fileInputRef.current.click();
-  };
-
-  const [maxTicket, setMaxTicket] = useState("5");
-  const [eventDate, setEventDate] = useState([
-    {
-      date_number: 1,
-      dateEvent: "",
-      tickets: [
-        {
-          id: Date.now(),
-          name_ticket: "",
-          total_row: "",
-          ticket_price: "",
-          rows: [
-            {
-              row_name: "",
-              total_seat: "",
-            },
-          ],
-        },
-      ],
-    },
-  ]);
-
+  const startSale = startSaleDate.toISOString().split("T")[0];
+  const endSale = endSaleDate.toISOString().split("T")[0];
   const [saleDate, setSaleDate] = useState({
-    startSaleDate: today,
-    endSaleDate: today,
+    startSaleDate: startSale || today,
+    endSaleDate: endSale || today,
   });
 
   const [eventInfo, setEventInfo] = useState({
     event_name: dataEventInfo.event_name,
     type_of_event: dataEventInfo.type_of_event,
     eventImage: dataEventInfo.eventImage,
-    type_layout: "",
+    type_layout: typeLayout,
     event_description: dataEventInfo.event_description,
     maxTicketInOrder: maxTicket,
     sales_date: {
@@ -155,27 +176,26 @@ const CreateTicket = () => {
       ward: dataEventInfo.address.ward,
       specific_address: dataEventInfo.address.specific_address,
     },
-    event_date: [
-      {
-        date_number: "",
-        dateEvent: "",
-        event_areas: [
-          {
-            name_areas: "",
-            total_row: "",
-            ticket_price: "",
-            rows: [
-              {
-                row_name: "",
-                total_chair: "",
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    event_date: eventDate
+      ? eventDate.map((event) => ({
+          date_number: event.date_number,
+          dateEvent: event.dateEvent,
+          event_areas: event.tickets.map((area) => ({
+            id_areas: area.id_ticket,
+            name_areas: area.name_ticket,
+            total_row: area.total_row,
+            ticket_price: area.ticket_price,
+            rows: area.rows.map((row) => ({
+              row_name: row.row_name,
+              total_chair: row.total_seat,
+            })),
+          })),
+        }))
+      : [],
     isActive: false,
   });
+
+  console.log(eventInfo);
 
   const [eventInfoData, setEventInfoData] = useState({
     event_name: eventInfo.event_name,
@@ -213,7 +233,6 @@ const CreateTicket = () => {
   });
 
   useEffect(() => {
-    console.log("2")
     setEventInfoData((prevData) => ({
       ...prevData,
       event_name: eventInfo.event_name,
@@ -253,32 +272,11 @@ const CreateTicket = () => {
   console.log(eventInfoData);
 
   useEffect(() => {
-    console.log("3")
     setEventInfo((prevEvent) => ({
       ...prevEvent,
-      type_layout: typeLayout || "",
+      type_layout: typeLayout || null,
     }));
   }, [typeLayout]);
-
-  const updateDetailTicket = (update) => {
-    setEventInfo((prevEventInfo) => {
-      const updatedEventInfo = { ...prevEventInfo };
-      updatedEventInfo.event_date = update.map((form) => ({
-        date_number: form.date_number,
-        dateEvent: form.dateEvent,
-        event_areas: form.tickets.map((ticket) => ({
-          name_areas: ticket.name_ticket,
-          total_row: ticket.total_row,
-          ticket_price: ticket.ticket_price,
-          rows: ticket.rows.map((row) => ({
-            row_name: row.row_name,
-            total_chair: row.total_seat,
-          })),
-        })),
-      }));
-      return updatedEventInfo;
-    });
-  };
 
   const addForm = () => {
     const newForm = {
@@ -286,36 +284,78 @@ const CreateTicket = () => {
       dateEvent: "",
       tickets: [],
     };
+
     setEventDate((prevEventDate) => {
       const updatedEventDate = [...prevEventDate, newForm];
-      updateDetailTicket(updatedEventDate);
 
+      setEventInfo((prevEventInfo) => {
+        const updatedEventInfo = { ...prevEventInfo };
+        updatedEventInfo.event_date = updatedEventDate.map((form) => ({
+          date_number: form.date_number,
+          dateEvent: form.dateEvent,
+          event_areas: form.tickets.map((ticket) => ({
+            id_areas: ticket.id_ticket,
+            name_areas: ticket.name_ticket,
+            total_row: ticket.total_row,
+            ticket_price: ticket.ticket_price,
+            rows: ticket.rows.map((row) => ({
+              row_name: row.row_name,
+              total_chair: row.total_seat,
+            })),
+          })),
+        }));
+        return updatedEventInfo;
+      });
+
+      // Return the updatedEventDate to be set as the new state
       return updatedEventDate;
     });
   };
 
   const addTicket = (formId) => {
     setEventDate((prevEventDate) => {
-    const updatedEventDates = prevEventDate.map((form) => {
-      if (form.date_number === formId) {
-        const newTicket = {
-          id: Date.now(),
-          name_ticket: "",
-          total_row: "",
-          ticket_price: "",
-          rows: [],
-        };
-        return {
-          ...form,
-          tickets: [...form.tickets, newTicket],
-        };
-      } else {
-        return form;
-      }
+      const updatedEventDates = prevEventDate.map((form) => {
+        if (form.date_number === formId) {
+          const newTicket = {
+            id_ticket: Date.now(),
+            name_ticket: "",
+            total_row: "",
+            ticket_price: "",
+            rows: [],
+          };
+          return {
+            ...form,
+            tickets: [...form.tickets, newTicket],
+          };
+        } else {
+          return form;
+        }
+      });
+
+      setEventInfo((prevEventInfo) => {
+        const updatedEventInfo = { ...prevEventInfo };
+        updatedEventInfo.event_date = updatedEventDates.map((form) => ({
+          date_number: form.date_number,
+          dateEvent: form.dateEvent,
+          event_areas: Array.isArray(form.tickets)
+            ? form.tickets.map((ticket) => ({
+                id_areas: ticket.id_ticket,
+                name_areas: ticket.name_ticket,
+                total_row: ticket.total_row,
+                ticket_price: ticket.ticket_price,
+                rows: ticket.rows.map((row) => ({
+                  row_name: row.row_name,
+                  total_chair: row.total_seat,
+                })),
+              }))
+            : [],
+        }));
+
+        return updatedEventInfo;
+      });
+
+      return updatedEventDates;
     });
-    updateDetailTicket(updatedEventDates);
-    return updatedEventDates;
-  });
   };
 
   const removeForm = (formId) => {
@@ -323,23 +363,47 @@ const CreateTicket = () => {
       const updatedEventDate = prevEventDate.filter(
         (form) => form.date_number !== formId
       );
-      updateDetailTicket(updatedEventDate);
+
+      // Update eventInfo based on the updatedEventDate
+      setEventInfo((prevEventInfo) => {
+        const updatedEventInfo = { ...prevEventInfo };
+        updatedEventInfo.event_date = updatedEventDate.map((form) => ({
+          date_number: form.date_number,
+          dateEvent: form.dateEvent,
+          event_areas: form.tickets.map((ticket) => ({
+            id_areas: ticket.id_ticket,
+            name_areas: ticket.name_ticket,
+            total_row: ticket.total_row,
+            ticket_price: ticket.ticket_price,
+            rows: ticket.rows.map((row) => ({
+              row_name: row.row_name,
+              total_chair: row.total_seat,
+            })),
+          })),
+        }));
+        return updatedEventInfo;
+      });
+
       return updatedEventDate;
     });
   };
 
   const removeTicket = (ticketIdToRemove, formId) => {
-    setEventDate((prevFormData) => {
-      const updatedFormData = [...prevFormData];
-      updatedFormData.forEach((form) => {
-        if (form.date_number === formId && form.tickets) {
-          form.tickets = form.tickets.filter(
-            (formTicket) => formTicket.id !== ticketIdToRemove
+    setEventDate((prevEventDate) => {
+      const updatedEventDates = prevEventDate.map((form) => {
+        if (form.date_number === formId) {
+          const updatedTickets = form.tickets.filter(
+            (formTicket) => formTicket.id_ticket !== ticketIdToRemove
           );
+          return { ...form, tickets: updatedTickets };
+        } else {
+          return form;
         }
       });
-      updateDetailTicket(updatedFormData);
-      return updatedFormData;
+
+      updateDetailTicket(updatedEventDates);
+
+      return updatedEventDates;
     });
   };
 
@@ -348,7 +412,6 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    console.log("4")
     const updatedEventInfo = {
       ...eventInfo,
       sales_date: {
@@ -364,7 +427,6 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    console.log("5")
     const updatedEventInfo = {
       ...eventInfo,
       maxTicketInOrder: maxTicket,
@@ -377,6 +439,7 @@ const CreateTicket = () => {
       const updatedEventDates = prevEventDate.map((form) => {
         if (form.date_number === formId) {
           const newDate = event instanceof Date ? event : event.target.value;
+          console.log(newDate);
           return { ...form, dateEvent: newDate };
         } else {
           return form;
@@ -389,18 +452,40 @@ const CreateTicket = () => {
     });
   };
 
-  //Value Name Ticket
-  const handleNameTicketChange = (event, formId, ticketId) => {
+  const updateDetailTicket = (update) => {
+    setEventInfo((prevEventInfo) => {
+      const updatedEventInfo = { ...prevEventInfo };
+      updatedEventInfo.event_date = update.map((form) => ({
+        date_number: form.date_number,
+        dateEvent: form.dateEvent,
+        event_areas: form.tickets.map((ticket) => ({
+          id_areas: ticket.id_ticket,
+          name_areas: ticket.name_ticket,
+          total_row: ticket.total_row,
+          ticket_price: ticket.ticket_price,
+          rows: ticket.rows.map((row) => ({
+            row_name: row.row_name,
+            total_chair: row.total_seat,
+          })),
+        })),
+      }));
+      return updatedEventInfo;
+    });
+  };
+
+  const handleNameTicketChange = (e, formId, ticketId) => {
     setEventDate((prevEventDate) => {
       const updatedEventDates = prevEventDate.map((form) => {
         if (form.date_number === formId) {
           const updatedTickets = form.tickets.map((ticket) => {
-            if (ticket.id === ticketId) {
-              return { ...ticket, name_ticket: event.target.value };
+            console.log(ticket);
+            if (ticket.id_ticket === ticketId) {
+              return { ...ticket, name_ticket: e.target.value };
             } else {
               return ticket;
             }
           });
+
           return { ...form, tickets: updatedTickets };
         } else {
           return form;
@@ -412,13 +497,12 @@ const CreateTicket = () => {
     });
   };
 
-  //Value Price Ticket
   const handlePriceTicketChange = (event, formId, ticketId) => {
     setEventDate((prevEventDate) => {
       const updatedEventTicket = prevEventDate.map((form) => {
         if (form.date_number === formId) {
           const updatedTickets = form.tickets.map((ticket) => {
-            if (ticket.id === ticketId) {
+            if (ticket.id_ticket === ticketId) {
               return { ...ticket, ticket_price: event.target.value };
             } else {
               return ticket;
@@ -436,14 +520,13 @@ const CreateTicket = () => {
     });
   };
 
-  //Value Total Row
-  const handleTotalRowChange = (event, formId, ticketId) => {
+  const handleTotalRowChange = (e, formId, ticketId) => {
     setEventDate((prevEventDate) => {
       const updatedEventRows = prevEventDate.map((form) => {
         if (form.date_number === formId) {
           const updatedTickets = form.tickets.map((ticket) => {
-            if (ticket.id === ticketId) {
-              const rowChange = event.target.value;
+            if (ticket.id_ticket === ticketId) {
+              const rowChange = e.target.value;
               const totalRow = parseInt(rowChange, 10); // Chuyển TotalRow thành số nguyên
               const updatedRows = [];
               for (let i = 0; i < totalRow; i++) {
@@ -469,15 +552,15 @@ const CreateTicket = () => {
     });
   };
 
-  const handleSeatChange = (event, formId, ticketId, rowIndex) => {
+  const handleSeatChange = (e, formId, ticketId, rowIndex) => {
     setEventDate((prevEventDate) => {
       const updatedEventDates = prevEventDate.map((form) => {
         if (form.date_number === formId) {
           const updatedTickets = form.tickets.map((ticket) => {
-            if (ticket.id === ticketId) {
+            if (ticket.id_ticket === ticketId) {
               const updatedRows = ticket.rows.map((row, index) => {
                 if (index === rowIndex) {
-                  return { ...row, total_seat: event.target.value };
+                  return { ...row, total_seat: e.target.value };
                 }
                 return row;
               });
@@ -497,32 +580,34 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    console.log("6")
     setLocalStorageTicketInfo(eventInfo);
   }, [eventInfo]);
 
-  const callApiCreateEvent = async (_idOrganizer, eventInfo) => {
+  const callApiUpdateEvent = async (_idEvent, _idOrganizer, eventInfo) => {
     try {
-      const respont = await ApiEvent.createEvent({
-        _idOrganizer: organizerId,
+      const response = await ApiEvent.updateEvent({
+        _idEvent: _idEvent,
+        _idOrganizer: _idOrganizer,
         eventInfo: eventInfo,
       });
-      handleNewEvent();
-      toast.success("New Event success!", toastOptions);
-      navigate("/dashboard");
-      console.log(respont.status);
-      console.log(respont.data);
+
+      if (response.status === true) {
+        toast.success("Update Event success!", toastOptions);
+        handleNewEvent();
+        navigate("/dashboard");
+        console.log(response);
+      } else {
+      }
     } catch (error) {
       console.log(error);
       toast.error(error, toastOptions);
     }
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    callApiCreateEvent(organizerId, eventInfoData);
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    callApiUpdateEvent(event, organizerId, eventInfoData);
   };
-  console.log(eventInfo);
 
   return (
     <>
@@ -531,16 +616,18 @@ const CreateTicket = () => {
         style={{
           backgroundColor: "#ffffff",
           borderRadius: "10px",
-          padding: "30px",
+          padding: "0px 30px 30px 30px",
         }}
       >
         <FormSubmit onSubmit={handleFormSubmit}>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
-          <h3>{eventInfo.type_layout !== "" ? (
-            <OfflinePinIcon sx={{ color: "green", fontSize:"30px" , marginBottom:"-8px"  }} />
-          ) : (
-            <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px"  }} />
-          )}Add Photo Layout</h3>
+            <h3>
+            {eventInfo.type_layout !== "" ? (
+                <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px"  }} />
+              ) : (
+                <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px"  }} />
+              )}
+              Add Photo Layout</h3>
           </Grid>
           <Grid
             style={{
@@ -594,13 +681,13 @@ const CreateTicket = () => {
                 ) : (
                   <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
               )}
-                Add Information Ticket
-            </h3>
+              Add Information Ticket</h3>
           </Grid>
           <Grid
             style={{
               padding: "30px",
               border: "1px solid black",
+              // borderRadius: "5px",
               marginBottom: "20px",
               display: "flex",
               justifyContent: "space-between",
@@ -614,6 +701,7 @@ const CreateTicket = () => {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
+                  // borderRadius: "5px",
                   width: "100%",
                 }}
               >
@@ -624,7 +712,6 @@ const CreateTicket = () => {
                     name="maxTicket"
                     value={maxTicket}
                     setValue={handleMaxTicketChange}
-                    // onChange={(e) => setMaxTicket(e.target.value)}
                     label="Max Ticket In Order"
                   />
                 </Stack>
@@ -643,6 +730,7 @@ const CreateTicket = () => {
                   justifyContent: "space-between",
                   padding: "30px",
                   border: "1px solid black",
+                  // borderRadius: "5px",
                 }}
               >
                 <Stack style={{ width: "45%" }}>
@@ -677,7 +765,7 @@ const CreateTicket = () => {
           </Grid>
 
           <Grid fullWidth>
-            {eventDate?.map((form) => (
+            {eventInfo.event_date?.map((form) => (
               <Grid className="formEventDate" key={form.date_number}>
                 <Grid className="headerFormEventDate" fullWidth>
                   <p style={{ margin: "0px" }}>Event Date {form.date_number}</p>
@@ -703,11 +791,11 @@ const CreateTicket = () => {
                   >
                     <p style={{ display: "flex", alignItems: "center" }}>
                       {form.dateEvent !== "" ? (
-                      <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
+                        <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
                           ) : (
-                            <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
+                        <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
                         )}
-                        Date and time start &nbsp;&nbsp;
+                      Date and time start &nbsp;&nbsp;
                     </p>
                     <TextField
                       style={{ width: "50%" }}
@@ -722,20 +810,21 @@ const CreateTicket = () => {
                 </Grid>
 
                 {/* CREATE TICKET */}
-                {form.tickets?.map((formTicket) => (  
-                  <Grid className="formTicket" key={formTicket.id}>
+                
+                {form.event_areas?.map((formTicket) => (
+                  <Grid className="formTicket" key={formTicket.id_areas}>
                     <Grid className="formTicketTitle">
-                      <h3 style={{ margin: "0px" }}>
-                        {formTicket.name_ticket !== "" && formTicket.ticket_price !== "" 
+                    <h3 style={{ margin: "0px" }}>
+                      {formTicket.name_ticket !== "" && formTicket.ticket_price !== "" 
                         && formTicket.total_row !== "" 
                         && formTicket.rows.every(row => row.total_seat !== "") ? (
                           <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
                               ) : (
                                 <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
-                            )}
-                        Ticket Information
-                      </h3>
-                    </Grid>
+                      )}
+                      Ticket Information
+                    </h3>
+                  </Grid>
                     <Grid className="headerFormTicket" fullWidth>
                       <TextField
                         style={{
@@ -747,12 +836,12 @@ const CreateTicket = () => {
                         label="Name Ticket"
                         variant="filled"
                         name="name_ticket"
-                        value={formTicket.name_ticket}
+                        value={formTicket.name_areas}
                         onChange={(e) =>
                           handleNameTicketChange(
                             e,
                             form.date_number,
-                            formTicket.id
+                            formTicket.id_areas
                           )
                         }
                       />
@@ -763,7 +852,7 @@ const CreateTicket = () => {
                         }}
                         variant="contained"
                         onClick={() =>
-                          removeTicket(formTicket.id, form.date_number)
+                          removeTicket(formTicket.id_areas, form.date_number)
                         }
                       >
                         Delete Ticket
@@ -771,7 +860,7 @@ const CreateTicket = () => {
                     </Grid>
 
                     <Grid sx={{ display: "flex" }} fullWidth>
-                      <Grid className="bodyFormTicket" fullWidth>
+                      <Grid className="bodyFormTicket">
                         <Grid
                           className="boxTicket"
                           style={{
@@ -779,59 +868,68 @@ const CreateTicket = () => {
                           }}
                         >
                           <p>Price &nbsp;(VND)</p>
-                          <TextField
-                            style={{
-                              backgroundColor: "white",
-                              marginBottom: "10px",
-                              width: "80%",
-                            }}
-                            type="text"
-                            label=""
-                            variant="outlined"
-                            name="ticket_price"
-                            value={formatNumber(formTicket.ticket_price)}
-                            onChange={(e) =>
-                              handlePriceTicketChange(
-                                e,
-                                form.date_number,
-                                formTicket.id
-                              )
-                            }
-                          />
+                          <Grid
+                              className="boxTicket"
+                              style={{
+                                flexDirection: "column",
+                                border: "none",
+                              }}
+                            >
+                            <TextField
+                              style={{
+                                backgroundColor: "white",
+                              }}
+                              type="text"
+                              label=""
+                              variant="outlined"
+                              name="ticket_price"
+                              value={formatNumber(formTicket.ticket_price)}
+                              onChange={(e) =>
+                                handlePriceTicketChange(
+                                  e,
+                                  form.date_number,
+                                  formTicket.id_areas
+                                )
+                              }
+                            />
+                          </Grid>
                         </Grid>
+
                         <Grid
                           className="boxTicket"
                           style={{
                             flexDirection: "column",
                           }}
                         >
-                          <p>Total row less than or equal to 20 </p>
-                          <Grid
-                            className="boxTicket"
-                            style={{
-                              flexDirection: "column",
-                              border: "none",
-                            }}
-                          >
-                            <TextField
+                          <Grid>
+                            <p>Total row less than or equal to 20 </p>
+                            <Grid
+                              className="boxTicket"
                               style={{
-                                backgroundColor: "white",
-                                marginBottom: "10px",
-                                width: "80%",
+                                flexDirection: "column",
+                                border: "none",
                               }}
-                              type="text"
-                              label=""
-                              variant="outlined"
-                              name="total_row"
-                              value={formTicket.total_row}
-                              onChange={(e) =>
-                                handleTotalRowChange(
-                                  e,
-                                  form.date_number,
-                                  formTicket.id
-                                )
-                              }
-                            />
+                            >
+                              <TextField
+                                style={{
+                                  backgroundColor: "white",
+                                  marginBottom: "10px",
+                                  width: "80%",
+                                }}
+                                type="text"
+                                label=""
+                                variant="outlined"
+                                name="total_row"
+                                value={formTicket.total_row}
+                                onChange={(e) =>
+                                  handleTotalRowChange(
+                                    e,
+                                    form.date_number,
+                                    formTicket.id_areas
+                                  )
+                                }
+                              />
+                            </Grid>
                           </Grid>
                         </Grid>
                       </Grid>
@@ -872,12 +970,12 @@ const CreateTicket = () => {
                                 label=""
                                 variant="outlined"
                                 name="total_seat"
-                                value={row.total_seat} // Thêm value để hiển thị giá trị của seat
+                                value={row.total_chair}
                                 onChange={(e) =>
                                   handleSeatChange(
                                     e,
                                     form.date_number,
-                                    formTicket.id,
+                                    formTicket.id_areas,
                                     index
                                   )
                                 }
@@ -942,13 +1040,13 @@ const CreateTicket = () => {
               fullWidth
               type="submit"
             >
-              Create Event
+              Update Event
             </Button>
           </Grid>
         </FormSubmit>
       </Grid>
     </>
   );
-};
+}
 
-export default CreateTicket;
+export default UpdateTicket;
