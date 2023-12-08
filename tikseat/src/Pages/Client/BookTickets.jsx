@@ -21,6 +21,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import imageScreen from "../../Assets/Images/screen.png";
 import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
@@ -61,14 +62,15 @@ const BookTickets = () => {
   const navigate = useNavigate();
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  const [selectChair, setSelectChair] = useState([]);
+  const [selectChair, setSelectChair] = useState(
+    JSON.parse(localStorage.getItem("selectedSeats")) || []
+  );
+  console.log("selectChair root: ", selectChair);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   // const [checkDay, setCheckDay] = useState(1);
 
   const [countDown, setCountDown] = useState(false);
-  const [time, setTime] = useState(null);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+
   const [statusConfrim, setStatusConfrim] = useState(true);
 
   const [id, setId] = useState("");
@@ -76,7 +78,6 @@ const BookTickets = () => {
   const [socket, setSocket] = useState(null);
 
   const handlebookSeat = (item, seat, isCheckSelected, selectRow) => {
-
     if (!socket) {
       return;
     }
@@ -115,14 +116,14 @@ const BookTickets = () => {
         alert("This seat is already booked by others!");
         return;
       }
-      
+
       setSelectChair(selectChair?.filter((item) => item.seat !== seat));
-      socket?.emit("UNSELECT_SEAT", {
-        seat,
-        eventRowKey,
-        _idChairName: item._id,
-        ...item,
-      });
+      // socket?.emit("UNSELECT_SEAT", {
+      //   seat,
+      //   eventRowKey,
+      //   _idChairName: item._id,
+      //   ...item,
+      // });
     }
   };
 
@@ -151,7 +152,8 @@ const BookTickets = () => {
     socket.emit("join_booking_room", eventRowKey);
     socket.on("update_booking_room", (data) => {
       // console.log("update_booking_room: ", data);
-      setSelectChair(data);
+      // setSelectChair(data);
+      console.log("data:seat ", data);
     });
     return () => {
       setSocket(null);
@@ -163,27 +165,10 @@ const BookTickets = () => {
     };
   }, [idEvent, selectedItem]);
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setAge(event.target.value);
+  // };
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    if (!dataInfo) {
-      alert("Vui lòng đăng nhập để book chỗ");
-      return;
-    }
-    setOpen(true);
-    // socket.emit("listbooks", "");
-  };
-  const handleClose = () => {
-    setOpen(false);
-    setTime(null);
-    setSelectChair([]);
-    setSelectedItem(null);
-    if (socket) {
-      socket?.disconnect();
-    }
-  };
 
   useEffect(() => {
     async function getAllEvents() {
@@ -230,15 +215,9 @@ const BookTickets = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const totalByTicket = selectChair?.filter(
-    (item) =>
-      item.email ===
-      dataUser?.email
-  )
-  .reduce(
-    (accumulator, seat) => accumulator + seat.price,
-    0
-  );
+  const totalByTicket = selectChair
+    ?.filter((item) => item.email === dataUser?.email)
+    .reduce((accumulator, seat) => accumulator + seat.price, 0);
 
   // console.log("totalByTicket: ", totalByTicket);
   const [ticketBooker, setTicketBooker] = useState({
@@ -251,13 +230,10 @@ const BookTickets = () => {
   //call api create payment
   const handleBuyTickect = async (event) => {
     event.preventDefault();
-      try {
-        const listChairIds =  selectChair
-        .filter(
-          (item) =>
-            item.email ===
-            dataUser?.email
-        ).map((item) => item._id)
+    try {
+      const listChairIds = selectChair
+        .filter((item) => item.email === dataUser?.email)
+        .map((item) => item._id);
       const eventId = dataEventDetail._id;
       const requestData = {
         _idEvent: eventId,
@@ -277,31 +253,27 @@ const BookTickets = () => {
       alert(e.response.data.message);
     }
   };
-  const handleSelectChair = (item, selectRow, isCheckSelected) => {
-    if (!countDown) {
-      setTime(600);
-      setCountDown(true);
-    }
-  };
 
   const handleClickChair = async (item, selectRow, isCheckSelected, seat) => {
     handleSelectChair(item, selectRow, isCheckSelected);
     handlebookSeat(item, seat, isCheckSelected, selectRow);
   };
 
-  function checkStatusConfirm(selectChair, dataUser){
-    const checkEmail = selectChair.filter((item) => item.email === dataUser?.email)
-    
-    if(checkEmail.length > 0){
-      setStatusConfrim(false)
-    }else{
-      setStatusConfrim(true)
+  function checkStatusConfirm(selectChair, dataUser) {
+    const checkEmail = selectChair.filter(
+      (item) => item.email === dataUser?.email
+    );
+
+    if (checkEmail.length > 0) {
+      setStatusConfrim(false);
+    } else {
+      setStatusConfrim(true);
     }
   }
 
-  useEffect(()=>{
-    checkStatusConfirm(selectChair, dataUser)
-  },[selectChair])
+  useEffect(() => {
+    checkStatusConfirm(selectChair, dataUser);
+  }, [selectChair]);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -310,31 +282,30 @@ const BookTickets = () => {
     setOpenConfirm(false);
   };
 
-  useEffect(() => {
-    if (selectChair?.length === 0) {
-      setCountDown(false);
-      setTime(null);
-    }
-  }, [selectChair]);
+  const [time, setTime] = useState(
+    parseInt(localStorage.getItem("countdownTime")) || null
+  );
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
-  useEffect(() => {
-    if (!open) {
-      setSelectChair([]);
-      setCountDown(false);
-      setTime(null);
-    } else {
-      if (time === 0 && time !== null) {
-        setOpen(false);
-        setTime("Hết giờ rồi  mời book lại!");
-        socket.disconnect();
-      }
+  // Function to save countdown time to localStorage
+  const saveCountdownTimeToLocalStorage = (countdownTime) => {
+    localStorage.setItem("countdownTime", countdownTime);
+  };
+
+  // Hàm để khôi phục thời gian đếm ngược từ localStorage
+  const restoreCountdownTimeFromLocalStorage = () => {
+    const storedCountdownTime = localStorage.getItem("countdownTime");
+    if (storedCountdownTime && !time) {
+      setTime(parseInt(storedCountdownTime));
+      setCountDown(true);
     }
-  }, [open, time]);
+  };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (time > 0) {
-        setTime(time - 1);
+      if (countDown && time > 0) {
+        setTime((prevTime) => prevTime - 1);
         const min = Math.floor(time / 60);
         const sec = time % 60;
         setMinutes(min);
@@ -343,7 +314,107 @@ const BookTickets = () => {
     }, 1000);
 
     return () => clearInterval(intervalId);
+  }, [countDown, time]);
+
+  const handleClose = () => {
+    setOpen(false);
+    // setTime(null);
+    setSelectedItem(null);
+    if (socket) {
+      socket?.disconnect();
+    }
+  };
+
+  const handleOpen = () => {
+    if (!dataInfo) {
+      alert("Vui lòng đăng nhập để book chỗ");
+      return;
+    }
+    setOpen(true);
+    // socket.emit("listbooks", "");
+  };
+
+  const handleSelectChair = () => {
+    if (!countDown) {
+      if (selectChair.length <= 0) {
+        setTime(600);
+        setCountDown(true);
+        saveCountdownTimeToLocalStorage(600); // Save initial time to localStorage
+      } else {
+        restoreCountdownTimeFromLocalStorage();
+      }
+    }
+  };
+  useEffect(() => {
+    if (selectChair?.length === 0) {
+      restoreCountdownTimeFromLocalStorage(); // Restore time when no chairs are selected
+      setCountDown(false);
+    } else {
+      setCountDown(true);
+    }
+  }, [selectChair]);
+
+  useEffect(() => {
+    if (!open) {
+      setCountDown(false);
+      // setTime(null);
+    } else {
+      if (time === 0 && time !== null) {
+        setOpen(false);
+        setTime("Hết giờ rồi, mời book lại!");
+        socket.disconnect();
+      }
+    }
+  }, [open, time]);
+
+  useEffect(() => {
+    restoreCountdownTimeFromLocalStorage();
+
+    return () => {
+      saveCountdownTimeToLocalStorage(time);
+    };
+  }, []); // Run only once when the component is created
+
+  useEffect(() => {
+    saveCountdownTimeToLocalStorage(time);
   }, [time]);
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     if (time > 0) {
+  //       setTime(time - 1);
+  //       const min = Math.floor(time / 60);
+  //       const sec = time % 60;
+  //       setMinutes(min);
+  //       setSeconds(sec);
+  //     }
+  //   }, 1000);
+
+  //   return () => clearInterval(intervalId);
+  // }, [time]);
+
+  const saveSeatStateToLocalStorage = () => {
+    localStorage.setItem("selectedSeats", JSON.stringify(selectChair));
+    console.log("selectChair: ", selectChair);
+  };
+
+  // Hàm để khôi phục trạng thái ghế từ localStorage
+  const restoreSeatStateFromLocalStorage = () => {
+    const storedSeats = localStorage.getItem("selectedSeats");
+    console.log("storedSeats: ", storedSeats);
+    if (storedSeats) {
+      setSelectChair(JSON.parse(storedSeats));
+    }
+  };
+
+  useEffect(() => {
+    restoreSeatStateFromLocalStorage();
+    return () => {
+      saveSeatStateToLocalStorage();
+    };
+  }, []); // Chạy chỉ một lần khi component được tạo
+  useEffect(() => {
+    saveSeatStateToLocalStorage();
+  }, [selectChair]);
 
   // Đặt ngày và giờ diễn ra sự kiện
   const [timeLeft, setTimeLeft] = useState({
@@ -787,11 +858,14 @@ const BookTickets = () => {
                             alignItems={"center"}
                             style={{ background: "black", padding: "20px" }}
                           >
+                            <div style={{ margin: "auto", width: "80%" }}>
+                              <img src={imageScreen} alt="" srcset="" />
+                            </div>
                             <Box
                               component={"div"}
-                              height={"300px"}
+                              height={"250px"}
                               width={"80%"}
-                              style={{ overflow: "auto" }}
+                              style={{ overflow: "auto", marginTop: "30px" }}
                             >
                               <Stack direction={"column"} gap={"30px"}>
                                 {selectRows?.length > 0 &&
@@ -1089,9 +1163,7 @@ const BookTickets = () => {
                                 type="button"
                                 style={{
                                   background: `${
-                                    statusConfrim
-                                      ? "gray"
-                                      : "#bfad17"
+                                    statusConfrim ? "gray" : "#bfad17"
                                   }`,
                                   color: "white",
                                   fontWeight: "bold",
@@ -1144,11 +1216,11 @@ const BookTickets = () => {
                                             >
                                               {selectChair?.length > 0 &&
                                                 selectChair
-                                                .filter(
-                                                  (item) =>
-                                                    item.email ===
-                                                    dataUser?.email
-                                                )
+                                                  .filter(
+                                                    (item) =>
+                                                      item.email ===
+                                                      dataUser?.email
+                                                  )
                                                   .map((item) => {
                                                     return String(
                                                       item.chair_name

@@ -14,14 +14,13 @@ import {
   URL_CHECKIN,
   URL_ACCEPTREFUND,
   URL_GET_LIST_REFUND,
-  URL_GETDETAILEVENT,
 } from "../ConstAPI";
 
 const ApiEvent = {
   getListEventToday(data) {
     return axiosDefault.post(URL_LISTEVENTTODAY, data);
   },
-  checkIn(data) {
+  checkIn(data){
     return axiosDefault.post(URL_CHECKIN, data);
   },
   getTotalAllEvent(data) {
@@ -49,24 +48,23 @@ const ApiEvent = {
   createEvent(data) {
     return axiosDefault.post(URL_CREATEEVENT, data);
   },
-  getEventbyEventId(data) {
-    return axiosDefault.post(URL_GETDETAILEVENT, data);
-  },
+
   updateEvent(data) {
     return axiosDefault.post(URL_UPDATEEVENT, data);
   },
+
   eventHistory(data) {
     return axiosDefault.post(URL_EVENTHISTORY, data);
   },
   updateStatus(data) {
     return axiosDefault.post(URL_UPDATESTATUS, data);
   },
-  getListRefund(data) {
+  getListRefund(data){
     return axiosDefault.post(URL_GET_LIST_REFUND, data);
   },
-  acceptRefund(data) {
+  acceptRefund(data){
     return axiosDefault.post(URL_ACCEPTREFUND, data);
-  },
+  }
 };
 
 export default ApiEvent;
