@@ -70,6 +70,7 @@ const BookTickets = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [statusConfrim, setStatusConfrim] = useState(true);
+  
 
   const [id, setId] = useState("");
 
@@ -152,6 +153,7 @@ const BookTickets = () => {
     socket.on("update_booking_room", (data) => {
       // console.log("update_booking_room: ", data);
       setSelectChair(data);
+      // rerenderSeats();
     });
     return () => {
       setSocket(null);
@@ -185,6 +187,7 @@ const BookTickets = () => {
     }
   };
 
+ 
   useEffect(() => {
     async function getAllEvents() {
       const resEventData = await ApiClient.getAllEvents();
@@ -212,11 +215,11 @@ const BookTickets = () => {
 
   function handleSeatColor(item, isCheckSelected) {
     if (isCheckSelected) {
-      if (isCheckSelected.email === dataUser?.email) {
+      if (isCheckSelected.email === dataUser?.email ) {
         return "#ff15a0";
       }
       return "#BDBDBD";
-      // return "#ff15a0";
+      
     }
     if (item.isBuy) {
       return "#46494c";
@@ -249,6 +252,7 @@ const BookTickets = () => {
     total_ticket: totalByTicket,
   });
   //call api create payment
+  const opener = window;
   const handleBuyTickect = async (event) => {
     event.preventDefault();
       try {
@@ -264,11 +268,12 @@ const BookTickets = () => {
         chairIds: listChairIds,
         amount: totalByTicket,
       };
-
+      
       const response = await ApiClient.paymentTicket(requestData);
       if (response) {
         //chuyển trang qua trang của zalo
-        window.location.href = response.data.order_url;
+        // window.location.href = response.data.order_url;
+        window.open(response.data.order_url,'_blank','height=500,width=500', opener);
         handleCloseConfirm();
         setLocalStorageListChairId(listChairIds);
         setLocalStorageEventId(eventId);
@@ -330,6 +335,7 @@ const BookTickets = () => {
       }
     }
   }, [open, time]);
+  
 
   useEffect(() => {
     const intervalId = setInterval(() => {

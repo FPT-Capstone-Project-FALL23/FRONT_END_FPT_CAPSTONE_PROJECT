@@ -24,6 +24,7 @@ const PaymentComplated = () => {
   const [sendEmail, setSendEmail] = useState("block");
   const [changePage, setChangePage] = useState("/my_ticket");
   const [buttonChangePage, setButtonChangePage] = useState("Go To List");
+  
 
   var currentURL = window.location.href;
   var urlObject = new URL(currentURL);
@@ -73,6 +74,10 @@ const PaymentComplated = () => {
     }
   }, []);
 
+  // const handleClose = () => {
+  //   window.close();
+  // }
+  
   return (
     <div>
       <div
@@ -131,9 +136,14 @@ const PaymentComplated = () => {
               marginTop: "10px",
             }}
             to={changePage}
+            onClick={() => {
+              window.opener.location.reload();
+              window.close();
+            }}
           >
             {buttonChangePage}
           </Link>
+         
         </div>
       </div>
     </div>
