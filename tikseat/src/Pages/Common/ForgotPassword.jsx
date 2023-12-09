@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { toast } from "react-toastify";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import "react-toastify/dist/ReactToastify.css";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import {
   BACK_TO_LOGIN,
@@ -13,6 +15,8 @@ import {
   PageNameStyle,
   TitlePageStyle,
 } from "../../Assets/CSS/Style/style.const";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import { Grid, Button, TextField, IconButton, Stack } from "@mui/material";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,7 +25,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [callAPI, setCallAPI] = useState("verifyEmail");
-  const [showCode, setShowCode] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showRePass, setShowRePass] = useState(false);
   const [verifyCode, setVerifyCode] = useState("");
@@ -31,21 +34,26 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
 
     if (callAPI === "verifyEmail") {
       try {
+        setLoading(true)
         const response = await ApiCommon.forgotPassword({ email });
         console.log("data: ", response);
         if (response.status === true) {
+          setLoading(false);
           setCallAPI("verifyCode");
           setDisplayCode("block");
         } else {
-          console.log("Invalid email or other error!");
+          console.log("error")
         }
       } catch (error) {
+        setLoading(false);
+          toast.error("Invalid email or other error!", toastOptions);
         console.log("error: ", error);
       }
     } else if (callAPI === "verifyCode") {
@@ -64,6 +72,7 @@ const ForgotPassword = () => {
         }
       } catch (error) {
         console.log(error);
+        toast.error("Invalid code or other error!", toastOptions);
       }
     } else {
       try {
@@ -73,6 +82,7 @@ const ForgotPassword = () => {
         });
         if (response.status === true) {
           navigate("/login");
+          toast.success("Change Password successfully!", toastOptions);
         } else {
           console.log("error");
         }
@@ -111,26 +121,19 @@ const ForgotPassword = () => {
             label="Email"
           />
         </Grid>
+        <Grid sx={{ display: "flex", justifyContent:"center" }}>
+          <Box sx={{ display: loading === true ? "block" : "none" }}>
+            <CircularProgress />
+          </Box>
+        </Grid>
         <Grid sx={{ display: displayCode }}>
           <TextField
             fullWidth
-            type={showCode ? "text" : "password"}
+            type="code"
             onChange={(e) => setVerifyCode(e.target.value)}
             value={verifyCode === undefined ? "" : verifyCode}
             label="Enter Code"
           />
-          <IconButton
-            sx={{
-              float: "right",
-              marginTop: "-48px",
-              marginRight: "2px",
-            }}
-            aria-label="toggle password visibility"
-            onClick={() => setShowCode(!showCode)}
-            edge="end"
-          >
-            {showCode ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
           <Stack
             spacing={1}
             alignItems={"center"}
@@ -162,7 +165,7 @@ const ForgotPassword = () => {
               type={showPass ? "text" : "password"}
               onChange={(e) => setNewPassword(e.target.value)}
               value={newPassword === undefined ? "" : newPassword}
-              label="Enter Code"
+              label="New Password"
             />
             <IconButton
               sx={{
@@ -183,7 +186,7 @@ const ForgotPassword = () => {
               type={showRePass ? "text" : "password"}
               onChange={(e) => setConfirmPassword(e.target.value)}
               value={confirmPassword === undefined ? "" : confirmPassword}
-              label="Enter Code"
+              label="Confirm Password"
             />
             <IconButton
               sx={{

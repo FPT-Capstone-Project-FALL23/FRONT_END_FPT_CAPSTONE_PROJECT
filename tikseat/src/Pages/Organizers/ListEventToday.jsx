@@ -51,13 +51,6 @@ function ListEventToday({ onClickCheckin }) {
               eventName: event.event_name,
             }));
           });
-          // console.log(response);
-          // response.eventsToday.forEach(event => {
-          //   console.log(event.event_name)
-          //   // event.event_date.forEach(date => {
-          //   //   console.log(date.date);
-          //   // });
-          // });
         } else {
           console.log("error!");
         }
@@ -94,7 +87,7 @@ function ListEventToday({ onClickCheckin }) {
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   <Button onClick={() => handleEventToday(ev._id)}>
-                    Action
+                    Checkin now
                   </Button>
                 </StyledTableCell>
               </StyledTableRow>

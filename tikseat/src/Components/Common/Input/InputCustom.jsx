@@ -45,6 +45,12 @@ const InputCustom = ({
     return urlRegex.test(url);
   };
 
+  const validatePassword = (password) => {
+    // Regular expression to check for a valid URL format
+    const urlRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    return urlRegex.test(password);
+  };
+
   const handleChange = (e) => {
     const inputValue = e.target.value;
     let isValid = true;
@@ -59,6 +65,9 @@ const InputCustom = ({
         errorMessage = "Vietnam's phone number format is invalid.";
       } else if (type === "web") {
         isValid = validateWebURL(inputValue);
+        errorMessage = "Invalid web URL format";
+      }else if (type === "password") {
+        isValid = validatePassword(inputValue);
         errorMessage = "Invalid web URL format";
       }
     }
