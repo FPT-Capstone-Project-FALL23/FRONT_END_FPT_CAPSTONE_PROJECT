@@ -55,87 +55,90 @@ function EventDetail({ eventDetail }) {
 
   return (
     <>
-      <Grid
-        style={{
-          backgroundColor: "#ccc",
-          padding: "20px",
-          borderRadius: "10px 10px 0px 0px",
-          display:"flex",
-          justifyContent:"space-between",
-          alignItems:"center"
-        }}
-      >
-        <Typography variant="h4">
-          <span style={{ color: "yellow" }}>{eventDetail.eventName}</span>
-          {" "}event
-        </Typography>
-        <Typography variant="h5">
-          <span style={{ color: "black" }}>{formattedDate}</span>
-        </Typography>
-      </Grid>
-      <Grid
-        style={{
-          backgroundColor: "#ffffff",
-          borderRadius: "0px 0px 10px 10px",
-          padding: "30px",
-        }}
-      >
-        <Grid>
-          <TotalRevenueEvent eventTotalDetail={allDataEvent} />
+      <Grid sx={{border:"1px solid #ccc", borderRadius:"5px"}}>
+        <Grid
+          style={{
+            backgroundColor: "#ccc",
+            padding: "20px",
+            borderRadius: "5px 5px 0px 0px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h4">
+            <span style={{ color: "yellow" }}>{eventDetail.eventName}</span>{" "}
+            event
+          </Typography>
+          <Typography variant="h5">
+            <span style={{ color: "black" }}>{formattedDate}</span>
+          </Typography>
         </Grid>
         <Grid
           style={{
-            display: "flex",
-            marginTop: "30px",
-            justifyContent: "space-between",
+            borderRadius: "0px 0px 5px 5px",
+            padding: "30px",
           }}
         >
-          <Grid
-            style={{
-              height: "450px",
-              width: "55%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Grid
-              sx={{ border: "1px solid", borderRadius: "10px", width: "100%" }}
-            >
-              <BasicAreaEvent />
-            </Grid>
+          <Grid>
+            <TotalRevenueEvent eventTotalDetail={allDataEvent} />
           </Grid>
-
           <Grid
             style={{
-              height: "450px",
               display: "flex",
-              flexDirection: "column",
-              width: "40%",
+              marginTop: "30px",
+              justifyContent: "space-between",
             }}
           >
             <Grid
-              container
-              alignItems="center"
-              justifyContent="space-between"
-            ></Grid>
-            <Grid
               style={{
-                border: "1px solid",
-                borderRadius: "10px",
-                width: "100%",
-                marginBottom: "17px",
+                height: "450px",
+                width: "55%",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              <DayChartEvent detailOneEvent={allDataEvent} />
+              <Grid
+                sx={{
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                  width: "100%",
+                  padding: "20px",
+                }}
+              >
+                <BasicAreaEvent />
+              </Grid>
             </Grid>
+
             <Grid
               style={{
-                border: "1px solid",
-                borderRadius: "10px",
-                width: "100%",
+                height: "450px",
+                display: "flex",
+                flexDirection: "column",
+                width: "44%",
               }}
             >
-              <CheckinOneChart detailOneEvent={allDataEvent} />
+              <Grid
+                style={{
+                  backgroundColor:"#fff",
+                  padding:"10px",
+                  borderRadius: "5px",
+                  width: "100%",
+                  marginBottom: "17px",
+                }}
+              >
+                <DayChartEvent detailOneEvent={allDataEvent} />
+              </Grid>
+              <Grid
+                 style={{
+                  backgroundColor:"#fff",
+                  padding:"10px",
+                  borderRadius: "5px",
+                  width: "100%",
+                }}
+              >
+                <CheckinOneChart detailOneEvent={allDataEvent} />
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

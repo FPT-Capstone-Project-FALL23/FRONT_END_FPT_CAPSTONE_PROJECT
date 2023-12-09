@@ -10,7 +10,7 @@ function TotalRevenueEvent({ eventTotalDetail }) {
     <>
       <Grid>
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Actual money"
               count={eventTotalDetail.totalRevenue}
@@ -19,7 +19,7 @@ function TotalRevenueEvent({ eventTotalDetail }) {
               extra="8,900"
             />
           </Grid>
-          <Grid>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Total Ticket"
               count={eventTotalDetail.totalChairs}
@@ -27,7 +27,7 @@ function TotalRevenueEvent({ eventTotalDetail }) {
               extra="8,900"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Total Buy Ticket"
               count={eventTotalDetail.totalSoldChairs}
@@ -37,7 +37,7 @@ function TotalRevenueEvent({ eventTotalDetail }) {
               extra="1,943"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Total Check in"
               count={eventTotalDetail.totalCheckedInChairs}

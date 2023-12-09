@@ -131,9 +131,7 @@ export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
 function ProfileOrganizers() {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-
-  // console.log(dataInfo.address.city);
-
+  
   console.log(dataInfo);
   const [avatar, setAvatar] = useState(dataInfo?.avatarImage || "");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -162,13 +160,14 @@ function ProfileOrganizers() {
     description: dataInfo?.description || "",
     founded_date: today || "",
     address: {
-      city: selectCity || "",
-      district: selectDistrict || "",
-      ward: selectWard || "",
+      city: selectCity ? selectCity?.name : "",
+      district: selectDistrict ? selectDistrict?.name : "",
+      ward: selectWard ? selectWard?.name : "",
       specific_address: specificAddress || "",
     },
   });
 
+  console.log(organizerInfo);
   const theme = useTheme();
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -195,7 +194,7 @@ function ProfileOrganizers() {
       },
     }));
   }, [selectCity, selectDistrict, selectWard, specificAddress]);
-  console.log(organizerInfo);
+  
 
   const handleInputChange = (name, value) => {
     setOrganizerInfo({

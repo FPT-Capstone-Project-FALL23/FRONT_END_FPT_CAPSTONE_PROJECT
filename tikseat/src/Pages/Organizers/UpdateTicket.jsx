@@ -595,6 +595,7 @@ function UpdateTicket({ event }) {
         toast.success("Update Event success!", toastOptions);
         handleNewEvent();
         navigate("/dashboard");
+        setLocalStorageTicketInfo([])
         console.log(response);
       } else {
       }

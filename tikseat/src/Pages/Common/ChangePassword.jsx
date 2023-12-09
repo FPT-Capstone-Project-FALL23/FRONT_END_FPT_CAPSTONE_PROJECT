@@ -19,7 +19,7 @@ function ChangePassword() {
   const [confirmPassword, setConfirmPassword] = useState(null);
 
   const dataUser = getLocalStorageUserData();
-  const dataInfo = getLocalStorageUserInfo();
+  // const dataInfo = getLocalStorageUserInfo();
   const navigate = useNavigate();
   const email = dataUser.email;
 
@@ -33,7 +33,7 @@ function ChangePassword() {
             newPassword: newPassword,
         })
         if (response.status === true) {
-            setLocalStorageUserInfo("");
+          window.localStorage.clear();
             navigate("/login");
         } else {
             console.log("error");
@@ -145,7 +145,7 @@ function ChangePassword() {
                   color: "black",
                   fontWeight: "bold",
                   fontSize: "18px",
-                  backgroundColor: "yellow",
+                  backgroundColor: "rgb(245, 189, 25)",
                   marginBottom: "30px",
                 }}
                 type="submit"

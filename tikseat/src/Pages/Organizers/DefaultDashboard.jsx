@@ -55,9 +55,7 @@ function DefaultDashboard() {
     <>
       <Grid
         style={{
-          backgroundColor: "#ffffff",
-          borderRadius: "10px",
-          padding: "30px",
+          padding: "10px",
         }}
       >
         <Grid>
@@ -79,7 +77,12 @@ function DefaultDashboard() {
             }}
           >
             <Grid
-              sx={{ border: "1px solid", borderRadius: "10px", width: "100%" }}
+              sx={{
+                backgroundColor: "#fff",
+                borderRadius: "5px",
+                width: "100%",
+                padding: "20px",
+              }}
             >
               <BasicArea />
             </Grid>
@@ -90,27 +93,29 @@ function DefaultDashboard() {
               height: "450px",
               display: "flex",
               flexDirection: "column",
-              width: "40%",
+              width: "44%",
             }}
           >
             <Grid
               style={{
-                border: "1px solid",
-                borderRadius: "10px",
+                backgroundColor:"#fff",
+                padding:"10px",
+                borderRadius: "5px",
                 width: "100%",
-                marginBottom:"17px",
+                marginBottom: "17px",
               }}
             >
-              <DayChart dataAllEventDetail={allDataEvent}/>
+              <DayChart dataAllEventDetail={allDataEvent} />
             </Grid>
             <Grid
               style={{
-                border: "1px solid",
-                borderRadius: "10px",
+                backgroundColor:"#fff",
+                padding:"10px",
+                borderRadius: "5px",
                 width: "100%",
               }}
             >
-              <CheckinChart dataAllEventDetail={allDataEvent}/>
+              <CheckinChart dataAllEventDetail={allDataEvent} />
             </Grid>
           </Grid>
         </Grid>
