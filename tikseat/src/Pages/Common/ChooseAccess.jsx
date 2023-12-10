@@ -22,19 +22,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { ROLE } from "../../Assets/Constant/Common/constCommon";
 
 import ApiCommon from "../../API/Common/ApiCommon";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const ChooseAccess = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState("");
-  console.log(role);
+  const [role, setRole] = useState();
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [displayCode, setDisplayCode] = useState("none");
-  const [callAPI, setCallAPI] = useState("verifyEmail");
+  const [callAPI, setCallAPI] = useState("verify Email");
 
   const [selectedRole, setSelectedRole] = useState(null);
 
@@ -68,65 +65,73 @@ const ChooseAccess = () => {
 
   const handleSumit = async (e) => {
     e.preventDefault();
-
-    if (callAPI === "verifyEmail") {
-      // Step 1: Verify Email
-      try {
-        const response = await ApiCommon.verifyEmail({
-          email: email,
-        });
-
-        if (response.status === true) {
-          setCallAPI("verifyCode");
-          setDisplayCode("block");
-        } else {
-          console.log("Invalid email or other error!");
-        }
-      } catch (error) {
-        console.log("error: ", error);
-        const err = error.response.data.message;
-        toast.error(err, toastOptions);
-      }
+    if ( selectedRole === null || newPassword !== confirmPassword) {
+      toast.error("Please complete all information", toastOptions);
     } else {
-      // Step 2: Verify Code
-      try {
-        const response = await ApiCommon.verifyCode({
-          email: email,
-          enteredOTP: verifyCode,
-        });
+      if (callAPI === "verify Email") {
+        // Step 1: Verify Email
+        try {
+          const response = await ApiCommon.verifyEmail({
+            email: email,
+          });
 
-        if (response.status === true) {
-          setCallAPI("setPassword");
-          console.log("bbbb");
-          try {
-            const response = await ApiCommon.registerUser({
-              email: email,
-              password: newPassword,
-              role: role,
-            });
-
-            if (response.status === true) {
-              const roleUser = response.data.role;
-              const token = response.token;
-              const userData = response.data;
-              navigateAfterConfirmPassword(roleUser);
-              setLocalStorageToken(token);
-              setLocalStorageUserData(userData);
-            } else {
-              console.log("Error setting password!");
-            }
-          } catch (error) {
-            console.log("error: ", error);
-            const err = error.response.data.message;
-            toast.error(err, toastOptions);
+          if (response.status === true) {
+            setCallAPI("verify Code");
+            setDisplayCode("block");
+          } else {
+            console.log("Invalid email or other error!");
           }
-        } else {
-          console.log("Invalid code or other error!");
+        } catch (error) {
+          console.log("error: ", error);
+          const err = error.response.data.message;
+          toast.error(err, toastOptions);
         }
-      } catch (error) {
-        console.log("Error verifying code: ", error);
-        // Handle error
+      } else {
+        // Step 2: Verify Code
+        try {
+          const response = await ApiCommon.verifyCode({
+            email: email,
+            enteredOTP: verifyCode,
+          });
+
+          if (response.status === true) {
+            setCallAPI("setPassword");
+            handleSignUp();
+          } else {
+            console.log("Invalid code or other error!");
+          }
+        } catch (error) {
+          console.log("Error verifying code: ", error);
+          toast.error("Error verifying code:", toastOptions);
+        }
       }
+    }
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await ApiCommon.registerUser({
+        email: email,
+        password: newPassword,
+        role: role,
+      });
+
+      if (response.status === true) {
+        const roleUser = response.data.role;
+        const token = response.token;
+        const userData = response.data;
+        navigateAfterConfirmPassword(roleUser);
+        setLocalStorageToken(token);
+        setLocalStorageUserData(userData);
+      } else {
+        console.log("Error setting password!");
+      }
+    } catch (error) {
+      console.log("error: ", error);
+      const err = error.response.data.message;
+      toast.error(err, toastOptions);
     }
   };
 
@@ -260,12 +265,19 @@ const ChooseAccess = () => {
                         color: "black",
                         fontWeight: "bold",
                         fontSize: "15px",
-                        backgroundColor:"#f5bd19"
+                        backgroundColor: "#f5bd19",
                       }}
                       onClick={handleResetSelection}
                     >
                       Reset Choose ROLE
                     </Button>
+                  )}
+                </Grid>
+                <Grid sx={{ mt: 2 }}>
+                  {selectedRole === null && (
+                    <span style={{ color: "red", fontSize: "20px" }}>
+                      Please! Choose the role
+                    </span>
                   )}
                 </Grid>
               </Grid>
@@ -281,7 +293,7 @@ const ChooseAccess = () => {
               padding: "30px",
             }}
           >
-            <Grid sx={{ marginBottom: "30px", color:"black" }}>
+            <Grid sx={{ marginBottom: "30px", color: "black" }}>
               <h2>User Account</h2>
             </Grid>
             <Grid style={{ marginBottom: "30px" }}>
@@ -298,29 +310,22 @@ const ChooseAccess = () => {
               setValue={setConfirmPassword}
               label=" Re-enter Password"
             />
+            {newPassword !== confirmPassword && (
+                <Grid sx={{margin:"-20px 0px 30px 10px"}}>
+                  <span style={{ color: "red" }}>Password not match</span>
+                </Grid>
+              )}
 
             <Grid sx={{ display: displayCode }}>
               <TextField
                 fullWidth
-                type={showPassword ? "text" : "password"}
+                type="code"
                 onChange={(e) => setVerifyCode(e.target.value)}
                 // setValue={setVerifyCode}
                 value={verifyCode === undefined ? "" : verifyCode}
                 label="Enter Code"
               />
-              <IconButton
-                sx={{
-                  float: "right",
-                  marginTop: "-48px",
-                  marginRight: "2px",
-                }}
-                aria-label="toggle password visibility"
-                onClick={() => setShowPassword(!showPassword)}
-                // onMouseDown={handleMouseDownPassword}
-                edge="end"
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
+
               <Stack
                 spacing={1}
                 alignItems={"center"}
@@ -341,7 +346,7 @@ const ChooseAccess = () => {
                     textDecoration: "none",
                   }}
                 >
-                  RESEND
+                  RESEND CODE
                 </Link>
               </Stack>
             </Grid>

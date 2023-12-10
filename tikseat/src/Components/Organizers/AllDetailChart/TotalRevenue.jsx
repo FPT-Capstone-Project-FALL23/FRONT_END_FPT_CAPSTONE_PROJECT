@@ -13,7 +13,7 @@ function TotalRevenue({ dataAllEventDetail }) {
           <Typography variant="h4">Total Statistics</Typography>
         </Grid>
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Actual money"
               count={dataAllEventDetail.totalRevenue}
@@ -22,7 +22,7 @@ function TotalRevenue({ dataAllEventDetail }) {
               extra="8,900"
             />
           </Grid>
-          <Grid>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Total Ticket"
               count={dataAllEventDetail.totalChairs}
@@ -30,7 +30,7 @@ function TotalRevenue({ dataAllEventDetail }) {
               extra="8,900"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Total Buy Ticket"
               count={dataAllEventDetail.totalSoldChairs}
@@ -40,7 +40,7 @@ function TotalRevenue({ dataAllEventDetail }) {
               extra="1,943"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid sx={{width:"24%"}}>
             <AnalyticEcommerce
               title="Total Check in"
               count={dataAllEventDetail.totalCheckedInChairs}

@@ -35,7 +35,6 @@ import { io } from "socket.io-client";
 export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
   // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
   const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const reader = new FileReader();
@@ -95,7 +94,6 @@ const CreateTicket = () => {
   }
 
   useEffect(() => {
-    console.log("1")
     socket?.emit("organizerId", organizerId);
   }, [socket, organizerId]);
 
@@ -213,7 +211,6 @@ const CreateTicket = () => {
   });
 
   useEffect(() => {
-    console.log("2")
     setEventInfoData((prevData) => ({
       ...prevData,
       event_name: eventInfo.event_name,
@@ -253,7 +250,6 @@ const CreateTicket = () => {
   console.log(eventInfoData);
 
   useEffect(() => {
-    console.log("3")
     setEventInfo((prevEvent) => ({
       ...prevEvent,
       type_layout: typeLayout || "",
@@ -348,7 +344,6 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    console.log("4")
     const updatedEventInfo = {
       ...eventInfo,
       sales_date: {
@@ -364,7 +359,6 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    console.log("5")
     const updatedEventInfo = {
       ...eventInfo,
       maxTicketInOrder: maxTicket,
@@ -497,7 +491,6 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    console.log("6")
     setLocalStorageTicketInfo(eventInfo);
   }, [eventInfo]);
 
@@ -510,10 +503,8 @@ const CreateTicket = () => {
       handleNewEvent();
       toast.success("New Event success!", toastOptions);
       navigate("/dashboard");
-      console.log(respont.status);
-      console.log(respont.data);
+      setLocalStorageTicketInfo([]);
     } catch (error) {
-      console.log(error);
       toast.error(error, toastOptions);
     }
   };
@@ -522,7 +513,6 @@ const CreateTicket = () => {
     event.preventDefault();
     callApiCreateEvent(organizerId, eventInfoData);
   };
-  console.log(eventInfo);
 
   return (
     <>
@@ -624,7 +614,6 @@ const CreateTicket = () => {
                     name="maxTicket"
                     value={maxTicket}
                     setValue={handleMaxTicketChange}
-                    // onChange={(e) => setMaxTicket(e.target.value)}
                     label="Max Ticket In Order"
                   />
                 </Stack>

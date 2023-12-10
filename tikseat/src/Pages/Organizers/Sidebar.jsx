@@ -22,7 +22,6 @@ import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
@@ -32,17 +31,13 @@ import ListEventToday from "./ListEventToday";
 
 import DefaultDashboard from "./DefaultDashboard";
 import EventHistory from "./EventHistory";
-import NewEvent from "./NewEvent";
-import Notification from "./Notification";
 import ProfileOrganizers from "./ProfileOrganizers";
 import AddPaymentMethod from "../Common/AddPaymentMethod";
-import CreateTicket from "./CreateTicket";
 import CheckinTicket from "./CheckinTicket";
 import { useNavigate } from "react-router-dom";
 import ChangePassword from "../Common/ChangePassword";
 import CreateEventDefault from "./CreateEventDefault";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-
 import "../../Assets/CSS/Organizer/Sidebar.css";
 
 import {
@@ -127,15 +122,12 @@ export const handleLogOut = (navigate) => {
 };
 
 export default function MiniDrawer() {
-  const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [menuData, setMenuData] = useState("dashboard");
-  const [ticketData, setTicketData] = useState(null);
   const [eventDetail, setEventDetail] = useState(null);
   const [eventCheckin, setEventCheckin] = useState(null);
-
   const [notifications, setNotifications] = useState([1, 2]);
   const [notificationRefund, setNotificationRefund] = useState([1, 2]);
   const [openNotification, setOpenNotification] = useState(false);
@@ -163,7 +155,7 @@ export default function MiniDrawer() {
         className="appbar"
         position="fixed"
         elevation={4}
-        sx={{ backgroundColor: "#ffffff", color: "black" }}>
+        sx={{ backgroundColor: "rgb(245, 189, 25)", color: "black" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
@@ -188,7 +180,7 @@ export default function MiniDrawer() {
             sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}>
             <Typography variant="h6" noWrap component="div">
               Welcome Back{" "}
-              <span style={{ color: "yellow" }}>{dataInfo.organizer_name}</span>
+              <span style={{ color: "aqua" }}>{dataInfo.organizer_name}</span>
             </Typography>
             <Grid>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
@@ -274,8 +266,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "dashboard" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "dashboard" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -304,8 +296,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "newEvent" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "newEvent" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -334,8 +326,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "eventHistory" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "eventHistory" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -364,8 +356,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "checkin" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "checkin" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -395,8 +387,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "profile" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "profile" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -425,8 +417,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "listRefund" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "listRefund" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -466,8 +458,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "bankAccount" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "changePass" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -496,8 +488,8 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "logOut" ? "#E0F4FF" : "transparent",
-                borderRadius: "10px",
+                  menuData === "logOut" ? "rgb(245, 189, 25)" : "transparent",
+                borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
               }}>
@@ -521,12 +513,11 @@ export default function MiniDrawer() {
 
       <Grid
         className="box"
-        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF", zIndex: 1, }}
+        sx={{ height: "100vh", width: "100%", backgroundColor: "#e7e8ec", zIndex: 1, }}
       >
         <Box
           style={{
-            padding: "100px 40px 40px 40px",
-            backgroundColor: "#E0F4FF",
+            padding: "80px 20px 20px 20px",
           }}
           component="main"
           sx={{ flexGrow: 1, p: 3 }}>

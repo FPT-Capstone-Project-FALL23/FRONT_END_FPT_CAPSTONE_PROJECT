@@ -28,12 +28,6 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
             <Chip
               variant="combined"
               color={color}
-            //   icon={
-            //     <>
-            //       {!isLoss && <RiseOutlined style={{ fontSize: '0.75rem', color: 'inherit' }} />}
-            //       {isLoss && <FallOutlined style={{ fontSize: '0.75rem', color: 'inherit' }} />}
-            //     </>
-            //   }
               label={`${percentage}%`}
               sx={{ ml: 1.25, pl: 1 }}
               size="small"

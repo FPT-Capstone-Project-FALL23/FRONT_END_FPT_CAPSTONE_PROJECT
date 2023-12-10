@@ -63,7 +63,7 @@ function CreateEventDefault() {
                   sx={{
                     minHeight: 50,
                     backgroundColor:
-                      page === "newEvent" ? "#E0F4FF" : "transparent",
+                      page === "newEvent" ? "rgb(245, 189, 25)" : "transparent",
                     borderRadius: "10px",
                     margin: "5px 10px 5px 10px",
                     px: 2.5,
@@ -93,7 +93,7 @@ function CreateEventDefault() {
                   sx={{
                     minHeight: 50,
                     backgroundColor:
-                      page === "create-ticket" ? "#E0F4FF" : "transparent",
+                      page === "create-ticket" ? "rgb(245, 189, 25)" : "transparent",
                     borderRadius: "10px",
                     margin: "5px 10px 5px 10px",
                     px: 2.5,

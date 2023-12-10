@@ -18,8 +18,12 @@ import {
   // setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-import { Button, Grid, Pagination, Stack } from "@mui/material";
-import axios from "axios";
+import {
+  Button,
+  Grid,
+  Stack,
+  TablePagination,
+} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,13 +48,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function ListRefund() {
-  const navigate = useNavigate();
   const dataInfo = getLocalStorageUserInfo();
   const [refunds, setRefunds] = useState([]);
-  console.log("aaaaaaa", refunds);
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   const listRefund = async () => {
     try {
       const response = await ApiEvent.getListRefund({
@@ -59,8 +69,6 @@ function ListRefund() {
       });
       if (response.status === true) {
         setRefunds(response.data.results);
-        setTotalPage(response.data.totalPages);
-        console.log("data", response.data.results);
       } else {
         console.log("error!");
       }
@@ -91,16 +99,12 @@ function ListRefund() {
     }
   };
 
-  const handleChange = (event, value) => {
-    setPage(value);
-  };
-
   return (
     <>
       <Grid sx={{ backgroundColor: "#ffffff" }}>
         <TableContainer
           sx={{
-            height: "600px",
+            height: "89vh",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -127,62 +131,64 @@ function ListRefund() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {refunds.map((row, index) => (
-                <StyledTableRow key={index}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.event_name}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {new Date(row.refund_date).toLocaleString()}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.classTicket}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.chair_name.join(", ")}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.money_refund}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <Grid
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        width: "100%",
-                        backgroundColor:
-                          row.refunded === true
-                            ? "#A0E9FF"
-                            : row.refunded === false
-                              ? "#E49393"
-                              : "#FFFD8C",
-                      }}
-                    >
-                      {row.refunded.toLocaleString()}
-                    </Grid>
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.isRefund === false ? (
+              {refunds
+                ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                ?.map((row, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.event_name}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {new Date(row.refund_date).toLocaleString()}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.classTicket}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.chair_name.join(", ")}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.money_refund}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
                       <Grid
                         style={{
-                          backgroundColor: "#07bc0c",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100%",
+                          width: "100%",
+                          backgroundColor:
+                            row.refunded === true
+                              ? "#A0E9FF"
+                              : row.refunded === false
+                              ? "#E49393"
+                              : "#FFFD8C",
                         }}
                       >
-                        <Button
-                          style={{ width: "100%", color: "white" }}
-                          onClick={() => handleAcceptRefund(row)}
-                        >
-                          Accept
-                        </Button>
+                        {row.refunded.toLocaleString()}
                       </Grid>
-                    ) : (
-                      <CheckIcon style={{ color: "#07bc0c" }} />
-                    )}
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.isRefund === false ? (
+                        <Grid
+                          style={{
+                            backgroundColor: "#07bc0c",
+                          }}
+                        >
+                          <Button
+                            style={{ width: "100%", color: "white" }}
+                            onClick={() => handleAcceptRefund(row)}
+                          >
+                            Accept
+                          </Button>
+                        </Grid>
+                      ) : (
+                        <CheckIcon style={{ color: "#07bc0c" }} />
+                      )}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
             </TableBody>
           </Table>
           <Grid
@@ -195,13 +201,15 @@ function ListRefund() {
             }}
           >
             <Stack spacing={2}>
-              <Pagination
-                count={totalPage}
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                colSpan={3}
+                component="div"
+                count={(~~(refunds.length/rowsPerPage +1))}
+                rowsPerPage={rowsPerPage}
                 page={page}
-                color="primary"
-                onChange={handleChange}
-                variant="outlined"
-                shape="rounded"
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
               />
             </Stack>
           </Grid>
