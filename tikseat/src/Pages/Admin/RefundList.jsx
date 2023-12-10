@@ -102,6 +102,7 @@ function RefundList() {
           nameColumns={NAME_COLUMNS_REFUND}
           actions={actionRefund}
           detailOpen={openComfirn}
+          setDetailOpen={setOpenComfirn}
           isDetail={false}
           isClient={false}
           dialogTitle={TITLE_CONFIRM_REFUND_USER}

@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import RequestPageIcon from "@mui/icons-material/RequestPage";
 import TablePagination from "@mui/material/TablePagination";
 import EditIcon from "@mui/icons-material/Edit";
 import ApiEvent from "../../API/Event/ApiEvent";
@@ -40,6 +41,38 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+export const ButtonAction = ({
+  nameButton,
+  icon,
+  handleClick,
+  row,
+  nameHandle,
+}) => {
+  return (
+    <Button
+      style={{
+        border: "solid 1px",
+        width: "90%",
+        height: "100%",
+      }}
+      onClick={
+        nameButton == "Request payment"
+          ? () => handleClick()
+          : () => handleClick(row, nameHandle)
+      }>
+      <span
+        style={{
+          fontSize: "16px",
+          marginRight: "5px",
+          paddingTop: "8px",
+        }}>
+        {nameButton}
+      </span>
+      {icon}
+    </Button>
+  );
+};
 
 function EventHistory({ onEventDetail }) {
   const dataInfo = getLocalStorageUserInfo();
@@ -97,12 +130,10 @@ function EventHistory({ onEventDetail }) {
           flexDirection: "column",
           justifyContent: "space-between",
         }}
-        component={Paper}
-      >
+        component={Paper}>
         <Table
           sx={{ borderBottom: "1px solid #ccc" }}
-          aria-label="customized table"
-        >
+          aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Name event</StyledTableCell>
@@ -157,8 +188,7 @@ function EventHistory({ onEventDetail }) {
                         width: "100%",
                         height: "100%",
                         fontSize: "15px",
-                      }}
-                    >
+                      }}>
                       <Grid
                         style={{
                           display: "flex",
@@ -174,8 +204,7 @@ function EventHistory({ onEventDetail }) {
                               : row.eventStatus === "FINISHED"
                               ? "#E49393"
                               : "#FFFD8C",
-                        }}
-                      >
+                        }}>
                         {row.eventStatus}
                       </Grid>
                     </Grid>
@@ -190,8 +219,7 @@ function EventHistory({ onEventDetail }) {
                         fontWeight: "500",
                         width: "100%",
                         backgroundColor: row.isActive ? "#A0E9FF" : "#E49393",
-                      }}
-                    >
+                      }}>
                       {row.isActive ? "approved" : "waiting"}
                     </Grid>
                   </StyledTableCell>
@@ -201,55 +229,31 @@ function EventHistory({ onEventDetail }) {
                       display: "flex",
                       justifyContent: "space-around",
                       padding: "12px",
-                    }}
-                  >
+                    }}>
                     <Grid sx={{ width: "48%" }}>
-                      <Button
-                        style={{
-                          border: "solid 1px",
-                          height: "100%",
-                          width: "90%",
-                        }}
-                        onClick={() => handleEventDetail(row, "statistics")}
-                      >
-                        <span
-                          style={{
-                            fontSize: "16px",
-                            marginRight: "5px",
-                            paddingTop: "8px",
-                          }}
-                        >
-                          Statistics
-                        </span>
-                        <LeaderboardIcon />
-                      </Button>
+                      <ButtonAction
+                        nameButton="Statistics"
+                        icon={<LeaderboardIcon />}
+                        row={row}
+                        handleClick={handleEventDetail}
+                        nameHandle="statistics"
+                      />
                     </Grid>
-                    <Grid
-                      sx={{
-                        width: "48%",
-                        display:
-                          row.eventStatus !== "FINISHED" ? "block" : "none",
-                      }}
-                    >
-                      <Button
-                        style={{
-                          border: "solid 1px",
-                          width: "90%",
-                          height: "100%",
-                        }}
-                        onClick={() => handleEventDetail(row, "update")}
-                      >
-                        <span
-                          style={{
-                            fontSize: "16px",
-                            marginRight: "5px",
-                            paddingTop: "8px",
-                          }}
-                        >
-                          Update
-                        </span>
-                        <EditIcon />
-                      </Button>
+                    <Grid sx={{ width: "48%" }}>
+                      {row.eventStatus == "FINISHED" ? (
+                        <ButtonAction
+                          nameButton="Request payment"
+                          icon={<RequestPageIcon />}
+                        />
+                      ) : (
+                        <ButtonAction
+                          nameButton="Update"
+                          icon={<EditIcon />}
+                          row={row}
+                          handleEventDetail={handleEventDetail}
+                          nameHandle="update"
+                        />
+                      )}
                     </Grid>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -266,8 +270,7 @@ function EventHistory({ onEventDetail }) {
             position: "flxed",
             bottom: "11px",
             width: "100%",
-          }}
-        >
+          }}>
           <Stack spacing={2}>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}

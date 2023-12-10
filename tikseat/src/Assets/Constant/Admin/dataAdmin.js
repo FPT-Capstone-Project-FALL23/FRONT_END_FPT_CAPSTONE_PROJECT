@@ -72,7 +72,7 @@ export const LIST_PAYMENT = [
 ]
 export const LIST_CLIENT_MANAGER = [
     { nameMenu: "clientManage", titleMenu: "List Client", icon: <PersonIcon /> },
-    { nameMenu: "blockClientList", titleMenu: "List of blocked clients ", icon: <PersonOffIcon /> },
+    // { nameMenu: "blockClientList", titleMenu: "List of blocked clients ", icon: <PersonOffIcon /> },
 ]
 export const LIST_ORGANIZER_MANAGER = [
     { nameMenu: "organizerManage", titleMenu: "List Organizer", icon: <GroupIcon /> },

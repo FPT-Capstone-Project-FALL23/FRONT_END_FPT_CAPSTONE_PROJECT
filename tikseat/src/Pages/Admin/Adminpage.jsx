@@ -19,13 +19,11 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Badge from "@mui/material/Badge";
-import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 
-import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
+import { NAME_LOGO, ROLE } from "../../Assets/Constant/Common/constCommon";
 
 import HomePageAdmin from "./HomePageAdmin";
 import ClientManage from "./ClientPageAdmin";
@@ -33,19 +31,13 @@ import OrganigerManage from "./OrganizerPageAdmin";
 
 import "../../Assets/CSS/Organizer/Sidebar.css";
 
-import {
-  getLocalStorageUserData,
-  getLocalStorageUserInfo,
-} from "../../Store/userStore";
+import { getLocalStorageUserData } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 import ListMenu from "../../Components/Admin/ListMenu";
 import {
-  LIST_APPROVED,
-  LIST_COLLAPSE,
   LIST_HOME_ADMIN,
   LIST_NAME_MENU,
-  LIST_PAYMENT,
 } from "../../Assets/Constant/Admin/dataAdmin";
 import ApprovedOrganizer from "./ApprovedOrganizer";
 import ApprovedEvent from "./ApprovedEvent";
@@ -55,6 +47,8 @@ import { handleLogOut } from "../Organizers/Sidebar";
 import { useNavigate } from "react-router-dom";
 import BlockOrganizerList from "./BlockOrganizerList";
 import PayBusiness from "./PayBusiness";
+import { getLocalStorageToken } from "../../Store/authStore";
+import jwtDecode from "jwt-decode";
 
 const drawerWidth = 300;
 export const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -188,6 +182,23 @@ export const NestedListItem = ({
   );
 };
 
+export const checkToken = (navigate) => {
+  const token = getLocalStorageToken();
+  if (!token) {
+    navigate("/");
+  } else {
+    const roleNavigate = jwtDecode(token).role;
+    console.log("roleNavigate", roleNavigate);
+    if (roleNavigate == ROLE[0]) {
+      navigate("/");
+    } else if (roleNavigate == ROLE[1]) {
+      navigate("/dashboard");
+    } else {
+      navigate("/homepageAdmin");
+    }
+  }
+};
+
 export default function MiniDrawer() {
   const [socket, setSocket] = useState(null);
 
@@ -209,9 +220,6 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [menuData, setMenuData] = useState("homeAdmin");
-  console.log(menuData);
-  const [openApproved, setOpenApproved] = useState(false);
-  const [openPayment, setOpenPayment] = useState(false);
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
@@ -273,11 +281,9 @@ export default function MiniDrawer() {
     setNotifications([]);
     setOpenNotification(false);
   };
-
-  const checkCollapse = (nameCollapse) => {
-    if (nameCollapse) {
-    }
-  };
+  useEffect(() => {
+    checkToken(navigate);
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>

@@ -118,7 +118,7 @@ const Drawer = styled(MuiDrawer, {
 
 export const handleLogOut = (navigate) => {
   window.localStorage.clear();
-  navigate("/login");
+  navigate("/");
 };
 
 export default function MiniDrawer() {
@@ -266,7 +266,9 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "dashboard" ? "rgb(245, 189, 25)" : "transparent",
+                  menuData === "dashboard"
+                    ? "rgb(245, 189, 25)"
+                    : "transparent",
                 borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
@@ -326,7 +328,9 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "eventHistory" ? "rgb(245, 189, 25)" : "transparent",
+                  menuData === "eventHistory"
+                    ? "rgb(245, 189, 25)"
+                    : "transparent",
                 borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
@@ -417,7 +421,9 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "listRefund" ? "rgb(245, 189, 25)" : "transparent",
+                  menuData === "listRefund"
+                    ? "rgb(245, 189, 25)"
+                    : "transparent",
                 borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
@@ -429,16 +435,16 @@ export default function MiniDrawer() {
                   justifyContent: "center",
                 }}>
                 {notificationRefund.length > 0 && (
-                    <Badge
-                      sx={{
-                        position: "absolute",
-                        marginTop: open ? "6%" : "10%",
-                        marginLeft: open ? "152%" : "70%",
-                      }}
-                      badgeContent={notificationRefund.length}
-                      color="error"
-                    />
-                  )}
+                  <Badge
+                    sx={{
+                      position: "absolute",
+                      marginTop: open ? "6%" : "10%",
+                      marginLeft: open ? "152%" : "70%",
+                    }}
+                    badgeContent={notificationRefund.length}
+                    color="error"
+                  />
+                )}
                 <CurrencyExchangeIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -458,7 +464,9 @@ export default function MiniDrawer() {
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "changePass" ? "rgb(245, 189, 25)" : "transparent",
+                  menuData === "changePass"
+                    ? "rgb(245, 189, 25)"
+                    : "transparent",
                 borderRadius: "5px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
@@ -513,8 +521,12 @@ export default function MiniDrawer() {
 
       <Grid
         className="box"
-        sx={{ height: "100vh", width: "100%", backgroundColor: "#e7e8ec", zIndex: 1, }}
-      >
+        sx={{
+          height: "100vh",
+          width: "100%",
+          backgroundColor: "#e7e8ec",
+          zIndex: 1,
+        }}>
         <Box
           style={{
             padding: "80px 20px 20px 20px",
@@ -525,13 +537,13 @@ export default function MiniDrawer() {
           {menuData === "newEvent" && <CreateEventDefault />}
           {menuData === "eventHistory" && (
             <EventHistory
-            onEventDetail={(data, actionType) => {
-              setEventDetail(data);
-              if (actionType === "statistics") {
-                setMenuData("eventDetail");
-              } else {
-                setMenuData("updateEvent");
-              }
+              onEventDetail={(data, actionType) => {
+                setEventDetail(data);
+                if (actionType === "statistics") {
+                  setMenuData("eventDetail");
+                } else {
+                  setMenuData("updateEvent");
+                }
               }}
             />
           )}
@@ -541,7 +553,9 @@ export default function MiniDrawer() {
           {menuData === "updateEvent" && (
             <UpdateEventDefault eventDetail={eventDetail} />
           )}
-          {menuData === "checkinTicket" && <CheckinTicket CheckingTicket={eventCheckin} />}
+          {menuData === "checkinTicket" && (
+            <CheckinTicket CheckingTicket={eventCheckin} />
+          )}
 
           {menuData === "checkin" && (
             <ListEventToday
