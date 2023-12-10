@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Collapse,
-  Modal,
   Paper,
   Stack,
   Table,
@@ -12,39 +11,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
-import {
-  getLocalStorageUserInfo,
-  getLocalStorageUserData,
-} from "../../Store/userStore";
-import Checkbox from "@mui/material/Checkbox";
-import { toast } from "react-toastify";
-import { createPortal } from "react-dom";
-import Rating from "@mui/material/Rating";
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 800,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-};
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+import { getLocalStorageUserInfo } from "../../Store/userStore";
+
 const RefundableTickets = () => {
   const dataInfo = getLocalStorageUserInfo();
-  const dataUser = getLocalStorageUserData();
   const [dataMyTicket, setDataMyTicket] = useState([]);
   useEffect(() => {
     async function getDataOrderByClient() {
       const response = await ApiClient.orderByClient({
         _idClient: dataInfo?._id,
       });
-      setDataMyTicket(response?.orders);
+      setDataMyTicket(response?.data);
     }
 
     getDataOrderByClient();
@@ -58,26 +38,26 @@ const RefundableTickets = () => {
         eventName: item?.event_name,
         eventDate: item?.event_date,
         city: item.event_location,
-        ViewDetail: item.tickets,
+        _idOrderDetail: item._idOrderDetail,
         zp_trans_id: item.zp_trans_id,
-        orderId: item._id,
         event_location: item.event_location,
       };
     });
   function Row(props) {
     const { row } = props;
-    const checkRefund = row.ViewDetail.filter((item) => {
-      return !item.isRefund;
-    });
-    const [apiRating, setApiRating] = useState(null);
     const [open, setOpen] = React.useState(false);
-
+    const [dataMyTicket, setDataMyTicket] = useState([]);
     useEffect(() => {
-      // Lấy số sao đánh giá từ localStorage khi component được mount
-      const storedRating = localStorage.getItem(`rating_${row.eventId}_value`);
-      setApiRating(storedRating); // Sử dụng giá trị lưu trữ từ localStorage nếu có
-    }, [row.eventId]);
-
+      if (open) {
+        async function getMyTicket() {
+          const res = await ApiClient.getMyTicket({
+            _idOrderDetail: row._idOrderDetail,
+          });
+          setDataMyTicket(res.data[0].Orders[0].tickets);
+        }
+        getMyTicket();
+      }
+    }, [row._idOrderDetail, open]);
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -97,7 +77,6 @@ const RefundableTickets = () => {
               >
                 {open ? "collapse" : "Show more"}
               </Button>{" "}
-              <Rating value={apiRating} readOnly />
             </Stack>
           </TableCell>
         </TableRow>
@@ -116,9 +95,8 @@ const RefundableTickets = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {row?.ViewDetail?.length > 0 &&
-                      row.ViewDetail?.map((ViewDetailRow, index) => {
-                        console.log("ViewDetailRow: ", ViewDetailRow);
+                    {dataMyTicket?.length > 0 &&
+                      dataMyTicket?.map((ViewDetailRow, index) => {
                         if (!ViewDetailRow?.isRefund) {
                           return null;
                         }
