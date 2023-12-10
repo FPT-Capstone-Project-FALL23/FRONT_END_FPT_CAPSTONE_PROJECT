@@ -12,11 +12,15 @@ function ClientPageAdmin() {
   const [dataTableClient, setDataTableClient] = useState();
   const [selectedClient, setSelectedClient] = useState(null);
   const [clientDetailOpen, setClientDetailOpen] = useState(false);
+  const [clientsCount, setClientsCount] = useState();
+  const [page, setPage] = useState(0);
 
   const getAllClient = async () => {
     try {
+      // const repuest = { page: 1 };
       const respones = await ApiAdmin.getAllClients();
-      setDataTableClient(respones.data);
+      setDataTableClient(respones.data.formattedClients);
+      setClientsCount(respones.data.clientsCount);
     } catch (error) {
       console.log(error);
     }
@@ -33,6 +37,21 @@ function ClientPageAdmin() {
     if (respones) {
       setSelectedClient(respones.data);
       setClientDetailOpen(true);
+    }
+  };
+
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const pageRequest = { page: newPage + 1 };
+      console.log("object1: ", pageRequest);
+      const respones = await ApiAdmin.getAllClients(pageRequest);
+      if (respones) {
+        setPage(newPage);
+        setDataTableClient(respones.data.formattedClients);
+        setClientsCount(respones.data.clientsCount);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -76,6 +95,9 @@ function ClientPageAdmin() {
             isDetail={true}
             actions={actionClient}
             cellComponents={cellComponentsClient}
+            count={clientsCount}
+            page={page}
+            handleChangePage={handleChangePage}
           />
         </Box>
       </Box>

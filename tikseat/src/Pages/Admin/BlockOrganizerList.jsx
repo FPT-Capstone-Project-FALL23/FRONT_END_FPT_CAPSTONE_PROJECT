@@ -20,6 +20,8 @@ function BlockOrganizerList() {
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
+  const [organizersCount, setOrganizersCount] = useState();
+  const [page, setPage] = useState(0);
 
   console.log(selected_id);
 
@@ -27,8 +29,8 @@ function BlockOrganizerList() {
     try {
       const respones = await ApiAdmin.getListOrganizerBlock();
       if (respones.status === true) {
-        setDataTableOrganizerBlock(respones.data);
-        console.log(respones);
+        setDataTableOrganizerBlock(respones.data.formattedOrganizers);
+        setOrganizersCount(respones.data.organizersCount);
       } else {
         console.log("error");
       }
@@ -70,6 +72,21 @@ function BlockOrganizerList() {
         alert("oke");
         setOrganizerDetailOpen(false);
         getAllOrganizerBlock();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const pageRequest = { page: newPage + 1 };
+      console.log("object1: ", pageRequest);
+      const respones = await ApiAdmin.getListOrganizerBlock(pageRequest);
+      if (respones) {
+        setPage(newPage);
+        setDataTableOrganizerBlock(respones.data.formattedOrganizers);
+        setOrganizersCount(respones.data.organizersCount);
       }
     } catch (error) {
       console.log(error);
@@ -127,6 +144,9 @@ function BlockOrganizerList() {
             dialogTitle={TITLE_BLOCK_ORGANIZATIONS}
             dialogContent={CONTENT_BLOCK_ORGANIZATIONS}
             onConfirm={handleComfirmBlock}
+            page={page}
+            count={organizersCount}
+            handleChangePage={handleChangePage}
           />
         </Box>
       </Box>

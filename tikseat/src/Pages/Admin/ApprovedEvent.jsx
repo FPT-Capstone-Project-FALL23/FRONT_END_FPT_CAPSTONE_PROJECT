@@ -11,11 +11,14 @@ function ApprovedEvent() {
   const [dataTableEvent, setDataTableEvent] = useState();
   const [selected_event, setSelected_event] = useState(null);
   const [openComfirn, setOpenComfirn] = useState(false);
+  const [eventsCount, setEventsCount] = useState();
+  const [page, setPage] = useState(0);
 
   const getAllEvent = async () => {
     try {
       const respones = await ApiAdmin.getAllEventIsActiveFalse();
-      setDataTableEvent(respones.data);
+      setDataTableEvent(respones.data.formattedEvent);
+      setEventsCount(respones.data.eventsCount);
     } catch (error) {
       console.log(error);
     }
@@ -47,6 +50,21 @@ function ApprovedEvent() {
       if (respones) {
         setOpenComfirn(false);
         getAllEvent();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const pageRequest = { page: newPage + 1 };
+      console.log("object1: ", pageRequest);
+      const respones = await ApiAdmin.getAllEventIsActiveFalse(pageRequest);
+      if (respones) {
+        setPage(newPage);
+        setDataTableEvent(respones.data.formattedEvent);
+        setEventsCount(respones.data.eventsCount);
       }
     } catch (error) {
       console.log(error);
@@ -99,6 +117,9 @@ function ApprovedEvent() {
             isMaxWith={true}
             actions={actionEvent}
             cellComponents={cellComponentsEvent}
+            count={eventsCount}
+            page={page}
+            handleChangePage={handleChangePage}
           />
         </Box>
       </Box>

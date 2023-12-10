@@ -68,6 +68,7 @@ const DialogComponent = ({
   dialogTitle,
   dialogContent,
   selectedDataEvent,
+  isOrder,
 }) => {
   const [dialogWidth, setDialogWidth] = useState("600px");
   const [dialogHeight, setDialogHeight] = useState("400px");
@@ -93,60 +94,68 @@ const DialogComponent = ({
   }, []);
 
   return (
-    <BootstrapDialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby="customized-dialog-title"
-      sx={{
-        "& .MuiDialog-paper": {
-          width: dialogWidth,
-          height: dialogHeight,
-        },
-      }}>
+    <>
       {isDetail ? (
         <>
-          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-            Detail Profile {nameTitle}
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
+          <BootstrapDialog
+            open={open}
+            onClose={onClose}
+            aria-labelledby="customized-dialog-title"
             sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
+              "& .MuiDialog-paper": {
+                width: dialogWidth,
+                height: dialogHeight,
+              },
             }}>
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <StyledCard>
-              <DialogListContent
-                selectedDetail={selectedUser}
-                isClient={isClient}
-                selectedDataEvent={selectedDataEvent}
-              />
-            </StyledCard>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={onClose} color="primary">
-              Close
-            </Button>
-          </DialogActions>
+            <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+              Detail Profile {nameTitle}
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={onClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}>
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <StyledCard>
+                <DialogListContent
+                  selectedDetail={selectedUser}
+                  isClient={isClient}
+                  selectedDataEvent={selectedDataEvent}
+                  isOrder={isOrder}
+                />
+              </StyledCard>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={onClose} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </BootstrapDialog>
         </>
       ) : (
         <>
-          <DialogConfirm
+          <BootstrapDialog
+            open={open}
             onClose={onClose}
-            onConfirm={onConfirm}
-            isConfirmEvent={isConfirmEvent}
-            event={selectedUser}
-            dialogTitle={dialogTitle}
-            dialogContent={dialogContent}
-          />
+            aria-labelledby="customized-dialog-title">
+            <DialogConfirm
+              onClose={onClose}
+              onConfirm={onConfirm}
+              isConfirmEvent={isConfirmEvent}
+              event={selectedUser}
+              dialogTitle={dialogTitle}
+              dialogContent={dialogContent}
+            />
+          </BootstrapDialog>
         </>
       )}
-    </BootstrapDialog>
+    </>
   );
 };
 

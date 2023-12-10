@@ -21,14 +21,14 @@ function OrganizerPageAdmin() {
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
-
-  console.log(selected_id);
+  const [organizersCount, setOrganizersCount] = useState();
+  const [page, setPage] = useState(0);
 
   const getAllOrganizer = async () => {
     try {
       const respones = await ApiAdmin.getAllOrganizers();
-      setDataTableOrganizer(respones.data);
-      console.log(respones.data);
+      setDataTableOrganizer(respones.data.formattedOrganizers);
+      setOrganizersCount(respones.data.organizersCount);
     } catch (error) {
       console.log(error);
     }
@@ -69,6 +69,21 @@ function OrganizerPageAdmin() {
         alert("oke");
         setOrganizerDetailOpen(false);
         getAllOrganizer();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const pageRequest = { page: newPage + 1 };
+      console.log("object1: ", pageRequest);
+      const respones = await ApiAdmin.getAllOrganizers(pageRequest);
+      if (respones) {
+        setPage(newPage);
+        setDataTableOrganizer(respones.data.formattedOrganizers);
+        setOrganizersCount(respones.data.organizersCount);
       }
     } catch (error) {
       console.log(error);
@@ -127,6 +142,10 @@ function OrganizerPageAdmin() {
             dialogContent={CONTENT_BLOCK_ORGANIZATIONS}
             onConfirm={handleComfirmBlock}
             selectedDataEvent={selectedDataEvent}
+            isOrder={false}
+            page={page}
+            count={organizersCount}
+            handleChangePage={handleChangePage}
           />
         </Box>
       </Box>

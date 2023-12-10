@@ -1,49 +1,42 @@
 import React from "react";
-import {
-  StyledOtherText,
-  StyledChip,
-} from "./DialogDetail";
+import { styled } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
+import { Typography } from "@mui/material";
 
-function DialogContentOrganization({
-  LIST_NAME_CONTENT_DAILOG_ORGANIZER,
-  selectedDetail,
-}) {
+const StyledOtherText = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(1),
+}));
+
+const StyledChip = styled(Chip)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+}));
+
+function DialogContentOrganization({ listContent, selectedDetail }) {
   return (
     <>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[0]} {selectedDetail?.email}
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[1]} {selectedDetail?.phone}
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[2]} {selectedDetail?.founded_date}
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[3]} {selectedDetail?.website}
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[4]} {selectedDetail?.address}
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[5]}
-        {selectedDetail?.organizer_type.map((value, index) => {
-          return (
-            <StyledChip label={value} variant="outlined" color="primary" />
-          );
-        })}
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[6]}{" "}
-        <StyledChip
-          color={selectedDetail?.isActive ? "success" : "error"}
-          label={selectedDetail?.isActive ? "Active" : "Inactive"}
-          variant="outlined"
-        />
-      </StyledOtherText>
-      <StyledOtherText variant="body2" color="textSecondary">
-        {LIST_NAME_CONTENT_DAILOG_ORGANIZER[7]} {selectedDetail?.description}
-      </StyledOtherText>
+      {listContent.map((content, index) => (
+        <StyledOtherText variant="body2" color="textSecondary" key={index}>
+          {content.label}{" "}
+          {content.field === "organizer_type" ? (
+            selectedDetail[content.field].map((value, index) => (
+              <StyledChip
+                key={index}
+                label={value}
+                variant="outlined"
+                color="primary"
+              />
+            ))
+          ) : content.field === "isActive" ? (
+            <StyledChip
+              color={selectedDetail[content.field] ? "success" : "error"}
+              label={selectedDetail[content.field] ? "Active" : "Inactive"}
+              variant="outlined"
+            />
+          ) : (
+            selectedDetail[content.field]
+          )}
+        </StyledOtherText>
+      ))}
     </>
   );
 }
