@@ -86,15 +86,19 @@ export const LIST_HOME_ADMIN = [
     { LIST_COLLAPSE: LIST_PAYMENT, nameCollapse: "Payment", icon: <LocalAtmIcon /> },
 ]
 
-export const NAME_COLUMNS_TRANSACTION = [
-    { id: 'transaction_date', label: 'Date of Transaction', minWidth: "100px", align: 'left' },
-    { id: 'zp_trans_id', label: 'Trading code', minWidth: "100px", align: 'left' },
+export const NAME_COLUMNS_ORDER = [
     { id: 'event_name', label: 'Event Name', minWidth: "100px", align: 'left' },
     { id: 'event_date', label: 'Date Event', minWidth: "100px", align: 'left' },
+    { id: 'event_location', label: 'Event Location', minWidth: "100px", align: 'left' },
+    { id: 'totalTransactions', label: 'Total transactions', minWidth: "100px", align: 'left' },
+]
+export const NAME_COLUMNS_TRANSACTION = [
+    { id: 'transaction_date', label: 'Transaction Date', minWidth: "100px", align: 'left' },
+    { id: 'zp_trans_id', label: 'Trading code', minWidth: "100px", align: 'left' },
     { id: 'client_email', label: 'Buyer email', minWidth: "100px", align: 'left' },
     { id: 'client_name', label: 'Buyer name', minWidth: "100px", align: 'left' },
     { id: 'numberOfTickets', label: 'Number Of Tickets', minWidth: "100px", align: 'left' },
-    { id: 'totalAmount', label: 'Transaction Amount (VNĐ)', minWidth: "100px", align: 'left' },
+    { id: 'totalAmount', label: 'Ticket purchase amount (VNĐ)', minWidth: "100px", align: 'left' },
 ]
 export const NAME_COLUMNS_REFUND = [
     { id: 'refund_date', label: 'Refund date', minWidth: "100px", align: 'left' },
@@ -105,3 +109,28 @@ export const NAME_COLUMNS_REFUND = [
     { id: 'numberOfTickets', label: 'Number Of Tickets', minWidth: "100px", align: 'left' },
     { id: 'money_refund', label: 'Amount paid to the user (VNĐ)', minWidth: "100px", align: 'left' },
 ]
+
+export const LIST_NAME_CONTENT_DAILOG_ORGANIZER = [
+    { label: "Email:", field: "email" },
+    { label: "Phone:", field: "phone" },
+    { label: "Founded Date:", field: "founded_date" },
+    { label: "Website:", field: "website" },
+    { label: "Address:", field: "address" },
+    { label: "Organizer Type:", field: "organizer_type" },
+    { label: "Status:", field: "isActive" },
+    { label: "Description:", field: "description" },
+];
+
+export const LIST_NAME_CONTENT_DIALOG_ORDER = [
+    { label: "Event Location:", field: "event_location" },
+    { label: "Type of event:", field: "type_of_event" },
+    { label: "Start sales date:", field: "start_sales_date" },
+    { label: "End sales date:", field: "end_sales_date" },
+    { label: "Event description:", field: "event_description" },
+    { label: "Total rating:", field: "totalRating" },
+    { label: "Total seats sold:", field: "totalSeatsSoldAtEvent" },
+    { label: "The sale amount of the event:", field: "totalTicketSalesAtEvent" },
+];
+
+//     ["Event Location: ", "Type of event: ", "Start sales date: ", "End sales date: ", "Event description: ",
+//  "Total rating: ", "Total seats sold: ", "The sale amount of the event: "]

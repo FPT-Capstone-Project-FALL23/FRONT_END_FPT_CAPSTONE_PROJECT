@@ -15,11 +15,14 @@ function ApprovedOrganizer() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
   const [selected_id, setSelected_id] = useState(null);
   const [openComfirn, setOpenComfirn] = useState(false);
+  const [organizersCount, setOrganizersCount] = useState();
+  const [page, setPage] = useState(0);
 
   const getAllOrganizerIsFalse = async () => {
     try {
       const respones = await ApiAdmin.getAllOrganizersIsActiveFalse();
-      setDataTableOrganizer(respones.data);
+      setDataTableOrganizer(respones.data.formattedOrganizers);
+      setOrganizersCount(respones.data.organizersCount);
     } catch (error) {
       console.log(error);
     }
@@ -43,6 +46,23 @@ function ApprovedOrganizer() {
       if (respones) {
         setOpenComfirn(false);
         getAllOrganizerIsFalse();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const pageRequest = { page: newPage + 1 };
+      console.log("object1: ", pageRequest);
+      const respones = await ApiAdmin.getAllOrganizersIsActiveFalse(
+        pageRequest
+      );
+      if (respones) {
+        setPage(newPage);
+        setDataTableOrganizer(respones.data.formattedOrganizers);
+        setOrganizersCount(respones.data.organizersCount);
       }
     } catch (error) {
       console.log(error);
@@ -98,6 +118,9 @@ function ApprovedOrganizer() {
             dialogContent={CONTENT_CONFIRM_APPROVAL_ORGANIZATIONS}
             cellComponents={cellComponentsOrganizerIsFalse}
             actions={actionOrganizerIsFalse}
+            count={organizersCount}
+            page={page}
+            handleChangePage={handleChangePage}
           />
         </Box>
       </Box>

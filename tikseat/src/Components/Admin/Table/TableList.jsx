@@ -8,13 +8,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Typography from "@mui/material/Typography";
-import { Box, Divider, IconButton } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Divider, IconButton } from "@mui/material";
 import DialogComponent, {
   StyledAvatar,
   StyledChip,
 } from "../Dialog/DialogDetail";
+import BoxLoading from "../BoxLoading";
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,29 +52,23 @@ export default function TableList({
   actions,
   cellComponents,
   selectedDataEvent,
+  isOrder,
+  count,
+  page,
+  handleChangePage,
 }) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
     // Simulate a 10-second loading delay
     const delay = setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 3500);
 
     return () => clearTimeout(delay);
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
+  
   const handlClientDetailClose = () => {
     setDetailOpen(false);
   };
@@ -85,15 +78,7 @@ export default function TableList({
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <Divider />
         {loading ? (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}>
-            <CircularProgress size={64} />
-          </Box>
+          <BoxLoading />
         ) : (
           <>
             <TableContainer sx={{ maxHeight: 600 }}>
@@ -122,48 +107,42 @@ export default function TableList({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {dataTable
-                    ?.slice(
-                      page * rowsPerPage,
-                      page * rowsPerPage + rowsPerPage
-                    )
-                    ?.map((row, index) => {
-                      return (
-                        <StyledTableRow key={row.id}>
-                          {nameColumns.map((column) => (
-                            <StyledTableCell key={column.id}>
-                              {cellComponents && cellComponents[column.id]
-                                ? cellComponents[column.id](row[column.id])
-                                : row[column.id]}
-                            </StyledTableCell>
-                          ))}
-                          {actions && (
-                            <StyledTableCell>
-                              {actions.map((action) => (
-                                <IconButton
-                                  key={action.name}
-                                  color={action.color}
-                                  onClick={() => action.onClick(row)}>
-                                  {action.icon}
-                                </IconButton>
-                              ))}
-                            </StyledTableCell>
-                          )}
-                        </StyledTableRow>
-                      );
-                    })}
+                  {dataTable?.map((row, index) => {
+                    return (
+                      <StyledTableRow key={row.id}>
+                        {nameColumns.map((column) => (
+                          <StyledTableCell key={column.id}>
+                            {cellComponents && cellComponents[column.id]
+                              ? cellComponents[column.id](row[column.id])
+                              : row[column.id]}
+                          </StyledTableCell>
+                        ))}
+                        {actions && (
+                          <StyledTableCell>
+                            {actions.map((action) => (
+                              <IconButton
+                                key={action.name}
+                                color={action.color}
+                                onClick={() => action.onClick(row)}>
+                                {action.icon}
+                              </IconButton>
+                            ))}
+                          </StyledTableCell>
+                        )}
+                      </StyledTableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[5]}
               colSpan={3}
               component="div"
-              count={dataTable?.length}
-              rowsPerPage={rowsPerPage}
+              count={count}
+              rowsPerPage={5}
               page={page}
               onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
             />
             <DialogComponent
               open={detailOpen}
@@ -177,6 +156,7 @@ export default function TableList({
               dialogTitle={dialogTitle}
               dialogContent={dialogContent}
               selectedDataEvent={selectedDataEvent}
+              isOrder={isOrder}
             />
           </>
         )}

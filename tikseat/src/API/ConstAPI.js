@@ -55,9 +55,11 @@ export const URL_GET_DETAIL_EVENT = "/admin/getDetailEventActiveIsFalse";
 export const URL_SET_IS_ACTIVE_EVENT = "/admin/setIsActiveEvent";
 export const URL_SET_IS_HOT = "/admin/setIsHotEvent";
 export const URL_GET_ALL_ODRERS = "/admin/getAllOrders";
-export const URL_GET_TOTAL_AMOUNT_AND_ADMIN_EARNING = "/admin/getTotalAmountSoldAllEventAndAdminEarnings";
+export const URL_GET_HOME_ADMIN = "/admin/getHomeAdmin";
 export const URL_BLOCK_USER = "/admin/blockedUser";
 export const URL_LIST_BLOCK_ORGANIZER = "/admin/getAllOrganizerBlockeds";
+export const URL_GET_INFORMATION_EVENT = "/admin/getInformationEvent";
+export const URL_GET_TRANSACTION_INFORMATION = "/admin/getTransactionInformation";
 
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";

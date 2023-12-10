@@ -44,7 +44,7 @@ function Row({ rows }) {
           {rows?.isActive ? (
             <Chip label="Active" color="success" />
           ) : (
-            <Chip label="aaa" color="error" />
+            <Chip label="Not Active" color="error" />
           )}
         </TableCell>
         <TableCell align="center">

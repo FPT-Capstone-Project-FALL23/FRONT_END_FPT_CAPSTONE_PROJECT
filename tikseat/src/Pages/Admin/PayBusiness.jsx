@@ -15,18 +15,27 @@ function PayBusiness() {
             <Typography
               variant="h4"
               sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-              OKE
+              List of paid events for businesses
             </Typography>
           </div>
           <Grid container spacing={2} sx={{ marginBottom: "15px" }}>
             <Grid item xs={4}>
-              <CardTransactions nameSubtitle="aaaaaaa" total={100} />
+              <CardTransactions
+                nameSubtitle="Total number of end events"
+                total={2}
+              />
             </Grid>
             <Grid item xs={4}>
-              <CardTransactions nameSubtitle="aaaaaaa" total={100} />
+              <CardTransactions
+                nameSubtitle="Total ticket sales for all events (VND)"
+                total={100}
+              />
             </Grid>
             <Grid item xs={4}>
-              <CardTransactions nameSubtitle="aaaaaaa" total={100} />
+              <CardTransactions
+                nameSubtitle="Total amount paid to the organization (VND)"
+                total={100}
+              />
             </Grid>
           </Grid>
           <Box sx={{ marginTop: "10px" }}></Box>
