@@ -37,7 +37,7 @@ export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
 export const URL_CHECKIN = "/checkin/check_in";
 
 //-------------------RATING----------------------------
-export const URL_RATING = "/rating/createRating"
+export const URL_RATING = "/rating/createRating";
 
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";
@@ -64,6 +64,7 @@ export const URL_GET_TRANSACTION_INFORMATION = "/admin/getTransactionInformation
 //-------------------PAYMENT----------------------------
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
 export const URL_ORDER_BY_CLIENT = "/order/getOrdersByClient";
+export const URL_GET_MY_TICKET = "/order/getMyTicket";
 export const URL_ORDER_DETAIL = "/order/getOrderDetail";
 export const URL_SIGNUP = "/resigterUser";
 export const URL_ADDPAYMENT = "";
