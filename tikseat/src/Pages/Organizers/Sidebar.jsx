@@ -23,6 +23,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PaidIcon from "@mui/icons-material/Paid";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
@@ -118,7 +119,7 @@ const Drawer = styled(MuiDrawer, {
 
 export const handleLogOut = (navigate) => {
   window.localStorage.clear();
-  navigate("/login");
+  navigate("/");
 };
 
 export default function MiniDrawer() {
@@ -412,6 +413,38 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
+            onClick={() => setMenuData("transactionHistory")}>
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "transactionHistory"
+                    ? "rgb(245, 189, 25)"
+                    : "transparent",
+                borderRadius: "5px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}>
+                <PaidIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Transaction history"
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
             onClick={() => handleClickRefund()}>
             <ListItemButton
               sx={{
@@ -430,16 +463,16 @@ export default function MiniDrawer() {
                   justifyContent: "center",
                 }}>
                 {notificationRefund.length > 0 && (
-                    <Badge
-                      sx={{
-                        position: "absolute",
-                        marginTop: open ? "6%" : "10%",
-                        marginLeft: open ? "152%" : "70%",
-                      }}
-                      badgeContent={notificationRefund.length}
-                      color="error"
-                    />
-                  )}
+                  <Badge
+                    sx={{
+                      position: "absolute",
+                      marginTop: open ? "6%" : "10%",
+                      marginLeft: open ? "152%" : "70%",
+                    }}
+                    badgeContent={notificationRefund.length}
+                    color="error"
+                  />
+                )}
                 <CurrencyExchangeIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
@@ -514,8 +547,11 @@ export default function MiniDrawer() {
 
       <Grid
         className="box"
-        sx={{ height: "100vh", width: "100%", backgroundColor: "#e7e8ec", zIndex: 1, }}
-      >
+        sx={{
+          width: "100%",
+          backgroundColor: "#e7e8ec",
+          zIndex: 1,
+        }}>
         <Box
           style={{
             padding: "80px 20px 20px 20px",
@@ -526,13 +562,13 @@ export default function MiniDrawer() {
           {menuData === "newEvent" && <CreateEventDefault />}
           {menuData === "eventHistory" && (
             <EventHistory
-            onEventDetail={(data, actionType) => {
-              setEventDetail(data);
-              if (actionType === "statistics") {
-                setMenuData("eventDetail");
-              } else {
-                setMenuData("updateEvent");
-              }
+              onEventDetail={(data, actionType) => {
+                setEventDetail(data);
+                if (actionType === "statistics") {
+                  setMenuData("eventDetail");
+                } else {
+                  setMenuData("updateEvent");
+                }
               }}
             />
           )}
@@ -542,7 +578,9 @@ export default function MiniDrawer() {
           {menuData === "updateEvent" && (
             <UpdateEventDefault eventDetail={eventDetail} />
           )}
-          {menuData === "checkinTicket" && <CheckinTicket CheckingTicket={eventCheckin} />}
+          {menuData === "checkinTicket" && (
+            <CheckinTicket CheckingTicket={eventCheckin} />
+          )}
 
           {menuData === "checkin" && (
             <ListEventToday
@@ -556,6 +594,7 @@ export default function MiniDrawer() {
           {menuData === "changePass" && <ChangePassword />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
           {menuData === "listRefund" && <ListRefund />}
+          {menuData === "transactionHistory" && <ListRefund />}
           {menuData === "logOut" && <DefaultDashboard />}
         </Box>
       </Grid>

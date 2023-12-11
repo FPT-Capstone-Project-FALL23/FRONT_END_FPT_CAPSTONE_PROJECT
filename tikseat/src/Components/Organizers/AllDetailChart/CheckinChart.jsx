@@ -20,7 +20,7 @@ function CheckinChart({dataAllEventDetail}) {
             ],
           },
         ]}
-        height={175}
+        height={200}
         sx={{ width: "100%" }}
       />
     </>

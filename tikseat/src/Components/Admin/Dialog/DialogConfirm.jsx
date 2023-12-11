@@ -43,7 +43,6 @@ export default function DialogConfirm({
     const formatted = date.toDateString();
     return formatted;
   };
-  console.log("event", event);
   const RenderConfirmEvent = () => {
     return (
       <>
@@ -80,7 +79,6 @@ export default function DialogConfirm({
                         expanded={expandedArea === area._id}
                         onChange={() => handleAccordionChange(area._id)}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <TableCell>{area.name_areas}</TableCell>
                           <TableCell>{area.name_areas}</TableCell>
                           <TableCell>{area.total_row}</TableCell>
                           <TableCell>{area.ticket_price}</TableCell>

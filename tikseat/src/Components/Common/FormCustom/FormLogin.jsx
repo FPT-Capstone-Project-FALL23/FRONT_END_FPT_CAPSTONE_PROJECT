@@ -61,7 +61,6 @@ function FormLogin({
       });
       console.log("response", response);
       const token = response.token;
-      const roleUser = response.data.dataUser.role;
       const dataUser = response.data.dataUser;
       const dataInfo = response.data.dataInfo;
 
@@ -120,7 +119,7 @@ function FormLogin({
         <div
           style={{
             display: "flex",
-            flexDirection:"row-reverse",
+            flexDirection: "row-reverse",
             marginBottom: "20px",
           }}>
           <Link
