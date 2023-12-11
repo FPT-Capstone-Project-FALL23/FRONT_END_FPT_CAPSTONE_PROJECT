@@ -28,13 +28,16 @@ export const URL_SEARCHEVENT = "/event/searchEvent";
 export const URL_CREATEEVENT = "/event/createEvent";
 export const URL_UPDATEEVENT = "/event/updateEvent";
 export const URL_CREATEREFUND = "/refund/createRefund";
-
 export const URL_EVENTHISTORY = "/event/listEventOrganizer";
 export const URL_UPDATESTATUS = "/event/updateChairStatus";
 export const URL_TOTALALLEVENT = "/event/statisticalEvent";
 export const URL_TOTALONEEVENT = "/event/statisticalOneEvent";
 export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
 export const URL_CHECKIN = "/checkin/check_in";
+
+//-------------------PAYBUSINESS----------------------------
+export const URL_CREATE_PAY_BUSINESS_OF_EVENT = "/payBusiness/createPayBusinessOfEvent";
+export const URL_GET_PAY_BUSINESS_ORGANIZERS = "/payBusiness/getPayBusinessWithOrganizers";
 
 //-------------------RATING----------------------------
 export const URL_RATING = "/rating/createRating"

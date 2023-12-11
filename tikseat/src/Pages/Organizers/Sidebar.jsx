@@ -23,6 +23,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PaidIcon from "@mui/icons-material/Paid";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
@@ -415,6 +416,38 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
+            onClick={() => setMenuData("transactionHistory")}>
+            <ListItemButton
+              sx={{
+                minHeight: 50,
+                justifyContent: open ? "initial" : "center",
+                backgroundColor:
+                  menuData === "transactionHistory"
+                    ? "rgb(245, 189, 25)"
+                    : "transparent",
+                borderRadius: "5px",
+                margin: "5px 10px 5px 10px",
+                px: 2.5,
+              }}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 1.5,
+                  justifyContent: "center",
+                }}>
+                <PaidIcon sx={styleIcon} />
+              </ListItemIcon>
+              <ListItemText
+                sx={{ display: open ? "block" : "none" }}
+                primary="Transaction history"
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{
+              display: "block",
+            }}
             onClick={() => handleClickRefund()}>
             <ListItemButton
               sx={{
@@ -569,6 +602,7 @@ export default function MiniDrawer() {
           {menuData === "changePass" && <ChangePassword />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
           {menuData === "listRefund" && <ListRefund />}
+          {menuData === "transactionHistory" && <ListRefund />}
           {menuData === "logOut" && <DefaultDashboard />}
         </Box>
       </Grid>

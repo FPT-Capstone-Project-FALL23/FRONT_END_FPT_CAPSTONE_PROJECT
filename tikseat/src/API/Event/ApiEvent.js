@@ -15,6 +15,8 @@ import {
   URL_ACCEPTREFUND,
   URL_GET_LIST_REFUND,
   URL_GETDETAILEVENT,
+  URL_CREATE_PAY_BUSINESS_OF_EVENT,
+  URL_GET_PAY_BUSINESS_ORGANIZERS,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -66,6 +68,12 @@ const ApiEvent = {
   },
   acceptRefund(data) {
     return axiosDefault.post(URL_ACCEPTREFUND, data);
+  },
+  createPayBusinessOfEvent(data) {
+    return axiosDefault.post(URL_CREATE_PAY_BUSINESS_OF_EVENT, data)
+  },
+  getPayBusinessWithOrganizers(data) {
+    return axiosDefault.post(URL_GET_PAY_BUSINESS_ORGANIZERS, data)
   },
 };
 

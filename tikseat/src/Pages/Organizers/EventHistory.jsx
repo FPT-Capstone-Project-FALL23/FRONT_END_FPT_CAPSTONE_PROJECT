@@ -17,7 +17,16 @@ import {
   // setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-import { Button, Grid, Pagination, Stack } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Stack,
+  DialogContentText,
+} from "@mui/material";
 import Rating from "@mui/material/Rating";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -48,9 +57,11 @@ export const ButtonAction = ({
   handleClick,
   row,
   nameHandle,
+  isRequestPayment,
 }) => {
   return (
     <Button
+      disabled={isRequestPayment ? true : false}
       style={{
         border: "solid 1px",
         width: "90%",
@@ -58,7 +69,7 @@ export const ButtonAction = ({
       }}
       onClick={
         nameButton == "Request payment"
-          ? () => handleClick()
+          ? () => handleClick(row)
           : () => handleClick(row, nameHandle)
       }>
       <span
@@ -74,6 +85,53 @@ export const ButtonAction = ({
   );
 };
 
+export const DialogRequest = ({
+  open,
+  handleCloseDialog,
+  handleConfirm,
+  dataDialog,
+}) => {
+  return (
+    <Dialog
+      open={open}
+      onClose={handleCloseDialog}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description">
+      <DialogTitle id="alert-dialog-title">
+        Request payment to the organization?
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Event {dataDialog?.nameEvent} has ended. The total ticket sales amount
+          of the event is {dataDialog?.totalActual.toLocaleString()} VND and the
+          total ticket refund amount is xxx VND.
+        </DialogContentText>
+        <DialogContentText id="alert-dialog-description">
+          Admin will receive 1% of {dataDialog?.totalActual.toLocaleString()}{" "}
+          VNĐ equals {dataDialog?.totalEventAmount.toLocaleString()} VNĐ and 15%
+          of {dataDialog?.totalRefundAmount.toLocaleString()} VNĐ equals{" "}
+          {dataDialog?.adminEarRefund.toLocaleString()} VNĐ.
+        </DialogContentText>
+        <DialogContentText id="alert-dialog-description">
+          You will receive a total amount of{" "}
+          {dataDialog?.totalTicketAmountReceived.toLocaleString()} VND
+        </DialogContentText>
+        <DialogContentText id="alert-dialog-description">
+          We will transfer the money to you within 1 to 3 days
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={handleConfirm} color="primary" autoFocus>
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 function EventHistory({ onEventDetail }) {
   const dataInfo = getLocalStorageUserInfo();
   const [eventHistory, setEventHistory] = useState([]);
@@ -81,6 +139,9 @@ function EventHistory({ onEventDetail }) {
   const [totalPage, setTotalPage] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [requestCreate, setRequestCreate] = useState();
+  const [dataDialog, setDataDialog] = useState();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -121,6 +182,53 @@ function EventHistory({ onEventDetail }) {
     onEventDetail(row, actionType);
   };
 
+  const handleRequestPayment = (row) => {
+    console.log("row", row);
+    const organizers_id = dataInfo._id;
+    const totalEventAmount = row.totalActual * 0.01;
+    const totalTicketAmountReceived =
+      row.totalActual -
+      totalEventAmount +
+      (row.totalRefundAmount - row.adminEarRefund);
+    const payBusiness = {
+      event_id: row._idEvent,
+      event_name: row.eventName,
+      isRequest: true,
+    };
+
+    const request = {
+      organizers_id: organizers_id,
+      payBusiness: payBusiness,
+      totalEventAmount: totalTicketAmountReceived,
+    };
+    const dataOfDialog = {
+      eventName: row.eventName,
+      totalActual: row.totalActual,
+      totalRefundAmount: row.totalRefundAmount,
+      adminEarRefund: row.adminEarRefund,
+      totalEventAmount: totalEventAmount,
+      totalTicketAmountReceived: totalTicketAmountReceived,
+    };
+    console.log("request", request);
+    console.log("dataDialog", dataOfDialog);
+    setDataDialog(dataOfDialog);
+    setRequestCreate(request);
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
+  const handleConfirm = () => {
+    console.log("requestCreate", requestCreate);
+    const reponse = ApiEvent.createPayBusinessOfEvent(requestCreate);
+    if (reponse) {
+      console.log("reponse", reponse);
+      setOpen(false);
+    }
+  };
+
   return (
     <>
       <TableContainer
@@ -140,10 +248,13 @@ function EventHistory({ onEventDetail }) {
               <StyledTableCell>TotalRating</StyledTableCell>
               <StyledTableCell align="center">Start Day&nbsp;</StyledTableCell>
               <StyledTableCell align="center">
-                Total Estimated&nbsp;
+                Total Estimated (VNĐ)&nbsp;
               </StyledTableCell>
               <StyledTableCell align="center">
-                Total Actual&nbsp;
+                Total Actual (VNĐ)&nbsp;
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                Total ticket refund (VNĐ)&nbsp;
               </StyledTableCell>
               <StyledTableCell align="center">
                 Event Status&nbsp;
@@ -174,10 +285,13 @@ function EventHistory({ onEventDetail }) {
                     {new Date(row.startDay).toLocaleString()}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.totalEstimated}
+                    {row.totalEstimated.toLocaleString()}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.totalActual}
+                    {row.totalActual.toLocaleString()}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.totalRefundAmount.toLocaleString()}
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
@@ -244,13 +358,16 @@ function EventHistory({ onEventDetail }) {
                         <ButtonAction
                           nameButton="Request payment"
                           icon={<RequestPageIcon />}
+                          handleClick={handleRequestPayment}
+                          row={row}
+                          isRequestPayment={row.isRequestPayment}
                         />
                       ) : (
                         <ButtonAction
                           nameButton="Update"
                           icon={<EditIcon />}
                           row={row}
-                          handleEventDetail={handleEventDetail}
+                          handleClick={handleEventDetail}
                           nameHandle="update"
                         />
                       )}
@@ -284,6 +401,12 @@ function EventHistory({ onEventDetail }) {
             />
           </Stack>
         </Grid>
+        <DialogRequest
+          open={open}
+          handleCloseDialog={handleCloseDialog}
+          handleConfirm={handleConfirm}
+          dataDialog={dataDialog}
+        />
       </TableContainer>
     </>
   );
