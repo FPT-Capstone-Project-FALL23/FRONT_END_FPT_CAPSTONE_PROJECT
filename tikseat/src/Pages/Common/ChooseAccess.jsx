@@ -20,6 +20,7 @@ import { setLocalStorageUserData } from "../../Store/userStore";
 import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 import "react-toastify/dist/ReactToastify.css";
 import { ROLE } from "../../Assets/Constant/Common/constCommon";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import ApiCommon from "../../API/Common/ApiCommon";
 
@@ -32,6 +33,7 @@ const ChooseAccess = () => {
   const [verifyCode, setVerifyCode] = useState("");
   const [displayCode, setDisplayCode] = useState("none");
   const [callAPI, setCallAPI] = useState("verify Email");
+  const [loading, setLoading] = useState(false);
 
   const [selectedRole, setSelectedRole] = useState(null);
 
@@ -46,7 +48,7 @@ const ChooseAccess = () => {
 
   const navigateAfterConfirmPassword = (roleUser) => {
     if (roleUser === ROLE[0]) {
-      navigate("/login");
+      navigate("/");
     } else {
       navigate("/createProfileOrganizers");
     }
@@ -65,23 +67,26 @@ const ChooseAccess = () => {
 
   const handleSumit = async (e) => {
     e.preventDefault();
-    if ( selectedRole === null || newPassword !== confirmPassword) {
+    if (selectedRole === null || newPassword !== confirmPassword) {
       toast.error("Please complete all information", toastOptions);
     } else {
       if (callAPI === "verify Email") {
         // Step 1: Verify Email
         try {
+          setLoading(true);
           const response = await ApiCommon.verifyEmail({
             email: email,
           });
-
           if (response.status === true) {
             setCallAPI("verify Code");
             setDisplayCode("block");
+            setLoading(false);
           } else {
             console.log("Invalid email or other error!");
+            setLoading(false);
           }
         } catch (error) {
+          setLoading(false);
           console.log("error: ", error);
           const err = error.response.data.message;
           toast.error(err, toastOptions);
@@ -89,18 +94,22 @@ const ChooseAccess = () => {
       } else {
         // Step 2: Verify Code
         try {
+          setLoading(true);
           const response = await ApiCommon.verifyCode({
             email: email,
             enteredOTP: verifyCode,
           });
 
           if (response.status === true) {
+            setLoading(false);
             setCallAPI("setPassword");
             handleSignUp();
           } else {
+            setLoading(false);
             console.log("Invalid code or other error!");
           }
         } catch (error) {
+          setLoading(false);
           console.log("Error verifying code: ", error);
           toast.error("Error verifying code:", toastOptions);
         }
@@ -109,8 +118,6 @@ const ChooseAccess = () => {
   };
 
   const handleSignUp = async (e) => {
-    e.preventDefault();
-
     try {
       const response = await ApiCommon.registerUser({
         email: email,
@@ -311,11 +318,10 @@ const ChooseAccess = () => {
               label=" Re-enter Password"
             />
             {newPassword !== confirmPassword && (
-                <Grid sx={{margin:"-20px 0px 30px 10px"}}>
-                  <span style={{ color: "red" }}>Password not match</span>
-                </Grid>
-              )}
-
+              <Grid sx={{ margin: "-20px 0px 30px 10px" }}>
+                <span style={{ color: "red" }}>Password not match</span>
+              </Grid>
+            )}
             <Grid sx={{ display: displayCode }}>
               <TextField
                 fullWidth
@@ -325,7 +331,6 @@ const ChooseAccess = () => {
                 value={verifyCode === undefined ? "" : verifyCode}
                 label="Enter Code"
               />
-
               <Stack
                 spacing={1}
                 alignItems={"center"}
@@ -349,6 +354,11 @@ const ChooseAccess = () => {
                   RESEND CODE
                 </Link>
               </Stack>
+            </Grid>
+            <Grid sx={{ display: "flex", justifyContent: "center" }}>
+              <Box sx={{ display: loading === true ? "block" : "none" }}>
+                <CircularProgress />
+              </Box>
             </Grid>
             <Grid className="btnLogin">
               <Button

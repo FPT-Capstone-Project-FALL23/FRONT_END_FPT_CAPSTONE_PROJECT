@@ -120,7 +120,6 @@ export const getAPICity = async (setAllCity) => {
 export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
   // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
   const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const objectUrl = URL.createObjectURL(selectedFile);
@@ -131,8 +130,6 @@ export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
 function ProfileOrganizers() {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
-  
-  console.log(dataInfo);
   const [avatar, setAvatar] = useState(dataInfo?.avatarImage || "");
   const [selectedFile, setSelectedFile] = useState(null);
   const [eventType, setEventType] = useState([]);
@@ -142,7 +139,6 @@ function ProfileOrganizers() {
   const today = new Date().toISOString().slice(0, 10);
 
   const [selectCity, setSelectCity] = useState(dataInfo?.address?.city || "");
-  console.log(selectCity);
   const [selectDistrict, setSelectDistrict] = useState(
     dataInfo?.address?.district || ""
   );
@@ -167,7 +163,6 @@ function ProfileOrganizers() {
     },
   });
 
-  console.log(organizerInfo);
   const theme = useTheme();
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -187,10 +182,10 @@ function ProfileOrganizers() {
     setOrganizerInfo((prevOrganizerInfo) => ({
       ...prevOrganizerInfo,
       address: {
-        city: selectCity?.name || "",
-        district: selectDistrict?.name || "",
-        ward: selectWard?.name || "",
-        specific_address: specificAddress || "",
+        city: selectCity?.name || selectCity,
+        district: selectDistrict?.name || selectDistrict,
+        ward: selectWard?.name || selectWard,
+        specific_address: specificAddress,
       },
     }));
   }, [selectCity, selectDistrict, selectWard, specificAddress]);
@@ -220,7 +215,6 @@ function ProfileOrganizers() {
     if (dataInfo) {
       try {
         const _idOrganizer = dataInfo._id;
-        console.log(organizerInfo);
         const dataUpdate = {
           organizer_name: organizerInfo.organizer_name,
           organizer_type: organizerInfo?.organizer_type || eventType,
@@ -288,7 +282,6 @@ function ProfileOrganizers() {
         organizerInfo: organizerInfo,
         avatarImage: base64EncodedImage,
       });
-      console.log(respone.data);
       setLocalStorageUserInfo(respone.data);
       navigate("/dashboard");
     } catch (err) {
@@ -307,8 +300,7 @@ function ProfileOrganizers() {
         organizerInfo: dataUpdate,
         avatarImage: base64EncodedImage,
       });
-      await setLocalStorageUserInfo(response.data);
-      console.log(response.data);
+      setLocalStorageUserInfo(response.data);
       navigate("/dashboard");
       toast.success("Update profile success!", toastOptions);
     } catch (error) {

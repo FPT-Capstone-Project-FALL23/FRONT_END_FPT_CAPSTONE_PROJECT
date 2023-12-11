@@ -144,7 +144,6 @@ export const getAPICity = async (setAllCity) => {
 export const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
   // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
   const selectedFile = e.target.files[0];
-  console.log("a", selectedFile);
   setSelectedFile(selectedFile);
   if (selectedFile) {
     const reader = new FileReader();
@@ -188,6 +187,8 @@ const NewEvent = ({ onContinueClick }) => {
   const [specificAddress, setSpecificAddress] = useState(
     eventInfomation?.address?.specific_address || ""
   );
+
+
   const fileInputRef = useRef("");
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
@@ -200,9 +201,9 @@ const NewEvent = ({ onContinueClick }) => {
     type_of_event: eventInfomation?.type_of_event || eventType,
     event_description: eventInfomation?.event_description || "",
     address: {
-      city: selectCity || "",
-      district: selectDistrict || "",
-      ward: selectWard || "",
+      city: selectCity ? selectCity?.name : "",
+      district: selectDistrict ? selectDistrict?.name : "",
+      ward: selectWard ? selectWard?.name : "",
       specific_address: specificAddress || "",
     },
   });
@@ -225,10 +226,10 @@ const NewEvent = ({ onContinueClick }) => {
     setNewEvent((prevNewEvent) => ({
       ...prevNewEvent,
       address: {
-        city: selectCity?.name || "",
-        district: selectDistrict?.name || "",
-        ward: selectWard?.name || "",
-        specific_address: specificAddress || "",
+        city: selectCity?.name || selectCity,
+        district: selectDistrict?.name || selectDistrict,
+        ward: selectWard?.name || selectWard,
+        specific_address: specificAddress,
       },
     }));
   }, [selectCity, selectDistrict, selectWard, specificAddress]);
