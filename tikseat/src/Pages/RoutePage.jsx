@@ -21,8 +21,10 @@ const ProfileOrganizers = lazy(() => import("./Organizers/ProfileOrganizers"));
 const ProfileClient = lazy(() => import("./Client/ProfileClient"));
 const BookTickets = lazy(() => import("./Client/BookTickets"));
 // Trang tam thoi
+const HomePageClient = lazy(() => import("../Pages/Client/HomePageClient"));
 const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
 const Sidebar = lazy(() => import("../Pages/Organizers/Sidebar"));
+
 const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
 const ClientPageAdmin = lazy(() => import("../Pages/Admin/ClientPageAdmin"));
 const OrganizerPageAdmin = lazy(() =>
@@ -39,6 +41,7 @@ function RoutePage() {
         <Route path="/organizerPageAdmin" element={<OrganizerPageAdmin />} />
         {/* <Route path="/my-profile" element={<MyProfile />}></Route> */}
         <Route path="/change-password" element={<ChangePassword />}></Route>
+        <Route path="/homepageClient" element={<HomePageClient />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Sidebar />}></Route>
 

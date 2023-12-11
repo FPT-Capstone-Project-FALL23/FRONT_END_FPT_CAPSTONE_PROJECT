@@ -6,13 +6,18 @@ import {
   URL_ORDER_DETAIL,
   URL_PAYTICKET_OF_EVENT,
   URL_CREATETICKET,
-  URL_RATING
+  URL_RATING,
+  URL_GET_MY_TICKET,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
 const ApiClient = {
   orderByClient(data) {
     return axiosDefault.post(URL_ORDER_BY_CLIENT, data);
+  },
+
+  getMyTicket(data) {
+    return axiosDefault.post(URL_GET_MY_TICKET, data);
   },
 
   getOrderDetail(data) {
@@ -30,7 +35,7 @@ const ApiClient = {
   geDetailEvent(data) {
     return axiosDefault.post(URL_GETDETAILEVENT, data);
   },
-  getCreateTicket(data){
+  getCreateTicket(data) {
     return axiosDefault.post(URL_CREATETICKET, data);
   },
   createRefund(data) {
