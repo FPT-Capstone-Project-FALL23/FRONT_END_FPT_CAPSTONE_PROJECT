@@ -103,18 +103,18 @@ export const DialogRequest = ({
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           Event {dataDialog?.nameEvent} has ended. The total ticket sales amount
-          of the event is {dataDialog?.totalActual.toLocaleString()} VND and the
+          of the event is {dataDialog?.totalActual?.toLocaleString()} VND and the
           total ticket refund amount is xxx VND.
         </DialogContentText>
         <DialogContentText id="alert-dialog-description">
-          Admin will receive 1% of {dataDialog?.totalActual.toLocaleString()}{" "}
-          VNĐ equals {dataDialog?.totalEventAmount.toLocaleString()} VNĐ and 15%
-          of {dataDialog?.totalRefundAmount.toLocaleString()} VNĐ equals{" "}
-          {dataDialog?.adminEarRefund.toLocaleString()} VNĐ.
+          Admin will receive 1% of {dataDialog?.totalActual?.toLocaleString()}{" "}
+          VNĐ equals {dataDialog?.totalEventAmount?.toLocaleString()} VNĐ and 15%
+          of {dataDialog?.totalRefundAmount?.toLocaleString()} VNĐ equals{" "}
+          {dataDialog?.adminEarRefund?.toLocaleString()} VNĐ.
         </DialogContentText>
         <DialogContentText id="alert-dialog-description">
           You will receive a total amount of{" "}
-          {dataDialog?.totalTicketAmountReceived.toLocaleString()} VND
+          {dataDialog?.totalTicketAmountReceived?.toLocaleString()} VND
         </DialogContentText>
         <DialogContentText id="alert-dialog-description">
           We will transfer the money to you within 1 to 3 days
@@ -282,16 +282,16 @@ function EventHistory({ onEventDetail }) {
                     />
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {new Date(row.startDay).toLocaleString()}
+                    {new Date(row.startDay)?.toLocaleString()}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.totalEstimated.toLocaleString()}
+                    {row.totalEstimated?.toLocaleString()}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.totalActual.toLocaleString()}
+                    {row.totalActual?.toLocaleString()}
                   </StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.totalRefundAmount.toLocaleString()}
+                    {row.totalRefundAmount?.toLocaleString()}
                   </StyledTableCell>
 
                   <StyledTableCell align="center">

@@ -3,6 +3,9 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./Common/HomePage";
 import Loading from "./Common/Loading";
 
+import SuccessPage from "./Common/SuccessPage";
+import ErrorPage from "./Common/ErrorPage";
+
 // layout client header
 const LayoutClient = lazy(() =>
   import("../Components/Common/Layout/LayoutClient")
@@ -34,6 +37,8 @@ function RoutePage() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        <Route path="/success" element={<SuccessPage />} />
+        <Route path="/errorpage" element={<ErrorPage />} />
         <Route path="/homePageAdmin" element={<Adminpage />} />
         <Route path="/clientPageAdmin" element={<ClientPageAdmin />} />
         <Route path="/organizerPageAdmin" element={<OrganizerPageAdmin />} />

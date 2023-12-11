@@ -23,6 +23,9 @@ import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
+import { ToastContainer, toast } from "react-toastify";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import "react-toastify/dist/ReactToastify.css";
 import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
@@ -40,14 +43,10 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
-  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
-  const selectedFile = e.target.files[0];
-  setSelectedFile(selectedFile);
-  if (selectedFile) {
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setAvatar(objectUrl);
-  }
+export const validateFile = (fileName) => {
+  const fileExtensionRegex =
+    /^.*\.(jpg|jpeg|png|gif|tiff|psd|eps|ai|heic|raw|svg)$/i;
+  return fileExtensionRegex.test(fileName);
 };
 
 function ProfileClient() {
@@ -60,10 +59,28 @@ function ProfileClient() {
   const [selectedFile, setSelectedFile] = useState(null);
   console.log("selectedFile: ", selectedFile);
   const fileInputRef = useRef(null);
+  const [fileError, setFileError] = useState(null);
+
   const navigate = useNavigate();
 
   const handleIconClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      if (validateFile(selectedFile.name)) {
+        setSelectedFile(selectedFile);
+        const objectUrl = URL.createObjectURL(selectedFile);
+        setAvatar(objectUrl);
+      } else {
+        setSelectedFile(null);
+        setAvatar("");
+        setFileError("File input have format:(.jpg,.jpeg,.png,.gif,...)");
+      }
+    }
   };
 
   const [clientInfo, setClientInfo] = useState({
@@ -95,10 +112,13 @@ function ProfileClient() {
         avatarImage: base64EncodedImage,
       });
       console.log(respone.data);
-      await setLocalStorageUserInfo(respone.data);
+       setLocalStorageUserInfo(respone.data);
       navigate("/");
+      toast.success("Update profile success!", toastOptions);
     } catch (err) {
       console.error(err);
+      const error = err.response.data.message;
+      toast.error(error, toastOptions);
     }
   };
 
@@ -339,6 +359,9 @@ function ProfileClient() {
                 }
               />
             </Stack>
+            {fileError && (
+              <p style={{ color: "red", marginTop: "5px" }}>{fileError}</p>
+            )}
           </Grid>
         </Grid>
 
@@ -357,7 +380,17 @@ function ProfileClient() {
               backgroundcolor="#F5BD19"
             />
           </Stack>
+          <Stack style={{ width: "50%", margin: "30px auto" }}>
+            <ButtonCustom
+              type="button"
+              onClick={() => navigate("/change-password")}
+              color="black"
+              content="Change password"
+              backgroundcolor="#F5BD19"
+            />
+          </Stack>
         </Grid>
+        <ToastContainer />
       </FormSubmit>
     </>
   );

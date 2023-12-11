@@ -14,7 +14,7 @@ function TotalRevenue({ dataAllEventDetail }) {
           <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
               title="Actual money VNĐ"
-              count={dataAllEventDetail.totalRevenue.toLocaleString()}
+              count={dataAllEventDetail?.totalRevenue?.toLocaleString()}
               // percentage={allDataEvent.percent}
               percentage={75}
               extra="8,900"

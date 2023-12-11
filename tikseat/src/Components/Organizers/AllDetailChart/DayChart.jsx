@@ -5,7 +5,7 @@ import { Grid, Typography } from "@mui/material";
 function DayChart({ dataAllEventDetail }) {
   return (
     <>
-      <Grid item>
+      <Grid>
         <Typography variant="h5" fontWeight={600}>
           Total Buy Ticket
         </Typography>
@@ -30,7 +30,7 @@ function DayChart({ dataAllEventDetail }) {
             ],
           },
         ]}
-        height={175}
+        height={200}
         sx={{ width: "100%" }}
       />
     </>
