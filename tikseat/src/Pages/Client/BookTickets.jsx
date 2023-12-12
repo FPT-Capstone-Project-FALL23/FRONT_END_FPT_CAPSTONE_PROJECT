@@ -30,6 +30,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ApiClient from "../../API/Client/ApiClient";
+import imageScreen from "../../Assets/Images/screen.png";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 import Carousel from "react-multi-carousel";
@@ -268,7 +269,7 @@ const BookTickets = () => {
         chairIds: listChairIds,
         amount: totalByTicket,
       };
-      
+
       const response = await ApiClient.paymentTicket(requestData);
       if (response) {
         //chuyển trang qua trang của zalo
@@ -793,6 +794,10 @@ const BookTickets = () => {
                             alignItems={"center"}
                             style={{ background: "black", padding: "20px" }}
                           >
+                            {" "}
+                            <div style={{ margin: "auto", width: "80%" }}>
+                              <img src={imageScreen} alt="" srcset="" />
+                            </div>
                             <Box
                               component={"div"}
                               height={"300px"}
