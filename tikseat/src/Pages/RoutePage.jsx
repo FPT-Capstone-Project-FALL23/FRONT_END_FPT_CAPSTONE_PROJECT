@@ -7,7 +7,7 @@ import Loading from "./Common/Loading";
 const LayoutClient = lazy(() =>
   import("../Components/Common/Layout/LayoutClient")
 );
-
+const AboutPage = lazy(() => import("./Common/AboutPage"));
 const LoginPage = lazy(() => import("./Common/LoginPage"));
 const SignUp = lazy(() => import("./Common/SignUp"));
 const LayoutSign = lazy(() => import("../Components/Common/Layout/LayoutSign"));
@@ -40,6 +40,7 @@ function RoutePage() {
         {/* <Route path="/my-profile" element={<MyProfile />}></Route> */}
         <Route path="/change-password" element={<ChangePassword />}></Route>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/about_page" element={<AboutPage />} />
         <Route path="/dashboard" element={<Sidebar />}></Route>
 
         <Route element={<LayoutClient />}>

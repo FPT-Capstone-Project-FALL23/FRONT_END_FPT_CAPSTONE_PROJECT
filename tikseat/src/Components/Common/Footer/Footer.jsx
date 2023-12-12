@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import { Button, Stack, Typography } from "@mui/material";
 import logo from "../../../Assets/Images/logo.png";
 import {
@@ -80,14 +81,16 @@ const Footer = () => {
             <Stack>
               {listEventick.map((item, index) => {
                 return (
+                  <Link key={index} to={item.url} style={{ color: 'white' }}>
                   <Typography
-                    key={index}
+                    
                     padding={"5px 0"}
                     fontSize={"14px"}
                     fontWeight={500}
                   >
                     {item.title}
                   </Typography>
+                  </Link>
                 );
               })}
             </Stack>
