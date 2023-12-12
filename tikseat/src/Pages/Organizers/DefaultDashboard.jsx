@@ -61,61 +61,135 @@ function DefaultDashboard() {
         <Grid>
           <TotalRevenue dataAllEventDetail={allDataEvent} />
         </Grid>
+
         <Grid
           style={{
-            display: "flex",
             marginTop: "30px",
+            display: "flex",
             justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <Grid
             style={{
-              height: "450px",
-              width: "55%",
-              display: "flex",
-              flexDirection: "column",
+              backgroundColor: "#fff",
+              padding: "10px",
+              borderRadius: "5px",
+              width: "49.5%",
             }}
           >
-            <Grid
-              sx={{
-                backgroundColor: "#fff",
-                borderRadius: "5px",
-                width: "100%",
-                padding: "20px",
-              }}
-            >
-              <BasicArea />
-            </Grid>
+            <DayChart dataAllEventDetail={allDataEvent} />
+          </Grid>
+          <Grid
+            style={{
+              backgroundColor: "#fff",
+              padding: "10px",
+              borderRadius: "5px",
+              width: "49.5%",
+            }}
+          >
+            <CheckinChart dataAllEventDetail={allDataEvent} />
+          </Grid>
+        </Grid>
+
+        <Grid
+          style={{
+            height: "500px",
+            display: "flex",
+            margin: "30px 0px 20px 0px",
+            justifyContent: "space-between",
+          }}
+        >
+          <Grid
+            sx={{
+              backgroundColor: "#fff",
+              borderRadius: "5px",
+              width: "55%",
+              padding: "20px",
+            }}
+          >
+            <BasicArea />
           </Grid>
 
           <Grid
             style={{
-              height: "450px",
+              height: "100%",
               display: "flex",
               flexDirection: "column",
               width: "44%",
+              backgroundColor: "#fff",
+              borderRadius: "5px",
+              padding: "20px",
             }}
           >
-            <Grid
-              style={{
-                backgroundColor:"#fff",
-                padding:"10px",
-                borderRadius: "5px",
-                width: "100%",
-                marginBottom: "17px",
-              }}
-            >
-              <DayChart dataAllEventDetail={allDataEvent} />
+            <Grid sx={{marginBottom:"15px"}}>
+              <Typography variant="h5" fontWeight={600}>
+                Top 5 Events
+              </Typography>
             </Grid>
             <Grid
-              style={{
-                backgroundColor:"#fff",
-                padding:"10px",
-                borderRadius: "5px",
-                width: "100%",
+              sx={{
+                height: "400px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
               }}
             >
-              <CheckinChart dataAllEventDetail={allDataEvent} />
+              <Grid
+                sx={{
+                  width: "100%",
+                  height: "19%",
+                  backgroundColor: "#ccc",
+                  borderRadius: "5px",
+                  padding: "5px",
+                }}
+              >
+                aaaaaaaa
+              </Grid>
+              <Grid
+                sx={{
+                  width: "100%",
+                  height: "19%",
+                  backgroundColor: "#ccc",
+                  borderRadius: "5px",
+                  padding: "5px",
+                }}
+              >
+                aaaaaaaa
+              </Grid>
+              <Grid
+                sx={{
+                  width: "100%",
+                  height: "19%",
+                  backgroundColor: "#ccc",
+                  borderRadius: "5px",
+                  padding: "5px",
+                }}
+              >
+                aaaaaaaa
+              </Grid>
+              <Grid
+                sx={{
+                  width: "100%",
+                  height: "19%",
+                  backgroundColor: "#ccc",
+                  borderRadius: "5px",
+                  padding: "5px",
+                }}
+              >
+                aaaaaaaa
+              </Grid>
+              <Grid
+                sx={{
+                  width: "100%",
+                  height: "19%",
+                  backgroundColor: "#ccc",
+                  borderRadius: "5px",
+                  padding: "5px",
+                }}
+              >
+                aaaaaaaa
+              </Grid>
             </Grid>
           </Grid>
         </Grid>

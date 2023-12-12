@@ -124,23 +124,23 @@ function UpdateTicket({ event }) {
     }
   }
 
-  const defaultEventDate = dataTicket.event_date.map((eventDate) => {
-    const trimmedDateEvent = moment(eventDate.dateEvent).format(
+  const defaultEventDate = dataTicket?.event_date?.map((eventDate) => {
+    const trimmedDateEvent = moment(eventDate?.dateEvent).format(
       "YYYY-MM-DDTkk:mm"
     );
     return {
-      date_number: eventDate.date_number,
+      date_number: eventDate?.date_number,
       dateEvent: trimmedDateEvent,
-      tickets: eventDate.event_areas.map((ticket) => {
+      tickets: eventDate?.event_areas?.map((ticket) => {
         return {
-          id_ticket: ticket.id_areas,
-          name_ticket: ticket.name_areas,
-          total_row: ticket.total_row,
-          ticket_price: ticket.ticket_price,
-          rows: ticket.rows.map((row) => {
+          id_ticket: ticket?.id_areas,
+          name_ticket: ticket?.name_areas,
+          total_row: ticket?.total_row,
+          ticket_price: ticket?.ticket_price,
+          rows: ticket?.rows?.map((row) => {
             return {
-              row_name: row.row_name,
-              total_seat: row.total_chair,
+              row_name: row?.row_name,
+              total_seat: row?.total_chair,
             };
           }),
         };
@@ -152,12 +152,14 @@ function UpdateTicket({ event }) {
   const startSaleDate = new Date(dataTicket?.sales_date?.start_sales_date);
   const endSaleDate = new Date(dataTicket?.sales_date?.end_sales_date);
 
-  const startSale = startSaleDate.toISOString().split("T")[0];
-  const endSale = endSaleDate.toISOString().split("T")[0];
+  const startSale = startSaleDate?.toISOString().split("T")[0];
+  const endSale = endSaleDate?.toISOString().split("T")[0];
   const [saleDate, setSaleDate] = useState({
     startSaleDate: startSale || today,
     endSaleDate: endSale || today,
   });
+
+  console.log(saleDate)
 
   const [eventInfo, setEventInfo] = useState({
     event_name: dataEventInfo.event_name,
@@ -594,7 +596,7 @@ function UpdateTicket({ event }) {
       if (response.status === true) {
         toast.success("Update Event success!", toastOptions);
         handleNewEvent();
-        navigate("/dashboard");
+        navigate("/success");
         setLocalStorageTicketInfo([])
         console.log(response);
       } else {
@@ -731,7 +733,6 @@ function UpdateTicket({ event }) {
                   justifyContent: "space-between",
                   padding: "30px",
                   border: "1px solid black",
-                  // borderRadius: "5px",
                 }}
               >
                 <Stack style={{ width: "45%" }}>

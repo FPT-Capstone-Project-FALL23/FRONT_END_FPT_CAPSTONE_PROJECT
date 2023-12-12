@@ -3,9 +3,7 @@ import Grid from "@mui/material/Grid";
 import AnalyticEcommerce from "../../Cards/AnalyticEcommerce";
 import Typography from "@mui/material/Typography";
 
-
 function TotalRevenue({ dataAllEventDetail }) {
-
   return (
     <>
       <Grid>
@@ -13,16 +11,16 @@ function TotalRevenue({ dataAllEventDetail }) {
           <Typography variant="h4">Total Statistics</Typography>
         </Grid>
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid sx={{width:"24%"}}>
+          <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
-              title="Actual money"
-              count={dataAllEventDetail.totalRevenue}
+              title="Actual money VNĐ"
+              count={dataAllEventDetail?.totalRevenue?.toLocaleString()}
               // percentage={allDataEvent.percent}
               percentage={75}
               extra="8,900"
             />
           </Grid>
-          <Grid sx={{width:"24%"}}>
+          <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
               title="Total Ticket"
               count={dataAllEventDetail.totalChairs}
@@ -30,7 +28,7 @@ function TotalRevenue({ dataAllEventDetail }) {
               extra="8,900"
             />
           </Grid>
-          <Grid sx={{width:"24%"}}>
+          <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
               title="Total Buy Ticket"
               count={dataAllEventDetail.totalSoldChairs}
@@ -40,7 +38,7 @@ function TotalRevenue({ dataAllEventDetail }) {
               extra="1,943"
             />
           </Grid>
-          <Grid sx={{width:"24%"}}>
+          <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
               title="Total Check in"
               count={dataAllEventDetail.totalCheckedInChairs}
