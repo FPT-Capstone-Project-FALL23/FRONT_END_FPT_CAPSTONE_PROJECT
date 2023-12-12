@@ -30,6 +30,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ApiClient from "../../API/Client/ApiClient";
+import imageScreen from "../../Assets/Images/screen.png";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 import Carousel from "react-multi-carousel";
@@ -203,11 +204,7 @@ const BookTickets = () => {
       getEventDetail();
     }
   }, [idEvent]);
-  const ManagementUser = [
-    { content: `Welcome ${dataUser?.email}` },
-    { url: "/createProfileClient", content: "My profile" },
-    { url: "/login", content: "Log out" },
-  ];
+
   const [value, setValue] = React.useState("1");
 
   function handleSeatColor(item, isCheckSelected) {
@@ -759,6 +756,10 @@ const BookTickets = () => {
                             direction={"column"}
                             alignItems={"center"}
                             style={{ background: "black", padding: "20px" }}>
+                            {" "}
+                            <div style={{ margin: "auto", width: "80%" }}>
+                              <img src={imageScreen} alt="" srcset="" />
+                            </div>
                             <Box
                               component={"div"}
                               height={"300px"}
