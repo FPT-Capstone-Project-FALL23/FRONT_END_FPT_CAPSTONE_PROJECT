@@ -8,6 +8,9 @@ import {
   URL_CREATETICKET,
   URL_RATING,
   URL_GET_MY_TICKET,
+  URL_GET_RATING_OF_CLIENT,
+  URL_GET_ORDERS_AVAILABLET_TICKETS,
+  URL_GET_ORDERS_REFUND_TICKETS,
 } from "../ConstAPI";
 import axiosDefault from "../Defaults/AxiosDefault";
 
@@ -43,6 +46,15 @@ const ApiClient = {
   },
   rating(data) {
     return axiosDefault.post(URL_RATING, data);
+  },
+  getClientRating(data) {
+    return axiosDefault.post(URL_GET_RATING_OF_CLIENT, data);
+  },
+  getOrdersAvailableTickets(data) {
+    return axiosDefault.post(URL_GET_ORDERS_AVAILABLET_TICKETS, data);
+  },
+  getOrdersRefundTicket(data) {
+    return axiosDefault.post(URL_GET_ORDERS_REFUND_TICKETS, data);
   },
 };
 

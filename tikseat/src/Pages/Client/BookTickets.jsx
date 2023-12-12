@@ -223,9 +223,7 @@ const BookTickets = () => {
   const handleChangeTab = (event, newValue) => {
     setValue(newValue);
   };
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+
   const totalByTicket = selectChair
     ?.filter((item) => item.email === dataUser?.email)
     .reduce((accumulator, seat) => accumulator + seat.price, 0);
@@ -271,15 +269,8 @@ const BookTickets = () => {
       alert(e.response.data.message);
     }
   };
-  const handleSelectChair = (item, selectRow, isCheckSelected) => {
-    if (!countDown) {
-      setTime(600);
-      setCountDown(true);
-    }
-  };
 
   const handleClickChair = async (item, selectRow, isCheckSelected, seat) => {
-    // handleSelectChair(item, selectRow, isCheckSelected);
     handlebookSeat(item, seat, isCheckSelected, selectRow);
   };
 
@@ -846,7 +837,7 @@ const BookTickets = () => {
                                       width: "25px",
                                       borderRadius: "4px",
                                     }}></div>
-                                  <span>Đã mua</span>
+                                  <span>Reserved</span>
                                 </Stack>
                                 <Stack
                                   direction={"row"}
@@ -859,7 +850,7 @@ const BookTickets = () => {
                                       width: "25px",
                                       borderRadius: "4px",
                                     }}></div>
-                                  <span>Đang đặt</span>
+                                  <span>On Hold</span>
                                 </Stack>
                                 <Stack
                                   direction={"row"}
@@ -872,7 +863,7 @@ const BookTickets = () => {
                                       width: "25px",
                                       borderRadius: "4px",
                                     }}></div>
-                                  <span>Chưa đặt</span>
+                                  <span>Available</span>
                                 </Stack>
                                 <Stack
                                   direction={"row"}
@@ -885,7 +876,7 @@ const BookTickets = () => {
                                       width: "25px",
                                       borderRadius: "4px",
                                     }}></div>
-                                  <span>Ghế bạn chọn</span>
+                                  <span>Your selected</span>
                                 </Stack>
                               </Stack>
                             </Stack>
@@ -893,7 +884,7 @@ const BookTickets = () => {
                               variant="body2"
                               color={"white"}
                               marginTop={"20px"}>
-                              Xem chi tiết hình ảnh và thông tin ghế
+                              See detailed images and chair information
                             </Typography>
                           </Stack>
                           <Stack padding={"20px"}>
@@ -928,6 +919,7 @@ const BookTickets = () => {
                                     </InputLabel>
 
                                     <Input
+                                      disabled
                                       defaultValue={dataInfo?.full_name}
                                       id="standard-adornment-amount"
                                     />
@@ -942,6 +934,7 @@ const BookTickets = () => {
                                       Phone number
                                     </InputLabel>
                                     <Input
+                                      disabled
                                       defaultValue={dataInfo?.phone}
                                       id="standard-adornment-amount"
                                     />
@@ -958,6 +951,7 @@ const BookTickets = () => {
                                       Enter email
                                     </InputLabel>
                                     <Input
+                                      disabled
                                       defaultValue={dataUser?.email}
                                       id="standard-adornment-amount"
                                     />
@@ -1027,10 +1021,10 @@ const BookTickets = () => {
                               alignItems={"center"}>
                               <Stack>
                                 <Typography variant="body2" color={"gray"}>
-                                  Tạm tính
+                                  Total amount
                                 </Typography>
                                 <Typography variant="h6">
-                                  {Number(totalByTicket)}
+                                  {Number(totalByTicket)?.toLocaleString()} VNĐ
                                 </Typography>
                               </Stack>
                               <Button

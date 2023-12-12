@@ -56,14 +56,14 @@ const NavBar = () => {
               color: "black",
             }
       }
-      component="nav"
-    >
+      component="nav">
       <Toolbar
-        style={{ backdrop: "transparent", boxShadow: "none !important" }}
-      >
-        <Typography variant="h3" className="logo" component="h4">
-          {NAME_LOGO}
-        </Typography>
+        style={{ backdrop: "transparent", boxShadow: "none !important" }}>
+        <Link to={"/#"} style={{ textDecoration: "none" }}>
+          <Typography variant="h3" className="logo" component="h4">
+            {NAME_LOGO}
+          </Typography>
+        </Link>
         <Box sx={{ flexGrow: 1 }} />
         <Box
           sx={{
@@ -73,8 +73,7 @@ const NavBar = () => {
               gap: "40px",
               alignItems: "center",
             },
-          }}
-        >
+          }}>
           {dataUser?.email && (
             <Box sx={{ display: { xs: "none", md: "flex", gap: "30px" } }}>
               {navItems?.map((item, index) => (
@@ -84,8 +83,7 @@ const NavBar = () => {
                   style={{
                     color: `${pathname === "/" ? colorWhite : colorBlack}`,
                     fontWeight: "500",
-                  }}
-                >
+                  }}>
                   {item.title}
                 </Link>
               ))}
@@ -111,8 +109,7 @@ const NavBar = () => {
                   horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
+                onClose={handleCloseUserMenu}>
                 {ManagementUser?.map((item, index) => {
                   if (!item?.url) {
                     return (
@@ -122,12 +119,10 @@ const NavBar = () => {
                           backgroundColor: "transparent",
                         }}
                         key={index}
-                        onClick={handleCloseUserMenu}
-                      >
+                        onClick={handleCloseUserMenu}>
                         <Typography
                           textAlign="center"
-                          onClick={() => navigate(item?.url)}
-                        >
+                          onClick={() => navigate(item?.url)}>
                           {item.content}
                         </Typography>
                       </MenuItem>
@@ -145,8 +140,7 @@ const NavBar = () => {
                           } else {
                             navigate(item?.url);
                           }
-                        }}
-                      >
+                        }}>
                         {item.content}
                       </Typography>
                     </MenuItem>
@@ -157,8 +151,7 @@ const NavBar = () => {
           ) : (
             <ButtonLoginStyle
               color={`${pathname === "/" ? colorWhite : colorBlack}`}
-              to={"/login"}
-            >
+              to={"/login"}>
               {LOGIN}
             </ButtonLoginStyle>
           )}

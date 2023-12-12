@@ -15,7 +15,10 @@ import {
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import { toast } from "react-toastify";
-import { getLocalStorageUserData } from "../../../Store/userStore";
+import {
+  getLocalStorageUserData,
+  getLocalStorageUserInfo,
+} from "../../../Store/userStore";
 import Rating from "@mui/material/Rating";
 import { createPortal } from "react-dom";
 const style = {
@@ -31,8 +34,8 @@ const style = {
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 function Row(props) {
   const { row, setCheckResRefund } = props;
-  console.log("row: ", row);
   const dataUser = getLocalStorageUserData();
+  const dataInfo = getLocalStorageUserInfo();
   const eventDate = new Date(row.eventDate);
   const currentDate = new Date();
   const isEnded = currentDate > eventDate;
@@ -83,34 +86,19 @@ function Row(props) {
     document.body.removeChild(link);
   };
 
-  useEffect(() => {
-    // Lấy số sao đánh giá từ localStorage khi component được mount
-    const isRated = localStorage.getItem(`rating_${row.eventId}`) === "rated";
-    const storedRating = localStorage.getItem(`rating_${row.eventId}_value`);
-    setRatingSent(isRated);
-    setApiRating(storedRating); // Sử dụng giá trị lưu trữ từ localStorage nếu có
-  }, [row.eventId]);
-
   const handleSendRating = async () => {
-    const eventId = row.eventId;
-    const userId = dataUser._id;
-    console.log(eventId, userId);
-
+    const request = {
+      event_id: row.eventId,
+      client_id: dataInfo._id,
+      star: rating,
+    };
     try {
-      const response = await ApiClient.rating({
-        eventId,
-        userId,
-        star: rating,
-      });
-      console.log(response);
-      toast.success("Đánh giá thành công!");
-      // Lưu trạng thái đã đánh giá và số sao đánh giá vào localStorage
-      localStorage.setItem(`rating_${eventId}`, "rated");
-      localStorage.setItem(`rating_${eventId}_value`, rating);
-
-      // Cập nhật state để đánh dấu là đã gửi đánh giá thành công
-      setRatingSent(true);
-      setApiRating(rating); // Cập nhật số sao từ API
+      const response = await ApiClient.rating(request);
+      if (response) {
+        toast.success("Đánh giá thành công!");
+        setRatingSent(true);
+        setApiRating(rating); // Cập nhật số sao từ API
+      }
     } catch (error) {
       console.error("Lỗi khi gửi xếp hạng:", error);
     }
@@ -186,7 +174,28 @@ function Row(props) {
 
   // Check if the current date is more than 24 hours before the event
   const isRefundAllowed = eventDateTime - now > 24 * 60 * 60 * 1000;
-  console.log("isRefundAllowed: ", isRefundAllowed);
+
+  //CLick vào button vote
+  async function handleClickVote() {
+    const request = {
+      event_id: row.eventId,
+      client_id: dataInfo._id,
+    };
+    const reponse = await ApiClient.getClientRating(request);
+    if (reponse) {
+      checkVoted(reponse.clientRating);
+      setOpenRating(true);
+    }
+  }
+  //Kiểm tra xem đã vote event chưa
+  function checkVoted(star) {
+    if (star > 0) {
+      setRatingSent(true);
+      setApiRating(star);
+    } else {
+      setRatingSent(false);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -194,7 +203,9 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row?.eventName}
         </TableCell>
-        <TableCell align="left">{row.eventDate}</TableCell>
+        <TableCell align="left">
+          {new Date(row.eventDate)?.toLocaleString()}
+        </TableCell>
         <TableCell align="left">{row.city}</TableCell>
         <TableCell>
           <Stack direction={"row"} gap={"10px"}>
@@ -204,13 +215,12 @@ function Row(props) {
               onClick={() => {
                 setOpen(!open);
                 setRefundTickets(false);
-              }}
-            >
+              }}>
               {open ? "collapse" : "Show more"}
             </Button>
             <>
               {(isEnded && !ratingSent) || (isEnded && ratingSent) ? (
-                <Button variant="outlined" onClick={() => setOpenRating(true)}>
+                <Button variant="outlined" onClick={handleClickVote}>
                   Vote
                 </Button>
               ) : null}
@@ -228,8 +238,7 @@ function Row(props) {
                     boxShadow: 24,
                     p: 4,
                     borderRadius: "10px",
-                  }}
-                >
+                  }}>
                   <Typography variant="h6">
                     Đánh giá sự kiện: {row.eventName}
                   </Typography>
@@ -245,20 +254,14 @@ function Row(props) {
                         sx={{
                           display: "flex",
                           justifyContent: "flex-end",
-                        }}
-                      ></Box>
+                        }}></Box>
                       <Button
                         style={{ alignSelf: "flex-end" }}
-                        onClick={handleSendRating}
-                      >
+                        onClick={handleSendRating}>
                         Gửi đánh giá
                       </Button>
                     </>
                   )}
-
-                  {/* <Button style={{ alignSelf: 'flex-end' }} onClick={handleSendRating}>
-          Gửi đánh giá
-        </Button> */}
                 </Box>
               </Modal>
             </>
@@ -270,8 +273,7 @@ function Row(props) {
                 onClick={() => {
                   setOpen(!open);
                   setRefundTickets(true);
-                }}
-              >
+                }}>
                 Refund tickets
               </Button>
             )}
@@ -295,8 +297,7 @@ function Row(props) {
                           onClick={() => handleSelectAllChange()}
                           variant="outlined"
                           color="secondary"
-                          size="small"
-                        >
+                          size="small">
                           Refund all
                         </Button>
                       )}
@@ -335,8 +336,7 @@ function Row(props) {
                                     }}
                                     size="large"
                                     variant="contained"
-                                    color="success"
-                                  >
+                                    color="success">
                                     View detail
                                   </Button>
                                 ) : (
@@ -344,8 +344,7 @@ function Row(props) {
                                     onClick={() => {}}
                                     size="large"
                                     variant="contained"
-                                    color="error"
-                                  >
+                                    color="error">
                                     Tickets refund
                                   </Button>
                                 )}
@@ -370,8 +369,7 @@ function Row(props) {
                               open={openViewDetail}
                               onClose={handleClose}
                               aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
+                              aria-describedby="modal-modal-description">
                               <Box sx={style}>
                                 <img
                                   id="downloadImage"
@@ -382,8 +380,7 @@ function Row(props) {
                                   onClick={handleDownload}
                                   variant="contained"
                                   size="large"
-                                  color="primary"
-                                >
+                                  color="primary">
                                   Download
                                 </Button>
                               </Box>
@@ -399,8 +396,7 @@ function Row(props) {
                         style={{ whiteSpace: "nowrap" }}
                         colSpan={1}
                         component="th"
-                        scope="row"
-                      >
+                        scope="row">
                         Amount you will receive:{" "}
                         {moneyRefund.toLocaleString("vi-VN") + " VND"}
                       </TableCell>
@@ -413,8 +409,7 @@ function Row(props) {
                               setConfirmRefund(true);
                             }
                           }}
-                          size="large"
-                        >
+                          size="large">
                           Confirm
                         </Button>
                         <>
@@ -428,8 +423,7 @@ function Row(props) {
                                     inset: 0,
                                     zIndex: 2222,
                                     background: "#adadad9e",
-                                  }}
-                                ></div>
+                                  }}></div>
                                 <div
                                   style={{
                                     position: "fixed",
@@ -443,8 +437,7 @@ function Row(props) {
                                     zIndex: 2332,
                                     left: "50%",
                                     transform: "translateX(-50%)",
-                                  }}
-                                >
+                                  }}>
                                   <Typography variant="h4" textAlign={"center"}>
                                     Ticket refund confirmation
                                   </Typography>
@@ -503,21 +496,18 @@ function Row(props) {
                                       textAlign={"center"}
                                       fontSize={"20px"}
                                       color={"red"}
-                                      marginTop={"10px"}
-                                    >
+                                      marginTop={"10px"}>
                                       If you confirm a refund, the ticket cannot
                                       be canneled you will receive monney into
                                       your zalopay account after 5 - 7 days
                                     </Typography>
                                     <Stack
                                       direction={"row"}
-                                      justifyContent={"space-evenly"}
-                                    >
+                                      justifyContent={"space-evenly"}>
                                       <Button
                                         variant="outlined"
                                         onClick={() => setConfirmRefund(false)}
-                                        color="error"
-                                      >
+                                        color="error">
                                         Close
                                       </Button>
                                       <Button
@@ -525,8 +515,7 @@ function Row(props) {
                                           handleConfirmRefund();
                                           setConfirmRefund(false);
                                         }}
-                                        variant="outlined"
-                                      >
+                                        variant="outlined">
                                         Confirm
                                       </Button>
                                     </Stack>

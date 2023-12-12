@@ -20,11 +20,9 @@ const MyTicket = () => {
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [checkResRefund, setCheckResRefund] = React.useState(false);
 
-  console.log("dataOrderByClient: ", dataMyTicket);
-
   useEffect(() => {
-    async function getDataOrderByClient() {
-      const response = await ApiClient.orderByClient({
+    async function getOrdersAvailableTickets() {
+      const response = await ApiClient.getOrdersAvailableTickets({
         _idClient: dataInfo?._id,
       });
       console.log("response: ", response);
@@ -32,7 +30,7 @@ const MyTicket = () => {
       setCheckResRefund(false);
     }
 
-    getDataOrderByClient();
+    getOrdersAvailableTickets();
   }, [dataInfo._id, checkResRefund]);
 
   const mappingDataMyTicket =

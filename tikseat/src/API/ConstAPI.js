@@ -2,7 +2,7 @@
 export const BASE_URL = "http://localhost:8080/api";
 export const URL_SOCKET = "http://localhost:5000";
 export const URL_API_CITY = "https://provinces.open-api.vn/api/";
-//localhost:8080/api/event/searchEvent
+
 //-------------------AUTH----------------------------
 export const URL_LOGIN = "/auth/login";
 export const URL_REGISTERUSER = "auth/resigterUser";
@@ -11,6 +11,8 @@ export const URL_PROFILECLIENT = "/auth/createClient";
 export const URL_UPDATE_PROFILE = "/auth/updateClient";
 export const URL_CHANGEPASSWORD = "/auth/changePassword";
 export const URL_UPDATE_PROFILEORGANIZER = "auth/updateOrganizer";
+export const URL_RESETPASSWORD = "auth/resetPassword";
+export const URL_SIGNUP = "/resigterUser";
 
 //-------------------SENDMAIL----------------------------
 export const URL_SENOTP = "/sendMail/sendOTPResign";
@@ -18,6 +20,7 @@ export const URL_VERIFYOTP = "/sendMail/verifleOTPResign";
 export const URL_VERIFYCODE = "/sendMail/verifleOTPResign";
 export const URL_VERIFYEMAIL = "/sendMail/sendOTPResign";
 export const URL_RESENDOTP = "/sendMail/resendOTPForMail";
+export const URL_FORGOTPASSWORD = "/sendMail/sendOTPForResetPassword";
 
 //-------------------EVENT----------------------------
 export const URL_GETEVENTBYTYPE = "/event/getEventByType";
@@ -41,6 +44,7 @@ export const URL_GET_PAY_BUSINESS_ORGANIZERS = "/payBusiness/getPayBusinessWithO
 
 //-------------------RATING----------------------------
 export const URL_RATING = "/rating/createRating";
+export const URL_GET_RATING_OF_CLIENT = "/rating/getClientRating";
 
 //-------------------CITY----------------------------
 export const URL_CITY = "?depth=1";
@@ -65,15 +69,16 @@ export const URL_GET_INFORMATION_EVENT = "/admin/getInformationEvent";
 export const URL_GET_TRANSACTION_INFORMATION = "/admin/getTransactionInformation";
 
 //-------------------PAYMENT----------------------------
+export const URL_ADDPAYMENT = "";
+export const URL_CREATETICKET = "/ticket/createTicket";
+
+//-------------------PAYMENT----------------------------
+export const URL_GET_ORDERS_AVAILABLET_TICKETS = "/order/getOrdersAvailableTickets";
+export const URL_GET_ORDERS_REFUND_TICKETS = "/order/getOrdersRefundTicket";
 export const URL_PAYTICKET_OF_EVENT = "/order/createQRcode";
 export const URL_ORDER_BY_CLIENT = "/order/getOrdersByClient";
 export const URL_GET_MY_TICKET = "/order/getMyTicket";
 export const URL_ORDER_DETAIL = "/order/getOrderDetail";
-export const URL_SIGNUP = "/resigterUser";
-export const URL_ADDPAYMENT = "";
-export const URL_FORGOTPASSWORD = "/sendMail/sendOTPForResetPassword";
-export const URL_RESETPASSWORD = "auth/resetPassword";
-export const URL_CREATETICKET = "/ticket/createTicket";
 
 //-------------------REFUND-ODER--------------------------------
 export const URL_GET_LIST_REFUND = "/refund/getListRefund";

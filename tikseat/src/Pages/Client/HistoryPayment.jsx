@@ -62,25 +62,11 @@ const HistoryPayment = () => {
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
-    if (idOrder) {
-      async function getDataOrdetDetail() {
-        const responseOrderDetail = await ApiClient.getOrderDetail({
-          _idOrder: idOrder,
-        });
-        console.log("responseOrderDetail: ", responseOrderDetail);
-        setDataOrderDetail(responseOrderDetail?.data);
-      }
-
-      getDataOrdetDetail();
-    }
-  }, [idOrder]);
-
-  useEffect(() => {
     async function getDataOrderByClient() {
       const response = await ApiClient.orderByClient({
         _idClient: dataInfo?._id,
       });
-      setDataOrderByClient(response?.orders);
+      setDataOrderByClient(response?.data);
     }
 
     getDataOrderByClient();
@@ -97,8 +83,7 @@ const HistoryPayment = () => {
             <Table
               sx={{ minWidth: 1050 }}
               size="medium"
-              aria-label="a dense table"
-            >
+              aria-label="a dense table">
               <TableHead>
                 <TableRow>
                   <StyledTableCell size="medium" align="center" colSpan={4}>
@@ -124,17 +109,16 @@ const HistoryPayment = () => {
                       <TableCell component="th" scope="row">
                         {row.event_name}
                       </TableCell>
-                      <TableCell align="left">{row.transaction_date}</TableCell>
+                      <TableCell align="left">{row.transaction}</TableCell>
                       <TableCell align="left">{row.totalAmount}</TableCell>
                       <TableCell align="left">
                         <Button
                           onClick={() => {
                             handleOpen();
-                            setIdOrder(row._id);
+                            setIdOrder(row);
                           }}
                           size="large"
-                          variant="contained"
-                        >
+                          variant="contained">
                           Detail
                         </Button>
                         <Modal open={open} onClose={handleClose}>
@@ -150,8 +134,7 @@ const HistoryPayment = () => {
                                       }}
                                       size="medium"
                                       align="center"
-                                      colSpan={2}
-                                    >
+                                      colSpan={2}>
                                       View detail history payment
                                     </TableCell>
                                   </TableRow>
@@ -159,27 +142,25 @@ const HistoryPayment = () => {
                                 <TableBody>
                                   <TableRow>
                                     <TableCell>Event name</TableCell>
-                                    <TableCell>
-                                      {dataOrderDetail?.eventName}
-                                    </TableCell>
+                                    <TableCell>{idOrder?.event_name}</TableCell>
                                   </TableRow>
                                   <TableRow>
                                     <TableCell>Event date</TableCell>
                                     <TableCell>
                                       {new Date(
-                                        dataOrderDetail?.eventDate
+                                        idOrder?.event_date
                                       ).toLocaleString()}
                                     </TableCell>
                                   </TableRow>
                                   <TableRow>
                                     <TableCell>Class ticket</TableCell>
                                     <TableCell>
-                                      {dataOrderDetail?.classTicket}
+                                      {idOrder?.classTicket}
                                     </TableCell>
                                   </TableRow>
                                   <TableCell>Chair name</TableCell>
                                   <TableCell>
-                                    {String(dataOrderDetail?.Chairs)}
+                                    {String(idOrder?.chair_name)}
                                   </TableCell>
                                   <TableRow>
                                     <TableCell>Total price</TableCell>
@@ -187,14 +168,14 @@ const HistoryPayment = () => {
                                       {new Intl.NumberFormat("en-VN", {
                                         style: "currency",
                                         currency: "VND",
-                                      }).format(dataOrderDetail?.totalPrice)}
+                                      }).format(idOrder?.totalAmount)}
                                     </TableCell>
                                   </TableRow>
                                   <TableRow>
                                     <TableCell>Transaction date</TableCell>
                                     <TableCell>
                                       {new Date(
-                                        dataOrderDetail?.transaction
+                                        idOrder?.transaction
                                       ).toLocaleString()}
                                     </TableCell>
                                   </TableRow>

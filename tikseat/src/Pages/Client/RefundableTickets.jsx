@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Chip,
   Collapse,
   Paper,
   Stack,
@@ -21,7 +22,7 @@ const RefundableTickets = () => {
   const [dataMyTicket, setDataMyTicket] = useState([]);
   useEffect(() => {
     async function getDataOrderByClient() {
-      const response = await ApiClient.orderByClient({
+      const response = await ApiClient.getOrdersRefundTicket({
         _idClient: dataInfo?._id,
       });
       setDataMyTicket(response?.data);
@@ -53,11 +54,13 @@ const RefundableTickets = () => {
           const res = await ApiClient.getMyTicket({
             _idOrderDetail: row._idOrderDetail,
           });
-          setDataMyTicket(res.data[0].Orders[0].tickets);
+          console.log("res", res.data);
+          setDataMyTicket(res?.data?.Orders[0]?.tickets);
         }
         getMyTicket();
       }
     }, [row._idOrderDetail, open]);
+    console.log("dataMyTicket", dataMyTicket);
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -73,8 +76,7 @@ const RefundableTickets = () => {
                 size="large"
                 onClick={() => {
                   setOpen(!open);
-                }}
-              >
+                }}>
                 {open ? "collapse" : "Show more"}
               </Button>{" "}
             </Stack>
@@ -116,15 +118,14 @@ const RefundableTickets = () => {
                             </TableCell>
                             <TableCell
                               align="left"
-                              style={{ cursor: "pointer" }}
-                            >
-                              <Button
-                                size="large"
-                                variant="contained"
-                                color="error"
-                              >
-                                Tickets refund
-                              </Button>
+                              style={{ cursor: "pointer" }}>
+                              <Chip
+                                label={
+                                  ViewDetailRow.refunded
+                                    ? "Refunded"
+                                    : "No refund yet"
+                                }
+                              />
                             </TableCell>
                           </TableRow>
                         );

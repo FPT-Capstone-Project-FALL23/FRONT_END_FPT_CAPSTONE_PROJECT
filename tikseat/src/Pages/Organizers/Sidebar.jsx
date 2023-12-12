@@ -23,7 +23,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import LogoutIcon from "@mui/icons-material/Logout";
-import PaidIcon from "@mui/icons-material/Paid";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
@@ -48,6 +48,7 @@ import {
 import EventDetail from "./EventDetail";
 import ListRefund from "./ListRefund";
 import UpdateEventDefault from "./UpdateEventDefault";
+import Transactions from "./Transactions";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -179,10 +180,18 @@ export default function MiniDrawer() {
           <Grid
             className="welcome"
             sx={{ marginRight: "80px", display: "flex", alignItems: "center" }}>
-            <Typography variant="h6" noWrap component="div" sx={{marginRight:"50px"}}>
-              <span style={{fontSize:"15px", color:"#ccc"}}>Welcome Back</span>
-              <br/>
-              <span style={{ color: "rgb(245, 189, 25)" }}>{dataInfo.organizer_name}</span>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ marginRight: "50px" }}>
+              <span style={{ fontSize: "15px", color: "#ccc" }}>
+                Welcome Back
+              </span>
+              <br />
+              <span style={{ color: "rgb(245, 189, 25)" }}>
+                {dataInfo.organizer_name}
+              </span>
             </Typography>
             <Grid>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
@@ -413,13 +422,13 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => setMenuData("transactionHistory")}>
+            onClick={() => setMenuData("transaction")}>
             <ListItemButton
               sx={{
                 minHeight: 50,
                 justifyContent: open ? "initial" : "center",
                 backgroundColor:
-                  menuData === "transactionHistory"
+                  menuData === "transaction"
                     ? "rgb(245, 189, 25)"
                     : "transparent",
                 borderRadius: "5px",
@@ -432,11 +441,11 @@ export default function MiniDrawer() {
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
                 }}>
-                <PaidIcon sx={styleIcon} />
+                <SyncAltIcon sx={styleIcon} />
               </ListItemIcon>
               <ListItemText
                 sx={{ display: open ? "block" : "none" }}
-                primary="Transaction history"
+                primary="Transaction"
               />
             </ListItemButton>
           </ListItem>
@@ -594,7 +603,7 @@ export default function MiniDrawer() {
           {menuData === "changePass" && <ChangePassword />}
           {menuData === "bankAccount" && <AddPaymentMethod />}
           {menuData === "listRefund" && <ListRefund />}
-          {menuData === "transactionHistory" && <ListRefund />}
+          {menuData === "transaction" && <Transactions />}
           {menuData === "logOut" && <DefaultDashboard />}
         </Box>
       </Grid>

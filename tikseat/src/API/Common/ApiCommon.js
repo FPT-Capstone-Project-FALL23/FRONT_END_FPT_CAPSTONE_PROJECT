@@ -79,7 +79,7 @@ const ApiCommon = {
   resendOTP(data) {
     return axiosDefault.post(URL_RESENDOTP, data);
   },
-  resetPassword(data){
+  resetPassword(data) {
     return axiosDefault.post(URL_RESETPASSWORD, data);
   }
 };
