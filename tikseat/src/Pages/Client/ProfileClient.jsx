@@ -83,11 +83,13 @@ function ProfileClient() {
     }
   };
 
+  const birtdayData = dataInfo?.birthday?.split("T")[0];
+
   const [clientInfo, setClientInfo] = useState({
     email: dataUser.email || "",
     full_name: dataInfo?.full_name || "",
     phone: dataInfo?.phone || "",
-    birthday: today || "",
+    birthday: birtdayData || today,
     gender: dataInfo?.gender || "",
     favorit_enres: dataInfo?.favorit_enres || "",
   });
@@ -380,7 +382,7 @@ function ProfileClient() {
               backgroundcolor="#F5BD19"
             />
           </Stack>
-          <Stack style={{ width: "50%", margin: "30px auto" }}>
+          <Stack style={{ width: "50%", margin: "30px" }}>
             <ButtonCustom
               type="button"
               onClick={() => navigate("/change-password")}

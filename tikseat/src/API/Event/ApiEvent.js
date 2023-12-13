@@ -17,6 +17,7 @@ import {
   URL_GETDETAILEVENT,
   URL_CREATE_PAY_BUSINESS_OF_EVENT,
   URL_GET_PAY_BUSINESS_ORGANIZERS,
+  URL_GET_TOP5_EVENT,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -35,19 +36,15 @@ const ApiEvent = {
   getEventByType() {
     return axiosDefault.get(URL_GETEVENTBYTYPE);
   },
-
   getAllEvents(page) {
     return axiosDefault.get(URL_GETALLEVENTS, { page });
   },
-
   getEventById(id) {
     return axiosDefault.get(URL_GETEVENTBYID, { idOrganizer: id });
   },
-
   searchEvent(data) {
     return axiosDefault.post(URL_SEARCHEVENT, data);
   },
-
   createEvent(data) {
     return axiosDefault.post(URL_CREATEEVENT, data);
   },
@@ -74,6 +71,9 @@ const ApiEvent = {
   },
   getPayBusinessWithOrganizers(data) {
     return axiosDefault.post(URL_GET_PAY_BUSINESS_ORGANIZERS, data)
+  },
+  getTop5Event(data) {
+    return axiosDefault.post(URL_GET_TOP5_EVENT, data)
   },
 };
 

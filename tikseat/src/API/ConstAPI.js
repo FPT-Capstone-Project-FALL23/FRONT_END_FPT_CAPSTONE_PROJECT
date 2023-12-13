@@ -34,6 +34,7 @@ export const URL_TOTALALLEVENT = "/event/statisticalEvent";
 export const URL_TOTALONEEVENT = "/event/statisticalOneEvent";
 export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
 export const URL_CHECKIN = "/checkin/check_in";
+export const URL_GET_TOP5_EVENT = "/event/getTopRatedEventOfOrganizer"
 
 //-------------------PAYBUSINESS----------------------------
 export const URL_CREATE_PAY_BUSINESS_OF_EVENT = "/payBusiness/createPayBusinessOfEvent";

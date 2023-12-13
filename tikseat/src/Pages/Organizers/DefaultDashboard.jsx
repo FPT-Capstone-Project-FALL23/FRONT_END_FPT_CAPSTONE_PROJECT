@@ -3,7 +3,7 @@ import TotalRevenue from "../../Components/Organizers/AllDetailChart/TotalRevenu
 import DayChart from "../../Components/Organizers/AllDetailChart/DayChart";
 import BasicArea from "../../Components/Organizers/AllDetailChart/BasicArea";
 import { Grid, Typography } from "@mui/material";
-
+import Rating from "@mui/material/Rating";
 import {
   getLocalStorageUserData,
   setLocalStorageUserInfo,
@@ -14,6 +14,10 @@ import CheckinChart from "../../Components/Organizers/AllDetailChart/CheckinChar
 
 function DefaultDashboard() {
   const dataInfo = getLocalStorageUserInfo();
+  const organizers_id = dataInfo._id;
+  const [dataTopEvent, setDataTopEvent] = useState([]);
+  console.log(dataTopEvent);
+
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,
     totalRevenue: null,
@@ -50,6 +54,23 @@ function DefaultDashboard() {
 
     dataTotalEvent();
   }, [dataInfo._id]);
+
+  useEffect(() => {
+    const dataTopEvent = async () => {
+      try {
+        const response = await ApiEvent.getTop5Event(organizers_id);
+        if (response.status === true) {
+          console.log(response.data);
+          setDataTopEvent(response.data);
+        } else {
+          console.log("error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataTopEvent();
+  }, []);
 
   return (
     <>
@@ -122,7 +143,7 @@ function DefaultDashboard() {
               padding: "20px",
             }}
           >
-            <Grid sx={{marginBottom:"15px"}}>
+            <Grid sx={{ marginBottom: "15px" }}>
               <Typography variant="h5" fontWeight={600}>
                 Top 5 Events
               </Typography>
@@ -135,61 +156,40 @@ function DefaultDashboard() {
                 justifyContent: "space-between",
               }}
             >
-              <Grid
-                sx={{
-                  width: "100%",
-                  height: "19%",
-                  backgroundColor: "#ccc",
-                  borderRadius: "5px",
-                  padding: "5px",
-                }}
-              >
-                aaaaaaaa
-              </Grid>
-              <Grid
-                sx={{
-                  width: "100%",
-                  height: "19%",
-                  backgroundColor: "#ccc",
-                  borderRadius: "5px",
-                  padding: "5px",
-                }}
-              >
-                aaaaaaaa
-              </Grid>
-              <Grid
-                sx={{
-                  width: "100%",
-                  height: "19%",
-                  backgroundColor: "#ccc",
-                  borderRadius: "5px",
-                  padding: "5px",
-                }}
-              >
-                aaaaaaaa
-              </Grid>
-              <Grid
-                sx={{
-                  width: "100%",
-                  height: "19%",
-                  backgroundColor: "#ccc",
-                  borderRadius: "5px",
-                  padding: "5px",
-                }}
-              >
-                aaaaaaaa
-              </Grid>
-              <Grid
-                sx={{
-                  width: "100%",
-                  height: "19%",
-                  backgroundColor: "#ccc",
-                  borderRadius: "5px",
-                  padding: "5px",
-                }}
-              >
-                aaaaaaaa
-              </Grid>
+              {dataTopEvent &&
+                dataTopEvent.map((item) => (
+                  <Grid
+                    sx={{
+                      width: "100%",
+                      height: "19%",
+                      backgroundColor: "#ffea63a6",
+                      borderRadius: "5px",
+                      padding: "5px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Grid sx={{ width: "40%" }}>{item.event_name}</Grid>
+
+                    <Grid sx={{ width: "27%" }}>
+                      <Rating
+                        value={item.totalRating}
+                        precision={0.5}
+                        readOnly
+                      />
+                    </Grid>
+                    <Grid
+                      sx={{
+                        width: "30%",
+                        display: "flex",
+                        flexDirection: "row-reverse",
+                      }}
+                    >
+                      {item.totalTicketAmountReceived.toLocaleString()}
+                    </Grid>
+                  </Grid>
+                ))}
             </Grid>
           </Grid>
         </Grid>

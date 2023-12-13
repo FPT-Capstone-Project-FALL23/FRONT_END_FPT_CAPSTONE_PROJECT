@@ -18,8 +18,8 @@ import InputCustom from "../../Components/Common/Input/InputCustom";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PostAddSharpIcon from "@mui/icons-material/PostAddSharp";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
-import OfflinePinIcon from '@mui/icons-material/OfflinePin';
-import WarningIcon from '@mui/icons-material/Warning';
+import OfflinePinIcon from "@mui/icons-material/OfflinePin";
+import WarningIcon from "@mui/icons-material/Warning";
 import {
   getLocalStorageUserData,
   setLocalStorageUserInfo,
@@ -30,7 +30,6 @@ import {
 } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
-
 
 export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
   // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
@@ -50,6 +49,19 @@ const CreateTicket = () => {
   const dataInfo = getLocalStorageUserInfo();
 
   function updateDataEventInfo() {
+    const newDataEventInfo = getLocalStorageTicketInfo();
+    dataTicketInfo = newDataEventInfo;
+  }
+  // Sự kiện storage sẽ được kích hoạt mỗi khi có thay đổi trong localStorage
+  window.addEventListener("storage", (event) => {
+    if (event.key === "eventInfo") {
+      updateDataEventInfo();
+    }
+  });
+  // Khởi tạo dataEventInfo ban đầu
+  let dataTicketInfo = getLocalStorageTicketInfo();
+
+  function updateDataEventInfo() {
     const newDataEventInfo = getLocalStorageEventInfo();
     dataEventInfo = newDataEventInfo;
   }
@@ -62,13 +74,16 @@ const CreateTicket = () => {
   // Khởi tạo dataEventInfo ban đầu
   let dataEventInfo = getLocalStorageEventInfo();
 
+
   const navigate = useNavigate();
 
   const alphabet = "ABCDEFGHIJKLMNOPQRST".split("");
   const [selectedFile, setSelectedFile] = useState("");
   const fileInputRef = useRef("");
   const today = new Date().toISOString().slice(0, 10);
-  const [typeLayout, setTypeLayout] = useState();
+  const [typeLayout, setTypeLayout] = useState(
+    dataEventInfo?.type_layout || null
+  );
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -77,7 +92,7 @@ const CreateTicket = () => {
 
   function formatNumber(n) {
     // Check if n is a string
-    if (typeof n !== 'string') {
+    if (typeof n !== "string") {
       n = String(n);
     }
     return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -85,11 +100,11 @@ const CreateTicket = () => {
 
   function formatString(n) {
     // Kiểm tra xem n có phải là chuỗi không
-    if (typeof n === 'string' || n instanceof String) {
-      return n.replace(/,/g, '');
+    if (typeof n === "string" || n instanceof String) {
+      return n.replace(/,/g, "");
     } else {
       n = String(n);
-      return n.replace(/,/g, '');
+      return n.replace(/,/g, "");
     }
   }
 
@@ -109,69 +124,93 @@ const CreateTicket = () => {
     fileInputRef.current.click();
   };
 
-  const [maxTicket, setMaxTicket] = useState("5");
-  const [eventDate, setEventDate] = useState([
-    {
-      date_number: 1,
-      dateEvent: "",
-      tickets: [
+  const [maxTicket, setMaxTicket] = useState(
+    dataTicketInfo?.maxTicketInOrder || "5"
+  );
+
+  const defaultEventDate = dataTicketInfo?.event_date
+    ? dataTicketInfo.event_date.map((eventDate) => {
+        return {
+          date_number: eventDate?.date_number,
+          dateEvent: eventDate?.dateEvent,
+          tickets: eventDate?.event_areas?.map((ticket) => {
+            return {
+              id_ticket: ticket?.id_areas,
+              name_ticket: ticket?.name_areas,
+              total_row: ticket?.total_row,
+              ticket_price: ticket?.ticket_price,
+              rows: ticket?.rows?.map((row) => {
+                return {
+                  row_name: row?.row_name,
+                  total_seat: row?.total_chair,
+                };
+              }),
+            };
+          }),
+        };
+      })
+    : [
         {
-          id: Date.now(),
-          name_ticket: "",
-          total_row: "",
-          ticket_price: "",
-          rows: [
+          date_number: 1,
+          dateEvent: "",
+          tickets: [
             {
-              row_name: "",
-              total_seat: "",
+              id: Date.now(),
+              name_ticket: "",
+              total_row: "",
+              ticket_price: "",
+              rows: [
+                {
+                  row_name: "",
+                  total_seat: "",
+                },
+              ],
             },
           ],
         },
-      ],
-    },
-  ]);
+      ];
+  const [eventDate, setEventDate] = useState(defaultEventDate);
+
+  console.log(eventDate);
 
   const [saleDate, setSaleDate] = useState({
-    startSaleDate: today,
-    endSaleDate: today,
+    startSaleDate: dataTicketInfo?.sales_date?.start_sales_date || today,
+    endSaleDate: dataTicketInfo?.sales_date?.end_sales_date || today,
   });
 
   const [eventInfo, setEventInfo] = useState({
-    event_name: dataEventInfo.event_name,
-    type_of_event: dataEventInfo.type_of_event,
-    eventImage: dataEventInfo.eventImage,
+    event_name: dataEventInfo?.event_name || "",
+    type_of_event: dataEventInfo?.type_of_event || "",
+    eventImage: dataEventInfo?.eventImage || "",
     type_layout: "",
-    event_description: dataEventInfo.event_description,
+    event_description: dataEventInfo?.event_description || "",
     maxTicketInOrder: maxTicket,
     sales_date: {
-      start_sales_date: saleDate.startSaleDate,
-      end_sales_date: saleDate.endSaleDate,
+      start_sales_date: saleDate?.startSaleDate,
+      end_sales_date: saleDate?.endSaleDate,
     },
     event_location: {
-      city: dataEventInfo.address.city,
-      district: dataEventInfo.address.district,
-      ward: dataEventInfo.address.ward,
-      specific_address: dataEventInfo.address.specific_address,
+      city: dataEventInfo?.address?.city || "",
+      district: dataEventInfo?.address?.district || "",
+      ward: dataEventInfo?.address?.ward || "",
+      specific_address: dataEventInfo?.address?.specific_address || "",
     },
-    event_date: [
-      {
-        date_number: "",
-        dateEvent: "",
-        event_areas: [
-          {
-            name_areas: "",
-            total_row: "",
-            ticket_price: "",
-            rows: [
-              {
-                row_name: "",
-                total_chair: "",
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    event_date: eventDate
+      ? eventDate.map((event) => ({
+          date_number: event.date_number,
+          dateEvent: event.dateEvent,
+          event_areas: event.tickets.map((area) => ({
+            id_areas: area.id_ticket,
+            name_areas: area.name_ticket,
+            total_row: area.total_row,
+            ticket_price: area.ticket_price,
+            rows: area.rows.map((row) => ({
+              row_name: row.row_name,
+              total_chair: row.total_seat,
+            })),
+          })),
+        }))
+      : [],
     isActive: false,
   });
 
@@ -292,26 +331,26 @@ const CreateTicket = () => {
 
   const addTicket = (formId) => {
     setEventDate((prevEventDate) => {
-    const updatedEventDates = prevEventDate.map((form) => {
-      if (form.date_number === formId) {
-        const newTicket = {
-          id: Date.now(),
-          name_ticket: "",
-          total_row: "",
-          ticket_price: "",
-          rows: [],
-        };
-        return {
-          ...form,
-          tickets: [...form.tickets, newTicket],
-        };
-      } else {
-        return form;
-      }
+      const updatedEventDates = prevEventDate.map((form) => {
+        if (form.date_number === formId) {
+          const newTicket = {
+            id: Date.now(),
+            name_ticket: "",
+            total_row: "",
+            ticket_price: "",
+            rows: [],
+          };
+          return {
+            ...form,
+            tickets: [...form.tickets, newTicket],
+          };
+        } else {
+          return form;
+        }
+      });
+      updateDetailTicket(updatedEventDates);
+      return updatedEventDates;
     });
-    updateDetailTicket(updatedEventDates);
-    return updatedEventDates;
-  });
   };
 
   const removeForm = (formId) => {
@@ -491,19 +530,23 @@ const CreateTicket = () => {
   };
 
   useEffect(() => {
-    setLocalStorageTicketInfo(eventInfo);
-  }, [eventInfo]);
+    setLocalStorageTicketInfo(eventInfoData);
+  }, [eventInfoData]);
 
   const callApiCreateEvent = async (_idOrganizer, eventInfo) => {
     try {
-      const respont = await ApiEvent.createEvent({
+      const response = await ApiEvent.createEvent({
         _idOrganizer: organizerId,
         eventInfo: eventInfo,
       });
-      handleNewEvent();
-      toast.success("New Event success!", toastOptions);
-      navigate("/dashboard");
-      setLocalStorageTicketInfo([]);
+      if (response.status === true) {
+        handleNewEvent();
+        toast.success("New Event success!", toastOptions);
+        navigate("/success");
+        setLocalStorageTicketInfo([]);
+      } else {
+        console.log("error");
+      }
     } catch (error) {
       toast.error(error, toastOptions);
     }
@@ -526,11 +569,22 @@ const CreateTicket = () => {
       >
         <FormSubmit onSubmit={handleFormSubmit}>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
-          <h3>{eventInfo.type_layout !== "" ? (
-            <OfflinePinIcon sx={{ color: "green", fontSize:"30px" , marginBottom:"-8px"  }} />
-          ) : (
-            <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px"  }} />
-          )}Add Photo Layout</h3>
+            <h3>
+              {eventInfo.type_layout !== "" ? (
+                <OfflinePinIcon
+                  sx={{
+                    color: "green",
+                    fontSize: "30px",
+                    marginBottom: "-8px",
+                  }}
+                />
+              ) : (
+                <WarningIcon
+                  sx={{ color: "red", fontSize: "30px", marginBottom: "-8px" }}
+                />
+              )}
+              Add Photo Layout
+            </h3>
           </Grid>
           <Grid
             style={{
@@ -580,11 +634,19 @@ const CreateTicket = () => {
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>
               {eventInfo.maxTicketInOrder !== "" ? (
-                  <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
-                ) : (
-                  <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
+                <OfflinePinIcon
+                  sx={{
+                    color: "green",
+                    fontSize: "30px",
+                    marginBottom: "-8px",
+                  }}
+                />
+              ) : (
+                <WarningIcon
+                  sx={{ color: "red", fontSize: "30px", marginBottom: "-8px" }}
+                />
               )}
-                Add Information Ticket
+              Add Information Ticket
             </h3>
           </Grid>
           <Grid
@@ -692,11 +754,13 @@ const CreateTicket = () => {
                   >
                     <p style={{ display: "flex", alignItems: "center" }}>
                       {form.dateEvent !== "" ? (
-                      <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
-                          ) : (
-                            <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
-                        )}
-                        Date and time start &nbsp;&nbsp;
+                        <OfflinePinIcon
+                          sx={{ color: "green", fontSize: "30px" }}
+                        />
+                      ) : (
+                        <WarningIcon sx={{ color: "red", fontSize: "30px" }} />
+                      )}
+                      Date and time start &nbsp;&nbsp;
                     </p>
                     <TextField
                       style={{ width: "50%" }}
@@ -711,17 +775,32 @@ const CreateTicket = () => {
                 </Grid>
 
                 {/* CREATE TICKET */}
-                {form.tickets?.map((formTicket) => (  
+                {form.tickets?.map((formTicket) => (
                   <Grid className="formTicket" key={formTicket.id}>
                     <Grid className="formTicketTitle">
                       <h3 style={{ margin: "0px" }}>
-                        {formTicket.name_ticket !== "" && formTicket.ticket_price !== "" 
-                        && formTicket.total_row !== "" 
-                        && formTicket.rows.every(row => row.total_seat !== "") ? (
-                          <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
-                              ) : (
-                                <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
-                            )}
+                        {formTicket.name_ticket !== "" &&
+                        formTicket.ticket_price !== "" &&
+                        formTicket.total_row !== "" &&
+                        formTicket.rows.every(
+                          (row) => row.total_seat !== ""
+                        ) ? (
+                          <OfflinePinIcon
+                            sx={{
+                              color: "green",
+                              fontSize: "30px",
+                              marginBottom: "-8px",
+                            }}
+                          />
+                        ) : (
+                          <WarningIcon
+                            sx={{
+                              color: "red",
+                              fontSize: "30px",
+                              marginBottom: "-8px",
+                            }}
+                          />
+                        )}
                         Ticket Information
                       </h3>
                     </Grid>

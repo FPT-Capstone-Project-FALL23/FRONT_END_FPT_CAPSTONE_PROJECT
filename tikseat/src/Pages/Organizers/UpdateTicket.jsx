@@ -159,8 +159,6 @@ function UpdateTicket({ event }) {
     endSaleDate: endSale || today,
   });
 
-  console.log(saleDate)
-
   const [eventInfo, setEventInfo] = useState({
     event_name: dataEventInfo.event_name,
     type_of_event: dataEventInfo.type_of_event,
@@ -196,8 +194,6 @@ function UpdateTicket({ event }) {
       : [],
     isActive: false,
   });
-
-  console.log(eventInfo);
 
   const [eventInfoData, setEventInfoData] = useState({
     event_name: eventInfo.event_name,

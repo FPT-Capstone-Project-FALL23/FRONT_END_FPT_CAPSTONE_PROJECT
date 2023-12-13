@@ -104,7 +104,7 @@ function ListRefund() {
       <Grid sx={{ backgroundColor: "#ffffff" }}>
         <TableContainer
           sx={{
-            height: "89vh",
+            height: "88.5vh",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
