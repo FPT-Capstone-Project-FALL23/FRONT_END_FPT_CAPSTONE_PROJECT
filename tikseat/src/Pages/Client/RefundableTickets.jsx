@@ -55,7 +55,7 @@ const RefundableTickets = () => {
             _idOrderDetail: row._idOrderDetail,
           });
           console.log("res", res.data);
-          setDataMyTicket(res?.data?.Orders[0]?.tickets);
+          setDataMyTicket(res?.data[0]?.Orders[0]?.tickets);
         }
         getMyTicket();
       }
