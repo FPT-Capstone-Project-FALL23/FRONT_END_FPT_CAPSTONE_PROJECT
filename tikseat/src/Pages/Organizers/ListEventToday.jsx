@@ -71,30 +71,32 @@ function ListEventToday({ onClickCheckin }) {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Name event</StyledTableCell>
-              <StyledTableCell align="right"> Action&nbsp;</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {eventToday.map((ev, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell component="th" scope="row">
-                  {ev.eventName}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <Button onClick={() => handleEventToday(ev._id)}>
-                    Checkin now
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid sx={{height:"88.5vh"}}>
+        <TableContainer component={Paper}>
+          <Table aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Name event</StyledTableCell>
+                <StyledTableCell align="right"> Action&nbsp;</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {eventToday.map((ev, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell component="th" scope="row">
+                    {ev.eventName}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    <Button onClick={() => handleEventToday(ev._id)}>
+                      Checkin now
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
     </>
   );
 }

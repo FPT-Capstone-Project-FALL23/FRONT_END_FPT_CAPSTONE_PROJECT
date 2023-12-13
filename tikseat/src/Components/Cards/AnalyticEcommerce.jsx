@@ -11,15 +11,15 @@ import MainCard from './MainCard';
 
 // ==============================|| STATISTICS - ECOMMERCE CARD  ||============================== //
 
-const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) => (
-  <MainCard contentSX={{ p: 2.25 }}>
+const AnalyticEcommerce = ({ color, bgColor, title, count, percentage, isLoss, extra }) => (
+  <MainCard sx={{background: bgColor, color:"#fff"}}>
     <Stack spacing={0.5}>
-      <Typography variant="h6" color="textSecondary">
+      <Typography variant="h6" color="#fff">
         {title}
       </Typography>
       <Grid container alignItems="center">
         <Grid item>
-          <Typography variant="h4" color="inherit">
+          <Typography variant="h4" color="#fff">
             {count}
           </Typography>
         </Grid>
@@ -27,9 +27,8 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
           <Grid item>
             <Chip
               variant="combined"
-              color={color}
               label={`${percentage}%`}
-              sx={{ ml: 1.25, pl: 1 }}
+              sx={{ ml: 1.25, pl: 1, color:"#fff" }}
               size="small"
             />
           </Grid>
@@ -37,9 +36,9 @@ const AnalyticEcommerce = ({ color, title, count, percentage, isLoss, extra }) =
       </Grid>
     </Stack>
     <Box sx={{ pt: 2.25 }}>
-      <Typography variant="caption" color="textSecondary">
+      <Typography variant="caption" color="#fff">
         You made an extra{' '}
-        <Typography component="span" variant="caption" sx={{ color: `${color || 'primary'}.main` }}>
+        <Typography component="span" variant="caption">
           {extra}
         </Typography>{' '}
         this year
@@ -58,7 +57,7 @@ AnalyticEcommerce.propTypes = {
 };
 
 AnalyticEcommerce.defaultProps = {
-  color: 'primary'
+  // color: 'primary'
 };
 
 export default AnalyticEcommerce;

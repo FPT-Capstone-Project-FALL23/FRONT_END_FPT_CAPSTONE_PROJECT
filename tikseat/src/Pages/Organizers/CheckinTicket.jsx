@@ -14,7 +14,7 @@ function CheckingTicket({ CheckingTicket }) {
   const idEvent = CheckingTicket;
 
   const [open, setOpen] = useState(false);
-  const[checkin, setCheckin] = useState(true);
+  const [checkin, setCheckin] = useState(true);
   // const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -81,18 +81,21 @@ function CheckingTicket({ CheckingTicket }) {
       };
       checkinTicketToday();
     }
-    
   }, [parsedResult]);
 
   const handleCheckin = () => {
     setOpen(false);
     setCheckin(true);
-  }
+  };
 
   return (
     <Grid
-      maxWidth="100%"
-      sx={{ backgroundColor: "#ffffff", borderRadius: "10px", padding: "10px" }}
+      sx={{
+        backgroundColor: "#ffffff",
+        borderRadius: "10px",
+        padding: "10px",
+        height: "89vh",
+      }}
     >
       <h2>Generate Download & Scan QR Code </h2>
       <Grid className="body-QR">

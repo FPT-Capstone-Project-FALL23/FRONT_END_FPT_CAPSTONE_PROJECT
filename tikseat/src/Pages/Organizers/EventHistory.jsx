@@ -233,7 +233,7 @@ function EventHistory({ onEventDetail }) {
     <>
       <TableContainer
         sx={{
-          height: "89vh",
+          height: "88.5vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -340,9 +340,10 @@ function EventHistory({ onEventDetail }) {
                   <StyledTableCell
                     align="center"
                     sx={{
+                      width:"350px",
                       display: "flex",
                       justifyContent: "space-around",
-                      padding: "12px",
+                      padding: "12px 0px",
                     }}>
                     <Grid sx={{ width: "48%" }}>
                       <ButtonAction

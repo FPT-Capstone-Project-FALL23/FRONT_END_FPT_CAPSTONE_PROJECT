@@ -11,8 +11,9 @@ function TotalRevenue({ dataAllEventDetail }) {
           <Typography variant="h4">Total Statistics</Typography>
         </Grid>
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid sx={{ width: "24%" }}>
+          <Grid sx={{ width: "24%", backgroundColor:"yellow" }}>
             <AnalyticEcommerce
+              bgColor="linear-gradient(to right, #b10000, pink)"
               title="Actual money VNĐ"
               count={dataAllEventDetail?.totalRevenue?.toLocaleString()}
               // percentage={allDataEvent.percent}
@@ -22,6 +23,7 @@ function TotalRevenue({ dataAllEventDetail }) {
           </Grid>
           <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
+              bgColor="linear-gradient(to right, #001b9f, #2ee1fd)"
               title="Total Ticket"
               count={dataAllEventDetail.totalChairs}
               percentage={70.5}
@@ -30,6 +32,7 @@ function TotalRevenue({ dataAllEventDetail }) {
           </Grid>
           <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
+              bgColor="linear-gradient(to right, #eb9c39, #fff3c8)"
               title="Total Buy Ticket"
               count={dataAllEventDetail.totalSoldChairs}
               percentage={27.4}
@@ -40,6 +43,7 @@ function TotalRevenue({ dataAllEventDetail }) {
           </Grid>
           <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
+              bgColor="linear-gradient(to right, #209b40, #a5ff9f)"
               title="Total Check in"
               count={dataAllEventDetail.totalCheckedInChairs}
               percentage={27.4}
