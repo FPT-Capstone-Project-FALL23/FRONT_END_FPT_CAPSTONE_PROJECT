@@ -24,7 +24,7 @@ export const listPlanEvents = [
 ];
 
 export const listEventick = [
-  { title: "About Us" },
+  { title: "About Us", url: "/about_page" },
   {
     title: "Press",
   },
