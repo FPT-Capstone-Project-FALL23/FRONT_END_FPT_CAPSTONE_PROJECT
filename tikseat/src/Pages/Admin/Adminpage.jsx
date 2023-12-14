@@ -34,7 +34,6 @@ import "../../Assets/CSS/Organizer/Sidebar.css";
 import { getLocalStorageUserData } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
-import ListMenu from "../../Components/Admin/ListMenu";
 import {
   LIST_HOME_ADMIN,
   LIST_NAME_MENU,
@@ -118,70 +117,6 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export const NestedListItem = ({
-  LIST_COLLAPSE,
-  menuData,
-  setMenuData,
-  nameCollapse,
-  IconCollapse,
-  open,
-}) => {
-  const [openCollapse, setOpenCollapse] = useState(false);
-  const handleClick = () => {
-    setOpenCollapse(!openCollapse);
-  };
-  return (
-    <>
-      <ListItem
-        disablePadding
-        sx={{
-          display: "block",
-          border: "none",
-        }}
-        onClick={handleClick}>
-        <ListItemButton
-          sx={{
-            minHeight: 50,
-            justifyContent: open ? "initial" : "center",
-            backgroundColor:
-              menuData === setMenuData ? "#E0F4FF" : "transparent",
-            borderRadius: "10px",
-            margin: "5px 10px 5px 10px",
-            px: 2.5,
-          }}>
-          <ListItemIcon
-            sx={{
-              minWidth: 0,
-              mr: open ? 3 : 1.5,
-              justifyContent: "center",
-            }}>
-            {IconCollapse}
-          </ListItemIcon>
-
-          <ListItemText
-            sx={{ display: open ? "block" : "none" }}
-            primary={nameCollapse}
-          />
-          {open ? <>{openCollapse ? <ExpandLess /> : <ExpandMore />}</> : <></>}
-        </ListItemButton>
-        <Collapse in={openCollapse} timeout="auto">
-          {LIST_COLLAPSE.map((value, index) => (
-            <ListMenu
-              setMenuData={setMenuData}
-              menuData={menuData}
-              open={open}
-              nameMenu={value.nameMenu}
-              titleMenu={value.titleMenu}
-              icon={value.icon}
-              isCollapse={true}
-            />
-          ))}
-        </Collapse>
-      </ListItem>
-    </>
-  );
-};
-
 export const checkToken = (navigate) => {
   const token = getLocalStorageToken();
   if (!token) {
@@ -205,9 +140,7 @@ export default function MiniDrawer() {
   useEffect(() => {
     const newSocket = io(URL_SOCKET, { transports: ["websocket"] });
     setSocket(newSocket);
-
     return () => {
-      // Ngắt kết nối socket khi component bị unmounted hoặc socket thay đổi
       if (newSocket) {
         newSocket.disconnect();
       }
@@ -226,8 +159,163 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([2, 2, 2]);
+  const [notifications2, setNotifications2] = useState([2, 2]);
+  const [notifications3, setNotifications3] = useState([2, 2, 2, 4]);
+  const [notifications4, setNotifications4] = useState([2]);
+
   const [openNotification, setOpenNotification] = useState(false);
+
+  const allNotificationLists = [
+    notifications.length,
+    notifications2.length,
+    notifications3.length,
+    notifications4.length,
+  ];
+  console.log(allNotificationLists);
+
+  const ListMenu = ({
+    setMenuData,
+    menuData,
+    open,
+    nameMenu,
+    titleMenu,
+    icon,
+    isCollapse,
+    notificationLength,
+  }) => {
+    return (
+      <ListItem
+        disablePadding
+        sx={{ display: "block", border: "none" }}
+        onClick={() => setMenuData(nameMenu)}
+      >
+        <ListItemButton
+          sx={{
+            minHeight: 50,
+            justifyContent: open ? "initial" : "center",
+            backgroundColor:
+              menuData === nameMenu ? "#ffc50099" : "transparent",
+            borderRadius: "10px",
+            margin: "5px 10px 5px 10px",
+            px: 2.5,
+            pl: isCollapse ? 4 : "null",
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 1.5,
+              justifyContent: "center",
+            }}
+          >
+            {notificationLength > 0 && (
+              <Badge
+                sx={{
+                  position: "absolute",
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                }}
+                badgeContent={notificationLength}
+                color="error"
+              />
+            )}
+            {icon}
+          </ListItemIcon>
+          <ListItemText
+            sx={{ display: open ? "block" : "none" }}
+            primary={titleMenu}
+          />
+        </ListItemButton>
+      </ListItem>
+    );
+  };
+
+  const NestedListItem = ({
+    LIST_COLLAPSE,
+    menuData,
+    setMenuData,
+    nameCollapse,
+    IconCollapse,
+    open,
+  }) => {
+    const [openCollapse, setOpenCollapse] = useState(false);
+    const handleClick = () => {
+      setOpenCollapse(!openCollapse);
+    };
+    return (
+      <>
+        <ListItem
+          disablePadding
+          sx={{
+            display: "block",
+            border: "none",
+          }}
+          onClick={handleClick}
+        >
+          <ListItemButton
+            sx={{
+              minHeight: 50,
+              justifyContent: open ? "initial" : "center",
+              backgroundColor:
+                menuData === setMenuData ? "#E0F4FF" : "transparent",
+              borderRadius: "10px",
+              margin: "5px 10px 5px 10px",
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 1.5,
+                justifyContent: "center",
+              }}
+            >
+              {IconCollapse}
+            </ListItemIcon>
+
+            <ListItemText
+              sx={{ display: open ? "block" : "none" }}
+              primary={nameCollapse}
+            />
+            {open ? (
+              <>{openCollapse ? <ExpandLess /> : <ExpandMore />}</>
+            ) : (
+              <></>
+            )}
+          </ListItemButton>
+          <Collapse in={openCollapse} timeout="auto">
+            {LIST_COLLAPSE.map((value, index) => {
+              let noti;
+              console.log(value.nameMenu);
+              if(value.nameMenu === "approvedOrganizer"){
+                noti = allNotificationLists[0]
+              }else if (value.nameMenu === "approvedEvent") {
+                noti = allNotificationLists[1]
+              }else if (value.nameMenu === "refundList") {
+                noti = allNotificationLists[2]
+              }else if (value.nameMenu === "payBusiness") {
+                noti = allNotificationLists[3]
+              }
+              return (
+                <ListMenu
+                  key={index}
+                  setMenuData={setMenuData}
+                  menuData={menuData}
+                  open={open}
+                  nameMenu={value.nameMenu}
+                  titleMenu={value.titleMenu}
+                  icon={value.icon}
+                  isCollapse={true}
+                  notificationLength={noti}
+                />
+              );
+            })}
+          </Collapse>
+        </ListItem>
+      </>
+    );
+  };
 
   useEffect(() => {
     if (socket && adminId) {
@@ -273,7 +361,8 @@ export default function MiniDrawer() {
           padding: "10px",
           margin: "5px",
           borderRadius: "10px",
-        }}>{`${senderName} đã tạo một sự kiện mới.`}</span>
+        }}
+      >{`${senderName} đã tạo một sự kiện mới.`}</span>
     );
   };
 
@@ -292,7 +381,8 @@ export default function MiniDrawer() {
         className="appbar"
         position="fixed"
         elevation={4}
-        sx={{ backgroundColor: "#ffffff", color: "black" }}>
+        sx={{ backgroundColor: "#ffffff", color: "black" }}
+      >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
@@ -301,7 +391,8 @@ export default function MiniDrawer() {
               onClick={() => {
                 setOpen(!open);
               }}
-              edge="start">
+              edge="start"
+            >
               <MenuIcon />
             </IconButton>
             <Typography variant="h3" className="logo" component="h4">
@@ -310,7 +401,8 @@ export default function MiniDrawer() {
           </Grid>
           <Grid
             className="welcome"
-            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}>
+            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}
+          >
             <Typography variant="h6" noWrap component="div">
               Welcome Back <span style={{ color: "yellow" }}>Admin</span>
             </Typography>
@@ -320,7 +412,8 @@ export default function MiniDrawer() {
                   size="large"
                   aria-label="show 17 new notifications"
                   color="inherit"
-                  onClick={() => setOpenNotification(!openNotification)}>
+                  onClick={() => setOpenNotification(!openNotification)}
+                >
                   {notifications.length > 0 && (
                     <Badge
                       sx={{
@@ -343,7 +436,8 @@ export default function MiniDrawer() {
                 width: "60px",
                 borderRadius: "50%",
                 marginLeft: "20px",
-              }}>
+              }}
+            >
               <Avatar
                 sx={{ width: "100%", height: "100%" }}
                 alt="Remy Sharp"
@@ -364,7 +458,8 @@ export default function MiniDrawer() {
                 display: "flex",
                 flexDirection: "column",
                 padding: "10px",
-              }}>
+              }}
+            >
               {notifications.map((n) => displayNotification(n))}
               <Button onClick={handleRead}> Read</Button>
             </Grid>
@@ -376,7 +471,8 @@ export default function MiniDrawer() {
         className="drawer"
         variant="permanent"
         open={open}
-        sx={{ backgroundColor: "#87C4FF" }}>
+        sx={{ backgroundColor: "#87C4FF" }}
+      >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
@@ -389,18 +485,22 @@ export default function MiniDrawer() {
         <Divider />
 
         <List style={{ border: "none" }}>
-          {LIST_NAME_MENU.map((value, index) => (
-            <ListMenu
-              setMenuData={setMenuData}
-              menuData={menuData}
-              open={open}
-              nameMenu={value.nameMenu}
-              titleMenu={value.titleMenu}
-              icon={value.icon}
-              isCollapse={false}
-            />
-          ))}
-          <Divider />
+          {LIST_NAME_MENU.map((value, index) => {
+            return (
+              <>
+                <ListMenu
+                  setMenuData={setMenuData}
+                  menuData={menuData}
+                  open={open}
+                  nameMenu={value.nameMenu}
+                  titleMenu={value.titleMenu}
+                  icon={value.icon}
+                  isCollapse={false}
+                />
+                <Divider />
+              </>
+            );
+          })}
           {LIST_HOME_ADMIN.map((value, index) => {
             return (
               <>
@@ -422,7 +522,8 @@ export default function MiniDrawer() {
             sx={{
               display: "block",
             }}
-            onClick={() => handleLogOut(navigate)}>
+            onClick={() => handleLogOut(navigate)}
+          >
             <ListItemButton
               sx={{
                 minHeight: 50,
@@ -432,13 +533,15 @@ export default function MiniDrawer() {
                 borderRadius: "10px",
                 margin: "5px 10px 5px 10px",
                 px: 2.5,
-              }}>
+              }}
+            >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 1.5,
                   justifyContent: "center",
-                }}>
+                }}
+              >
                 <LogoutIcon sx={styleIcon} />
               </ListItemIcon>
 
@@ -453,14 +556,15 @@ export default function MiniDrawer() {
 
       <Grid
         className="box"
-        sx={{ height: "100vh", width: "100%", backgroundColor: "#E0F4FF" }}>
+        sx={{ height: "100vh", width: "100%", backgroundColor: "#e7e8ec" }}
+      >
         <Box
           style={{
-            padding: "100px 40px 40px 40px",
-            backgroundColor: "#E0F4FF",
+            padding: "80px 20px 20px 20px",
           }}
           component="main"
-          sx={{ flexGrow: 1, p: 3 }}>
+          sx={{ flexGrow: 1, p: 3 }}
+        >
           {menuData === "homeAdmin" && <HomePageAdmin />}
           {menuData === "clientManage" && <ClientManage />}
           {menuData === "organizerManage" && <OrganigerManage />}

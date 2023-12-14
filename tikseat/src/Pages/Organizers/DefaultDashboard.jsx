@@ -153,7 +153,7 @@ function DefaultDashboard() {
                 height: "400px",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
               }}
             >
               {dataTopEvent &&
@@ -168,6 +168,7 @@ function DefaultDashboard() {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      marginBottom:"10px"
                     }}
                   >
                     <Grid sx={{ width: "40%" }}>{item.event_name}</Grid>
