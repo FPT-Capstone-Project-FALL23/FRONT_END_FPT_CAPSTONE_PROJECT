@@ -58,6 +58,7 @@ export const NAME_COLUMNS_APPROVED_EVENT = [
 
 export const LIST_NAME_MENU = [
     { nameMenu: "homeAdmin", titleMenu: "Admin", icon: <HomeIcon /> },
+    { nameMenu: "clientManage", titleMenu: "List Client", icon: <PersonIcon /> },
 ]
 
 export const LIST_APPROVED = [
@@ -72,7 +73,6 @@ export const LIST_PAYMENT = [
 ]
 export const LIST_CLIENT_MANAGER = [
     { nameMenu: "clientManage", titleMenu: "List Client", icon: <PersonIcon /> },
-    // { nameMenu: "blockClientList", titleMenu: "List of blocked clients ", icon: <PersonOffIcon /> },
 ]
 export const LIST_ORGANIZER_MANAGER = [
     { nameMenu: "organizerManage", titleMenu: "List Organizer", icon: <GroupIcon /> },
@@ -80,7 +80,6 @@ export const LIST_ORGANIZER_MANAGER = [
 ]
 
 export const LIST_HOME_ADMIN = [
-    { LIST_COLLAPSE: LIST_CLIENT_MANAGER, nameCollapse: "Client Manager", icon: <ManageAccountsIcon /> },
     { LIST_COLLAPSE: LIST_ORGANIZER_MANAGER, nameCollapse: "Organizer Manager", icon: <GroupsIcon /> },
     { LIST_COLLAPSE: LIST_APPROVED, nameCollapse: "Approved", icon: <LibraryAddCheckIcon /> },
     { LIST_COLLAPSE: LIST_PAYMENT, nameCollapse: "Payment", icon: <LocalAtmIcon /> },

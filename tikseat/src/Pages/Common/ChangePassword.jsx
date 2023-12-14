@@ -1,6 +1,9 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Button, Grid, IconButton, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import "react-toastify/dist/ReactToastify.css";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import {
     getLocalStorageUserData,
@@ -33,12 +36,15 @@ function ChangePassword() {
             newPassword: newPassword,
         })
         if (response.status === true) {
+          toast.success("Update password success!", toastOptions);
           window.localStorage.clear();
             navigate("/login");
+
         } else {
             console.log("error");
         }
     } catch (error) {
+        toast.error("Curent password incorrect! ", toastOptions);
         console.log(error);
     }
   }
@@ -74,7 +80,7 @@ function ChangePassword() {
               justifyContent: "center",
             }}
           >
-            <Grid sx={{ marginBottom: "30px" }}>
+            <Grid>
               <TextField
                 fullWidth
                 type={showOldPass ? "text" : "password"}
@@ -95,7 +101,8 @@ function ChangePassword() {
                 {showOldPass ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </Grid>
-            <Grid sx={{ marginBottom: "30px" }}>
+            {/* <span style={{color:"red", marginBottom: "30px", fontSize:"12px"}}>Password includes 8-12 characters including letters, numbers and special characters (@,#,$,^, ....)</span> */}
+            <Grid sx={{ marginTop: "30px" }}>
               <TextField
                 fullWidth
                 type={showPass ? "text" : "password"}
@@ -116,7 +123,8 @@ function ChangePassword() {
                 {showPass ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </Grid>
-            <Grid sx={{ marginBottom: "30px" }}>
+            {/* <span style={{color:"red", marginBottom: "30px", fontSize:"12px"}}>Password includes 8-12 characters including letters, numbers and special characters (@,#,$,^, ....)</span> */}
+            <Grid sx={{ marginTop:"30px" }}>
               <TextField
                 fullWidth
                 type={showRePass ? "text" : "password"}
@@ -137,10 +145,11 @@ function ChangePassword() {
                 {showRePass ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </Grid>
-
+            {/* <span style={{color:"red", marginBottom: "30px", fontSize:"12px"}}>Password not match</span> */}
             <Grid>
               <Button
                 style={{
+                  marginTop:"30px",
                   padding: "10px",
                   color: "black",
                   fontWeight: "bold",
@@ -155,6 +164,7 @@ function ChangePassword() {
                 Change My Password
               </Button>
             </Grid>
+            <ToastContainer />
           </FormSubmit>
         </Grid>
       </Grid>

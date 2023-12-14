@@ -19,8 +19,8 @@ import { BarChart } from "@mui/x-charts/BarChart";
 export default function ChartBars({ xLabels, pData }) {
   return (
     <BarChart
-      width={500}
-      height={300}
+      width={650}
+      height={450}
       series={[{ data: pData, id: "pvId" }]}
       xAxis={[{ data: xLabels, scaleType: "band" }]}
     />

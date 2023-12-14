@@ -22,8 +22,8 @@ export default function BasicPie({
           ],
         },
       ]}
-      width={600}
-      height={200}
+      width={800}
+      height={350}
     />
   );
 }

@@ -185,6 +185,7 @@ function HomePageAdmin() {
                   <div
                     style={{
                       height: "46vh",
+                      marginRight:"20%",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "center",

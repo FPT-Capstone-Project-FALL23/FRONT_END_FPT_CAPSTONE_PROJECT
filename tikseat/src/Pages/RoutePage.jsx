@@ -26,7 +26,6 @@ const BookTickets = lazy(() => import("./Client/BookTickets"));
 // Trang tam thoi
 const ChangePassword = lazy(() => import("../Pages/Client/ChangePassword"));
 const Sidebar = lazy(() => import("../Pages/Organizers/Sidebar"));
-const HomePageAdmin = lazy(() => import("../Pages/Admin/HomePageAdmin"));
 const ClientPageAdmin = lazy(() => import("../Pages/Admin/ClientPageAdmin"));
 const OrganizerPageAdmin = lazy(() =>
   import("../Pages/Admin/OrganizerPageAdmin")
