@@ -34,8 +34,10 @@ import imageScreen from "../../Assets/Images/screen.png";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 import Carousel from "react-multi-carousel";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import CountTime from "../../Components/Common/HomePage/CountTime";
+import { useOpenStore } from "../../Store/openStore";
+import InformationEvent from "../../Components/Client/InformationEvent";
+import DialogNotification from "../../Components/Client/DialogNotification";
 const style = {
   position: "absolute",
   top: "50%",
@@ -50,9 +52,12 @@ const style = {
 };
 
 const BookTickets = () => {
+  const { setEventId } = useOpenStore();
   const { id: idEvent } = useParams();
   const [age, setAge] = useState("");
   const [openConfrm, setOpenConfirm] = React.useState(false);
+  const [dialogWidth, setDialogWidth] = useState("600px");
+  const [dialogHeight, setDialogHeight] = useState("400px");
 
   const [dataEvents, setDataEvents] = useState("");
   const [dataEventDetail, setDataEventDetail] = useState();
@@ -63,14 +68,16 @@ const BookTickets = () => {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
   const [selectChair, setSelectChair] = useState([]);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  // const [checkDay, setCheckDay] = useState(1);
 
   const [countDown, setCountDown] = useState(false);
   const [time, setTime] = useState(null);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [statusConfrim, setStatusConfrim] = useState(true);
+  const [open, setOpen] = React.useState(false);
+  const [statusTime, setStatusTime] = React.useState();
+  const [isOpenSale, setIsOpenSale] = React.useState();
+  const [isOpenDialogNotify, setIsOpenDialogNotify] = React.useState(false);
 
   const [id, setId] = useState("");
 
@@ -81,7 +88,7 @@ const BookTickets = () => {
       return;
     }
     if (!dataUser) {
-      alert("Vui lòng đăng nhập để book chỗ");
+      navigate("/login");
       return;
     }
     const eventRowKey = `${idEvent}_${selectedItem?._id}`;
@@ -137,14 +144,11 @@ const BookTickets = () => {
 
   useEffect(() => {
     const eventRowKey = `${idEvent}_${selectedItem?._id}`;
-    // console.log("selectedItem: ", selectedItem);
-    // console.log("Initializing socket connection");
 
     const socket = io(URL_SOCKET, {
       transports: ["websocket"],
       query: { email: dataUser?.email },
     });
-    // console.log("socketcheck: ", socket);
     setSocket(socket);
     socket.on("connect", () => setId(socket.id));
     socket.on("disconnect", () => console.log("socket disconnected!"));
@@ -164,18 +168,39 @@ const BookTickets = () => {
     };
   }, [idEvent, selectedItem]);
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-  const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     if (!dataInfo) {
-      alert("Vui lòng đăng nhập để book chỗ");
+      setEventId(`book-tickets/${idEvent}`);
+      navigate("/login");
       return;
     }
+    const maxWidth = window.innerWidth * 0.9;
+    const maxHeight = window.innerHeight * 0.9;
+    setDialogWidth(`${maxWidth}px`);
+    setDialogHeight(`${maxHeight}px`);
     setOpen(true);
-    // socket.emit("listbooks", "");
+    setOpen(true);
   };
+
+  function checkEventTicketSalesEnd(item) {
+    const eventDate = new Date(
+      dataEventDetail?.sales_date?.end_sales_date
+    ).getTime();
+    const timeNow = new Date().getTime();
+    if (timeNow > eventDate) {
+      setIsOpenDialogNotify(true);
+    } else {
+      console.log("item", item);
+      setSelectedItem(item);
+      handleOpen();
+      setSelectRows(item?.rows);
+    }
+  }
+
+  const handleOpenBuyTick = (item) => {
+    checkEventTicketSalesEnd(item);
+  };
+
   const handleClose = () => {
     setOpen(false);
     setTime(null);
@@ -227,19 +252,14 @@ const BookTickets = () => {
   const totalByTicket = selectChair
     ?.filter((item) => item.email === dataUser?.email)
     .reduce((accumulator, seat) => accumulator + seat.price, 0);
-
-  // console.log("totalByTicket: ", totalByTicket);
-  const [ticketBooker, setTicketBooker] = useState({
-    email: dataUser?.email,
-    phone: dataInfo?.phone,
-    fullname: dataInfo?.full_name,
-    selected_ticket: selectChair,
-    total_ticket: totalByTicket,
-  });
   //call api create payment
   const opener = window;
   const handleBuyTickect = async (event) => {
     event.preventDefault();
+    const windowHeight = 1000;
+    const windowWidth = 1000;
+    const windowLeft = window.screen.width / 2 - windowWidth / 2;
+    const windowTop = window.screen.height / 2 - windowHeight / 2;
     try {
       const listChairIds = selectChair
         .filter((item) => item.email === dataUser?.email)
@@ -253,12 +273,10 @@ const BookTickets = () => {
 
       const response = await ApiClient.paymentTicket(requestData);
       if (response) {
-        //chuyển trang qua trang của zalo
-        // window.location.href = response.data.order_url;
         window.open(
           response.data.order_url,
           "_blank",
-          "height=500,width=500",
+          `height=${windowHeight}, width=${windowWidth}, top=${windowTop}, left=${windowLeft}`,
           opener
         );
         handleCloseConfirm();
@@ -339,11 +357,11 @@ const BookTickets = () => {
     seconds: 0,
   });
 
-  useEffect(() => {
-    const eventDate = new Date(dataEventDetail?.sales_date?.start_sales_date);
+  const countTimeLeft = (eventSale) => {
     const intervalId = setInterval(() => {
       const now = new Date().getTime();
-      const timeDifference = eventDate - now;
+      const timeDifference = eventSale - now;
+      console.log("timeDifference", timeDifference);
 
       if (timeDifference > 0) {
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
@@ -357,13 +375,34 @@ const BookTickets = () => {
 
         setTimeLeft({ days, hours, minutes, seconds });
       } else {
+        console.log("time end");
         clearInterval(intervalId);
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     }, 1000);
 
-    // console.log("ododod");
     return () => clearInterval(intervalId);
+  };
+
+  useEffect(() => {
+    const eventStartSale = new Date(
+      dataEventDetail?.sales_date?.start_sales_date
+    );
+    const eventEndSale = new Date(dataEventDetail?.sales_date?.end_sales_date);
+    const getTimeEvenStartSale = eventStartSale.getTime();
+    const getTimeEvenEndSale = eventEndSale.getTime();
+    const now = new Date().getTime();
+    if (now < getTimeEvenStartSale) {
+      setIsOpenSale(true);
+      setStatusTime(true);
+      countTimeLeft(eventStartSale);
+    } else if (getTimeEvenStartSale <= now && now <= getTimeEvenEndSale) {
+      setIsOpenSale(false);
+      setStatusTime(true);
+      countTimeLeft(eventEndSale);
+    } else {
+      setStatusTime(false);
+    }
   }, [dataEventDetail]);
 
   const [showEvent, setShowEvent] = useState(null);
@@ -375,7 +414,6 @@ const BookTickets = () => {
           position: "relative",
           background: `url(${dataEventDetail?.eventImage}) no-repeat center `,
           height: "550px",
-          // paddingBottom: "50px",
         }}>
         <div
           style={{
@@ -403,138 +441,32 @@ const BookTickets = () => {
             />
           </div>
           <Stack direction={"row"} gap={"40px"} alignContent={"center"}>
-            <Stack
-              direction={"column"}
-              flex={1}
-              padding={"20px 0"}
-              color={"white"}
-              margin={"auto"}>
-              {/* <Chip
-                color="primary"
-                style={{
-                  fontWeight: "700",
-                  width: "max-content",
-                  borderRadius: "10px",
-                }}
-                label="K"
-              /> */}
-              <Typography variant="h3" textAlign={"center"} marginTop={"20px"}>
-                {dataEventDetail?.event_name}
-              </Typography>
-
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                gap={"10px"}
-                marginTop={"10px"}>
-                <Stack direction={"row"} alignItems={"center"} gap={"10px"}>
-                  <span>
-                    <LocationOnIcon />
-                  </span>
-                  <Typography>
-                    {dataEventDetail?.event_location?.specific_address}
-                  </Typography>
-                  -
-                  <Typography>
-                    {dataEventDetail?.event_location?.ward}
-                  </Typography>
-                  -
-                  <Typography>
-                    {dataEventDetail?.event_location?.district}
-                  </Typography>
-                  -
-                  <Typography>
-                    {dataEventDetail?.event_location?.city}
-                  </Typography>
-                </Stack>
-              </Stack>
-              <Typography
-                variant="h5"
-                fontStyle={"italic"}
-                color={"white"}
-                margin={"20px 0"}
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ display: "flex" }}>
-                  <AccountBoxIcon />
-                </span>
-                <Typography fontWeight={700}>
-                  {" "}
-                  Organizer: {organizer}
-                </Typography>
-              </Typography>
-
-              <Typography
-                variant="h4"
-                fontStyle={"italic"}
-                color={"white"}
-                margin={"20px 0"}>
-                {dataEventDetail?.type_of_event}
-              </Typography>
-            </Stack>
+            <InformationEvent
+              dataEventDetail={dataEventDetail}
+              organizer={organizer}
+            />
             <Stack direction={"column"} gap={"20px"} style={{ margin: "auto" }}>
-              <Stack direction={"row"} gap={"10px"}>
-                <Typography variant="h6" style={{ color: "white" }}>
-                  Ticket sales will open later:
-                </Typography>
-              </Stack>
-              <Stack direction={"row"} gap={"10px"}>
-                <Stack
-                  direction={"column"}
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    background: "green",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                  <Typography variant="h6">{timeLeft.days}</Typography>
-                  <Typography variant="body2">Day</Typography>
-                </Stack>
-                <Stack
-                  direction={"column"}
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    background: "green",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                  <Typography variant="h6">{timeLeft.hours}</Typography>
-                  <Typography variant="body2">hours</Typography>
-                </Stack>
-                <Stack
-                  direction={"column"}
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    background: "green",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                  <Typography variant="h6">{timeLeft.minutes}</Typography>
-                  <Typography variant="body2">minutes</Typography>
-                </Stack>
-                <Stack
-                  direction={"column"}
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    background: "green",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}>
-                  <Typography variant="h6">{timeLeft.seconds}</Typography>
-                  <Typography variant="body2">seconds</Typography>
-                </Stack>
-              </Stack>
+              {statusTime ? (
+                <>
+                  <Stack direction={"row"} gap={"10px"}>
+                    <Typography variant="h6" style={{ color: "white" }}>
+                      {isOpenSale
+                        ? "Ticket sales will open later:"
+                        : "Ticket sales have:"}
+                    </Typography>
+                  </Stack>
+                  <CountTime timeLeft={timeLeft} />
+                </>
+              ) : (
+                <>
+                  <Stack direction={"row"} gap={"10px"}>
+                    <Typography variant="h6" style={{ color: "red" }}>
+                      Ticket sales have been stopped
+                    </Typography>
+                  </Stack>
+                </>
+              )}
+
               <Stack
                 style={{
                   padding: "20px",
@@ -559,23 +491,34 @@ const BookTickets = () => {
                     <CalendarMonthIcon />
                   </span>
                   <Stack direction={"column"}>
-                    <Typography>Time: </Typography>
+                    <Typography>
+                      {statusTime
+                        ? "Opening time for sale : "
+                        : "The time the event takes place"}
+                    </Typography>
                     <Stack direction={"row"} gap={"10px"}>
                       <Typography>
-                        {new Date(
-                          dataEventDetail?.sales_date?.start_sales_date
-                        ).toLocaleDateString()}
+                        {statusTime
+                          ? new Date(
+                              dataEventDetail?.sales_date?.start_sales_date
+                            ).toLocaleDateString()
+                          : new Date(
+                              dataEventDetail?.event_date[0]?.date
+                            ).toLocaleDateString()}
                       </Typography>{" "}
                       -
                       <Typography>
-                        {new Date(
-                          dataEventDetail?.sales_date?.end_sales_date
-                        ).toLocaleDateString()}
+                        {statusTime
+                          ? new Date(
+                              dataEventDetail?.sales_date?.end_sales_date
+                            ).toLocaleDateString()
+                          : new Date(
+                              dataEventDetail?.event_date[
+                                dataEventDetail?.event_date.length - 1
+                              ]?.date
+                            ).toLocaleDateString()}
                       </Typography>
                     </Stack>
-                    {/* <Stack direction={"row"} gap={"10px"}>
-                      <Typography>9:00 morning - 5:00 afternoon</Typography>
-                    </Stack> */}
                   </Stack>
                 </Stack>
               </Stack>
@@ -652,9 +595,10 @@ const BookTickets = () => {
                                               alignItems: "center",
                                             }}
                                             onClick={() => {
-                                              setSelectedItem(item);
-                                              handleOpen();
-                                              setSelectRows(item?.rows);
+                                              // setSelectedItem(item);
+                                              // handleOpen();
+                                              // setSelectRows(item?.rows);
+                                              handleOpenBuyTick(item);
                                             }}>
                                             <Typography variant="h4">
                                               {item.name_areas}
@@ -700,7 +644,15 @@ const BookTickets = () => {
                             );
                           })}
                       </Stack>
-                      <ModalStyled open={open} onClose={handleClose}>
+                      <ModalStyled
+                        sx={{
+                          "& .MuiDialog-paper": {
+                            width: dialogWidth,
+                            height: dialogHeight,
+                          },
+                        }}
+                        open={open}
+                        onClose={handleClose}>
                         <Box sx={{ ...style, width: "70%" }}>
                           <div
                             style={{
@@ -994,16 +946,6 @@ const BookTickets = () => {
                                                   })
                                                   .join(",")}
                                             </div>
-                                            {/* <span
-                                              style={{
-                                                width: "20px",
-                                                height: "20px",
-                                                color: "red",
-                                              }}
-                                              onClick={() => setSelectChair([])}
-                                            >
-                                              <IconCircle />
-                                            </span> */}
                                           </>
                                         )}
                                       </Stack>
@@ -1137,6 +1079,10 @@ const BookTickets = () => {
                           </Stack>
                         </Box>
                       </ModalStyled>
+                      <DialogNotification
+                        isDialogOpen={isOpenDialogNotify}
+                        setIsDialogOpen={setIsOpenDialogNotify}
+                      />
                     </Stack>
                   </TabPanel>
                   <TabPanel value="2">
@@ -1169,8 +1115,6 @@ const BookTickets = () => {
             </Typography>
             <Carousel
               arrows
-              // customLeftArrow={<CustomPrevArrow />}
-              // customRightArrow={<CustomNextArrow />}
               autoPlaySpeed={3000}
               centerMode={false}
               containerClass="container-with-dots"
@@ -1263,15 +1207,6 @@ const BookTickets = () => {
   );
 };
 
-// const CustomPrevArrow = ({ onClick }) => (
-//   <button onClick={onClick} className="custom-arrow custom-prev-arrow"></button>
-// );
-
-// const CustomNextArrow = ({ onClick }) => (
-//   <button onClick={onClick} className="custom-arrow custom-next-arrow">
-//     {">"}
-//   </button>
-// );
 const ModalStyled = styled(Modal)`
   .MuiBox-root {
     border: none;

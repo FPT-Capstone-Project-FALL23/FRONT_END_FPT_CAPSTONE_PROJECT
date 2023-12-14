@@ -16,10 +16,11 @@ import { colorBlack, colorWhite } from "../../../Assets/CSS/Style/theme";
 import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
-  setLocalStorageUserData,
-  setLocalStorageUserInfo,
+  removeLocalStorageDataInfo,
+  removeLocalStorageUserData,
 } from "../../../Store/userStore";
 import { ButtonLoginStyle } from "../../../Assets/CSS/Style/style.const";
+import { removeLocalStorageToken } from "../../../Store/authStore";
 
 const NavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -36,7 +37,7 @@ const NavBar = () => {
   const ManagementUser = [
     { content: `Welcome ${dataUser?.email}` },
     { url: "/createProfileClient", content: "My profile" },
-    { url: "/login", content: "Log out" },
+    { url: "/", content: "Log out" },
   ];
   return (
     <AppBar
@@ -133,10 +134,11 @@ const NavBar = () => {
                       <Typography
                         textAlign="center"
                         onClick={() => {
-                          if (item?.url === "/login") {
+                          if (item?.url === "/") {
                             navigate(item?.url);
-                            setLocalStorageUserData("");
-                            setLocalStorageUserInfo("");
+                            removeLocalStorageDataInfo();
+                            removeLocalStorageUserData();
+                            removeLocalStorageToken();
                           } else {
                             navigate(item?.url);
                           }

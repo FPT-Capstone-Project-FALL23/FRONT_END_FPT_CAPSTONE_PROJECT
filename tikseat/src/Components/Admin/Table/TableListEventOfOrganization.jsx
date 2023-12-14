@@ -108,7 +108,6 @@ function Row({ rows }) {
 }
 
 export default function TableListEventOfOrganization({ selectedDataEvent }) {
-  console.log("selectedDataEvent", selectedDataEvent);
   return (
     <TableContainer component={Paper} sx={{ maxHeight: "400px" }}>
       <Table aria-label="collapsible table">

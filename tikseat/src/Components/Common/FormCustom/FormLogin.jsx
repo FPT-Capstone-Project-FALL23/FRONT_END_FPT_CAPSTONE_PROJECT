@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Grid,
   FormControl,
@@ -31,6 +31,8 @@ import {
 } from "../../../Store/userStore";
 import { toastOptions } from "../../../Assets/Constant/Common/dataCommon";
 import InputCustom from "../Input/InputCustom";
+import { useOpenStore } from "../../../Store/openStore";
+import { checkToken } from "../../../Pages/Admin/Adminpage";
 
 function FormLogin({
   handleClickShowPassword,
@@ -40,11 +42,16 @@ function FormLogin({
   const [email, setEmail] = React.useState();
   const [password, setPassword] = React.useState();
   let navigate = useNavigate();
+  const { eventId } = useOpenStore();
 
   //Điều hướng login
   const navigateAfterLogin = () => {
     if (jwtDecode(getLocalStorageToken()).role == ROLE[0]) {
-      navigate("/");
+      if (eventId) {
+        navigate(`/${eventId}`);
+      } else {
+        navigate("/");
+      }
     } else if (jwtDecode(getLocalStorageToken()).role == ROLE[1]) {
       navigate("/dashboard");
     } else {
@@ -59,7 +66,6 @@ function FormLogin({
         email: email,
         password: password,
       });
-      console.log("response", response);
       const token = response.token;
       const dataUser = response.data.dataUser;
       const dataInfo = response.data.dataInfo;
@@ -69,11 +75,31 @@ function FormLogin({
       setLocalStorageUserInfo(dataInfo);
       navigateAfterLogin();
     } catch (error) {
-      console.log("error: ", error.response.data);
       const err = error.response.data.message;
       toast.error(err, toastOptions);
     }
   };
+
+  function checkUser() {
+    const token = getLocalStorageToken();
+    if (!token) {
+      navigate("/login");
+    } else {
+      const roleNavigate = jwtDecode(token).role;
+      console.log("roleNavigate", roleNavigate);
+      if (roleNavigate == ROLE[0]) {
+        navigate("/");
+      } else if (roleNavigate == ROLE[1]) {
+        navigate("/dashboard");
+      } else {
+        navigate("/homepageAdmin");
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkUser();
+  }, []);
 
   return (
     <>

@@ -74,7 +74,6 @@ const Navbar = ({ socket }) => {
   const dopen = useOpenStore((state) => state.dopen);
 
   const [notifications, setNotifications] = useState([]);
-  console.log(notifications);
   const [open, setOpen] = useState(false);
 
   const handleProfileMenuOpen = (event) => {
@@ -119,8 +118,7 @@ const Navbar = ({ socket }) => {
           padding: "10px",
           margin: "5px",
           borderRadius: "10px",
-        }}
-      >{`${senderName} created a new event.`}</span>
+        }}>{`${senderName} created a new event.`}</span>
     );
   };
 
@@ -134,8 +132,7 @@ const Navbar = ({ socket }) => {
       <AppBar
         position="fixed"
         elevation={0}
-        sx={{ backgroundColor: "#ffffff", color: "#2f2f2f" }}
-      >
+        sx={{ backgroundColor: "#ffffff", color: "#2f2f2f" }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -143,8 +140,7 @@ const Navbar = ({ socket }) => {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
-            onClick={() => updateOpen(!dopen)}
-          >
+            onClick={() => updateOpen(!dopen)}>
             <MenuIcon />
           </IconButton>
           <Typography variant="h3" className="logo" component="h4">
@@ -156,8 +152,7 @@ const Navbar = ({ socket }) => {
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
-              onClick={() => setOpen(!open)}
-            >
+              onClick={() => setOpen(!open)}>
               {notifications.length > 0 && (
                 <Badge
                   sx={{
@@ -177,8 +172,7 @@ const Navbar = ({ socket }) => {
               aria-label="account of current user"
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
+              color="inherit">
               <AccountCircle />
             </IconButton>
           </Box>
@@ -208,8 +202,7 @@ const Navbar = ({ socket }) => {
               display: "flex",
               flexDirection: "column",
               padding: "10px",
-            }}
-          >
+            }}>
             {notifications.map((n) => displayNotification(n))}
             <Button onClick={handleRead}>Mark as read</Button>
           </Grid>

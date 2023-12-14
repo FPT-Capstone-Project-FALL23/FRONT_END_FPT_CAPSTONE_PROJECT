@@ -5,10 +5,13 @@ import Header from "../../Components/Common/Header/Header";
 import UpcomingEvents from "../../Components/Common/HomePage/UpcomingEvents";
 import { checkToken } from "../Admin/Adminpage";
 import { useNavigate } from "react-router-dom";
+import { useOpenStore } from "../../Store/openStore";
 
 function HomePage() {
   const navigate = useNavigate();
+  const { setEventId } = useOpenStore();
   useEffect(() => {
+    setEventId(null);
     checkToken(navigate);
   }, []);
   return (

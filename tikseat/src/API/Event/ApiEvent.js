@@ -18,6 +18,7 @@ import {
   URL_CREATE_PAY_BUSINESS_OF_EVENT,
   URL_GET_PAY_BUSINESS_ORGANIZERS,
   URL_GET_TOP5_EVENT,
+  URL_GET_LATES_HOT_EVENT_IMAGES,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -74,6 +75,9 @@ const ApiEvent = {
   },
   getTop5Event(data) {
     return axiosDefault.post(URL_GET_TOP5_EVENT, data)
+  },
+  getLatestHotEventImages() {
+    return axiosDefault.get(URL_GET_LATES_HOT_EVENT_IMAGES)
   },
 };
 

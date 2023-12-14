@@ -41,3 +41,9 @@ export const SIGN_UP_WITH = "Or Sign up with";
 export const TITLE_PAGE_VERIFY = "An authentication code has been sent to ";
 export const NOT_RECEIVE_CODE = "Didn’t receive a code?";
 export const RESEND = "Resend";
+
+export const OPEN_SALE_EVENT = "Open Sale Event";
+export const COMING_SOON = "Coming soon";
+export const HAPPENNING = "Happenning";
+export const FINISHED = "Finished";
+export const UP_COMMING = "Up Comming";

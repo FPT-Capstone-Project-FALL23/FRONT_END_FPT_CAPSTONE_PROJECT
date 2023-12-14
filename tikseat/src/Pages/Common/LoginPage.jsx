@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Paper, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import {
@@ -9,13 +9,31 @@ import {
 import FormLogin from "../../Components/Common/FormCustom/FormLogin";
 import SwiperLogin from "../../Components/Common/SwiperLogin";
 import "../../Assets/CSS/Common/LayoutSign.css";
+import ApiEvent from "../../API/Event/ApiEvent";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [dataImage, setDataImage] = useState();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  async function getThreeImaged() {
+    try {
+      const reponse = await ApiEvent.getLatestHotEventImages();
+      console.log(reponse);
+      if (reponse) {
+        setDataImage(reponse);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getThreeImaged();
+  }, []);
 
   return (
     <>
@@ -24,8 +42,7 @@ function LoginPage() {
           className="loginGrid"
           style={{
             boxShadow: "rgb(223 193 34 / 51%) 0px 1px 15px 15px",
-          }}
-        >
+          }}>
           <Grid className="left">
             <Link to={"/#"} style={{ textDecoration: "none" }}>
               <Typography variant="h3" className="logo" component="h4">
@@ -47,7 +64,7 @@ function LoginPage() {
             />
           </Grid>
           <Grid className="right">
-            <SwiperLogin />
+            <SwiperLogin dataImage={dataImage} />
           </Grid>
         </Paper>
       </Grid>

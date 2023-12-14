@@ -59,7 +59,6 @@ function DialogListContent({
         const request = { _idOrder: selectedDetail?._id, page: 1 };
         const response = await ApiAdmin.getTransactionInformation(request);
         if (response) {
-          console.log("response", response);
           setTransactionInformation(response.data.transactionInformation);
           setTotalTransactions(response.data.totalTransactions);
         }
@@ -74,7 +73,6 @@ function DialogListContent({
           _idOrder: selectedDetail?._id,
           page: newPage + 1,
         };
-        console.log("object1: ", pageRequest);
         const response = await ApiAdmin.getTransactionInformation(pageRequest);
         if (response) {
           setPage(newPage);
