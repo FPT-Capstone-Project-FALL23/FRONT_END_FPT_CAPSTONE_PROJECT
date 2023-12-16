@@ -20,17 +20,17 @@ const MyTicket = () => {
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [checkResRefund, setCheckResRefund] = React.useState(false);
 
-  useEffect(() => {
-    async function getOrdersAvailableTickets() {
-      const response = await ApiClient.getOrdersAvailableTickets({
-        _idClient: dataInfo?._id,
-      });
-      console.log("response: ", response);
-      setDataMyTicket(response?.data);
-      setCheckResRefund(false);
-    }
+  async function getAllOrdersAvailableTickets() {
+    const response = await ApiClient.getOrdersAvailableTickets({
+      _idClient: dataInfo?._id,
+    });
+    console.log("response: ", response);
+    setDataMyTicket(response?.data);
+    setCheckResRefund(false);
+  }
 
-    getOrdersAvailableTickets();
+  useEffect(() => {
+    getAllOrdersAvailableTickets();
   }, [dataInfo._id, checkResRefund]);
 
   const mappingDataMyTicket =
@@ -66,6 +66,7 @@ const MyTicket = () => {
                 <Row
                   key={index}
                   row={row}
+                  onRefetch={getAllOrdersAvailableTickets}
                   setCheckResRefund={setCheckResRefund}
                 />
               ))}
