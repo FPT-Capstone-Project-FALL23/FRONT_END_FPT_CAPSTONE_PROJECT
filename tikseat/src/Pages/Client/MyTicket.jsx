@@ -14,24 +14,31 @@ import { getLocalStorageUserInfo } from "../../Store/userStore";
 
 import { ToastContainer } from "react-toastify";
 import Row from "../../Components/Common/rowTable/RowTable";
+import { useOpenStore } from "../../Store/openStore";
 
 const MyTicket = () => {
   const dataInfo = getLocalStorageUserInfo();
   const [dataMyTicket, setDataMyTicket] = useState([]);
-  const [checkResRefund, setCheckResRefund] = React.useState(false);
-
+  // const [checkResRefund, setCheckResRefund] = React.useState(false);
+  const { checkRefund, setCheckRefund } = useOpenStore();
   async function getAllOrdersAvailableTickets() {
     const response = await ApiClient.getOrdersAvailableTickets({
       _idClient: dataInfo?._id,
     });
     console.log("response: ", response);
-    setDataMyTicket(response?.data);
-    setCheckResRefund(false);
+    setDataMyTicket(() => response?.data);
+    setCheckRefund(false);
   }
 
   useEffect(() => {
+    if (checkRefund) {
+      getAllOrdersAvailableTickets();
+    }
+  }, [checkRefund]);
+
+  useEffect(() => {
     getAllOrdersAvailableTickets();
-  }, [dataInfo._id, checkResRefund]);
+  }, [dataInfo._id]);
 
   const mappingDataMyTicket =
     dataMyTicket?.length > 0 &&
@@ -67,7 +74,6 @@ const MyTicket = () => {
                   key={index}
                   row={row}
                   onRefetch={getAllOrdersAvailableTickets}
-                  setCheckResRefund={setCheckResRefund}
                 />
               ))}
           </TableBody>

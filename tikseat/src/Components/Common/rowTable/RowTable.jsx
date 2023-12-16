@@ -15,12 +15,10 @@ import {
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import { toast } from "react-toastify";
-import {
-  getLocalStorageUserData,
-  getLocalStorageUserInfo,
-} from "../../../Store/userStore";
+import { getLocalStorageUserInfo } from "../../../Store/userStore";
 import Rating from "@mui/material/Rating";
 import { createPortal } from "react-dom";
+import { useOpenStore } from "../../../Store/openStore";
 const style = {
   position: "absolute",
   top: "50%",
@@ -33,8 +31,8 @@ const style = {
 };
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 function Row(props) {
-  const { row, setCheckResRefund, onRefetch } = props;
-  const dataUser = getLocalStorageUserData();
+  const { row, onRefetch } = props;
+  const { checkRefund, setCheckRefund } = useOpenStore();
   const dataInfo = getLocalStorageUserInfo();
   const eventDate = new Date(row.eventDate);
   const currentDate = new Date();
@@ -103,6 +101,7 @@ function Row(props) {
       console.error("Lỗi khi gửi xếp hạng:", error);
     }
   };
+
   const handleCheckboxChange = (id) => {
     const updatedCheckboxes = (dataRow || []).map((checkbox) =>
       checkbox._id === id
@@ -158,9 +157,11 @@ function Row(props) {
       chairIds: chairIds,
     };
     const responseRefund = await ApiClient.createRefund(dataRef);
+    console.log("responseRefund: ", responseRefund);
     if (responseRefund.status) {
-      setCheckResRefund(true);
       onRefetch();
+      await setCheckRefund(() => true);
+      await onRefetch();
       toast.success("Ticket refund requested");
     }
   };
@@ -361,7 +362,9 @@ function Row(props) {
                               <>
                                 {!ViewDetailRow?.isRefund && (
                                   <Checkbox
-                                    checked={Boolean(dataRow[index]?.isRefund)} // Convert to boolean
+                                    defaultChecked={Boolean(
+                                      dataRow[index]?.isRefund
+                                    )} // Convert to boolean
                                     onChange={() =>
                                       handleCheckboxChange(ViewDetailRow._id)
                                     }
@@ -564,4 +567,4 @@ function Row(props) {
   );
 }
 
-export default Row;
+export default React.memo(Row);
