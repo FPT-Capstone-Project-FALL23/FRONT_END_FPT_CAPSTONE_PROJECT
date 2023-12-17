@@ -15,12 +15,10 @@ import {
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import { toast } from "react-toastify";
-import {
-  getLocalStorageUserData,
-  getLocalStorageUserInfo,
-} from "../../../Store/userStore";
+import { getLocalStorageUserInfo } from "../../../Store/userStore";
 import Rating from "@mui/material/Rating";
 import { createPortal } from "react-dom";
+import { useOpenStore } from "../../../Store/openStore";
 const style = {
   position: "absolute",
   top: "50%",
@@ -33,8 +31,8 @@ const style = {
 };
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 function Row(props) {
-  const { row, setCheckResRefund } = props;
-  const dataUser = getLocalStorageUserData();
+  const { row, onRefetch } = props;
+  const { checkRefund, setCheckRefund } = useOpenStore();
   const dataInfo = getLocalStorageUserInfo();
   const eventDate = new Date(row.eventDate);
   const currentDate = new Date();
@@ -105,30 +103,30 @@ function Row(props) {
   };
 
   const handleCheckboxChange = (id) => {
-    const updatedCheckboxes =
-      dataRow?.map((checkbox) =>
-        checkbox._id === id
-          ? { ...checkbox, isRefund: !checkbox.isRefund }
-          : checkbox
-      ) || [];
-    const filterChair =
-      updatedCheckboxes?.filter((item) => item.isRefund) || [];
+    const updatedCheckboxes = (dataRow || []).map((checkbox) =>
+      checkbox._id === id
+        ? { ...checkbox, isRefund: !checkbox.isRefund }
+        : checkbox
+    );
+
+    const filterChair = updatedCheckboxes.filter((item) => item.isRefund);
     setchairRefund(filterChair);
     setDataRow(updatedCheckboxes);
-    const selectAllTickets = updatedCheckboxes?.every(
+
+    const selectAllTickets = updatedCheckboxes.every(
       (checkbox) => checkbox.isRefund
     );
     setSelectAll(selectAllTickets);
   };
 
   const handleSelectAllChange = () => {
-    const updatedCheckboxes =
-      dataRow?.map((checkbox) => ({
-        ...checkbox,
-        isRefund: !selectAll,
-      })) || [];
-    setchairRefund(updatedCheckboxes);
-    setDataRow(updatedCheckboxes);
+    const updatedCheckboxes = (dataRow || []).map((checkbox) => ({
+      ...checkbox,
+      isRefund: !selectAll,
+    }));
+
+    setchairRefund(() => updatedCheckboxes);
+    setDataRow(() => updatedCheckboxes);
     setSelectAll(!selectAll);
   };
   const result =
@@ -152,15 +150,18 @@ function Row(props) {
 
   const moneyRefund = (result / 100) * 70;
   const handleConfirmRefund = async () => {
-    const dataRef = await {
+    const dataRef = {
       _idOrderDetail: row._idOrderDetail,
       money_refund: moneyRefund,
       zp_trans_id: row?.zp_trans_id,
       chairIds: chairIds,
     };
     const responseRefund = await ApiClient.createRefund(dataRef);
+    console.log("responseRefund: ", responseRefund);
     if (responseRefund.status) {
-      setCheckResRefund(true);
+      onRefetch();
+      await setCheckRefund(() => true);
+      await onRefetch();
       toast.success("Ticket refund requested");
     }
   };
@@ -215,7 +216,8 @@ function Row(props) {
               onClick={() => {
                 setOpen(!open);
                 setRefundTickets(false);
-              }}>
+              }}
+            >
               {open ? "collapse" : "Show more"}
             </Button>
             <>
@@ -238,7 +240,8 @@ function Row(props) {
                     boxShadow: 24,
                     p: 4,
                     borderRadius: "10px",
-                  }}>
+                  }}
+                >
                   <Typography variant="h6">
                     Đánh giá sự kiện: {row.eventName}
                   </Typography>
@@ -254,10 +257,12 @@ function Row(props) {
                         sx={{
                           display: "flex",
                           justifyContent: "flex-end",
-                        }}></Box>
+                        }}
+                      ></Box>
                       <Button
                         style={{ alignSelf: "flex-end" }}
-                        onClick={handleSendRating}>
+                        onClick={handleSendRating}
+                      >
                         Gửi đánh giá
                       </Button>
                     </>
@@ -273,7 +278,8 @@ function Row(props) {
                 onClick={() => {
                   setOpen(!open);
                   setRefundTickets(true);
-                }}>
+                }}
+              >
                 Refund tickets
               </Button>
             )}
@@ -297,7 +303,8 @@ function Row(props) {
                           onClick={() => handleSelectAllChange()}
                           variant="outlined"
                           color="secondary"
-                          size="small">
+                          size="small"
+                        >
                           Refund all
                         </Button>
                       )}
@@ -336,7 +343,8 @@ function Row(props) {
                                     }}
                                     size="large"
                                     variant="contained"
-                                    color="success">
+                                    color="success"
+                                  >
                                     View detail
                                   </Button>
                                 ) : (
@@ -344,7 +352,8 @@ function Row(props) {
                                     onClick={() => {}}
                                     size="large"
                                     variant="contained"
-                                    color="error">
+                                    color="error"
+                                  >
                                     Tickets refund
                                   </Button>
                                 )}
@@ -353,7 +362,10 @@ function Row(props) {
                               <>
                                 {!ViewDetailRow?.isRefund && (
                                   <Checkbox
-                                    checked={Boolean(dataRow[index]?.isRefund)} // Convert to boolean
+                                    checked={Boolean(dataRow[index]?.isRefund)}
+                                    // defaultChecked={Boolean(
+                                    //   dataRow[index]?.isRefund
+                                    // )}
                                     onChange={() =>
                                       handleCheckboxChange(ViewDetailRow._id)
                                     }
@@ -369,7 +381,8 @@ function Row(props) {
                               open={openViewDetail}
                               onClose={handleClose}
                               aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description">
+                              aria-describedby="modal-modal-description"
+                            >
                               <Box sx={style}>
                                 <img
                                   id="downloadImage"
@@ -380,7 +393,8 @@ function Row(props) {
                                   onClick={handleDownload}
                                   variant="contained"
                                   size="large"
-                                  color="primary">
+                                  color="primary"
+                                >
                                   Download
                                 </Button>
                               </Box>
@@ -396,20 +410,22 @@ function Row(props) {
                         style={{ whiteSpace: "nowrap" }}
                         colSpan={1}
                         component="th"
-                        scope="row">
+                        scope="row"
+                      >
                         Amount you will receive:{" "}
                         {moneyRefund.toLocaleString("vi-VN") + " VND"}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         <Button
                           variant="outlined"
-                          disabled={chairRefund?.length <= 0}
+                          disabled={chairIds?.length <= 0}
                           onClick={() => {
                             if (chairIds.length > 0) {
                               setConfirmRefund(true);
                             }
                           }}
-                          size="large">
+                          size="large"
+                        >
                           Confirm
                         </Button>
                         <>
@@ -423,7 +439,8 @@ function Row(props) {
                                     inset: 0,
                                     zIndex: 2222,
                                     background: "#adadad9e",
-                                  }}></div>
+                                  }}
+                                ></div>
                                 <div
                                   style={{
                                     position: "fixed",
@@ -437,7 +454,8 @@ function Row(props) {
                                     zIndex: 2332,
                                     left: "50%",
                                     transform: "translateX(-50%)",
-                                  }}>
+                                  }}
+                                >
                                   <Typography variant="h4" textAlign={"center"}>
                                     Ticket refund confirmation
                                   </Typography>
@@ -496,18 +514,21 @@ function Row(props) {
                                       textAlign={"center"}
                                       fontSize={"20px"}
                                       color={"red"}
-                                      marginTop={"10px"}>
+                                      marginTop={"10px"}
+                                    >
                                       If you confirm a refund, the ticket cannot
                                       be canneled you will receive monney into
                                       your zalopay account after 5 - 7 days
                                     </Typography>
                                     <Stack
                                       direction={"row"}
-                                      justifyContent={"space-evenly"}>
+                                      justifyContent={"space-evenly"}
+                                    >
                                       <Button
                                         variant="outlined"
                                         onClick={() => setConfirmRefund(false)}
-                                        color="error">
+                                        color="error"
+                                      >
                                         Close
                                       </Button>
                                       <Button
@@ -515,7 +536,8 @@ function Row(props) {
                                           handleConfirmRefund();
                                           setConfirmRefund(false);
                                         }}
-                                        variant="outlined">
+                                        variant="outlined"
+                                      >
                                         Confirm
                                       </Button>
                                     </Stack>
