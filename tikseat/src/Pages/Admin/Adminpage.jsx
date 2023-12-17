@@ -123,7 +123,6 @@ export const checkToken = (navigate) => {
     navigate("/");
   } else {
     const roleNavigate = jwtDecode(token).role;
-    console.log("roleNavigate", roleNavigate);
     if (roleNavigate == ROLE[0]) {
       navigate("/");
     } else if (roleNavigate == ROLE[1]) {
@@ -159,20 +158,23 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const [notifications, setNotifications] = useState([2, 2, 2]);
-  const [notifications2, setNotifications2] = useState([2, 2]);
-  const [notifications3, setNotifications3] = useState([2, 2, 2, 4]);
-  const [notifications4, setNotifications4] = useState([2]);
+  const [notificationsOrganizer, setNotificationsOrganizer] = useState([
+    2, 2, 2,
+  ]);
+  const [notificationsEvent, setNotificationsEvent] = useState([2, 2]);
+  const [notificationsRefundTicket, setNotificationsRefundTicket] = useState([
+    2, 2, 2, 4,
+  ]);
+  const [notificationsPayBusiness, setNotificationsPayBusiness] = useState([]);
 
   const [openNotification, setOpenNotification] = useState(false);
 
   const allNotificationLists = [
-    notifications.length,
-    notifications2.length,
-    notifications3.length,
-    notifications4.length,
+    notificationsOrganizer.length,
+    notificationsEvent.length,
+    notificationsRefundTicket.length,
+    notificationsPayBusiness.length,
   ];
-  console.log(allNotificationLists);
 
   const ListMenu = ({
     setMenuData,
@@ -213,8 +215,8 @@ export default function MiniDrawer() {
               <Badge
                 sx={{
                   position: "absolute",
-                  marginBottom: "20px",
-                  marginLeft: "20px",
+                  marginTop: open ? "4%" : "5%",
+                  marginLeft: open ? "150%" : "50%",
                 }}
                 badgeContent={notificationLength}
                 color="error"
@@ -238,6 +240,7 @@ export default function MiniDrawer() {
     nameCollapse,
     IconCollapse,
     open,
+    notificationAll,
   }) => {
     const [openCollapse, setOpenCollapse] = useState(false);
     const handleClick = () => {
@@ -271,6 +274,17 @@ export default function MiniDrawer() {
                 justifyContent: "center",
               }}
             >
+              {notificationAll > 0 && (
+                <Badge
+                  sx={{
+                    position: "absolute",
+                    marginTop: open ? "5%" : "5%",
+                    marginLeft: open ? "130%" : "50%",
+                  }}
+                  badgeContent={notificationAll}
+                  color="error"
+                />
+              )}
               {IconCollapse}
             </ListItemIcon>
 
@@ -288,14 +302,14 @@ export default function MiniDrawer() {
             {LIST_COLLAPSE.map((value, index) => {
               let noti;
               console.log(value.nameMenu);
-              if(value.nameMenu === "approvedOrganizer"){
-                noti = allNotificationLists[0]
-              }else if (value.nameMenu === "approvedEvent") {
-                noti = allNotificationLists[1]
-              }else if (value.nameMenu === "refundList") {
-                noti = allNotificationLists[2]
-              }else if (value.nameMenu === "payBusiness") {
-                noti = allNotificationLists[3]
+              if (value.nameMenu === "approvedOrganizer") {
+                noti = allNotificationLists[0];
+              } else if (value.nameMenu === "approvedEvent") {
+                noti = allNotificationLists[1];
+              } else if (value.nameMenu === "refundList") {
+                noti = allNotificationLists[2];
+              } else if (value.nameMenu === "payBusiness") {
+                noti = allNotificationLists[3];
               }
               return (
                 <ListMenu
@@ -329,29 +343,29 @@ export default function MiniDrawer() {
     }
   }, [socket, adminId]);
 
-  useEffect(() => {
-    const handleNotification = (data) => {
-      if (
-        !notifications.some(
-          (notification) => notification.senderName === data.senderName
-        )
-      ) {
-        setNotifications((prev) => [...prev, data]);
-      }
-    };
+  // useEffect(() => {
+  //   const handleNotification = (data) => {
+  //     if (
+  //       !notifications.some(
+  //         (notification) => notification.senderName === data.senderName
+  //       )
+  //     ) {
+  //       setNotifications((prev) => [...prev, data]);
+  //     }
+  //   };
 
-    if (socket) {
-      if (socket.on) {
-        socket.on("getNotification", handleNotification);
+  //   if (socket) {
+  //     if (socket.on) {
+  //       socket.on("getNotification", handleNotification);
 
-        return () => {
-          if (socket.off) {
-            socket.off("getNotification", handleNotification);
-          }
-        };
-      }
-    }
-  }, [socket, notifications]);
+  //       return () => {
+  //         if (socket.off) {
+  //           socket.off("getNotification", handleNotification);
+  //         }
+  //       };
+  //     }
+  //   }
+  // }, [socket, notifications]);
 
   const displayNotification = ({ senderName }) => {
     return (
@@ -366,10 +380,10 @@ export default function MiniDrawer() {
     );
   };
 
-  const handleRead = () => {
-    setNotifications([]);
-    setOpenNotification(false);
-  };
+  // const handleRead = () => {
+  //   setNotifications([]);
+  //   setOpenNotification(false);
+  // };
   useEffect(() => {
     checkToken(navigate);
   }, []);
@@ -414,7 +428,7 @@ export default function MiniDrawer() {
                   color="inherit"
                   onClick={() => setOpenNotification(!openNotification)}
                 >
-                  {notifications.length > 0 && (
+                  {/* {notifications.length > 0 && (
                     <Badge
                       sx={{
                         position: "absolute",
@@ -424,7 +438,7 @@ export default function MiniDrawer() {
                       badgeContent={notifications.length}
                       color="error"
                     />
-                  )}
+                  )} */}
                   <NotificationsIcon sx={{ width: "35px", height: "35px" }} />
                 </IconButton>
               </Box>
@@ -445,7 +459,7 @@ export default function MiniDrawer() {
               />
             </Grid>
           </Grid>
-          {openNotification && (
+          {/* {openNotification && (
             <Grid
               style={{
                 position: "absolute",
@@ -463,7 +477,7 @@ export default function MiniDrawer() {
               {notifications.map((n) => displayNotification(n))}
               <Button onClick={handleRead}> Read</Button>
             </Grid>
-          )}
+          )} */}
         </Toolbar>
       </AppBar>
 
@@ -502,15 +516,23 @@ export default function MiniDrawer() {
             );
           })}
           {LIST_HOME_ADMIN.map((value, index) => {
+            console.log(value.LIST_COLLAPSE[0].nameMenu);
+            let notification;
+            if (value.LIST_COLLAPSE[0].nameMenu === "approvedOrganizer") {
+              notification = allNotificationLists[0] + allNotificationLists[1];
+            } else if (value.LIST_COLLAPSE[0].nameMenu === "purchaseList") {
+              notification = allNotificationLists[2] + allNotificationLists[3];
+            }
             return (
               <>
                 <NestedListItem
                   LIST_COLLAPSE={value.LIST_COLLAPSE}
-                  mrenuData={menuData}
+                  menuData={menuData}
                   setMenuData={setMenuData}
                   nameCollapse={value.nameCollapse}
                   IconCollapse={value.icon}
                   open={open}
+                  notificationAll={notification}
                 />
                 <Divider />
               </>

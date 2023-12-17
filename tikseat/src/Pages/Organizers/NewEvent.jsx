@@ -141,17 +141,10 @@ export const getAPICity = async (setAllCity) => {
   setAllCity(response);
 };
 
-export const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
-  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
-  const selectedFile = e.target.files[0];
-  setSelectedFile(selectedFile);
-  if (selectedFile) {
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-    reader.onloadend = () => {
-      setEventImage(reader.result);
-    };
-  }
+export const validateFile = (fileName) => {
+  const fileExtensionRegex =
+    /^.*\.(jpg|jpeg|png|gif|tiff|psd|eps|ai|heic|raw|svg)$/i;
+  return fileExtensionRegex.test(fileName);
 };
 
 const NewEvent = ({ onContinueClick }) => {
@@ -168,6 +161,7 @@ const NewEvent = ({ onContinueClick }) => {
   );
   const [eventType, setEventType] = useState([]);
   const [selectedFile, setSelectedFile] = useState("");
+  const [fileError, setFileError] = useState(null);
   const theme = useTheme();
   const [allCity, setAllCity] = useState([]);
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
@@ -188,13 +182,31 @@ const NewEvent = ({ onContinueClick }) => {
     eventInfomation?.address?.specific_address || ""
   );
 
-
   const fileInputRef = useRef("");
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
   };
 
+  const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      if (validateFile(selectedFile.name)) {
+        setSelectedFile(selectedFile);
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedFile);
+        reader.onloadend = () => {
+          setEventImage(reader.result);
+        };
+        setFileError("")
+      } else {
+        setSelectedFile(null);
+        setEventImage("");
+        setFileError("File input have format:(.jpg, .jpeg, .png, .gif, .ai, ...)");
+      }
+    }
+  };
   const [newEvent, setNewEvent] = useState({
     event_name: eventInfomation?.event_name || "",
     eventImage: eventInfomation?.eventImage || eventImage || "",
@@ -268,9 +280,9 @@ const NewEvent = ({ onContinueClick }) => {
       >
         <Grid style={{ display: "flex", justifyContent: "start" }}>
           {newEvent.eventImage !== "" ? (
-            <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
+            <OfflinePinIcon sx={{ color: "green", fontSize: "30px" }} />
           ) : (
-            <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
+            <WarningIcon sx={{ color: "red", fontSize: "30px" }} />
           )}
           <h3>Cover image</h3>
         </Grid>
@@ -319,7 +331,19 @@ const NewEvent = ({ onContinueClick }) => {
             }
           />
         </Grid>
-
+        {fileError && (
+          <Grid
+            style={{
+              color: "red",
+              marginTop: "-35px",
+              marginBottom: "30px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <p>{fileError}</p>
+          </Grid>
+        )}
         <Grid sx={{ display: "flex", justifyContent: "center" }}>
           <Grid sx={{ display: "flex" }}>
             <WarningAmberRoundedIcon sx={{ fontSize: 35 }} color="warning" />
@@ -430,10 +454,23 @@ const NewEvent = ({ onContinueClick }) => {
             <Grid style={{ width: "100%" }}>
               <Grid style={{ display: "flex", justifyContent: "start" }}>
                 <h3 style={{ marginTop: "20px" }}>
-                  {newEvent.event_name !== "" && newEvent.type_of_event.length !== 0 ? (
-                    <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
+                  {newEvent.event_name !== "" &&
+                  newEvent.type_of_event.length !== 0 ? (
+                    <OfflinePinIcon
+                      sx={{
+                        color: "green",
+                        fontSize: "30px",
+                        marginBottom: "-8px",
+                      }}
+                    />
                   ) : (
-                    <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
+                    <WarningIcon
+                      sx={{
+                        color: "red",
+                        fontSize: "30px",
+                        marginBottom: "-8px",
+                      }}
+                    />
                   )}
                   Name and Type of Event
                 </h3>
@@ -513,11 +550,25 @@ const NewEvent = ({ onContinueClick }) => {
               {/* Địa chỉ */}
               <Grid style={{ display: "flex", justifyContent: "start" }}>
                 <h3 style={{ marginTop: "20px" }}>
-                  {newEvent.address.city !== "" && newEvent.address.district !== "" 
-                  && newEvent.address.specific_address !== "" && newEvent.address.ward !== ""  ? (
-                    <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
+                  {newEvent.address.city !== "" &&
+                  newEvent.address.district !== "" &&
+                  newEvent.address.specific_address !== "" &&
+                  newEvent.address.ward !== "" ? (
+                    <OfflinePinIcon
+                      sx={{
+                        color: "green",
+                        fontSize: "30px",
+                        marginBottom: "-8px",
+                      }}
+                    />
                   ) : (
-                    <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
+                    <WarningIcon
+                      sx={{
+                        color: "red",
+                        fontSize: "30px",
+                        marginBottom: "-8px",
+                      }}
+                    />
                   )}
                   Address
                 </h3>
@@ -629,13 +680,26 @@ const NewEvent = ({ onContinueClick }) => {
                 </Stack>
               </Grid>
               <Grid style={{ display: "flex", justifyContent: "start" }}>
-                <h3 style={{ marginTop: "20px" }}>{newEvent.event_description !== "" ? (
-                  <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
-                    ) : (
-                      <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
-                    )} 
-                    Event Description
-                  </h3>
+                <h3 style={{ marginTop: "20px" }}>
+                  {newEvent.event_description !== "" ? (
+                    <OfflinePinIcon
+                      sx={{
+                        color: "green",
+                        fontSize: "30px",
+                        marginBottom: "-8px",
+                      }}
+                    />
+                  ) : (
+                    <WarningIcon
+                      sx={{
+                        color: "red",
+                        fontSize: "30px",
+                        marginBottom: "-8px",
+                      }}
+                    />
+                  )}
+                  Event Description
+                </h3>
               </Grid>
               <Stack>
                 <TextareaAutosize
