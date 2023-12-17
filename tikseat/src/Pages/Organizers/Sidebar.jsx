@@ -560,10 +560,11 @@ export default function MiniDrawer() {
           width: "100%",
           backgroundColor: "#e7e8ec",
           zIndex: 1,
+          height: "auto",
         }}>
         <Box
           style={{
-            height:"100%",
+            height: "100%",
             padding: "80px 20px 20px 20px",
           }}
           component="main"

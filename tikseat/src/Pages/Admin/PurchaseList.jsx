@@ -19,9 +19,9 @@ import { NAME_COLUMNS_ORDER } from "../../Assets/Constant/Admin/dataAdmin";
 import TableList from "../../Components/Admin/Table/TableList";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
-export const CardTransactions = ({ nameSubtitle, total }) => {
+export const CardTransactions = ({ nameSubtitle, total, height }) => {
   return (
-    <Card>
+    <Card style={{ height: height }}>
       <CardContent>
         <Typography variant="subtitle1">{nameSubtitle}</Typography>
         <Typography variant="h5">{total}</Typography>

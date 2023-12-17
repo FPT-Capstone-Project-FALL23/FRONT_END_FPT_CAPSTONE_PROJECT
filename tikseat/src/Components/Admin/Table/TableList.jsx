@@ -68,7 +68,6 @@ export default function TableList({
     return () => clearTimeout(delay);
   }, []);
 
-  
   const handlClientDetailClose = () => {
     setDetailOpen(false);
   };
@@ -119,14 +118,26 @@ export default function TableList({
                         ))}
                         {actions && (
                           <StyledTableCell>
-                            {actions.map((action) => (
+                            {row.isPay || row?.refunded ? (
+                              <></>
+                            ) : (
+                              actions.map((action) => (
+                                <IconButton
+                                  key={action.name}
+                                  color={action.color}
+                                  onClick={() => action.onClick(row)}>
+                                  {action.icon}
+                                </IconButton>
+                              ))
+                            )}
+                            {/* {actions.map((action) => (
                               <IconButton
                                 key={action.name}
                                 color={action.color}
                                 onClick={() => action.onClick(row)}>
                                 {action.icon}
                               </IconButton>
-                            ))}
+                            ))} */}
                           </StyledTableCell>
                         )}
                       </StyledTableRow>

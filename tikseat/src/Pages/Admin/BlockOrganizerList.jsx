@@ -94,7 +94,7 @@ function BlockOrganizerList() {
   };
 
   const cellComponentsOrganizer = {
-    isActive: () => <Chip color="success" label="Active" />,
+    isActive: () => <Chip color="error" label="Not yet active" />,
     avatarImage: (avatarUrl) => <Avatar src={avatarUrl} />,
   };
 

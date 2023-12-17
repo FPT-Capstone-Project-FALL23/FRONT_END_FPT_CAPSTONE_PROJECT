@@ -1,7 +1,7 @@
-export const BASE_URL = "https://3.26.32.42:8080/api";
-// export const BASE_URL = "http://localhost:8080/api";
-// export const URL_SOCKET = "http://localhost:5000";
-export const URL_SOCKET = "https://3.26.32.42:5000";
+// export const BASE_URL = "https://3.26.32.42:8080/api";
+export const BASE_URL = "http://localhost:8080/api";
+export const URL_SOCKET = "http://localhost:5000";
+// export const URL_SOCKET = "https://3.26.32.42:5000";
 export const URL_API_CITY = "https://provinces.open-api.vn/api/";
 
 //-------------------AUTH----------------------------
@@ -40,10 +40,13 @@ export const URL_LISTEVENTTODAY = "/checkin/getEventToday";
 export const URL_CHECKIN = "/checkin/check_in";
 export const URL_GET_TOP5_EVENT = "/event/getTopRatedEventOfOrganizer"
 export const URL_GET_LATES_HOT_EVENT_IMAGES = "/event/getLatestHotEventImages"
+export const URL_GET_SELECT_CHAIR_IN_AREA = "/event/selectChairInArea"
 
 //-------------------PAYBUSINESS----------------------------
 export const URL_CREATE_PAY_BUSINESS_OF_EVENT = "/payBusiness/createPayBusinessOfEvent";
 export const URL_GET_PAY_BUSINESS_ORGANIZERS = "/payBusiness/getPayBusinessWithOrganizers";
+export const URL_GET_PAY_BUSINESS_WITH_REQUEST = "/payBusiness/getPayBusinessWithRequest";
+export const URL_SET_ISPAY = "/payBusiness/setIsPayForOrganizers";
 
 //-------------------RATING----------------------------
 export const URL_RATING = "/rating/createRating";

@@ -131,5 +131,10 @@ export const LIST_NAME_CONTENT_DIALOG_ORDER = [
     { label: "The sale amount of the event:", field: "totalTicketSalesAtEvent" },
 ];
 
-//     ["Event Location: ", "Type of event: ", "Start sales date: ", "End sales date: ", "Event description: ",
-//  "Total rating: ", "Total seats sold: ", "The sale amount of the event: "]
+export const NAME_COLUMNS_PAY_BUSINESS = [
+    { id: 'paymentDate', label: 'Request date', minWidth: "100px", align: 'left' },
+    { id: 'event_name', label: 'Event name', minWidth: "100px", align: 'left' },
+    { id: 'organizer_name', label: 'Organizer name', minWidth: "100px", align: 'left' },
+    { id: 'totalEventAmount', label: 'Total event amount', minWidth: "100px", align: 'left' },
+    { id: 'isPay', label: 'Payment', minWidth: "100px", align: 'left' },
+]

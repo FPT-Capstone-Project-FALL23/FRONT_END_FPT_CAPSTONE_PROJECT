@@ -38,6 +38,9 @@ import CountTime from "../../Components/Common/HomePage/CountTime";
 import { useOpenStore } from "../../Store/openStore";
 import InformationEvent from "../../Components/Client/InformationEvent";
 import DialogNotification from "../../Components/Client/DialogNotification";
+import StackBookNow from "../../Components/Common/HomePage/StackBookNow";
+import StackBuyTicket from "../../Components/Common/HomePage/StackBuyTicket";
+import ApiEvent from "../../API/Event/ApiEvent";
 const style = {
   position: "absolute",
   top: "50%",
@@ -78,6 +81,7 @@ const BookTickets = () => {
   const [statusTime, setStatusTime] = React.useState();
   const [isOpenSale, setIsOpenSale] = React.useState();
   const [isOpenDialogNotify, setIsOpenDialogNotify] = React.useState(false);
+  const [dayNumber, setDayNumber] = useState();
 
   const [id, setId] = useState("");
 
@@ -151,12 +155,18 @@ const BookTickets = () => {
     });
     setSocket(socket);
     socket.on("connect", () => setId(socket.id));
-    socket.on("disconnect", () => console.log("socket disconnected!"));
+    socket.on("disconnect", () => {
+      console.log("eventRowKey", eventRowKey);
+      console.log("socket disconnected!");
+    });
     socket.emit("join_booking_room", eventRowKey);
     socket.on("update_booking_room", (data) => {
       // console.log("update_booking_room: ", data);
       setSelectChair(data);
       // rerenderSeats();
+    });
+    socket.on("update_dialog_close", (data) => {
+      console.log("update_dialog_close", data);
     });
     return () => {
       setSocket(null);
@@ -179,7 +189,6 @@ const BookTickets = () => {
     setDialogWidth(`${maxWidth}px`);
     setDialogHeight(`${maxHeight}px`);
     setOpen(true);
-    setOpen(true);
   };
 
   function checkEventTicketSalesEnd(item) {
@@ -190,15 +199,28 @@ const BookTickets = () => {
     if (timeNow > eventDate) {
       setIsOpenDialogNotify(true);
     } else {
-      console.log("item", item);
       setSelectedItem(item);
       handleOpen();
       setSelectRows(item?.rows);
     }
   }
 
-  const handleOpenBuyTick = (item) => {
+  const handleOpenBuyTick = (item, index) => {
+    console.log("item", item);
+    setDayNumber(index + 1);
     checkEventTicketSalesEnd(item);
+  };
+
+  const getSelectChairInArea = async () => {
+    const requestData = {
+      _idEvent: dataEventDetail._id,
+      _idArea: selectedItem._id,
+      dayNumber: dayNumber,
+    };
+    const reponse = await ApiEvent.selectChairInArea(requestData);
+    if (reponse) {
+      selectedItem(reponse.data);
+    }
   };
 
   const handleClose = () => {
@@ -206,9 +228,12 @@ const BookTickets = () => {
     setTime(null);
     setSelectChair([]);
     setSelectedItem(null);
+    const eventRowKey = `${idEvent}_${selectedItem?._id}`;
     if (socket) {
-      socket?.disconnect();
+      console.log("aaaaaa", dataEventDetail);
+      socket?.emit("CLOSE_DIALOG", { eventRowKey, email: dataUser?.email });
     }
+    socket?.disconnect();
   };
 
   useEffect(() => {
@@ -361,7 +386,6 @@ const BookTickets = () => {
     const intervalId = setInterval(() => {
       const now = new Date().getTime();
       const timeDifference = eventSale - now;
-      console.log("timeDifference", timeDifference);
 
       if (timeDifference > 0) {
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
@@ -557,84 +581,22 @@ const BookTickets = () => {
                           dataEventDetail?.event_date?.map((itemEvent) => {
                             return (
                               <Box key={itemEvent._id}>
-                                <Stack
-                                  direction={"row"}
-                                  justifyContent={"space-between"}
-                                  alignItems={"center"}
-                                  style={{
-                                    padding: "10px",
-                                    border: "1px solid black",
-                                  }}>
-                                  <Typography variant="h6" fontSize={"16px"}>
-                                    Event date:{" "}
-                                    {new Date(
-                                      itemEvent.date
-                                    ).toLocaleDateString()}
-                                  </Typography>
-                                  <Button
-                                    onClick={() =>
-                                      setShowEvent(() => itemEvent._id)
-                                    }
-                                    variant="outlined"
-                                    color="error">
-                                    Book now
-                                  </Button>
-                                </Stack>
+                                <StackBookNow
+                                  itemEvent={itemEvent}
+                                  setShowEvent={setShowEvent}
+                                />
                                 {itemEvent?._id === showEvent && (
                                   <Box marginTop={"20px"}>
                                     {itemEvent.event_areas.map(
                                       (item, index) => {
                                         return (
-                                          <Stack
-                                            key={index}
-                                            direction={"row"}
-                                            justifyContent={"space-between"}
-                                            style={{
-                                              cursor: "pointer",
-                                              width: "100%",
-                                              alignItems: "center",
-                                            }}
-                                            onClick={() => {
-                                              // setSelectedItem(item);
-                                              // handleOpen();
-                                              // setSelectRows(item?.rows);
-                                              handleOpenBuyTick(item);
-                                            }}>
-                                            <Typography variant="h4">
-                                              {item.name_areas}
-                                            </Typography>
-                                            <Stack
-                                              style={{
-                                                border: "2px solid orange",
-                                                borderRadius: "5px",
-                                                padding: "7px 10px",
-                                                color: "orange",
-                                                width: "250px",
-                                              }}
-                                              justifyContent={"center"}
-                                              direction={"row"}
-                                              gap={"10px"}
-                                              alignItems={"center"}>
-                                              <Typography
-                                                style={{ fontWeight: "900" }}>
-                                                Buy ticket
-                                              </Typography>
-                                              -
-                                              <Typography
-                                                style={{
-                                                  fontWeight: "500",
-                                                  color: "gray",
-                                                }}>
-                                                {String(
-                                                  item.ticket_price
-                                                ).replace(
-                                                  /\B(?=(\d{3})+(?!\d))/g,
-                                                  ","
-                                                )}{" "}
-                                                <sup>vnd</sup>
-                                              </Typography>
-                                            </Stack>
-                                          </Stack>
+                                          <StackBuyTicket
+                                            index={index}
+                                            item={item}
+                                            handleOpenBuyTick={
+                                              handleOpenBuyTick
+                                            }
+                                          />
                                         );
                                       }
                                     )}
@@ -701,7 +663,7 @@ const BookTickets = () => {
                             style={{ background: "black", padding: "20px" }}>
                             {" "}
                             <div style={{ margin: "auto", width: "80%" }}>
-                              <img src={imageScreen} alt="" srcset="" />
+                              <img src={imageScreen} alt="" />
                             </div>
                             <Box
                               component={"div"}

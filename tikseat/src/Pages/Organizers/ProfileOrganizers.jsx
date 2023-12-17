@@ -35,6 +35,7 @@ import {
 } from "../../Store/userStore";
 // import { Api } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { LIST_BANK } from "../../Assets/Constant/ConstBank";
 
 function getStyles(name, eventType, theme) {
   return {
@@ -161,6 +162,9 @@ function ProfileOrganizers() {
       ward: selectWard ? selectWard?.name : "",
       specific_address: specificAddress || "",
     },
+    bankCard: dataInfo?.bankCard || "",
+    bankCardNumber: dataInfo?.bankCardNumber || "",
+    bankCardName: dataInfo?.bankCardName || "",
   });
 
   const theme = useTheme();
@@ -189,7 +193,6 @@ function ProfileOrganizers() {
       },
     }));
   }, [selectCity, selectDistrict, selectWard, specificAddress]);
-  
 
   const handleInputChange = (name, value) => {
     setOrganizerInfo({
@@ -208,6 +211,7 @@ function ProfileOrganizers() {
     });
   };
 
+  console.log("organizerInfo", organizerInfo);
   const handleOrganizerInfo = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -235,6 +239,9 @@ function ProfileOrganizers() {
               (selectWard ? selectWard?.name : ""),
             specific_address: organizerInfo?.address?.specific_address || "",
           },
+          bankCard: organizerInfo?.bankCard || "",
+          bankCardNumber: organizerInfo?.bankCardNumber || "",
+          bankCardName: organizerInfo?.bankCardName || "",
         };
 
         if (selectedFile) {
@@ -316,8 +323,7 @@ function ProfileOrganizers() {
             display: "flex",
             justifyContent: "center",
             paddingTop: "30px",
-          }}
-        >
+          }}>
           <h1>Profile Organizer</h1>
         </Grid>
         <FormSubmit
@@ -328,8 +334,7 @@ function ProfileOrganizers() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-          }}
-        >
+          }}>
           <Grid style={{ display: "flex", justifyContent: "space-around" }}>
             <Grid style={{ width: "45%" }}>
               <Stack style={{ marginBottom: "30px" }}>
@@ -350,8 +355,7 @@ function ProfileOrganizers() {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   marginBottom: "30px",
-                }}
-              >
+                }}>
                 <Stack style={{ width: "47%" }}>
                   <InputCustom
                     type="text"
@@ -391,8 +395,7 @@ function ProfileOrganizers() {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   marginBottom: "20px",
-                }}
-              >
+                }}>
                 <Stack style={{ width: "47%" }}>
                   <FormControl fullWidth>
                     <Autocomplete
@@ -452,8 +455,7 @@ function ProfileOrganizers() {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   marginBottom: "30px",
-                }}
-              >
+                }}>
                 <Stack style={{ width: "47%" }}>
                   <FormControl fullWidth>
                     <Autocomplete
@@ -483,6 +485,56 @@ function ProfileOrganizers() {
                   />
                 </Stack>
               </Stack>
+              <Stack
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: "30px",
+                }}>
+                <Stack style={{ width: "47%" }}>
+                  <Autocomplete
+                    freeSolo
+                    id="select-bank"
+                    name="select-bank"
+                    value={organizerInfo.bankCard}
+                    options={LIST_BANK}
+                    onChange={(event, newValue) => {
+                      setOrganizerInfo({
+                        ...organizerInfo,
+                        bankCard: newValue?.label,
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} required label="Choose a bank" />
+                    )}
+                  />
+                </Stack>
+                <Stack style={{ width: "47%" }}>
+                  <InputCustom
+                    type="text"
+                    id="bankCardName"
+                    name="bankCardName"
+                    value={organizerInfo.bankCardName}
+                    setValue={(value) =>
+                      handleInputChange("bankCardName", value)
+                    }
+                    label="Account owner"
+                  />
+                </Stack>
+              </Stack>
+              <Stack style={{ marginBottom: "30px" }}>
+                <InputCustom
+                  type="text"
+                  id="bankCardNumber"
+                  name="bankCardNumber"
+                  value={organizerInfo?.bankCardNumber}
+                  setValue={(value) =>
+                    handleInputChange("bankCardNumber", value)
+                  }
+                  label="Account number"
+                />
+              </Stack>
               <Stack>
                 <FormControl fullWidth style={{ marginBottom: "20px" }}>
                   <InputLabel id="demo-multiple-chip-label">
@@ -508,19 +560,17 @@ function ProfileOrganizers() {
                     }
                     renderValue={(selected) => (
                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {selected.map((value) => (
+                        {selected?.map((value) => (
                           <Chip key={value} label={value} />
                         ))}
                       </Box>
                     )}
-                    MenuProps={MENUPROPS}
-                  >
+                    MenuProps={MENUPROPS}>
                     {DATA_EVENT_TYPE.map((name) => (
                       <MenuItem
                         key={name}
                         value={name}
-                        style={getStyles(name, eventType, theme)}
-                      >
+                        style={getStyles(name, eventType, theme)}>
                         {name}
                       </MenuItem>
                     ))}
@@ -530,8 +580,11 @@ function ProfileOrganizers() {
             </Grid>
 
             <Grid
-              style={{ width: "45%", display: "flex", flexDirection: "column" }}
-            >
+              style={{
+                width: "45%",
+                display: "flex",
+                flexDirection: "column",
+              }}>
               <Grid
                 style={{
                   width: "100%",
@@ -539,8 +592,7 @@ function ProfileOrganizers() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <Avatar
                   style={{ height: "300px", width: "300px" }}
                   alt="Remy Sharp"
@@ -587,8 +639,7 @@ function ProfileOrganizers() {
               flexDirection: "column",
               alignItems: "center",
               bottom: "10px",
-            }}
-          >
+            }}>
             <Stack style={{ width: "50%", marginBottom: "20px" }}>
               <ButtonCustom
                 color="black"

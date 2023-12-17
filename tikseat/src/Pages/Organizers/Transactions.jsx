@@ -1,99 +1,142 @@
-import React from "react";
-import { Box, Drawer, Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Button from "@mui/material/Button";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import TableTransaction from "../../Components/Organizers/Transaction/TableTransaction";
+import {
+  getLocalStorageUserData,
+  getLocalStorageUserInfo,
+} from "../../Store/userStore";
+import ApiEvent from "../../API/Event/ApiEvent";
 import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
 import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import TableTransaction from "../../Components/Organizers/TableTransaction/TableTransaction";
+import { Box } from "@mui/material";
+import Wallet from "../../Components/Organizers/Transaction/Wallet";
 
-const styles = {
-  typography: {
-    fontFamily: "Georgia, serif",
-    fontSize: "24px",
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.common.black,
+    fontSize: 16,
     fontWeight: "bold",
-    // Add any other desired styles here
   },
-};
-const AntTabs = styled(Tabs)({
-  borderBottom: "1px solid #e8e8e8",
-  "& .MuiTabs-indicator": {
-    backgroundColor: "#1890ff",
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
   },
-});
+}));
 
-const AntTab = styled((props) => <Tab disableRipple {...props} />)(
-  ({ theme }) => ({
-    textTransform: "none",
-    minWidth: 0,
-    [theme.breakpoints.up("sm")]: {
-      minWidth: 0,
-    },
-    fontWeight: theme.typography.fontWeightRegular,
-    marginRight: theme.spacing(4),
-    color: "rgba(0, 0, 0, 0.85)",
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:hover": {
-      color: "#40a9ff",
-      opacity: 1,
-    },
-    "&.Mui-selected": {
-      color: "#1890ff",
-      fontWeight: theme.typography.fontWeightMedium,
-    },
-    "&.Mui-focusVisible": {
-      backgroundColor: "#d1eaff",
-    },
-  })
-);
+export const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: "rgb(180, 180, 180)",
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 
 function Transactions() {
-  const [value, setValue] = React.useState("1");
+  const [dataTable, setDataTable] = useState();
+  const [countTable, setCountTable] = useState();
+  const [page, setPage] = useState(0);
+  const [value, setValue] = useState("1");
+  const [nameTitle, setNameTitle] = useState("Wallet");
+  const [wallet, setWallet] = useState();
+
+  const getPayBusinessWithOrganizers = async () => {
+    const request = {
+      organizers_id: getLocalStorageUserInfo()._id,
+      page: 1,
+    };
+    const reponse = await ApiEvent.getPayBusinessWithOrganizers(request);
+    if (reponse) {
+      setDataTable(reponse.data.paginatedPayList);
+      setCountTable(reponse.data.totalItems);
+      setWallet(reponse.data.wallet);
+    }
+  };
+
+  const handleChangePage = async (event, newPage) => {
+    // try {
+    //   const pageRequest = { page: newPage + 1 };
+    //   console.log("object1: ", pageRequest);
+    //   const respones = await ApiAdmin.getAllClients(pageRequest);
+    //   if (respones) {
+    setPage(newPage);
+    //     setDataTableClient(respones.data.formattedClients);
+    //     setClientsCount(respones.data.clientsCount);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
+  useEffect(() => {
+    getPayBusinessWithOrganizers();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    if (newValue == "1") {
+      setNameTitle("Wallet");
+    } else {
+      setNameTitle("Transaction");
+    }
   };
+
   return (
-    <>
-      <Grid>
-        <Grid style={{ marginBottom: "10px" }} item xs={12}>
-          <Typography variant="h4" style={styles.typography}>
-            Transaction
-          </Typography>
-        </Grid>
-        <Drawer />
-        <Box sx={{ width: "100%", typography: "body1" }}>
-          <TabContext value={value}>
-            <Box sx={{ width: "100%" }}>
-              <AntTabs
-                value={value}
-                onChange={handleChange}
-                textColor="secondary"
-                indicatorColor="secondary"
-                aria-label="secondary tabs example">
-                <AntTab value="1" label="History" />
-                <AntTab value="2" label="Request" />
-              </AntTabs>
-            </Box>
-            <TabPanel value="1">
-              <TableTransaction />
-            </TabPanel>
-            <TabPanel value="2">Request</TabPanel>
-          </TabContext>
-        </Box>
-      </Grid>
-    </>
+    <Box sx={{ height: "86vh" }}>
+      <div>
+        <div style={{ border: "1px groove", margin: "0 0 20px 0" }}>
+          <div
+            style={{
+              fontWeight: "bold",
+              paddingLeft: "20px",
+            }}>
+            <h1>{nameTitle}</h1>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <TabContext value={value}>
+          <Box sx={{ borderBottom: 1, borderColor: "groove" }}>
+            <TabList onChange={handleChange} aria-label="lab API tabs example">
+              <LightTooltip title="Wallet">
+                <Tab label="Wallet" value="1" />
+              </LightTooltip>
+
+              <LightTooltip title="Transction History">
+                <Tab label="Transction History" value="2" />
+              </LightTooltip>
+            </TabList>
+          </Box>
+          <TabPanel value="1">
+            <Wallet wallet={wallet} transaction={countTable} />
+          </TabPanel>
+          <TabPanel value="2">
+            <TableTransaction
+              count={countTable}
+              dataTable={dataTable}
+              page={page}
+              handleChangePage={handleChangePage}
+            />
+          </TabPanel>
+        </TabContext>
+      </div>
+    </Box>
   );
 }
 
