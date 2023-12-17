@@ -180,12 +180,12 @@ function HomePageAdmin() {
                     variant="h6"
                     gutterBottom
                     sx={{ textAlign: "center", paddingTop: "10px" }}>
-                    Statistics of trading transactions by daysss
+                    Statistics of trading transactions by day
                   </Typography>
                   <div
                     style={{
                       height: "46vh",
-                      marginRight:"20%",
+                      marginRight: "20%",
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "center",

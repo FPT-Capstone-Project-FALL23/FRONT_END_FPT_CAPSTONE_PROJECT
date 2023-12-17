@@ -130,21 +130,20 @@ const NavBar = () => {
                     );
                   }
                   return (
-                    <MenuItem key={index} onClick={handleCloseUserMenu}>
-                      <Typography
-                        textAlign="center"
-                        onClick={() => {
-                          if (item?.url === "/") {
-                            navigate(item?.url);
-                            removeLocalStorageDataInfo();
-                            removeLocalStorageUserData();
-                            removeLocalStorageToken();
-                          } else {
-                            navigate(item?.url);
-                          }
-                        }}>
-                        {item.content}
-                      </Typography>
+                    <MenuItem
+                      key={index}
+                      onClick={() => {
+                        if (item?.url === "/") {
+                          navigate(item?.url);
+                          removeLocalStorageDataInfo();
+                          removeLocalStorageUserData();
+                          removeLocalStorageToken();
+                        } else {
+                          navigate(item?.url);
+                        }
+                        setAnchorElUser(null);
+                      }}>
+                      <Typography textAlign="center">{item.content}</Typography>
                     </MenuItem>
                   );
                 })}

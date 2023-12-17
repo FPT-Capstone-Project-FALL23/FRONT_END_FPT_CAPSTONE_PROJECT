@@ -37,6 +37,8 @@ import { DATA_EVENT_TYPE } from "../../../Assets/Constant/Client/dataClient";
 
 import ApiCity from "../../../API/City/ApiCity";
 import NavBar from "../Layout/NavBar";
+import ApiEvent from "../../../API/Event/ApiEvent";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { setSearchEvent } = useOpenStore();
@@ -44,19 +46,14 @@ const Header = () => {
   const [typeEvent, setTypeEvent] = useState(null);
   const [eventName, setEventName] = useState(null);
   const [selectsDistrict, setSelectsDistrict] = useState([]);
+  const [dataEventHot, setDataEventHot] = useState();
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", closeDropdown);
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", closeDropdown);
-  //   };
-  // }, []);
   const filterIds = selectsDistrict?.map((item) => item.id);
   console.log("selectsDistrict: ", selectsDistrict);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -79,13 +76,25 @@ const Header = () => {
 
   const [allCity, setAllCity] = useState([]);
   console.log("allCity: ", allCity);
-  useEffect(() => {
-    async function getAllCity() {
-      const response = await ApiCity.getCity();
-      setAllCity(response);
+  async function getAllCity() {
+    const response = await ApiCity.getCity();
+    setAllCity(response);
+  }
+
+  async function getHotActiveEventsWithSales() {
+    try {
+      const reponse = await ApiEvent.getHotActiveEventsWithSales();
+      setDataEventHot(reponse.data);
+    } catch (err) {
+      console.log(err);
     }
+  }
+
+  useEffect(() => {
+    getHotActiveEventsWithSales();
     getAllCity();
   }, []);
+
   const dataDistrict =
     allCity?.length > 0 &&
     allCity.map((item) => {
@@ -99,6 +108,10 @@ const Header = () => {
         label: item,
       };
     });
+
+  function handClickGetTiket(_id) {
+    navigate(`/book-tickets/${_id}`);
+  }
 
   return (
     <>
@@ -114,8 +127,7 @@ const Header = () => {
             transform: "translate(-50%, -50%)",
             maxWidth: "80%",
             width: "100%",
-          }}
-        >
+          }}>
           <CarouselStyle
             autoPlay={false}
             infiniteLoop="true"
@@ -135,8 +147,7 @@ const Header = () => {
                     top: "50%",
                     transform: "translateY(-50%)",
                   }}
-                  onClick={clickHandler}
-                >
+                  onClick={clickHandler}>
                   <IconNext />
                 </div>
               );
@@ -153,109 +164,85 @@ const Header = () => {
                     zIndex: "22",
                     color: "white",
                   }}
-                  onClick={clickHandler}
-                >
+                  onClick={clickHandler}>
                   <IconPrev />
                 </div>
               );
-            }}
-          >
-            {Array(3)
-              .fill(0)
-              .map((item, index) => {
-                return (
+            }}>
+            {dataEventHot?.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    gap: "50px",
+                    padding: "0 50px",
+                  }}>
                   <div
                     key={index}
                     style={{
-                      display: "flex",
+                      overflow: "hidden",
+                      borderRadius: "30px",
+                      maxWidth: "600px",
                       width: "100%",
-                      alignItems: "center",
-                      gap: "50px",
-                      padding: "0 50px",
-                    }}
-                  >
-                    <div
-                      key={index}
-                      style={{
-                        overflow: "hidden",
-                        borderRadius: "30px",
-                        maxWidth: "600px",
-                        width: "100%",
-                      }}
-                    >
-                      <img alt="" src={imgCarousel} />
+                      height: "400px",
+                    }}>
+                    <img alt="" src={item?.imageEvent} />
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "30px",
+                    }}>
+                    <div style={{}}>
+                      <h3
+                        style={{
+                          fontSize: "40px",
+                          fontWeight: 700,
+                          color: "white",
+                          textAlign: "start",
+                        }}>
+                        {item?.nameEvent}
+                      </h3>
+                      <p
+                        style={{
+                          fontSize: "18px",
+                          color: "white",
+                          textAlign: "start",
+                        }}>
+                        Look no further! Our {item?.nameEvent} tickets are the
+                        simplest way for you to experience a sự kiện
+                      </p>
                     </div>
                     <div
                       style={{
-                        flex: 1,
                         display: "flex",
-                        flexDirection: "column",
+                        alignItems: "center",
                         gap: "30px",
-                      }}
-                    >
-                      <div style={{}}>
-                        <h3
-                          style={{
-                            fontSize: "40px",
-                            fontWeight: 700,
-                            color: "white",
-                            textAlign: "start",
-                          }}
-                        >
-                          SBS MTV The Kpop Show Ticket Package
-                        </h3>
-                        <p
-                          style={{
-                            fontSize: "18px",
-                            color: "white",
-                            textAlign: "start",
-                          }}
-                        >
-                          Look no further! Our SBS The Show tickets are the
-                          simplest way for you to experience a live Kpop
-                          recording.
-                        </p>
-                      </div>
-                      <div
+                      }}>
+                      <Button
+                        onClick={() => handClickGetTiket(item._id)}
                         style={{
+                          background: "#F5167E",
+                          fontWeight: "700",
+                          fontSize: "18px",
+                          borderRadius: "50px",
+                          color: "white",
                           display: "flex",
-                          alignItems: "center",
-                          gap: "30px",
-                        }}
-                      >
-                        <Button
-                          style={{
-                            background: "#F5167E",
-                            fontWeight: "700",
-                            fontSize: "18px",
-                            borderRadius: "50px",
-                            color: "white",
-                            display: "flex",
-                            width: "182px",
-                            height: "60px",
-                          }}
-                        >
-                          Get Tiket
-                        </Button>
-                        <Button
-                          style={{
-                            fontWeight: "700",
-                            fontSize: "18px",
-                            borderRadius: "50px",
-                            color: "white",
-                            display: "flex",
-                            width: "182px",
-                            height: "60px",
-                            border: "1.5px solid white",
-                          }}
-                        >
-                          Learn More
-                        </Button>
-                      </div>
+                          width: "182px",
+                          height: "60px",
+                        }}>
+                        Get Tiket
+                      </Button>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
           </CarouselStyle>
         </div>
         <FormHeaderStyle>
@@ -264,8 +251,7 @@ const Header = () => {
             spacing={2}
             alignItems={"self-end"}
             position={"relative"}
-            style={{ height: "100%" }}
-          >
+            style={{ height: "100%" }}>
             <Grid item xs={2}>
               <TextFieldStyle
                 id="filled-helperText"
@@ -285,8 +271,7 @@ const Header = () => {
                   position: "relative",
                   zIndex: 20,
                 }}
-                ref={dropdownRef}
-              >
+                ref={dropdownRef}>
                 <label htmlFor="" style={{ color: "white" }}>
                   Place
                 </label>
@@ -295,8 +280,7 @@ const Header = () => {
                     display: "flex",
                     width: "100%",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   <div
                     style={{
                       height: "40px",
@@ -308,8 +292,7 @@ const Header = () => {
                       cursor: "pointer",
                       display: "flex",
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     {selectsDistrict?.length > 0 && (
                       <Stack
                         direction={"row"}
@@ -321,8 +304,7 @@ const Header = () => {
                           borderRadius: "30px",
                           background: "gray",
                           height: "30px",
-                        }}
-                      >
+                        }}>
                         <span style={{ padding: "0 10px" }}>
                           {selectsDistrict[0].value}
                         </span>
@@ -333,8 +315,7 @@ const Header = () => {
                               (itemF) => itemF.id !== selectsDistrict[0]?.id
                             );
                             setSelectsDistrict(filterChange);
-                          }}
-                        >
+                          }}>
                           <HighlightOffIcon />
                         </span>
                       </Stack>
@@ -345,8 +326,7 @@ const Header = () => {
                   </div>
                   <div
                     onClick={toggleDropdown}
-                    style={{ cursor: "pointer", color: "white" }}
-                  >
+                    style={{ cursor: "pointer", color: "white" }}>
                     {isOpen ? (
                       <KeyboardArrowUpIcon />
                     ) : (
@@ -368,8 +348,7 @@ const Header = () => {
                       maxHeight: "500px",
                       height: "max-content",
                       boxShadow: "1px 1px 2px 2px #bbb1b12e",
-                    }}
-                  >
+                    }}>
                     <Paper
                       component="form"
                       sx={{
@@ -377,8 +356,7 @@ const Header = () => {
                         display: "flex",
                         alignItems: "center",
                         width: "100%",
-                      }}
-                    >
+                      }}>
                       <InputBase
                         sx={{ ml: 1, flex: 1 }}
                         placeholder="Tìm quận/huyện"
@@ -387,8 +365,7 @@ const Header = () => {
                       <IconButton
                         type="button"
                         sx={{ p: "10px" }}
-                        aria-label="search"
-                      >
+                        aria-label="search">
                         <SearchIcon />
                       </IconButton>
                     </Paper>
@@ -399,8 +376,7 @@ const Header = () => {
                         maxHeight: "200px",
                         height: "max-content",
                         overflow: "auto",
-                      }}
-                    >
+                      }}>
                       {dataDistrict.length > 0 &&
                         dataDistrict.map((item, index) => {
                           return (
@@ -420,8 +396,7 @@ const Header = () => {
                                     item,
                                   ]);
                                 }
-                              }}
-                            >
+                              }}>
                               <span>{item.value}</span>
                               <input
                                 id={`${item.value}`}
@@ -460,16 +435,14 @@ const Header = () => {
                         direction={"row"}
                         alignItems={"center"}
                         gap={"10px"}
-                        style={{ cursor: "pointer" }}
-                      >
+                        style={{ cursor: "pointer" }}>
                         <LoopIcon></LoopIcon>
                         <span>dat lai</span>
                       </Stack>
                       <Button
                         type="button"
                         variant="contained"
-                        onClick={() => setIsOpen(false)}
-                      >
+                        onClick={() => setIsOpen(false)}>
                         Apply
                       </Button>
                     </Stack>
@@ -485,8 +458,7 @@ const Header = () => {
                   position: "relative",
                   zIndex: 20,
                 }}
-                ref={dropdownRef}
-              >
+                ref={dropdownRef}>
                 <label htmlFor="" style={{ color: "white" }}>
                   Time
                 </label>
@@ -511,8 +483,7 @@ const Header = () => {
                 variant="filled"
                 onChange={(e) => {
                   setTypeEvent(e.target.value);
-                }}
-              >
+                }}>
                 {dataType?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
@@ -525,8 +496,7 @@ const Header = () => {
                 type="button"
                 variant="outlined"
                 onClick={() => handleSearchEvent()}
-                style={{ background: "white" }}
-              >
+                style={{ background: "white" }}>
                 Search
               </Button>
             </Grid>
@@ -538,8 +508,7 @@ const Header = () => {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "20px",
-              }}
-            >
+              }}>
               Search Event
             </div>
           </Grid>

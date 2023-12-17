@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 function BlockOrganizerList() {
   const [dataTableOrganizerBlock, setDataTableOrganizerBlock] = useState();
   const [selectedOrganizer, setSelectedOrganizer] = useState(null);
+  const [selectedDataEvent, setSelectedDataEvent] = useState(null);
   const [organizerDetailOpen, setOrganizerDetailOpen] = useState(false);
   const [selected_id, setSelected_id] = useState();
   const [isDetail, setIsDetail] = useState();
@@ -49,8 +50,10 @@ function BlockOrganizerList() {
       const respones = await ApiAdmin.getDetailOrganizer(id);
       console.log("respones", respones);
       if (respones) {
-        setSelectedOrganizer(respones.data);
+        setSelectedOrganizer(respones.data.organizationalInformation);
+        setSelectedDataEvent(respones.data.organizationalEvents);
         setOrganizerDetailOpen(true);
+        setIsDetail(true);
       }
     } catch (error) {
       console.log(error);
@@ -147,6 +150,7 @@ function BlockOrganizerList() {
             page={page}
             count={organizersCount}
             handleChangePage={handleChangePage}
+            selectedDataEvent={selectedDataEvent}
           />
         </Box>
       </Box>

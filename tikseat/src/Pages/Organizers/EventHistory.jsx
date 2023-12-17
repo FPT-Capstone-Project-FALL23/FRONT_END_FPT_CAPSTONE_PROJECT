@@ -103,13 +103,13 @@ export const DialogRequest = ({
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           Event {dataDialog?.nameEvent} has ended. The total ticket sales amount
-          of the event is {dataDialog?.totalActual?.toLocaleString()} VND and the
-          total ticket refund amount is xxx VND.
+          of the event is {dataDialog?.totalActual?.toLocaleString()} VND and
+          the total ticket refund amount is xxx VND.
         </DialogContentText>
         <DialogContentText id="alert-dialog-description">
           Admin will receive 1% of {dataDialog?.totalActual?.toLocaleString()}{" "}
-          VNĐ equals {dataDialog?.totalEventAmount?.toLocaleString()} VNĐ and 15%
-          of {dataDialog?.totalRefundAmount?.toLocaleString()} VNĐ equals{" "}
+          VNĐ equals {dataDialog?.totalEventAmount?.toLocaleString()} VNĐ and
+          15% of {dataDialog?.totalRefundAmount?.toLocaleString()} VNĐ equals{" "}
           {dataDialog?.adminEarRefund?.toLocaleString()} VNĐ.
         </DialogContentText>
         <DialogContentText id="alert-dialog-description">
@@ -137,45 +137,48 @@ function EventHistory({ onEventDetail }) {
   const [eventHistory, setEventHistory] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(null);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [open, setOpen] = useState(false);
   const [requestCreate, setRequestCreate] = useState();
   const [dataDialog, setDataDialog] = useState();
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(event.target.value);
-    setPage(0);
-  };
-
-  useEffect(() => {
-    const dataEventHistory = async () => {
-      try {
-        const response = await ApiEvent.eventHistory({
-          _idOrganizer: dataInfo._id,
-          page: page,
-        });
-        if (response.status === true) {
-          setEventHistory(response.data);
-          setTotalPage(response.totalPages);
-        } else {
-          console.log("error!");
-        }
-      } catch (error) {
-        console.log(error);
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const response = await ApiEvent.eventHistory({
+        _idOrganizer: dataInfo._id,
+        page: newPage + 1,
+      });
+      if (response.status === true) {
+        setEventHistory(response.data);
+        setTotalPage(response.totalEvents);
+        setPage(newPage);
+      } else {
+        console.log("error!");
       }
-    };
-
-    dataEventHistory();
-  }, [page]);
-
-  const handleChange = (event, value) => {
-    setPage(value);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const dataEventHistory = async () => {
+    try {
+      const response = await ApiEvent.eventHistory({
+        _idOrganizer: dataInfo._id,
+        page: page,
+      });
+      if (response.status === true) {
+        setEventHistory(response.data);
+        setTotalPage(response.totalEvents);
+      } else {
+        console.log("error!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    dataEventHistory();
+  }, []);
 
   const handleEventDetail = (row, actionType) => {
     setSelectedEvent(row);
@@ -225,6 +228,7 @@ function EventHistory({ onEventDetail }) {
     const reponse = ApiEvent.createPayBusinessOfEvent(requestCreate);
     if (reponse) {
       console.log("reponse", reponse);
+      dataEventHistory();
       setOpen(false);
     }
   };
@@ -266,116 +270,114 @@ function EventHistory({ onEventDetail }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {eventHistory
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              ?.map((row, index) => (
-                <StyledTableRow key={index}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.eventName}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <Rating
-                      name="customized-empty"
-                      value={row.totalRating}
-                      precision={0.5}
-                      readOnly
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {new Date(row.startDay)?.toLocaleString()}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.totalEstimated?.toLocaleString()}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.totalActual?.toLocaleString()}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.totalRefundAmount?.toLocaleString()}
-                  </StyledTableCell>
+            {eventHistory?.map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell component="th" scope="row">
+                  {row.eventName}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Rating
+                    name="customized-empty"
+                    value={row.totalRating}
+                    precision={0.5}
+                    readOnly
+                  />
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {new Date(row.startDay)?.toLocaleString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.totalEstimated?.toLocaleString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.totalActual?.toLocaleString()}
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.totalRefundAmount?.toLocaleString()}
+                </StyledTableCell>
 
-                  <StyledTableCell align="center">
-                    <Grid
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "100%",
-                        height: "100%",
-                        fontSize: "15px",
-                      }}>
-                      <Grid
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          height: "100%",
-                          width: "100%",
-                          margin: "0px 10% 0px 10%",
-                          fontWeight: "500",
-                          backgroundColor:
-                            row.eventStatus === "UPCOMING"
-                              ? "#A0E9FF"
-                              : row.eventStatus === "FINISHED"
-                              ? "#E49393"
-                              : "#FFFD8C",
-                        }}>
-                        {row.eventStatus}
-                      </Grid>
-                    </Grid>
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
+                <StyledTableCell align="center">
+                  <Grid
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      width: "100%",
+                      height: "100%",
+                      fontSize: "15px",
+                    }}>
                     <Grid
                       style={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         height: "100%",
-                        fontWeight: "500",
                         width: "100%",
-                        backgroundColor: row.isActive ? "#A0E9FF" : "#E49393",
+                        margin: "0px 10% 0px 10%",
+                        fontWeight: "500",
+                        backgroundColor:
+                          row.eventStatus === "UPCOMING"
+                            ? "#A0E9FF"
+                            : row.eventStatus === "FINISHED"
+                            ? "#E49393"
+                            : "#FFFD8C",
                       }}>
-                      {row.isActive ? "approved" : "waiting"}
+                      {row.eventStatus}
                     </Grid>
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align="center"
-                    sx={{
-                      width:"350px",
+                  </Grid>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Grid
+                    style={{
                       display: "flex",
-                      justifyContent: "space-around",
-                      padding: "12px 0px",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      fontWeight: "500",
+                      width: "100%",
+                      backgroundColor: row.isActive ? "#A0E9FF" : "#E49393",
                     }}>
-                    <Grid sx={{ width: "48%" }}>
+                    {row.isActive ? "approved" : "waiting"}
+                  </Grid>
+                </StyledTableCell>
+                <StyledTableCell
+                  align="center"
+                  sx={{
+                    width: "350px",
+                    display: "flex",
+                    justifyContent: "space-around",
+                    padding: "12px 0px",
+                  }}>
+                  <Grid sx={{ width: "48%" }}>
+                    <ButtonAction
+                      nameButton="Statistics"
+                      icon={<LeaderboardIcon />}
+                      row={row}
+                      handleClick={handleEventDetail}
+                      nameHandle="statistics"
+                    />
+                  </Grid>
+                  <Grid sx={{ width: "48%" }}>
+                    {row.eventStatus == "FINISHED" ? (
                       <ButtonAction
-                        nameButton="Statistics"
-                        icon={<LeaderboardIcon />}
+                        nameButton="Request payment"
+                        icon={<RequestPageIcon />}
+                        handleClick={handleRequestPayment}
+                        row={row}
+                        isRequestPayment={row?.isRequestPayment}
+                      />
+                    ) : (
+                      <ButtonAction
+                        nameButton="Update"
+                        icon={<EditIcon />}
                         row={row}
                         handleClick={handleEventDetail}
-                        nameHandle="statistics"
+                        nameHandle="update"
                       />
-                    </Grid>
-                    <Grid sx={{ width: "48%" }}>
-                      {row.eventStatus == "FINISHED" ? (
-                        <ButtonAction
-                          nameButton="Request payment"
-                          icon={<RequestPageIcon />}
-                          handleClick={handleRequestPayment}
-                          row={row}
-                          isRequestPayment={row.isRequestPayment}
-                        />
-                      ) : (
-                        <ButtonAction
-                          nameButton="Update"
-                          icon={<EditIcon />}
-                          row={row}
-                          handleClick={handleEventDetail}
-                          nameHandle="update"
-                        />
-                      )}
-                    </Grid>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
+                    )}
+                  </Grid>
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
           </TableBody>
         </Table>
         <Grid
@@ -391,14 +393,12 @@ function EventHistory({ onEventDetail }) {
           }}>
           <Stack spacing={2}>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
               colSpan={3}
-              component="div"
               count={totalPage}
-              rowsPerPage={rowsPerPage}
+              rowsPerPage={5}
+              rowsPerPageOptions={[5]}
               page={page}
               onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Stack>
         </Grid>

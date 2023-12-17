@@ -41,6 +41,7 @@ export const URL_CHECKIN = "/checkin/check_in";
 export const URL_GET_TOP5_EVENT = "/event/getTopRatedEventOfOrganizer"
 export const URL_GET_LATES_HOT_EVENT_IMAGES = "/event/getLatestHotEventImages"
 export const URL_GET_SELECT_CHAIR_IN_AREA = "/event/selectChairInArea"
+export const URL_GET_HOT_EVENTS_WITH_SALES = "/event/getHotActiveEventsWithSales"
 
 //-------------------PAYBUSINESS----------------------------
 export const URL_CREATE_PAY_BUSINESS_OF_EVENT = "/payBusiness/createPayBusinessOfEvent";

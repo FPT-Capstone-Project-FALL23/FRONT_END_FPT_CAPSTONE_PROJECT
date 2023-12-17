@@ -66,14 +66,17 @@ function FormLogin({
         email: email,
         password: password,
       });
-      const token = response.token;
-      const dataUser = response.data.dataUser;
-      const dataInfo = response.data.dataInfo;
+      if (response) {
+        const token = response.token;
+        const dataUser = response.data.dataUser;
+        const dataInfo = response.data.dataInfo;
 
-      setLocalStorageToken(token);
-      setLocalStorageUserData(dataUser);
-      setLocalStorageUserInfo(dataInfo);
-      navigateAfterLogin();
+        setLocalStorageToken(token);
+        setLocalStorageUserData(dataUser);
+        setLocalStorageUserInfo(dataInfo);
+        navigateAfterLogin();
+        toast.success("Logged in successfully", toastOptions);
+      }
     } catch (error) {
       const err = error.response.data.message;
       toast.error(err, toastOptions);

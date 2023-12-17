@@ -41,6 +41,9 @@ import DialogNotification from "../../Components/Client/DialogNotification";
 import StackBookNow from "../../Components/Common/HomePage/StackBookNow";
 import StackBuyTicket from "../../Components/Common/HomePage/StackBuyTicket";
 import ApiEvent from "../../API/Event/ApiEvent";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 const style = {
   position: "absolute",
   top: "50%",
@@ -99,7 +102,7 @@ const BookTickets = () => {
 
     if (!isCheckSelected) {
       if (item.isBuy) {
-        alert("Ghế này đã được mua!");
+        toast.error("Seats have been booked", toastOptions);
         return;
       }
       socket?.emit("SELECT_SEAT", {
@@ -123,7 +126,7 @@ const BookTickets = () => {
       ]);
     } else {
       if (isCheckSelected.email !== dataUser?.email) {
-        alert("This seat is already booked by others!");
+        toast.error("This seat is already booked by others!", toastOptions);
         return;
       }
 
@@ -165,8 +168,8 @@ const BookTickets = () => {
       setSelectChair(data);
       // rerenderSeats();
     });
-    socket.on("update_dialog_close", (data) => {
-      console.log("update_dialog_close", data);
+    socket.on("before_close_dailog", (data) => {
+      console.log("before_close_dailog", data);
     });
     return () => {
       setSocket(null);
@@ -808,7 +811,7 @@ const BookTickets = () => {
                               alignItems={"center"}>
                               {time > 0 && (
                                 <Typography variant="h4">
-                                  Thời gian còn lại: {minutes < 10 ? "0" : ""}
+                                  Time remaining: {minutes < 10 ? "0" : ""}
                                   {minutes}:{seconds < 10 ? "0" : ""}
                                   {seconds}
                                 </Typography>

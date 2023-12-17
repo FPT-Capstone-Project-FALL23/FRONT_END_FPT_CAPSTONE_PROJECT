@@ -20,6 +20,7 @@ import {
   URL_GET_TOP5_EVENT,
   URL_GET_LATES_HOT_EVENT_IMAGES,
   URL_GET_SELECT_CHAIR_IN_AREA,
+  URL_GET_HOT_EVENTS_WITH_SALES,
 } from "../ConstAPI";
 
 const ApiEvent = {
@@ -82,6 +83,9 @@ const ApiEvent = {
   },
   selectChairInArea(data) {
     return axiosDefault.post(URL_GET_SELECT_CHAIR_IN_AREA, data)
+  },
+  getHotActiveEventsWithSales() {
+    return axiosDefault.get(URL_GET_HOT_EVENTS_WITH_SALES)
   },
 };
 

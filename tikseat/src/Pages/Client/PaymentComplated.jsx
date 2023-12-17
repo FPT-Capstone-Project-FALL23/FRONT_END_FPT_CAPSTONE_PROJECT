@@ -9,6 +9,8 @@ import {
   getLocalStorageUserData,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 
 const PaymentComplated = () => {
   const navigate = useNavigate();
@@ -24,14 +26,14 @@ const PaymentComplated = () => {
   const [sendEmail, setSendEmail] = useState("block");
   const [changePage, setChangePage] = useState("/my_ticket");
   const [buttonChangePage, setButtonChangePage] = useState("Go To List");
-  
+  const [socket, setSocket] = useState(null);
+  const [id, setId] = useState("");
 
   var currentURL = window.location.href;
   var urlObject = new URL(currentURL);
   var apptransid = urlObject.searchParams.get("apptransid");
   var totalAmount = urlObject.searchParams.get("amount");
   var statusPay = urlObject.searchParams.get("status");
-
 
   useEffect(() => {
     if (statusPay === "1") {
@@ -59,7 +61,7 @@ const PaymentComplated = () => {
           console.log(error);
         }
       };
-  
+
       handleCreateTicket();
     } else {
       setStatusPayment("Payment Failed !");
@@ -74,10 +76,20 @@ const PaymentComplated = () => {
     }
   }, []);
 
-  // const handleClose = () => {
-  //   window.close();
-  // }
-  
+  const handleClose = () => {
+    window.close();
+  };
+
+  useEffect(() => {
+    const socket = io(URL_SOCKET, {
+      transports: ["websocket"],
+      query: { email: dataUser?.email },
+    });
+    setSocket(socket);
+    socket.on("connect", () => setId(socket.id));
+    console.log("socket connect:", socket.id);
+  }, []);
+
   return (
     <div>
       <div
@@ -86,8 +98,7 @@ const PaymentComplated = () => {
           flexDirection: "column",
           alignItems: "center",
           marginTop: "40px",
-        }}
-      >
+        }}>
         <div
           style={{
             fontSize: "25px",
@@ -97,8 +108,7 @@ const PaymentComplated = () => {
             border: borderColor,
             padding: "14px 50px",
             boxShadow: borderboxShadow,
-          }}
-        >
+          }}>
           {statusPayment}
         </div>
         <div style={{ width: "500px", marginTop: "20px" }}>
@@ -112,10 +122,11 @@ const PaymentComplated = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
-          <h2 style={{display: sendEmail}}>Ticket have been sent to</h2>
-          <span style={{ color: "#23abe3", display: sendEmail }}>{dataUser.email}</span>
+          }}>
+          <h2 style={{ display: sendEmail }}>Ticket have been sent to</h2>
+          <span style={{ color: "#23abe3", display: sendEmail }}>
+            {dataUser.email}
+          </span>
         </div>
         <div
           style={{
@@ -123,9 +134,8 @@ const PaymentComplated = () => {
             flexDirection: "column",
             alignItems: "center",
             marginTop: "40px",
-          }}
-        >
-          <h4 style={{display: sendEmail}}>Go to the list you purchased</h4>
+          }}>
+          <h4 style={{ display: sendEmail }}>Go to the list you purchased</h4>
           <Link
             style={{
               padding: "10px 40px",
@@ -139,11 +149,9 @@ const PaymentComplated = () => {
             onClick={() => {
               window.opener.location.reload();
               window.close();
-            }}
-          >
+            }}>
             {buttonChangePage}
           </Link>
-         
         </div>
       </div>
     </div>
