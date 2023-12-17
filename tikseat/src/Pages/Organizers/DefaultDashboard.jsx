@@ -58,7 +58,9 @@ function DefaultDashboard() {
   useEffect(() => {
     const dataTopEvent = async () => {
       try {
-        const response = await ApiEvent.getTop5Event(organizers_id);
+        const response = await ApiEvent.getTop5Event({
+          organizers_id: organizers_id,
+        });
         if (response.status === true) {
           console.log(response.data);
           setDataTopEvent(response.data);
@@ -77,8 +79,7 @@ function DefaultDashboard() {
       <Grid
         style={{
           padding: "10px",
-        }}
-      >
+        }}>
         <Grid>
           <TotalRevenue dataAllEventDetail={allDataEvent} />
         </Grid>
@@ -89,16 +90,14 @@ function DefaultDashboard() {
             display: "flex",
             justifyContent: "space-between",
             width: "100%",
-          }}
-        >
+          }}>
           <Grid
             style={{
               backgroundColor: "#fff",
               padding: "10px",
               borderRadius: "5px",
               width: "49.5%",
-            }}
-          >
+            }}>
             <DayChart dataAllEventDetail={allDataEvent} />
           </Grid>
           <Grid
@@ -107,8 +106,7 @@ function DefaultDashboard() {
               padding: "10px",
               borderRadius: "5px",
               width: "49.5%",
-            }}
-          >
+            }}>
             <CheckinChart dataAllEventDetail={allDataEvent} />
           </Grid>
         </Grid>
@@ -119,16 +117,14 @@ function DefaultDashboard() {
             display: "flex",
             margin: "30px 0px 20px 0px",
             justifyContent: "space-between",
-          }}
-        >
+          }}>
           <Grid
             sx={{
               backgroundColor: "#fff",
               borderRadius: "5px",
               width: "55%",
               padding: "20px",
-            }}
-          >
+            }}>
             <BasicArea />
           </Grid>
 
@@ -141,8 +137,7 @@ function DefaultDashboard() {
               backgroundColor: "#fff",
               borderRadius: "5px",
               padding: "20px",
-            }}
-          >
+            }}>
             <Grid sx={{ marginBottom: "15px" }}>
               <Typography variant="h5" fontWeight={600}>
                 Top 5 Events
@@ -154,8 +149,7 @@ function DefaultDashboard() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "flex-start",
-              }}
-            >
+              }}>
               {dataTopEvent &&
                 dataTopEvent.map((item) => (
                   <Grid
@@ -168,9 +162,8 @@ function DefaultDashboard() {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      marginBottom:"10px"
-                    }}
-                  >
+                      marginBottom: "10px",
+                    }}>
                     <Grid sx={{ width: "40%" }}>{item.event_name}</Grid>
 
                     <Grid sx={{ width: "27%" }}>
@@ -185,8 +178,7 @@ function DefaultDashboard() {
                         width: "30%",
                         display: "flex",
                         flexDirection: "row-reverse",
-                      }}
-                    >
+                      }}>
                       {item.totalTicketAmountReceived.toLocaleString()}
                     </Grid>
                   </Grid>
