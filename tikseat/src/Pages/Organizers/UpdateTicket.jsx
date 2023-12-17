@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import {
@@ -19,8 +19,8 @@ import InputCustom from "../../Components/Common/Input/InputCustom";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PostAddSharpIcon from "@mui/icons-material/PostAddSharp";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
-import OfflinePinIcon from '@mui/icons-material/OfflinePin';
-import WarningIcon from '@mui/icons-material/Warning';
+import OfflinePinIcon from "@mui/icons-material/OfflinePin";
+import WarningIcon from "@mui/icons-material/Warning";
 import {
   getLocalStorageUserData,
   setLocalStorageUserInfo,
@@ -28,6 +28,7 @@ import {
   setLocalStorageTicketInfo,
   getLocalStorageTicketInfo,
   getLocalStorageEventInfo,
+  setLocalStorageEventInfo,
 } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
@@ -45,6 +46,8 @@ export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
 };
 
 function UpdateTicket({ event }) {
+  console.log(event);
+  const isActive = event.isActive;
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
 
@@ -80,6 +83,7 @@ function UpdateTicket({ event }) {
   const fileInputRef = useRef(null);
   const today = new Date().toISOString().slice(0, 10);
   const [typeLayout, setTypeLayout] = useState(dataTicket?.type_layout || null);
+  const [allDateEvents, setAllDateEvents] = useState([]);
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -91,7 +95,6 @@ function UpdateTicket({ event }) {
   }, [socket, organizerId]);
 
   const handleNewEvent = () => {
-    console.log("ran 1st");
     socket.emit("new_event", {
       senderName: organizerName,
       receiverName: "6544b5f73dd2f66548b5d85a",
@@ -107,22 +110,43 @@ function UpdateTicket({ event }) {
   );
 
   function formatNumber(n) {
-    // Check if n is a string
-    if (typeof n !== 'string') {
+    if (typeof n !== "string") {
       n = String(n);
     }
     return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   function formatString(n) {
-    // Kiểm tra xem n có phải là chuỗi không
-    if (typeof n === 'string' || n instanceof String) {
-      return n.replace(/,/g, '');
+    if (typeof n === "string" || n instanceof String) {
+      return n.replace(/,/g, "");
     } else {
       n = String(n);
-      return n.replace(/,/g, '');
+      return n.replace(/,/g, "");
     }
   }
+
+  const checkTicketConditions = (isActive, dataTicket, today) => {
+    return isActive === true && dataTicket < today;
+  }
+
+  const checkUpdateEventDate = checkTicketConditions(isActive, dataTicket?.sales_date?.start_sales_date, today)
+
+  console.log(checkUpdateEventDate)
+
+  const memoizedDateEvents = useMemo(() => {
+    return (
+      dataTicket?.event_date?.map((eventDate) => {
+        const originalDateEvent = eventDate?.dateEvent;
+        return originalDateEvent;
+      }) || []
+    );
+  }, []);
+
+  useEffect(() => {
+    setAllDateEvents(memoizedDateEvents);
+  }, []);
+
+  console.log(allDateEvents);
 
   const defaultEventDate = dataTicket?.event_date?.map((eventDate) => {
     const trimmedDateEvent = moment(eventDate?.dateEvent).format(
@@ -592,8 +616,9 @@ function UpdateTicket({ event }) {
       if (response.status === true) {
         toast.success("Update Event success!", toastOptions);
         handleNewEvent();
+        setLocalStorageTicketInfo("");
+        setLocalStorageEventInfo("");
         navigate("/success");
-        setLocalStorageTicketInfo([])
         console.log(response);
       } else {
       }
@@ -605,7 +630,7 @@ function UpdateTicket({ event }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    callApiUpdateEvent(event, organizerId, eventInfoData);
+    callApiUpdateEvent(event._idEvent, organizerId, eventInfoData);
   };
 
   return (
@@ -621,12 +646,21 @@ function UpdateTicket({ event }) {
         <FormSubmit onSubmit={handleFormSubmit}>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>
-            {eventInfo.type_layout !== "" ? (
-                <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px"  }} />
+              {eventInfo.type_layout !== "" ? (
+                <OfflinePinIcon
+                  sx={{
+                    color: "green",
+                    fontSize: "30px",
+                    marginBottom: "-8px",
+                  }}
+                />
               ) : (
-                <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px"  }} />
+                <WarningIcon
+                  sx={{ color: "red", fontSize: "30px", marginBottom: "-8px" }}
+                />
               )}
-              Add Photo Layout</h3>
+              Add Photo Layout
+            </h3>
           </Grid>
           <Grid
             style={{
@@ -676,17 +710,25 @@ function UpdateTicket({ event }) {
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>
               {eventInfo.maxTicketInOrder !== "" ? (
-                  <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
-                ) : (
-                  <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
+                <OfflinePinIcon
+                  sx={{
+                    color: "green",
+                    fontSize: "30px",
+                    marginBottom: "-8px",
+                  }}
+                />
+              ) : (
+                <WarningIcon
+                  sx={{ color: "red", fontSize: "30px", marginBottom: "-8px" }}
+                />
               )}
-              Add Information Ticket</h3>
+              Add Information Ticket
+            </h3>
           </Grid>
           <Grid
             style={{
               padding: "30px",
               border: "1px solid black",
-              // borderRadius: "5px",
               marginBottom: "20px",
               display: "flex",
               justifyContent: "space-between",
@@ -700,7 +742,6 @@ function UpdateTicket({ event }) {
                 style={{
                   padding: "30px",
                   border: "1px solid black",
-                  // borderRadius: "5px",
                   width: "100%",
                 }}
               >
@@ -720,41 +761,54 @@ function UpdateTicket({ event }) {
             <Grid style={{ width: "70%" }}>
               <Grid style={{ display: "flex", justifyContent: "start" }}>
                 <h3>Sale Event date</h3>
+                  {checkUpdateEventDate && (
+                      <p style={{color:"red"}}>
+                        (Ticket sale dates cannot be updated while the event is
+                        on sale)
+                      </p>
+                    )}
               </Grid>
-              <Grid
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  padding: "30px",
-                  border: "1px solid black",
-                }}
-              >
-                <Stack style={{ width: "45%" }}>
-                  <InputCustom
-                    type="date"
-                    id="startSaleDate"
-                    name="startSaleDate"
-                    value={saleDate.startSaleDate}
-                    setValue={(value) =>
-                      handleSaleDateChange("startSaleDate", value)
-                    }
-                    label="Start Date"
-                  />
-                </Stack>
-                <Stack style={{ width: "45%" }}>
-                  <InputCustom
-                    type="date"
-                    id="endSaleDate"
-                    name="endSaleDate"
-                    value={saleDate.endSaleDate}
-                    setValue={(value) =>
-                      handleSaleDateChange("endSaleDate", value)
-                    }
-                    label="End Date"
-                  />
-                </Stack>
+                <Grid
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    padding: "30px",
+                    border: "1px solid black",
+                  }}
+                >
+                  <Stack style={{ width: "45%" }}>
+                    <InputCustom
+                      InputProps={{
+                        readOnly: checkUpdateEventDate,
+                      }}
+                      type="date"
+                      id="startSaleDate"
+                      name="startSaleDate"
+                      value={saleDate.startSaleDate}
+                      setValue={(value) =>
+                        handleSaleDateChange("startSaleDate", value)
+                      }
+                      label="Start Date"
+                    />
+                  </Stack>
+                  <Stack style={{ width: "45%" }}>
+                    <InputCustom
+                      InputProps={{
+                        readOnly: checkUpdateEventDate,
+                      }}
+                      type="date"
+                      id="endSaleDate"
+                      name="endSaleDate"
+                      value={saleDate.endSaleDate}
+                      setValue={(value) =>
+                        handleSaleDateChange("endSaleDate", value)
+                      }
+                      label="End Date"
+                    />
+                  </Stack>
+                
               </Grid>
             </Grid>
           </Grid>
@@ -774,6 +828,7 @@ function UpdateTicket({ event }) {
                     }}
                     variant="contained"
                     onClick={() => removeForm(form.date_number)}
+                    disabled={checkUpdateEventDate}
                   >
                     Delete Form
                   </Button>
@@ -789,10 +844,12 @@ function UpdateTicket({ event }) {
                   >
                     <p style={{ display: "flex", alignItems: "center" }}>
                       {form.dateEvent !== "" ? (
-                        <OfflinePinIcon sx={{ color: "green", fontSize:"30px" }} />
-                          ) : (
-                        <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
-                        )}
+                        <OfflinePinIcon
+                          sx={{ color: "green", fontSize: "30px" }}
+                        />
+                      ) : (
+                        <WarningIcon sx={{ color: "red", fontSize: "30px" }} />
+                      )}
                       Date and time start &nbsp;&nbsp;
                     </p>
                     <TextField
@@ -808,21 +865,36 @@ function UpdateTicket({ event }) {
                 </Grid>
 
                 {/* CREATE TICKET */}
-                
+
                 {form.event_areas?.map((formTicket) => (
                   <Grid className="formTicket" key={formTicket.id_areas}>
                     <Grid className="formTicketTitle">
-                    <h3 style={{ margin: "0px" }}>
-                      {formTicket.name_ticket !== "" && formTicket.ticket_price !== "" 
-                        && formTicket.total_row !== "" 
-                        && formTicket.rows.every(row => row.total_seat !== "") ? (
-                          <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
-                              ) : (
-                                <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
-                      )}
-                      Ticket Information
-                    </h3>
-                  </Grid>
+                      <h3 style={{ margin: "0px" }}>
+                        {formTicket.name_ticket !== "" &&
+                        formTicket.ticket_price !== "" &&
+                        formTicket.total_row !== "" &&
+                        formTicket.rows.every(
+                          (row) => row.total_seat !== ""
+                        ) ? (
+                          <OfflinePinIcon
+                            sx={{
+                              color: "green",
+                              fontSize: "30px",
+                              marginBottom: "-8px",
+                            }}
+                          />
+                        ) : (
+                          <WarningIcon
+                            sx={{
+                              color: "red",
+                              fontSize: "30px",
+                              marginBottom: "-8px",
+                            }}
+                          />
+                        )}
+                        Ticket Information
+                      </h3>
+                    </Grid>
                     <Grid className="headerFormTicket" fullWidth>
                       <TextField
                         style={{
@@ -852,6 +924,7 @@ function UpdateTicket({ event }) {
                         onClick={() =>
                           removeTicket(formTicket.id_areas, form.date_number)
                         }
+                        disabled={checkUpdateEventDate}
                       >
                         Delete Ticket
                       </Button>
@@ -867,12 +940,12 @@ function UpdateTicket({ event }) {
                         >
                           <p>Price &nbsp;(VND)</p>
                           <Grid
-                              className="boxTicket"
-                              style={{
-                                flexDirection: "column",
-                                border: "none",
-                              }}
-                            >
+                            className="boxTicket"
+                            style={{
+                              flexDirection: "column",
+                              border: "none",
+                            }}
+                          >
                             <TextField
                               style={{
                                 backgroundColor: "white",
@@ -996,6 +1069,7 @@ function UpdateTicket({ event }) {
                     className="buttonCreateEvent"
                     fullWidth
                     onClick={() => addTicket(form.date_number)}
+                    disabled={checkUpdateEventDate}
                   >
                     <AddCircleIcon
                       style={{ fontSize: "35px", marginRight: "5px" }}
@@ -1017,6 +1091,7 @@ function UpdateTicket({ event }) {
                 className="buttonCreateEvent"
                 fullWidth
                 onClick={addForm}
+                disabled={checkUpdateEventDate}
               >
                 <PostAddSharpIcon
                   style={{ fontSize: "35px", marginRight: "5px" }}

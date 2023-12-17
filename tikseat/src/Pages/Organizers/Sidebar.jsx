@@ -6,13 +6,10 @@ import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -40,6 +37,7 @@ import ChangePassword from "../Common/ChangePassword";
 import CreateEventDefault from "./CreateEventDefault";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import "../../Assets/CSS/Organizer/Sidebar.css";
+import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
 
 import {
   getLocalStorageUserData,
@@ -159,8 +157,9 @@ export default function MiniDrawer() {
         elevation={4}
         sx={{ backgroundColor: "#fff", color: "black" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid sx={{ display: "flex", alignItems: "center" }}>
+          <Grid sx={{ display: "flex", alignItems: "center", marginLeft:"20px" }}>
             <IconButton
+            sx={{marginRight:"20px"}}
               color="inherit"
               aria-label="open drawer"
               onClick={() => {
@@ -169,12 +168,8 @@ export default function MiniDrawer() {
               edge="start">
               <MenuIcon />
             </IconButton>
-            <Typography
-              className="typrography"
-              variant="h6"
-              noWrap
-              component="div">
-              DASHBOARD
+            <Typography variant="h3" className="logo" component="h4">
+              {NAME_LOGO}
             </Typography>
           </Grid>
           <Grid

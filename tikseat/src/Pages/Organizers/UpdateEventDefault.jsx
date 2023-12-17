@@ -22,6 +22,7 @@ import {
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
 
 function UpdateEventDefault({ eventDetail }) {
+
   const idEvent = eventDetail._idEvent;
   const [page, setPage] = useState("newEvent");
 
@@ -32,6 +33,7 @@ function UpdateEventDefault({ eventDetail }) {
     eventImage: null,
     type_of_event: null,
     event_description: null,
+    isActive: null,
     address: {
       city: null,
       district: null,
@@ -91,6 +93,7 @@ function UpdateEventDefault({ eventDetail }) {
             eventImage: response.event?.eventImage,
             type_of_event: response.event?.type_of_event || null,
             event_description: response.event?.event_description || null,
+            isActive: response.event?.isActive,
             address: {
               city: response.event?.event_location?.city || null,
               district: response.event?.event_location?.district || null,
@@ -141,10 +144,10 @@ function UpdateEventDefault({ eventDetail }) {
 
   return (
     <Grid sx={{ backgroundColor: "#ffffff" }}>
-      <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "85vh" }}>
-        <Grid sx={{ width: "100%", backgroundColor: "#ccc", padding: "10px" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "89vh" }}>
+        <Grid sx={{ width: "100%", backgroundColor: "rgb(245, 189, 25)", padding: "10px" }}>
           <Typography variant="h4" noWrap component="div">
-            New Event
+            Update Event
           </Typography>
         </Grid>
         <Grid sx={{ display: "flex" }}>
@@ -166,7 +169,7 @@ function UpdateEventDefault({ eventDetail }) {
               />
             ) : null}
 
-            {page === "create-ticket" && <UpdateTicket event={idEvent}/>}
+            {page === "create-ticket" && <UpdateTicket event={eventDetail}/>}
           </Box>
 
           <Box sx={{ width: "20%", height: "83vh" }}>

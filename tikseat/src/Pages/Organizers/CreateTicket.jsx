@@ -31,17 +31,10 @@ import {
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 
-export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
-  // Xử lý việc chọn tệp ở đây và cập nhật giá trị của 'avatar'
-  const selectedFile = e.target.files[0];
-  setSelectedFile(selectedFile);
-  if (selectedFile) {
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-    reader.onloadend = () => {
-      setTypeLayout(reader.result);
-    };
-  }
+export const validateFile = (fileName) => {
+  const fileExtensionRegex =
+    /^.*\.(jpg|jpeg|png|gif|tiff|psd|eps|ai|heic|raw|svg)$/i;
+  return fileExtensionRegex.test(fileName);
 };
 
 const CreateTicket = () => {
@@ -74,7 +67,6 @@ const CreateTicket = () => {
   // Khởi tạo dataEventInfo ban đầu
   let dataEventInfo = getLocalStorageEventInfo();
 
-
   const navigate = useNavigate();
 
   const alphabet = "ABCDEFGHIJKLMNOPQRST".split("");
@@ -84,6 +76,13 @@ const CreateTicket = () => {
   const [typeLayout, setTypeLayout] = useState(
     dataEventInfo?.type_layout || null
   );
+  const [fileError, setFileError] = useState(null);
+
+  const [errorDateEvent, setErrorDateEvent] = useState(false);
+  const [errorStartSaleDate, setErrorStartSaleDate] = useState(false);
+  const [errorEndSaleDate, setErrorEndSaleDate] = useState(false);
+  const [messErrorStart, setMessErrorStart] = useState("");
+  const [messErrorEnd, setMessErrorEnd] = useState("");
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -122,6 +121,28 @@ const CreateTicket = () => {
   const handleIconClick = () => {
     // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      if (validateFile(selectedFile.name)) {
+        setSelectedFile(selectedFile);
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedFile);
+        reader.onloadend = () => {
+          setTypeLayout(reader.result);
+        };
+        setFileError("")
+      } else {
+        setSelectedFile(null);
+        setTypeLayout("");
+        setFileError(
+          "File input have format:(.jpg, .jpeg, .png, .gif, .ai, ...)"
+        );
+      }
+    }
   };
 
   const [maxTicket, setMaxTicket] = useState(
@@ -171,11 +192,23 @@ const CreateTicket = () => {
       ];
   const [eventDate, setEventDate] = useState(defaultEventDate);
 
-  console.log(eventDate);
-
   const [saleDate, setSaleDate] = useState({
     startSaleDate: dataTicketInfo?.sales_date?.start_sales_date || today,
-    endSaleDate: dataTicketInfo?.sales_date?.end_sales_date || today,
+    endSaleDate: (() => {
+      const nextDay = () => {
+        const today = new Date();
+        const nextDay = new Date(today);
+        nextDay.setDate(today.getDate() + 1);
+        return nextDay;
+      };
+      const tomorrow = nextDay();
+      console.log(tomorrow.toISOString().split("T")[0]);
+      const nextDayyyy = tomorrow.toISOString().split("T")[0];
+      const finalStartSaleDate =
+        dataTicketInfo?.sales_date?.end_sales_date || nextDayyyy;
+      console.log(finalStartSaleDate);
+      return finalStartSaleDate;
+    })(),
   });
 
   const [eventInfo, setEventInfo] = useState({
@@ -286,8 +319,6 @@ const CreateTicket = () => {
     }));
   }, [eventInfo]);
 
-  console.log(eventInfoData);
-
   useEffect(() => {
     setEventInfo((prevEvent) => ({
       ...prevEvent,
@@ -379,8 +410,42 @@ const CreateTicket = () => {
   };
 
   const handleSaleDateChange = (name, value) => {
+    let endDay = new Date(saleDate.endSaleDate);
+  
+    if (name === "startSaleDate" && value < today) {
+      setMessErrorStart("StartDay must be greater than the current ");
+      setErrorStartSaleDate(true);
+      return;
+    } else if (name === "startSaleDate" && value > saleDate.endSaleDate) {
+      setMessErrorStart("StartDay is not greater than the endDate");
+      setSaleDate({ ...saleDate, [name]: value });
+      setErrorStartSaleDate(true);
+      return;
+    } else if (name === "endSaleDate") {
+      const timeDiff = Math.abs(endDay.getTime() - new Date(value).getTime());
+      const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+      if (dayDiff > 30) {
+        setErrorStartSaleDate(true);
+        setErrorEndSaleDate(true);
+        setSaleDate({ ...saleDate, [name]: value });
+        setMessErrorEnd("Ticket sale time must not exceed 30 days");
+        setMessErrorStart("Ticket sale time must not exceed 30 days");
+        return;
+      }else if (name === "endSaleDate" && value <= saleDate.startSaleDate) {
+        setMessErrorEnd("EndDay must greater than the startDay");
+        setSaleDate({ ...saleDate, [name]: value });
+        setErrorEndSaleDate(true);
+        return;
+      }
+    } 
+  
     setSaleDate({ ...saleDate, [name]: value });
+    setErrorStartSaleDate(false);
+    setErrorEndSaleDate(false);
   };
+  
+
+  console.log(eventInfoData);
 
   useEffect(() => {
     const updatedEventInfo = {
@@ -406,20 +471,28 @@ const CreateTicket = () => {
   }, [maxTicket]);
 
   const handleDateChange = (event, formId) => {
-    setEventDate((prevEventDate) => {
-      const updatedEventDates = prevEventDate.map((form) => {
-        if (form.date_number === formId) {
-          const newDate = event instanceof Date ? event : event.target.value;
-          return { ...form, dateEvent: newDate };
-        } else {
-          return form;
-        }
+    let dateEvent = new Date(event.target.value);
+    let formatDateEvent = dateEvent.toISOString().split("T")[0];
+    const endSale = saleDate.endSaleDate;
+    if (formatDateEvent <= endSale) {
+      setErrorDateEvent(true);
+    } else {
+      setEventDate((prevEventDate) => {
+        const updatedEventDates = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const newDate = event instanceof Date ? event : event.target.value;
+            return { ...form, dateEvent: newDate };
+          } else {
+            return form;
+          }
+        });
+
+        updateDetailTicket(updatedEventDates);
+
+        return updatedEventDates;
       });
-
-      updateDetailTicket(updatedEventDates);
-
-      return updatedEventDates;
-    });
+      setErrorDateEvent(false);
+    }
   };
 
   //Value Name Ticket
@@ -552,9 +625,22 @@ const CreateTicket = () => {
     }
   };
 
+  const isEventInfoDataValid = () => {
+    for (const key in eventInfoData) {
+      if (eventInfoData.hasOwnProperty(key) && eventInfoData[key] === "") {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    callApiCreateEvent(organizerId, eventInfoData);
+    if (isEventInfoDataValid()) {
+      callApiCreateEvent(organizerId, eventInfoData);
+    } else {
+      toast.error("You must fill in all information", toastOptions);
+    }
   };
 
   return (
@@ -631,9 +717,22 @@ const CreateTicket = () => {
               }
             />
           </Grid>
+          {fileError && (
+            <Grid
+              style={{
+                color: "red",
+                marginTop: "-35px",
+                marginBottom: "30px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <p>{fileError}</p>
+            </Grid>
+          )}
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>
-              {eventInfo.maxTicketInOrder !== "" ? (
+              {eventInfo.maxTicketInOrder !== "" && errorStartSaleDate === false && errorEndSaleDate === false ? (
                 <OfflinePinIcon
                   sx={{
                     color: "green",
@@ -684,7 +783,9 @@ const CreateTicket = () => {
 
             <Grid style={{ width: "70%" }}>
               <Grid style={{ display: "flex", justifyContent: "start" }}>
-                <h3>Sale Event date</h3>
+                <h3>
+                  Sale Event date (Ticket sale time must not exceed 30 days)
+                </h3>
               </Grid>
               <Grid
                 style={{
@@ -692,32 +793,36 @@ const CreateTicket = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  padding: "30px",
+                  padding: "30px 30px 8px 30px",
                   border: "1px solid black",
                 }}
               >
                 <Stack style={{ width: "45%" }}>
-                  <InputCustom
+                  <TextField
                     type="date"
                     id="startSaleDate"
                     name="startSaleDate"
                     value={saleDate.startSaleDate}
-                    setValue={(value) =>
-                      handleSaleDateChange("startSaleDate", value)
+                    onChange={(e) =>
+                      handleSaleDateChange("startSaleDate", e.target.value)
                     }
                     label="Start Date"
+                    error={errorStartSaleDate}
+                    helperText={errorStartSaleDate ? messErrorStart : " "}
                   />
                 </Stack>
                 <Stack style={{ width: "45%" }}>
-                  <InputCustom
+                  <TextField
                     type="date"
                     id="endSaleDate"
                     name="endSaleDate"
                     value={saleDate.endSaleDate}
-                    setValue={(value) =>
-                      handleSaleDateChange("endSaleDate", value)
+                    onChange={(e) =>
+                      handleSaleDateChange("endSaleDate", e.target.value)
                     }
                     label="End Date"
+                    error={errorEndSaleDate}
+                    helperText={errorEndSaleDate ? messErrorEnd : " "}
                   />
                 </Stack>
               </Grid>
@@ -753,7 +858,7 @@ const CreateTicket = () => {
                     }}
                   >
                     <p style={{ display: "flex", alignItems: "center" }}>
-                      {form.dateEvent !== "" ? (
+                      {form.dateEvent !== "" && errorDateEvent === false ? (
                         <OfflinePinIcon
                           sx={{ color: "green", fontSize: "30px" }}
                         />
@@ -770,6 +875,12 @@ const CreateTicket = () => {
                       name="dateEvent"
                       value={form.dateEvent}
                       onChange={(e) => handleDateChange(e, form.date_number)}
+                      error={errorDateEvent}
+                      helperText={
+                        errorDateEvent
+                          ? "Event date must be greater than End Sale"
+                          : " "
+                      }
                     />
                   </Grid>
                 </Grid>

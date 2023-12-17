@@ -78,7 +78,7 @@ function ProfileClient() {
       } else {
         setSelectedFile(null);
         setAvatar("");
-        setFileError("File input have format:(.jpg,.jpeg,.png,.gif,...)");
+        setFileError("File input have format:(.jpg, .jpeg, .png, .gif, ...)");
       }
     }
   };
@@ -114,9 +114,10 @@ function ProfileClient() {
         avatarImage: base64EncodedImage,
       });
       console.log(respone.data);
-       setLocalStorageUserInfo(respone.data);
-      navigate("/");
       toast.success("Update profile success!", toastOptions);
+      setLocalStorageUserInfo(respone.data);
+      navigate("/");
+      
     } catch (err) {
       console.error(err);
       const error = err.response.data.message;
@@ -184,10 +185,12 @@ function ProfileClient() {
       // Sau khi cập nhật, có thể cần cập nhật dữ liệu người dùng với thông tin mới từ phản hồi
       await setLocalStorageUserInfo(response.data);
       console.log(response.data);
+      toast.success("Update profile success!", toastOptions);
       navigate("/");
       // ...
     } catch (err) {
       console.error(err);
+      toast.error(err, toastOptions);
     }
   };
 
@@ -382,7 +385,11 @@ function ProfileClient() {
               backgroundcolor="#F5BD19"
             />
           </Stack>
-          <Stack style={{ width: "50%", margin: "30px" }}>
+          
+        </Grid>
+        <ToastContainer />
+      </FormSubmit>
+      <Stack style={{ width: "50%", margin: "30px" }}>
             <ButtonCustom
               type="button"
               onClick={() => navigate("/change-password")}
@@ -390,10 +397,7 @@ function ProfileClient() {
               content="Change password"
               backgroundcolor="#F5BD19"
             />
-          </Stack>
-        </Grid>
-        <ToastContainer />
-      </FormSubmit>
+      </Stack>
     </>
   );
 }
