@@ -363,9 +363,9 @@ function Row(props) {
                                 {!ViewDetailRow?.isRefund && (
                                   <Checkbox
                                     checked={Boolean(dataRow[index]?.isRefund)}
-                                    defaultChecked={Boolean(
-                                      dataRow[index]?.isRefund
-                                    )}
+                                    // defaultChecked={Boolean(
+                                    //   dataRow[index]?.isRefund
+                                    // )}
                                     onChange={() =>
                                       handleCheckboxChange(ViewDetailRow._id)
                                     }
@@ -418,7 +418,7 @@ function Row(props) {
                       <TableCell component="th" scope="row">
                         <Button
                           variant="outlined"
-                          disabled={chairRefund?.length <= 0}
+                          disabled={chairIds?.length <= 0}
                           onClick={() => {
                             if (chairIds.length > 0) {
                               setConfirmRefund(true);
