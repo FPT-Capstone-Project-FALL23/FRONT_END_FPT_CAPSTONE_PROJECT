@@ -125,8 +125,8 @@ function Row(props) {
       isRefund: !selectAll,
     }));
 
-    setchairRefund(updatedCheckboxes);
-    setDataRow(updatedCheckboxes);
+    setchairRefund(() => updatedCheckboxes);
+    setDataRow(() => updatedCheckboxes);
     setSelectAll(!selectAll);
   };
   const result =
@@ -362,9 +362,10 @@ function Row(props) {
                               <>
                                 {!ViewDetailRow?.isRefund && (
                                   <Checkbox
+                                    checked={Boolean(dataRow[index]?.isRefund)}
                                     defaultChecked={Boolean(
                                       dataRow[index]?.isRefund
-                                    )} // Convert to boolean
+                                    )}
                                     onChange={() =>
                                       handleCheckboxChange(ViewDetailRow._id)
                                     }
