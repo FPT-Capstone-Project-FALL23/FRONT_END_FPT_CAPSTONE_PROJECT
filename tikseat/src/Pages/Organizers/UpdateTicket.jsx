@@ -105,6 +105,12 @@ function UpdateTicket({ event }) {
     fileInputRef.current.click();
   };
 
+  const [errorDateEvent, setErrorDateEvent] = useState(false);
+  const [errorStartSaleDate, setErrorStartSaleDate] = useState(false);
+  const [errorEndSaleDate, setErrorEndSaleDate] = useState(false);
+  const [messErrorStart, setMessErrorStart] = useState("");
+  const [messErrorEnd, setMessErrorEnd] = useState("");
+
   const [maxTicket, setMaxTicket] = useState(
     dataTicket?.maxTicketInOrder || "5"
   );
@@ -126,7 +132,7 @@ function UpdateTicket({ event }) {
   }
 
   const checkTicketConditions = (isActive, dataTicket, today) => {
-    return isActive === true && dataTicket < today;
+    return isActive === true && dataTicket <= today;
   }
 
   const checkUpdateEventDate = checkTicketConditions(isActive, dataTicket?.sales_date?.start_sales_date, today)
@@ -430,7 +436,38 @@ function UpdateTicket({ event }) {
   };
 
   const handleSaleDateChange = (name, value) => {
+    let endDay = new Date(saleDate.endSaleDate);
+  
+    if (name === "startSaleDate" && value < today) {
+      setMessErrorStart("StartDay must be greater than the current ");
+      setErrorStartSaleDate(true);
+      return;
+    } else if (name === "startSaleDate" && value > saleDate.endSaleDate) {
+      setMessErrorStart("StartDay is not greater than the endDate");
+      setSaleDate({ ...saleDate, [name]: value });
+      setErrorStartSaleDate(true);
+      return;
+    } else if (name === "endSaleDate") {
+      const timeDiff = Math.abs(endDay.getTime() - new Date(value).getTime());
+      const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
+      if (dayDiff > 30) {
+        setErrorStartSaleDate(true);
+        setErrorEndSaleDate(true);
+        setSaleDate({ ...saleDate, [name]: value });
+        setMessErrorEnd("Ticket sale time must not exceed 30 days");
+        setMessErrorStart("Ticket sale time must not exceed 30 days");
+        return;
+      }else if (name === "endSaleDate" && value <= saleDate.startSaleDate) {
+        setMessErrorEnd("EndDay must greater than the startDay");
+        setSaleDate({ ...saleDate, [name]: value });
+        setErrorEndSaleDate(true);
+        return;
+      }
+    } 
+  
     setSaleDate({ ...saleDate, [name]: value });
+    setErrorStartSaleDate(false);
+    setErrorEndSaleDate(false);
   };
 
   useEffect(() => {
@@ -709,7 +746,7 @@ function UpdateTicket({ event }) {
           </Grid>
           <Grid style={{ display: "flex", justifyContent: "start" }}>
             <h3>
-              {eventInfo.maxTicketInOrder !== "" ? (
+              {eventInfo.maxTicketInOrder !== "" && errorStartSaleDate === false && errorEndSaleDate === false ? (
                 <OfflinePinIcon
                   sx={{
                     color: "green",
@@ -774,12 +811,12 @@ function UpdateTicket({ event }) {
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    padding: "30px",
+                    padding: "30px 30px 8px 30px",
                     border: "1px solid black",
                   }}
                 >
                   <Stack style={{ width: "45%" }}>
-                    <InputCustom
+                    <TextField
                       InputProps={{
                         readOnly: checkUpdateEventDate,
                       }}
@@ -787,14 +824,16 @@ function UpdateTicket({ event }) {
                       id="startSaleDate"
                       name="startSaleDate"
                       value={saleDate.startSaleDate}
-                      setValue={(value) =>
-                        handleSaleDateChange("startSaleDate", value)
+                      onChange={(e) =>
+                        handleSaleDateChange("startSaleDate", e.target.value)
                       }
                       label="Start Date"
+                      error={errorStartSaleDate}
+                      helperText={errorStartSaleDate ? messErrorStart : " "}
                     />
                   </Stack>
                   <Stack style={{ width: "45%" }}>
-                    <InputCustom
+                    <TextField
                       InputProps={{
                         readOnly: checkUpdateEventDate,
                       }}
@@ -802,10 +841,12 @@ function UpdateTicket({ event }) {
                       id="endSaleDate"
                       name="endSaleDate"
                       value={saleDate.endSaleDate}
-                      setValue={(value) =>
-                        handleSaleDateChange("endSaleDate", value)
+                      onChange={(e) =>
+                        handleSaleDateChange("endSaleDate", e.target.value)
                       }
                       label="End Date"
+                      error={errorEndSaleDate}
+                      helperText={errorEndSaleDate ? messErrorEnd : " "}
                     />
                   </Stack>
                 
@@ -843,7 +884,7 @@ function UpdateTicket({ event }) {
                     }}
                   >
                     <p style={{ display: "flex", alignItems: "center" }}>
-                      {form.dateEvent !== "" ? (
+                      {form.dateEvent !== "" && errorDateEvent === false ? (
                         <OfflinePinIcon
                           sx={{ color: "green", fontSize: "30px" }}
                         />
@@ -860,6 +901,12 @@ function UpdateTicket({ event }) {
                       name="dateEvent"
                       value={form.dateEvent}
                       onChange={(e) => handleDateChange(e, form.date_number)}
+                      error={errorDateEvent}
+                      helperText={
+                        errorDateEvent
+                          ? "Event date must be greater than End Sale"
+                          : " "
+                      }
                     />
                   </Grid>
                 </Grid>
@@ -892,8 +939,9 @@ function UpdateTicket({ event }) {
                             }}
                           />
                         )}
-                        Ticket Information
+                        Ticket Information 
                       </h3>
+                      {checkUpdateEventDate && (<p style={{color:"red"}}>(You cannot edit tickets once the event has taken place)</p>)}
                     </Grid>
                     <Grid className="headerFormTicket" fullWidth>
                       <TextField
@@ -914,6 +962,9 @@ function UpdateTicket({ event }) {
                             formTicket.id_areas
                           )
                         }
+                        InputProps={{
+                          readOnly: checkUpdateEventDate,
+                        }}
                       />
                       <Button
                         style={{
@@ -962,6 +1013,9 @@ function UpdateTicket({ event }) {
                                   formTicket.id_areas
                                 )
                               }
+                              InputProps={{
+                                readOnly: checkUpdateEventDate,
+                              }}
                             />
                           </Grid>
                         </Grid>
@@ -999,6 +1053,9 @@ function UpdateTicket({ event }) {
                                     formTicket.id_areas
                                   )
                                 }
+                                InputProps={{
+                                  readOnly: checkUpdateEventDate,
+                                }}
                               />
                             </Grid>
                           </Grid>
@@ -1050,6 +1107,9 @@ function UpdateTicket({ event }) {
                                     index
                                   )
                                 }
+                                InputProps={{
+                                  readOnly: checkUpdateEventDate,
+                                }}
                               />
                             </Grid>
                           ))}
