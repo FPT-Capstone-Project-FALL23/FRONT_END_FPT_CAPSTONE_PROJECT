@@ -84,6 +84,7 @@ function UpdateTicket({ event }) {
   const today = new Date().toISOString().slice(0, 10);
   const [typeLayout, setTypeLayout] = useState(dataTicket?.type_layout || null);
   const [allDateEvents, setAllDateEvents] = useState([]);
+  const [errorInputPrice, setErrorInputPrice] = useState(false);
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -494,21 +495,28 @@ function UpdateTicket({ event }) {
   }, [maxTicket]);
 
   const handleDateChange = (event, formId) => {
-    setEventDate((prevEventDate) => {
-      const updatedEventDates = prevEventDate.map((form) => {
-        if (form.date_number === formId) {
-          const newDate = event instanceof Date ? event : event.target.value;
-          console.log(newDate);
-          return { ...form, dateEvent: newDate };
-        } else {
-          return form;
-        }
+    let dateEvent = new Date(event.target.value);
+    let formatDateEvent = dateEvent.toISOString().split("T")[0];
+    const endSale = saleDate.endSaleDate;
+    if (formatDateEvent <= endSale) {
+      setErrorDateEvent(true);
+    } else {
+      setEventDate((prevEventDate) => {
+        const updatedEventDates = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const newDate = event instanceof Date ? event : event.target.value;
+            return { ...form, dateEvent: newDate };
+          } else {
+            return form;
+          }
+        });
+
+        updateDetailTicket(updatedEventDates);
+
+        return updatedEventDates;
       });
-
-      updateDetailTicket(updatedEventDates);
-
-      return updatedEventDates;
-    });
+      setErrorDateEvent(false);
+    }
   };
 
   const updateDetailTicket = (update) => {
@@ -557,26 +565,53 @@ function UpdateTicket({ event }) {
   };
 
   const handlePriceTicketChange = (event, formId, ticketId) => {
-    setEventDate((prevEventDate) => {
-      const updatedEventTicket = prevEventDate.map((form) => {
-        if (form.date_number === formId) {
-          const updatedTickets = form.tickets.map((ticket) => {
-            if (ticket.id_ticket === ticketId) {
-              return { ...ticket, ticket_price: event.target.value };
-            } else {
-              return ticket;
-            }
-          });
-
-          return { ...form, tickets: updatedTickets };
-        } else {
-          return form;
-        }
+    const inputValue = formatString(event.target.value);
+    const newPrice = parseFloat(inputValue);
+    if (newPrice > 1000) {
+      setErrorInputPrice(false)
+      setEventDate((prevEventDate) => {
+        const updatedEventTicket = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const updatedTickets = form.tickets.map((ticket) => {
+              if (ticket.id_ticket === ticketId) {
+                return { ...ticket, ticket_price: event.target.value };
+              } else {
+                return ticket;
+              }
+            });
+  
+            return { ...form, tickets: updatedTickets };
+          } else {
+            return form;
+          }
+        });
+  
+        updateDetailTicket(updatedEventTicket);
+        return updatedEventTicket;
       });
-
-      updateDetailTicket(updatedEventTicket);
-      return updatedEventTicket;
-    });
+    } else {
+      setEventDate((prevEventDate) => {
+        const updatedEventTicket = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const updatedTickets = form.tickets.map((ticket) => {
+              if (ticket.id_ticket === ticketId) {
+                return { ...ticket, ticket_price: event.target.value };
+              } else {
+                return ticket;
+              }
+            });
+  
+            return { ...form, tickets: updatedTickets };
+          } else {
+            return form;
+          }
+        });
+  
+        updateDetailTicket(updatedEventTicket);
+        return updatedEventTicket;
+      });
+      setErrorInputPrice(true)
+    }
   };
 
   const handleTotalRowChange = (e, formId, ticketId) => {
@@ -1017,6 +1052,7 @@ function UpdateTicket({ event }) {
                                 readOnly: checkUpdateEventDate,
                               }}
                             />
+                            {errorInputPrice && (<p style={{color:"red", fontSize:"13px"}}>Price cannot be less than 1000</p>)}
                           </Grid>
                         </Grid>
 

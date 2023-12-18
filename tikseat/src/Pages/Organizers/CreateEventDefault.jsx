@@ -20,7 +20,7 @@ function CreateEventDefault() {
 
   return (
     <Grid sx={{ backgroundColor: "#ffffff" }}>
-      <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "85vh" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", maxHeight: "89vh" }}>
         <Grid sx={{ width: "100%", backgroundColor: "#ccc", padding: "10px" }}>
           <Typography variant="h4" noWrap component="div">
             New Event
