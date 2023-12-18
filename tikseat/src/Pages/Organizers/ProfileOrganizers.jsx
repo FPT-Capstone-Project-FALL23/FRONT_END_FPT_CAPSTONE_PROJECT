@@ -317,7 +317,7 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid style={{ backgroundColor: "#ffffff", borderRadius: "10px" }}>
+      <Grid style={{ backgroundColor: "#ffffff", borderRadius: "10px", height:"89vh", }}>
         <Grid
           style={{
             display: "flex",
@@ -535,48 +535,6 @@ function ProfileOrganizers() {
                   label="Account number"
                 />
               </Stack>
-              <Stack>
-                <FormControl fullWidth style={{ marginBottom: "20px" }}>
-                  <InputLabel id="demo-multiple-chip-label">
-                    Event Type
-                  </InputLabel>
-                  <Select
-                    labelId="demo-multiple-chip-label"
-                    multiple
-                    id="organizer_type"
-                    name="organizer_type"
-                    value={organizerInfo.organizer_type}
-                    onChange={(e) =>
-                      setOrganizerInfo({
-                        ...organizerInfo,
-                        organizer_type: e.target.value,
-                      })
-                    }
-                    input={
-                      <OutlinedInput
-                        id="select-multiple-chip"
-                        label="Event Type"
-                      />
-                    }
-                    renderValue={(selected) => (
-                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                        {selected?.map((value) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
-                    MenuProps={MENUPROPS}>
-                    {DATA_EVENT_TYPE.map((name) => (
-                      <MenuItem
-                        key={name}
-                        value={name}
-                        style={getStyles(name, eventType, theme)}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Stack>
             </Grid>
 
             <Grid
@@ -617,6 +575,9 @@ function ProfileOrganizers() {
                 />
               </Grid>
               <Stack>
+                <InputLabel id="demo-multiple-chip-label">
+                    Detail information
+                </InputLabel>
                 <TextareaAutosize
                   style={{ width: "100%" }}
                   minRows={6}
@@ -628,6 +589,48 @@ function ProfileOrganizers() {
                     handleInputChange("description", e.target.value)
                   }
                 />
+              </Stack>
+              <Stack sx={{marginTop:"30px"}}>
+                <FormControl fullWidth style={{ marginBottom: "20px" }}>
+                  <InputLabel id="demo-multiple-chip-label">
+                    Event Type
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-chip-label"
+                    multiple
+                    id="organizer_type"
+                    name="organizer_type"
+                    value={organizerInfo.organizer_type}
+                    onChange={(e) =>
+                      setOrganizerInfo({
+                        ...organizerInfo,
+                        organizer_type: e.target.value,
+                      })
+                    }
+                    input={
+                      <OutlinedInput
+                        id="select-multiple-chip"
+                        label="Event Type"
+                      />
+                    }
+                    renderValue={(selected) => (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {selected?.map((value) => (
+                          <Chip key={value} label={value} />
+                        ))}
+                      </Box>
+                    )}
+                    MenuProps={MENUPROPS}>
+                    {DATA_EVENT_TYPE.map((name) => (
+                      <MenuItem
+                        key={name}
+                        value={name}
+                        style={getStyles(name, eventType, theme)}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Stack>
             </Grid>
           </Grid>
