@@ -83,6 +83,8 @@ const CreateTicket = () => {
   const [errorEndSaleDate, setErrorEndSaleDate] = useState(false);
   const [messErrorStart, setMessErrorStart] = useState("");
   const [messErrorEnd, setMessErrorEnd] = useState("");
+  const [errorInputPrice, setErrorInputPrice] = useState(false);
+  const [errorInputTotalRow, setErrorInputTotalRow] = useState(false);
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -202,11 +204,9 @@ const CreateTicket = () => {
         return nextDay;
       };
       const tomorrow = nextDay();
-      console.log(tomorrow.toISOString().split("T")[0]);
       const nextDayyyy = tomorrow.toISOString().split("T")[0];
       const finalStartSaleDate =
         dataTicketInfo?.sales_date?.end_sales_date || nextDayyyy;
-      console.log(finalStartSaleDate);
       return finalStartSaleDate;
     })(),
   });
@@ -445,7 +445,7 @@ const CreateTicket = () => {
   };
   
 
-  console.log(eventInfoData);
+
 
   useEffect(() => {
     const updatedEventInfo = {
@@ -520,6 +520,11 @@ const CreateTicket = () => {
 
   //Value Price Ticket
   const handlePriceTicketChange = (event, formId, ticketId) => {
+    const inputValue = formatString(event.target.value);
+    const newPrice = parseFloat(inputValue);
+
+  if (newPrice > 1000) {
+    setErrorInputPrice(false)
     setEventDate((prevEventDate) => {
       const updatedEventTicket = prevEventDate.map((form) => {
         if (form.date_number === formId) {
@@ -540,25 +545,13 @@ const CreateTicket = () => {
       updateDetailTicket(updatedEventTicket);
       return updatedEventTicket;
     });
-  };
-
-  //Value Total Row
-  const handleTotalRowChange = (event, formId, ticketId) => {
+  } else {
     setEventDate((prevEventDate) => {
-      const updatedEventRows = prevEventDate.map((form) => {
+      const updatedEventTicket = prevEventDate.map((form) => {
         if (form.date_number === formId) {
           const updatedTickets = form.tickets.map((ticket) => {
             if (ticket.id === ticketId) {
-              const rowChange = event.target.value;
-              const totalRow = parseInt(rowChange, 10); // Chuyển TotalRow thành số nguyên
-              const updatedRows = [];
-              for (let i = 0; i < totalRow; i++) {
-                updatedRows.push({
-                  row_name: alphabet[i],
-                  total_seat: "",
-                });
-              }
-              return { ...ticket, total_row: rowChange, rows: updatedRows };
+              return { ...ticket, ticket_price: event.target.value };
             } else {
               return ticket;
             }
@@ -569,10 +562,82 @@ const CreateTicket = () => {
           return form;
         }
       });
-      updateDetailTicket(updatedEventRows);
 
-      return updatedEventRows;
+      updateDetailTicket(updatedEventTicket);
+      return updatedEventTicket;
     });
+    setErrorInputPrice(true)
+  }
+  };
+
+  //Value Total Row
+  const handleTotalRowChange = (event, formId, ticketId) => {
+    const inputTotalRow = parseFloat(event.target.value);
+
+    if (inputTotalRow <= 0 || inputTotalRow > 20) {
+      setErrorInputTotalRow(true)
+      setEventDate((prevEventDate) => {
+        const updatedEventRows = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const updatedTickets = form.tickets.map((ticket) => {
+              if (ticket.id === ticketId) {
+                const rowChange = "20";
+                const totalRow = parseInt(rowChange, 10); // Chuyển TotalRow thành số nguyên
+                const updatedRows = [];
+                for (let i = 0; i < totalRow; i++) {
+                  updatedRows.push({
+                    row_name: alphabet[i],
+                    total_seat: "",
+                  });
+                }
+                return { ...ticket, total_row: rowChange, rows: updatedRows };
+              } else {
+                return ticket;
+              }
+            });
+  
+            return { ...form, tickets: updatedTickets };
+          } else {
+            return form;
+          }
+        });
+        updateDetailTicket(updatedEventRows);
+  
+        return updatedEventRows;
+      });
+    } else {
+      setEventDate((prevEventDate) => {
+        setErrorInputTotalRow(false)
+        const updatedEventRows = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const updatedTickets = form.tickets.map((ticket) => {
+              if (ticket.id === ticketId) {
+                const rowChange = event.target.value;
+                const totalRow = parseInt(rowChange, 10); // Chuyển TotalRow thành số nguyên
+                const updatedRows = [];
+                for (let i = 0; i < totalRow; i++) {
+                  updatedRows.push({
+                    row_name: alphabet[i],
+                    total_seat: "",
+                  });
+                }
+                return { ...ticket, total_row: rowChange, rows: updatedRows };
+              } else {
+                return ticket;
+              }
+            });
+  
+            return { ...form, tickets: updatedTickets };
+          } else {
+            return form;
+          }
+        });
+        updateDetailTicket(updatedEventRows);
+  
+        return updatedEventRows;
+      });
+    }
+    
   };
 
   const handleSeatChange = (event, formId, ticketId, rowIndex) => {
@@ -976,7 +1041,9 @@ const CreateTicket = () => {
                                 formTicket.id
                               )
                             }
+                            error={errorInputPrice}
                           />
+                          {errorInputPrice && (<p style={{color:"red", fontSize:"13px"}}>Price cannot be less than 1000</p>)}
                         </Grid>
                         <Grid
                           className="boxTicket"
@@ -1011,6 +1078,7 @@ const CreateTicket = () => {
                                 )
                               }
                             />
+                            {errorInputTotalRow && (<p style={{color:"red", fontSize:"13px"}}>Row greater than 0 and less than or equal to 20</p>)}
                           </Grid>
                         </Grid>
                       </Grid>
