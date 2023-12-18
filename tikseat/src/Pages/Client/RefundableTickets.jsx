@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
@@ -20,20 +21,45 @@ import { getLocalStorageUserInfo } from "../../Store/userStore";
 const RefundableTickets = () => {
   const dataInfo = getLocalStorageUserInfo();
   const [dataMyTicket, setDataMyTicket] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const getPaginatedData = () => {
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return dataMyTicket?.slice(startIndex, endIndex);
+  };
   useEffect(() => {
     async function getDataOrderByClient() {
       const response = await ApiClient.getOrdersRefundTicket({
         _idClient: dataInfo?._id,
       });
-      setDataMyTicket(response?.data);
+      const uniqueEvents = await response?.data?.filter(
+        (event, index, self) =>
+          index ===
+          self.findIndex(
+            (e) =>
+              e.event_name === event.event_name &&
+              e.chair_name.join() === event.chair_name.join()
+          )
+      );
+      setDataMyTicket(() => uniqueEvents);
     }
 
     getDataOrderByClient();
   }, [dataInfo._id]);
 
   const mappingDataMyTicket =
-    dataMyTicket?.length > 0 &&
-    dataMyTicket.map((item) => {
+    getPaginatedData()?.length > 0 &&
+    getPaginatedData().map((item) => {
       return {
         eventId: item.event_id,
         eventName: item?.event_name,
@@ -76,7 +102,8 @@ const RefundableTickets = () => {
                 size="large"
                 onClick={() => {
                   setOpen(!open);
-                }}>
+                }}
+              >
                 {open ? "collapse" : "Show more"}
               </Button>{" "}
             </Stack>
@@ -118,7 +145,8 @@ const RefundableTickets = () => {
                             </TableCell>
                             <TableCell
                               align="left"
-                              style={{ cursor: "pointer" }}>
+                              style={{ cursor: "pointer" }}
+                            >
                               <Chip
                                 label={
                                   ViewDetailRow.refunded
@@ -140,24 +168,37 @@ const RefundableTickets = () => {
     );
   }
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Event Name</TableCell>
-            <TableCell align="left">Event Date</TableCell>
-            <TableCell align="left">City</TableCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {mappingDataMyTicket?.length > 0 &&
-            mappingDataMyTicket.map((row, index) => (
-              <Row key={index} row={row} />
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <Paper style={{ marginTop: "20px", width: "80%", overflow: "hidden" }}>
+        <TableContainer>
+          <Table aria-label="collapsible table">
+            <TableHead style={{ background: "#e3e3e3" }}>
+              <TableRow>
+                <TableCell>Event Name</TableCell>
+                <TableCell align="left">Event Date</TableCell>
+                <TableCell align="left">City</TableCell>
+                <TableCell />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {mappingDataMyTicket?.length > 0 &&
+                mappingDataMyTicket.map((row, index) => (
+                  <Row key={index} row={row} />
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 15]}
+          component="div"
+          count={dataMyTicket.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 };
 

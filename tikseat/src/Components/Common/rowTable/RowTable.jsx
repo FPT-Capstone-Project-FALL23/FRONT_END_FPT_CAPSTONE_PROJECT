@@ -31,8 +31,8 @@ const style = {
 };
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 function Row(props) {
-  const { row, onRefetch } = props;
-  const { checkRefund, setCheckRefund } = useOpenStore();
+  const { row } = props;
+  const { setCheckRefund, checkRefund: checkRefunds } = useOpenStore();
   const dataInfo = getLocalStorageUserInfo();
   const eventDate = new Date(row.eventDate);
   const currentDate = new Date();
@@ -46,11 +46,16 @@ function Row(props) {
         const res = await ApiClient.getMyTicket({
           _idOrderDetail: row._idOrderDetail,
         });
-        setDataMyTicket(res.data[0].Orders[0].tickets);
+        const filterIsRefund = await res.data[0].Orders[0].tickets?.filter(
+          (item) => {
+            return !item.isRefund;
+          }
+        );
+        setDataMyTicket(filterIsRefund);
       }
       getMyTicket();
     }
-  }, [row._idOrderDetail, open]);
+  }, [row._idOrderDetail, open, checkRefunds]);
   const [selectAll, setSelectAll] = useState(false);
   useEffect(() => {
     const checkRefund =
@@ -93,41 +98,47 @@ function Row(props) {
     try {
       const response = await ApiClient.rating(request);
       if (response) {
-        toast.success("Đánh giá thành công!");
+        toast.success("Rating success!");
         setRatingSent(true);
         setApiRating(rating); // Cập nhật số sao từ API
       }
     } catch (error) {
-      console.error("Lỗi khi gửi xếp hạng:", error);
+      console.error("Error submitting rating:", error);
     }
   };
 
   const handleCheckboxChange = (id) => {
-    const updatedCheckboxes = (dataRow || []).map((checkbox) =>
-      checkbox._id === id
-        ? { ...checkbox, isRefund: !checkbox.isRefund }
-        : checkbox
-    );
+    setDataRow((prevData) => {
+      const updatedCheckboxes = prevData.map((checkbox) =>
+        checkbox._id === id
+          ? { ...checkbox, isRefund: !checkbox.isRefund }
+          : checkbox
+      );
 
-    const filterChair = updatedCheckboxes.filter((item) => item.isRefund);
-    setchairRefund(filterChair);
-    setDataRow(updatedCheckboxes);
+      const filterChair = updatedCheckboxes.filter((item) => item.isRefund);
+      setchairRefund(filterChair);
 
-    const selectAllTickets = updatedCheckboxes.every(
-      (checkbox) => checkbox.isRefund
-    );
-    setSelectAll(selectAllTickets);
+      const selectAllTickets = updatedCheckboxes.every(
+        (checkbox) => checkbox.isRefund
+      );
+      setSelectAll(selectAllTickets);
+
+      return updatedCheckboxes;
+    });
   };
 
   const handleSelectAllChange = () => {
-    const updatedCheckboxes = (dataRow || []).map((checkbox) => ({
-      ...checkbox,
-      isRefund: !selectAll,
-    }));
+    setDataRow((prevData) => {
+      const updatedCheckboxes = prevData.map((checkbox) => ({
+        ...checkbox,
+        isRefund: !selectAll,
+      }));
 
-    setchairRefund(() => updatedCheckboxes);
-    setDataRow(() => updatedCheckboxes);
-    setSelectAll(!selectAll);
+      setchairRefund(updatedCheckboxes);
+      setSelectAll(!selectAll);
+
+      return updatedCheckboxes;
+    });
   };
   const result =
     chairRefund?.length > 0 &&
@@ -150,19 +161,23 @@ function Row(props) {
 
   const moneyRefund = (result / 100) * 70;
   const handleConfirmRefund = async () => {
-    const dataRef = {
-      _idOrderDetail: row._idOrderDetail,
-      money_refund: moneyRefund,
-      zp_trans_id: row?.zp_trans_id,
-      chairIds: chairIds,
-    };
-    const responseRefund = await ApiClient.createRefund(dataRef);
-    console.log("responseRefund: ", responseRefund);
-    if (responseRefund.status) {
-      onRefetch();
-      await setCheckRefund(() => true);
-      await onRefetch();
-      toast.success("Ticket refund requested");
+    try {
+      const dataRef = {
+        _idOrderDetail: row._idOrderDetail,
+        money_refund: moneyRefund,
+        zp_trans_id: row?.zp_trans_id,
+        chairIds: chairIds,
+      };
+      console.log("dataRef: ", dataRef);
+      const responseRefund = await ApiClient.createRefund(dataRef);
+      console.log("responseRefund: ", responseRefund);
+      if (responseRefund.status) {
+        await setCheckRefund(() => true);
+        setOpen(false);
+        toast.success("Ticket refund requested");
+      }
+    } catch (error) {
+      console.log("error create refund: ", error);
     }
   };
   const mappingSeat =
@@ -243,7 +258,7 @@ function Row(props) {
                   }}
                 >
                   <Typography variant="h6">
-                    Đánh giá sự kiện: {row.eventName}
+                    Event review: {row.eventName}
                   </Typography>
 
                   {ratingSent ? (
@@ -263,7 +278,7 @@ function Row(props) {
                         style={{ alignSelf: "flex-end" }}
                         onClick={handleSendRating}
                       >
-                        Gửi đánh giá
+                        Send review
                       </Button>
                     </>
                   )}
@@ -363,9 +378,9 @@ function Row(props) {
                                 {!ViewDetailRow?.isRefund && (
                                   <Checkbox
                                     checked={Boolean(dataRow[index]?.isRefund)}
-                                    // defaultChecked={Boolean(
-                                    //   dataRow[index]?.isRefund
-                                    // )}
+                                    defaultChecked={Boolean(
+                                      dataRow[index]?.isRefund
+                                    )}
                                     onChange={() =>
                                       handleCheckboxChange(ViewDetailRow._id)
                                     }
@@ -418,7 +433,7 @@ function Row(props) {
                       <TableCell component="th" scope="row">
                         <Button
                           variant="outlined"
-                          disabled={chairIds?.length <= 0}
+                          disabled={moneyRefund <= 0}
                           onClick={() => {
                             if (chairIds.length > 0) {
                               setConfirmRefund(true);

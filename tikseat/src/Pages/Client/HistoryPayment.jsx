@@ -12,6 +12,7 @@ import {
   TableRow,
   Typography,
   tableCellClasses,
+  TablePagination,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
@@ -55,12 +56,24 @@ const HistoryPayment = () => {
   const dataInfo = getLocalStorageUserInfo();
   const [dataOrderByClient, setDataOrderByClient] = useState([]);
   const [idOrder, setIdOrder] = useState(null);
-  const [dataOrderDetail, setDataOrderDetail] = useState([]);
-  console.log("dataOrderByClient: ", dataOrderByClient);
   const [open, setOpen] = React.useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const getPaginatedData = () => {
+    const startIndex = page * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return dataOrderByClient?.slice(startIndex, endIndex);
+  };
   useEffect(() => {
     async function getDataOrderByClient() {
       const response = await ApiClient.orderByClient({
@@ -79,117 +92,133 @@ const HistoryPayment = () => {
           <Typography variant="h2" textAlign={"center"}>
             Transaction history
           </Typography>
-          <TableContainer component={Paper} style={{ marginTop: "50px" }}>
-            <Table
-              sx={{ minWidth: 1050 }}
-              size="medium"
-              aria-label="a dense table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell size="medium" align="center" colSpan={4}>
-                    Transaction list
-                  </StyledTableCell>
-                </TableRow>
-                <TableRow>
-                  <StyledTableCell align="left">Event Name</StyledTableCell>
+          <Paper style={{ overflow: "hidden" }}>
+            <TableContainer style={{ marginTop: "50px" }}>
+              <Table
+                sx={{ minWidth: 1050 }}
+                size="medium"
+                aria-label="a dense table"
+              >
+                <TableHead style={{ background: "#e3e3e3" }}>
+                  <TableRow>
+                    <StyledTableCell size="medium" align="center" colSpan={4}>
+                      Transaction list
+                    </StyledTableCell>
+                  </TableRow>
+                  <TableRow>
+                    <StyledTableCell align="left">Event Name</StyledTableCell>
 
-                  <StyledTableCell align="left">
-                    Transaction date
-                  </StyledTableCell>
+                    <StyledTableCell align="left">
+                      Transaction date
+                    </StyledTableCell>
 
-                  <StyledTableCell align="left">Price</StyledTableCell>
+                    <StyledTableCell align="left">Price</StyledTableCell>
 
-                  <StyledTableCell align="left">Action</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {dataOrderByClient?.length > 0 &&
-                  dataOrderByClient.map((row) => (
-                    <StyledTableRow key={row._id}>
-                      <TableCell component="th" scope="row">
-                        {row.event_name}
-                      </TableCell>
-                      <TableCell align="left">{row.transaction}</TableCell>
-                      <TableCell align="left">{row.totalAmount}</TableCell>
-                      <TableCell align="left">
-                        <Button
-                          onClick={() => {
-                            handleOpen();
-                            setIdOrder(row);
-                          }}
-                          size="large"
-                          variant="contained">
-                          Detail
-                        </Button>
-                        <Modal open={open} onClose={handleClose}>
-                          <Box sx={style}>
-                            <TableContainer component={Paper}>
-                              <Table size="medium" aria-label="a dense table">
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell
-                                      style={{
-                                        fontSize: "16px",
-                                        fontWeight: "bold",
-                                      }}
-                                      size="medium"
-                                      align="center"
-                                      colSpan={2}>
-                                      View detail history payment
-                                    </TableCell>
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  <TableRow>
-                                    <TableCell>Event name</TableCell>
-                                    <TableCell>{idOrder?.event_name}</TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                    <TableCell>Event date</TableCell>
+                    <StyledTableCell align="left">Action</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {getPaginatedData()?.length > 0 &&
+                    getPaginatedData().map((row) => (
+                      <StyledTableRow key={row._id}>
+                        <TableCell component="th" scope="row">
+                          {row.event_name}
+                        </TableCell>
+                        <TableCell align="left">{row.transaction}</TableCell>
+                        <TableCell align="left">{row.totalAmount}</TableCell>
+                        <TableCell align="left">
+                          <Button
+                            onClick={() => {
+                              handleOpen();
+                              setIdOrder(row);
+                            }}
+                            size="large"
+                            variant="contained"
+                          >
+                            Detail
+                          </Button>
+                          <Modal open={open} onClose={handleClose}>
+                            <Box sx={style}>
+                              <TableContainer component={Paper}>
+                                <Table size="medium" aria-label="a dense table">
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell
+                                        style={{
+                                          fontSize: "16px",
+                                          fontWeight: "bold",
+                                        }}
+                                        size="medium"
+                                        align="center"
+                                        colSpan={2}
+                                      >
+                                        View detail history payment
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    <TableRow>
+                                      <TableCell>Event name</TableCell>
+                                      <TableCell>
+                                        {idOrder?.event_name}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableCell>Event date</TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          idOrder?.event_date
+                                        ).toLocaleString()}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableCell>Class ticket</TableCell>
+                                      <TableCell>
+                                        {idOrder?.classTicket}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableCell>Chair name</TableCell>
                                     <TableCell>
-                                      {new Date(
-                                        idOrder?.event_date
-                                      ).toLocaleString()}
+                                      {String(idOrder?.chair_name)}
                                     </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                    <TableCell>Class ticket</TableCell>
-                                    <TableCell>
-                                      {idOrder?.classTicket}
-                                    </TableCell>
-                                  </TableRow>
-                                  <TableCell>Chair name</TableCell>
-                                  <TableCell>
-                                    {String(idOrder?.chair_name)}
-                                  </TableCell>
-                                  <TableRow>
-                                    <TableCell>Total price</TableCell>
-                                    <TableCell>
-                                      {new Intl.NumberFormat("en-VN", {
-                                        style: "currency",
-                                        currency: "VND",
-                                      }).format(idOrder?.totalAmount)}
-                                    </TableCell>
-                                  </TableRow>
-                                  <TableRow>
-                                    <TableCell>Transaction date</TableCell>
-                                    <TableCell>
-                                      {new Date(
-                                        idOrder?.transaction
-                                      ).toLocaleString()}
-                                    </TableCell>
-                                  </TableRow>
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </Box>
-                        </Modal>
-                      </TableCell>
-                    </StyledTableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                                    <TableRow>
+                                      <TableCell>Total price</TableCell>
+                                      <TableCell>
+                                        {new Intl.NumberFormat("en-VN", {
+                                          style: "currency",
+                                          currency: "VND",
+                                        }).format(idOrder?.totalAmount)}
+                                      </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                      <TableCell>Transaction date</TableCell>
+                                      <TableCell>
+                                        {new Date(
+                                          idOrder?.transaction
+                                        ).toLocaleString()}
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </Box>
+                          </Modal>
+                        </TableCell>
+                      </StyledTableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 15]}
+              component="div"
+              count={dataOrderByClient.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
         </Stack>
       </Box>
     </div>
