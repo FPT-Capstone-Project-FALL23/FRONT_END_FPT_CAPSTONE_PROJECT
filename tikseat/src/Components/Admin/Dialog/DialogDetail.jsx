@@ -12,6 +12,8 @@ import Chip from "@mui/material/Chip";
 import { Avatar, Typography } from "@mui/material";
 import DialogListContent from "./DialogListContent";
 import DialogConfirm from "./DialogConfirm";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -69,6 +71,8 @@ const DialogComponent = ({
   dialogContent,
   selectedDataEvent,
   isOrder,
+  isAccept,
+  onNoAccept,
 }) => {
   const [dialogWidth, setDialogWidth] = useState("600px");
   const [dialogHeight, setDialogHeight] = useState("400px");
@@ -151,6 +155,8 @@ const DialogComponent = ({
               event={selectedUser}
               dialogTitle={dialogTitle}
               dialogContent={dialogContent}
+              isAccept={isAccept}
+              onNoAccept={onNoAccept}
             />
           </BootstrapDialog>
         </>

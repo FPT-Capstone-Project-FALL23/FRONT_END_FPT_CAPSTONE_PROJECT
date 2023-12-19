@@ -27,6 +27,8 @@ export default function DialogConfirm({
   event,
   dialogTitle,
   dialogContent,
+  isAccept,
+  onNoAccept,
 }) {
   const [expandedArea, setExpandedArea] = useState(null);
   const [isHot, setIsHot] = useState(event?.isHot);
@@ -155,11 +157,18 @@ export default function DialogConfirm({
         />
       )}
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color="primary" onClick={onClose}>
+          Cancel
+        </Button>
+        {isAccept && (
+          <Button color="error" onClick={onNoAccept}>
+            Don't accept
+          </Button>
+        )}
         <Button
           onClick={isConfirmEvent ? () => onConfirm(isHot) : onConfirm}
           autoFocus>
-          Accept
+          {isAccept ? "Accept" : "Block"}
         </Button>
       </DialogActions>
     </>

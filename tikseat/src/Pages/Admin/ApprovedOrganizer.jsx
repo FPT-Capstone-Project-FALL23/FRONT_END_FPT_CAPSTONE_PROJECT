@@ -10,6 +10,9 @@ import {
   TITLE_CONFIRM_APPROVAL_ORGANIZATIONS,
 } from "../../Assets/Constant/Admin/constAdmin";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
 
 function ApprovedOrganizer() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
@@ -41,9 +44,9 @@ function ApprovedOrganizer() {
 
   const handleClickComfirn = async () => {
     try {
-      console.log("selected_id", selected_id);
       const respones = await ApiAdmin.setAcceptOrganizer(selected_id);
       if (respones) {
+        toast.success("You have accepted this organization", toastBockTick);
         setOpenComfirn(false);
         getAllOrganizerIsFalse();
       }
@@ -63,6 +66,19 @@ function ApprovedOrganizer() {
         setPage(newPage);
         setDataTableOrganizer(respones.data.formattedOrganizers);
         setOrganizersCount(respones.data.organizersCount);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClickDontAccept = async () => {
+    try {
+      const reponse = await ApiAdmin.rejectedOrganizer(selected_id);
+      if (reponse) {
+        toast.success("You have not accepted this organization", toastBockTick);
+        setOpenComfirn(false);
+        getAllOrganizerIsFalse();
       }
     } catch (error) {
       console.log(error);
@@ -121,7 +137,10 @@ function ApprovedOrganizer() {
             count={organizersCount}
             page={page}
             handleChangePage={handleChangePage}
+            isAccept={true}
+            onNoAccept={handleClickDontAccept}
           />
+          <ToastContainer />
         </Box>
       </Box>
     </>

@@ -28,7 +28,7 @@ const ListEvents = ({ idEvent }) => {
   return (
     <Grid item xs={12}>
       <Typography component={"div"} variant="h3">
-        Events
+        Other events
       </Typography>
       <Carousel
         arrows
@@ -56,11 +56,9 @@ const ListEvents = ({ idEvent }) => {
         autoPlay={true}
         swipeable={true}
         draggable={true}
-        partialVisible={false}
-      >
+        partialVisible={false}>
         {dataEvents?.length > 0 &&
           dataEvents.map((event) => {
-            console.log("event: ", event);
             return (
               <Card
                 onClick={() => {
@@ -72,8 +70,7 @@ const ListEvents = ({ idEvent }) => {
                   gap: "10px",
                   flexDirection: "column",
                   margin: "10px",
-                }}
-              >
+                }}>
                 <CardMedia
                   component="img"
                   sx={{
@@ -96,8 +93,7 @@ const ListEvents = ({ idEvent }) => {
                         marginBottom: "20px",
                         display: "flex",
                         gap: "5px",
-                      }}
-                    >
+                      }}>
                       {event?.type_of_event?.map((item, index) => (
                         <Chip label={item} key={index} />
                       ))}
@@ -108,9 +104,8 @@ const ListEvents = ({ idEvent }) => {
                     <Typography
                       variant="subtitle1"
                       color="gray"
-                      component="div"
-                    >
-                      {event.type_of_event}
+                      component="div">
+                      {event.event_location.city}
                     </Typography>
                   </CardContent>
                 </Stack>

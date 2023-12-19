@@ -289,8 +289,10 @@ function ProfileOrganizers() {
         organizerInfo: organizerInfo,
         avatarImage: base64EncodedImage,
       });
-      setLocalStorageUserInfo(respone.data);
-      navigate("/dashboard");
+      // setLocalStorageUserInfo(respone.data);
+      if (respone.data) {
+        navigate("/succes");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -308,7 +310,7 @@ function ProfileOrganizers() {
         avatarImage: base64EncodedImage,
       });
       setLocalStorageUserInfo(response.data);
-      navigate("/dashboard");
+      // navigate("/dashboard");
       toast.success("Update profile success!", toastOptions);
     } catch (error) {
       console.log(error);
@@ -317,7 +319,12 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid style={{ backgroundColor: "#ffffff", borderRadius: "10px", height:"89vh", }}>
+      <Grid
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          height: "89vh",
+        }}>
         <Grid
           style={{
             display: "flex",
@@ -576,7 +583,7 @@ function ProfileOrganizers() {
               </Grid>
               <Stack>
                 <InputLabel id="demo-multiple-chip-label">
-                    Detail information
+                  Detail information
                 </InputLabel>
                 <TextareaAutosize
                   style={{ width: "100%" }}
@@ -590,7 +597,7 @@ function ProfileOrganizers() {
                   }
                 />
               </Stack>
-              <Stack sx={{marginTop:"30px"}}>
+              <Stack sx={{ marginTop: "30px" }}>
                 <FormControl fullWidth style={{ marginBottom: "20px" }}>
                   <InputLabel id="demo-multiple-chip-label">
                     Event Type

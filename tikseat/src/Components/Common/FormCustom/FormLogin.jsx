@@ -32,7 +32,6 @@ import {
 import { toastOptions } from "../../../Assets/Constant/Common/dataCommon";
 import InputCustom from "../Input/InputCustom";
 import { useOpenStore } from "../../../Store/openStore";
-import { checkToken } from "../../../Pages/Admin/Adminpage";
 
 function FormLogin({
   handleClickShowPassword,

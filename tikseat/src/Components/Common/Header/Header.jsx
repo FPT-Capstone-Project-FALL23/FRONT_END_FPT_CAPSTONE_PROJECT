@@ -28,11 +28,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  getLocalStorageUserData,
-  getLocalStorageUserInfo,
-} from "../../../Store/userStore";
-import { useOpenStore } from "../../../Store/openStore";
 import { DATA_EVENT_TYPE } from "../../../Assets/Constant/Client/dataClient";
 
 import ApiCity from "../../../API/City/ApiCity";
@@ -40,13 +35,14 @@ import NavBar from "../Layout/NavBar";
 import ApiEvent from "../../../API/Event/ApiEvent";
 import { useNavigate } from "react-router-dom";
 
-const Header = () => {
-  const { setSearchEvent } = useOpenStore();
+const Header = ({ setSearchEvent, handleSearchEvent }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [typeEvent, setTypeEvent] = useState(null);
   const [eventName, setEventName] = useState(null);
   const [selectsDistrict, setSelectsDistrict] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [dataEventHot, setDataEventHot] = useState();
+  const [allCity, setAllCity] = useState([]);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
@@ -55,27 +51,12 @@ const Header = () => {
   };
 
   const filterIds = selectsDistrict?.map((item) => item.id);
-  console.log("selectsDistrict: ", selectsDistrict);
-  const [selectedDate, setSelectedDate] = useState(null);
 
   const isDateInPast = (date) => {
     const currentDateTimestamp = new Date().getTime() / 1000;
     return date < currentDateTimestamp;
   };
 
-  const handleSearchEvent = () => {
-    const mappingDistrict = selectsDistrict?.map((item) => item.value);
-    console.log("mappingDistrict: ", mappingDistrict);
-    setSearchEvent({
-      event_name: eventName || "",
-      type_of_event: typeEvent || "",
-      event_location: mappingDistrict || "",
-      event_date: selectedDate || "",
-    });
-  };
-
-  const [allCity, setAllCity] = useState([]);
-  console.log("allCity: ", allCity);
   async function getAllCity() {
     const response = await ApiCity.getCity();
     setAllCity(response);
@@ -112,6 +93,16 @@ const Header = () => {
   function handClickGetTiket(_id) {
     navigate(`/book-tickets/${_id}`);
   }
+
+  useEffect(() => {
+    const mappingDistrict = selectsDistrict?.map((item) => item.value);
+    setSearchEvent({
+      event_name: eventName || "",
+      type_of_event: typeEvent || "",
+      event_location: mappingDistrict || "",
+      event_date: selectedDate || "",
+    });
+  }, [typeEvent, eventName, selectsDistrict, selectedDate]);
 
   return (
     <>
@@ -215,7 +206,7 @@ const Header = () => {
                           textAlign: "start",
                         }}>
                         Look no further! Our {item?.nameEvent} tickets are the
-                        simplest way for you to experience a sự kiện
+                        simplest way for you to experience a event
                       </p>
                     </div>
                     <div
@@ -437,7 +428,7 @@ const Header = () => {
                         gap={"10px"}
                         style={{ cursor: "pointer" }}>
                         <LoopIcon></LoopIcon>
-                        <span>dat lai</span>
+                        <span>reset</span>
                       </Stack>
                       <Button
                         type="button"

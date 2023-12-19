@@ -74,6 +74,8 @@ export const URL_BLOCK_USER = "/admin/blockedUser";
 export const URL_LIST_BLOCK_ORGANIZER = "/admin/getAllOrganizerBlockeds";
 export const URL_GET_INFORMATION_EVENT = "/admin/getInformationEvent";
 export const URL_GET_TRANSACTION_INFORMATION = "/admin/getTransactionInformation";
+export const URL_REJECTED_ORGANIZAER = "/admin/rejectedOrganizer";
+export const URL_REJECTED_EVENT = "/admin/rejectedEvent";
 
 //-------------------PAYMENT----------------------------
 export const URL_ADDPAYMENT = "";
