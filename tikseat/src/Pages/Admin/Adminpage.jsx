@@ -163,8 +163,6 @@ export default function MiniDrawer() {
   const [notificationsRefundTicket, setNotificationsRefundTicket] = useState([]);
   const [notificationsPayBusiness, setNotificationsPayBusiness] = useState([]);
 
-  const [openNotification, setOpenNotification] = useState(false);
-
   const allNotificationLists = [
     notificationsOrganizer.length,
     notificationsEvent.length,
@@ -174,19 +172,36 @@ export default function MiniDrawer() {
 
   const ListMenu = ({
     setMenuData,
+    nameMenu,
     menuData,
     open,
-    nameMenu,
     titleMenu,
     icon,
     isCollapse,
     notificationLength,
   }) => {
+    const handleSetDataNotification = (aaa) => {
+      if (aaa === "approvedOrganizer") {
+        setNotificationsOrganizer([]);
+      } else if (aaa === "approvedEvent") {
+        setNotificationsEvent([]);
+      } else if (aaa === "refundList") {
+        setNotificationsRefundTicket([]);
+      } else if (aaa === "payBusiness") {
+        setNotificationsPayBusiness([]);
+      }
+    };
+    const handleSetMenuData = (nameMenu) => {
+      handleSetDataNotification(nameMenu)
+      setMenuData(nameMenu);
+    };
+
     return (
+      
       <ListItem
         disablePadding
         sx={{ display: "block", border: "none" }}
-        onClick={() => setMenuData(nameMenu)}
+        onClick={() => handleSetMenuData(nameMenu)}
       >
         <ListItemButton
           sx={{
@@ -400,30 +415,6 @@ export default function MiniDrawer() {
             <Typography variant="h6" noWrap component="div">
               Welcome Back <span style={{ color: "yellow" }}>Admin</span>
             </Typography>
-            <Grid>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                  onClick={() => setOpenNotification(!openNotification)}
-                >
-                  {/* {notifications.length > 0 && (
-                    <Badge
-                      sx={{
-                        position: "absolute",
-                        marginBottom: "20px",
-                        marginLeft: "20px",
-                      }}
-                      badgeContent={notifications.length}
-                      color="error"
-                    />
-                  )} */}
-                  <NotificationsIcon sx={{ width: "35px", height: "35px" }} />
-                </IconButton>
-              </Box>
-            </Grid>
-
             <Grid
               sx={{
                 height: "60px",
