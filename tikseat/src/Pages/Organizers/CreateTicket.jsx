@@ -114,7 +114,8 @@ const CreateTicket = () => {
   }, [socket, organizerId]);
 
   const handleNewEvent = () => {
-    socket.emit("new_event", {
+    socket.emit("organizerToAdmin", {
+      typeOfNotification: "acceptEvent",
       senderName: organizerName,
       receiverName: "6544b5f73dd2f66548b5d85a",
     });

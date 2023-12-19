@@ -13,8 +13,6 @@ import TablePagination from "@mui/material/TablePagination";
 import EditIcon from "@mui/icons-material/Edit";
 import ApiEvent from "../../API/Event/ApiEvent";
 import {
-  // getLocalStorageUserData,
-  // setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
 import {
@@ -28,6 +26,8 @@ import {
   DialogContentText,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -134,6 +134,11 @@ export const DialogRequest = ({
 
 function EventHistory({ onEventDetail }) {
   const dataInfo = getLocalStorageUserInfo();
+  //socket
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+  const organizerId = dataInfo._id;
+  const organizerName = dataInfo.organizer_name;
+
   const [eventHistory, setEventHistory] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(null);
@@ -141,6 +146,18 @@ function EventHistory({ onEventDetail }) {
   const [open, setOpen] = useState(false);
   const [requestCreate, setRequestCreate] = useState();
   const [dataDialog, setDataDialog] = useState();
+
+  useEffect(() => {
+    socket?.emit("organizerId", organizerId);
+  }, [socket, organizerId]);
+
+  const handleNotificationPayBusiness = () => {
+    socket.emit("organizerToAdmin", {
+      typeOfNotification: "acceptPayBusiness",
+      senderName: organizerName,
+      receiverName: "6544b5f73dd2f66548b5d85a",
+    });
+  };
 
   const handleChangePage = async (event, newPage) => {
     try {
@@ -227,6 +244,7 @@ function EventHistory({ onEventDetail }) {
     console.log("requestCreate", requestCreate);
     const reponse = ApiEvent.createPayBusinessOfEvent(requestCreate);
     if (reponse) {
+      handleNotificationPayBusiness();
       console.log("reponse", reponse);
       dataEventHistory();
       setOpen(false);

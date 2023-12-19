@@ -14,8 +14,6 @@ import ApiEvent from "../../API/Event/ApiEvent";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
 import {
-  // getLocalStorageUserData,
-  // setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
 import {
@@ -24,6 +22,8 @@ import {
   Stack,
   TablePagination,
 } from "@mui/material";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -49,9 +49,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function ListRefund() {
   const dataInfo = getLocalStorageUserInfo();
+  const organizerId = dataInfo._id;
+  const organizerName = dataInfo.organizer_name;
   const [refunds, setRefunds] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
+
+  useEffect(() => {
+    socket?.emit("organizerId", organizerId);
+  }, [socket, organizerId]);
+
+  const handleNotificationRefund = () => {
+    socket.emit("organizerToAdmin", {
+      typeOfNotification: "acceptRefund",
+      senderName: organizerName,
+      receiverName: "6544b5f73dd2f66548b5d85a",
+    });
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -68,6 +83,7 @@ function ListRefund() {
         page: page,
       });
       if (response.status === true) {
+        handleNotificationRefund();
         setRefunds(response.data.results);
       } else {
         console.log("error!");
