@@ -70,3 +70,11 @@ export const toastOptions = {
   draggable: true,
   theme: "dark",
 };
+
+export const toastBockTick = {
+  position: "top-center",
+  autoClose: 4000,
+  pauseOnFocusLoss: true,
+  draggable: true,
+  theme: "dark",
+};

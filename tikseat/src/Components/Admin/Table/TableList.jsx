@@ -56,6 +56,8 @@ export default function TableList({
   count,
   page,
   handleChangePage,
+  isAccept,
+  onNoAccept,
 }) {
   const [loading, setLoading] = useState(true); // Add a loading state
 
@@ -168,6 +170,8 @@ export default function TableList({
               dialogContent={dialogContent}
               selectedDataEvent={selectedDataEvent}
               isOrder={isOrder}
+              isAccept={isAccept}
+              onNoAccept={onNoAccept}
             />
           </>
         )}

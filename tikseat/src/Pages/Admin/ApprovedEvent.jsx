@@ -6,6 +6,9 @@ import TableList from "../../Components/Admin/Table/TableList";
 import { NAME_COLUMNS_APPROVED_EVENT } from "../../Assets/Constant/Admin/dataAdmin";
 import { NAME_LIST_APPROVED_EVENT } from "../../Assets/Constant/Admin/constAdmin";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
 
 function ApprovedEvent() {
   const [dataTableEvent, setDataTableEvent] = useState();
@@ -48,6 +51,7 @@ function ApprovedEvent() {
       const repuest = { _idEvent: selected_event._id, isHot: isHot };
       const respones = await ApiAdmin.setAcceptEvent(repuest);
       if (respones) {
+        toast.success("You have accepted this event", toastBockTick);
         setOpenComfirn(false);
         getAllEvent();
       }
@@ -65,6 +69,20 @@ function ApprovedEvent() {
         setPage(newPage);
         setDataTableEvent(respones.data.formattedEvent);
         setEventsCount(respones.data.eventsCount);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClickDontAccept = async () => {
+    try {
+      const repuest = { _idEvent: selected_event._id };
+      const reponse = await ApiAdmin.rejectedEvent(repuest);
+      if (reponse) {
+        toast.success("You have not accepted this event", toastBockTick);
+        setOpenComfirn(false);
+        getAllOrganizerIsFalse();
       }
     } catch (error) {
       console.log(error);
@@ -120,7 +138,10 @@ function ApprovedEvent() {
             count={eventsCount}
             page={page}
             handleChangePage={handleChangePage}
+            isAccept={true}
+            onNoAccept={handleClickDontAccept}
           />
+          <ToastContainer />
         </Box>
       </Box>
     </>

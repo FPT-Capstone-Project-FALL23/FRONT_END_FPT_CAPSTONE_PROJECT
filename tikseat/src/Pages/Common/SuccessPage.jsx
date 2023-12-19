@@ -4,15 +4,14 @@ import { useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
 
-
 function SuccessPage() {
   const dataInfo = getLocalStorageUserInfo();
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if(dataInfo){
+    if (dataInfo) {
       navigate("/dashboard");
-    }else{
+    } else {
       window.localStorage.clear();
       navigate("/");
     }
@@ -27,8 +26,7 @@ function SuccessPage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-        }}
-      >
+        }}>
         <Grid
           sx={{
             borderTop: "solid 10px #03a973",
@@ -40,8 +38,7 @@ function SuccessPage() {
             justifyContent: "space-between",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Grid
             sx={{
               border: "solid #03a973 5px",
@@ -51,8 +48,7 @@ function SuccessPage() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-            }}
-          >
+            }}>
             <CheckIcon sx={{ fontSize: "200px", color: "#03a973" }} />
           </Grid>
           <Grid
@@ -60,8 +56,7 @@ function SuccessPage() {
               display: "flex",
               alignItems: "center",
               flexDirection: "column",
-            }}
-          >
+            }}>
             <h1 style={{ color: "#03a973" }}>Success !</h1>
             <h2>Please wait for Admin approval!</h2>
           </Grid>
@@ -72,9 +67,8 @@ function SuccessPage() {
               color: "#03a973",
               border: "solid 3px #03a973",
             }}
-            onClick={handleBack}
-          >
-            Back Dashboard
+            onClick={handleBack}>
+            Back {dataInfo ? "Dashboard" : "Home"}
           </Button>
         </Grid>
       </Grid>

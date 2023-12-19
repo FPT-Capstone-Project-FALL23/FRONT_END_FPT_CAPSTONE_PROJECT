@@ -13,6 +13,9 @@ import {
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import LockIcon from "@mui/icons-material/Lock";
 import Typography from "@mui/material/Typography";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
 
 function OrganizerPageAdmin() {
   const [dataTableOrganizer, setDataTableOrganizer] = useState();
@@ -66,7 +69,7 @@ function OrganizerPageAdmin() {
       const respones = await ApiAdmin.blockedUser(selected_id);
       console.log("respones", respones);
       if (respones) {
-        alert("oke");
+        toast.success("You have blocked the organizer", toastBockTick);
         setOrganizerDetailOpen(false);
         getAllOrganizer();
       }
@@ -146,7 +149,9 @@ function OrganizerPageAdmin() {
             page={page}
             count={organizersCount}
             handleChangePage={handleChangePage}
+            isAccept={false}
           />
+          <ToastContainer />
         </Box>
       </Box>
     </>

@@ -311,7 +311,7 @@ function ProfileOrganizers() {
         avatarImage: base64EncodedImage,
       });
       setLocalStorageUserInfo(response.data);
-      navigate("/dashboard");
+      // navigate("/dashboard");
       toast.success("Update profile success!", toastOptions);
     } catch (error) {
       console.log(error);
@@ -579,7 +579,7 @@ function ProfileOrganizers() {
               </Grid>
               <Stack>
                 <InputLabel id="demo-multiple-chip-label">
-                    Detail information
+                  Detail information
                 </InputLabel>
                 <TextareaAutosize
                   style={{ width: "100%" }}
@@ -593,7 +593,7 @@ function ProfileOrganizers() {
                   }
                 />
               </Stack>
-              <Stack sx={{marginTop:"30px"}}>
+              <Stack sx={{ marginTop: "30px" }}>
                 <FormControl fullWidth style={{ marginBottom: "20px" }}>
                   <InputLabel id="demo-multiple-chip-label">
                     Event Type
