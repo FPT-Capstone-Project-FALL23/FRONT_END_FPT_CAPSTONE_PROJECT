@@ -188,28 +188,6 @@ export default function MiniDrawer() {
                 {dataInfo.organizer_name}
               </span>
             </Typography>
-            <Grid>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                  onClick={() => setOpenNotification(!openNotification)}>
-                  {notifications.length > 0 && (
-                    <Badge
-                      sx={{
-                        position: "absolute",
-                        marginBottom: "20px",
-                        marginLeft: "20px",
-                      }}
-                      badgeContent={notifications.length}
-                      color="error"
-                    />
-                  )}
-                  <NotificationsIcon sx={{ width: "35px", height: "35px" }} />
-                </IconButton>
-              </Box>
-            </Grid>
             <Grid
               sx={{
                 height: "60px",
@@ -224,25 +202,6 @@ export default function MiniDrawer() {
               />
             </Grid>
           </Grid>
-          {openNotification && (
-            <Grid
-              style={{
-                position: "absolute",
-                width: "400px",
-                top: "64px",
-                right: "0",
-                backgroundColor: "white",
-                color: "black",
-                fontWeight: "300",
-                display: "flex",
-                flexDirection: "column",
-                padding: "10px",
-              }}>
-              {/* {notifications.map((n) => displayNotification(n))} */}
-              aaaaaaa
-              <Button onClick={handleRead}> Read</Button>
-            </Grid>
-          )}
         </Toolbar>
       </AppBar>
 
@@ -252,13 +211,6 @@ export default function MiniDrawer() {
         open={open}
         sx={{ backgroundColor: "#87C4FF" }}>
         <DrawerHeader>
-          {/* <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton> */}
         </DrawerHeader>
         <Divider />
 

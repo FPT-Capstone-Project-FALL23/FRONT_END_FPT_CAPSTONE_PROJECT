@@ -14,6 +14,7 @@ import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import { getLocalStorageUserData } from "../../Store/userStore";
 import ApiCommon from "../../API/Common/ApiCommon";
+import { Link } from "react-router-dom";
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState();
   const [newPassword, setNewPassword] = useState();
@@ -71,73 +72,76 @@ const ChangePassword = () => {
         }}
       >
         <Box component={"div"} width={"100%"}>
-          <Typography variant="h3" className="logo" component="h4">
-            {NAME_LOGO}
-          </Typography>
+          <Link to={"/"}>
+            <Typography variant="h3" className="logo" component="h4">
+              {NAME_LOGO}
+            </Typography>
+          </Link>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <h1>Change Password</h1>
           </div>{" "}
-          <FormSubmit
-            onSubmit={handleChangePassword}
-            style={{
+          <Grid
+            sx={{
               width: "100%",
-              height: "90%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Box marginTop={"30px"}>
-              <InputCustom
-                type="password"
-                id="oldPassword"
-                name="oldPassword"
-                label="Old Password"
-                setValue={setOldPassword}
-              />
-            </Box>
+            <FormSubmit width={"50%"} onSubmit={handleChangePassword}>
+              <Box marginTop={"30px"}>
+                <InputCustom
+                  type="password"
+                  id="oldPassword"
+                  name="oldPassword"
+                  label="Old Password"
+                  setValue={setOldPassword}
+                />
+              </Box>
 
-            <Box marginTop={"30px"}>
-              <InputCustom
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                label="New password"
-                setValue={setNewPassword}
-              />
-            </Box>
-            <Box marginTop={"30px"}>
-              <InputCustom
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                label="Enter again"
-                labelError={labelError}
-                setValue={setConfigPassword}
-              />
-            </Box>
-            <Stack
-              direction={"row"}
-              gap={"20px"}
-              style={{ width: "50%", margin: "50px auto" }}
-            >
-              <ButtonCustom
-                type="submit"
-                color="black"
-                content="Save"
-                backgroundcolor="#F5BD19"
-              />
-              <ButtonCustom
-                type="button"
-                onClick={() => {
-                  window.history.back();
-                }}
-                color="black"
-                content="Black"
-                backgroundcolor="skyblue"
-              />
-            </Stack>
-          </FormSubmit>
+              <Box marginTop={"30px"}>
+                <InputCustom
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  label="New password"
+                  setValue={setNewPassword}
+                />
+              </Box>
+              <Box marginTop={"30px"}>
+                <InputCustom
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  label="Enter again"
+                  labelError={labelError}
+                  setValue={setConfigPassword}
+                />
+              </Box>
+              <Stack
+                direction={"row"}
+                gap={"20px"}
+                style={{ width: "80%", margin: "30px auto" }}
+              >
+                <ButtonCustom
+                  type="submit"
+                  color="black"
+                  content="Save"
+                  backgroundcolor="#F5BD19"
+                />
+                <ButtonCustom
+                  type="button"
+                  onClick={() => {
+                    window.history.back();
+                  }}
+                  color="black"
+                  content="Back to profile"
+                  backgroundcolor="skyblue"
+                />
+              </Stack>
+            </FormSubmit>
+          </Grid>
         </Box>
       </Paper>
       <Snackbar

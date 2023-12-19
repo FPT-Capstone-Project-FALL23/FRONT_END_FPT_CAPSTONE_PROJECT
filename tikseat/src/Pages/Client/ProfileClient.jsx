@@ -117,7 +117,6 @@ function ProfileClient() {
       toast.success("Update profile success!", toastOptions);
       setLocalStorageUserInfo(respone.data);
       navigate("/");
-      
     } catch (err) {
       console.error(err);
       const error = err.response.data.message;
@@ -385,19 +384,20 @@ function ProfileClient() {
               backgroundcolor="#F5BD19"
             />
           </Stack>
-          
         </Grid>
         <ToastContainer />
       </FormSubmit>
-      <Stack style={{ width: "50%", margin: "30px" }}>
-            <ButtonCustom
-              type="button"
-              onClick={() => navigate("/change-password")}
-              color="black"
-              content="Change password"
-              backgroundcolor="#F5BD19"
-            />
-      </Stack>
+      <Grid fullWidth sx={{display:"flex", justifyContent:"center"}}>
+        <Stack style={{ width: "50%", margin: "30px" }}>
+          <ButtonCustom 
+            type="button"
+            onClick={() => navigate("/change-password")}
+            color="black"
+            content="Change password"
+            backgroundcolor="#F5BD19"
+          />
+        </Stack>
+      </Grid>
     </>
   );
 }
