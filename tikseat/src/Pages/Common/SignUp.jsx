@@ -1,15 +1,12 @@
-import { Paper, Grid, Typography, Button } from "@mui/material";
+import { Grid, Typography, Button } from "@mui/material";
 import styled from "styled-components";
 import React, { useState, useRef } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { environment } from "../../";
-import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
-import ApiCommon from "../../API/Common/ApiCommon";
 import { NAME_LOGO, ROLE } from "../../Assets/Constant/Common/constCommon";
 import "../../Assets/CSS/Common/LayoutSign.css";
-import { getLocalStorageUserData } from "../../Store/userStore";
+import { getLocalStorageUserData, getLocalStorageUserInfo } from "../../Store/userStore";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 
 const GridStyleLayout = styled(Grid)`
   height: 100vh;
@@ -23,15 +20,17 @@ const GridStyleLayout = styled(Grid)`
 const SignUp = () => {
   const navigate = useNavigate();
   const dataUser = getLocalStorageUserData();
-  // console.log("dataUser", dataUser);
-  // const dataUser = jwtDecode(localStorage.getItem("userSignUp"));
-  // console.log(dataUser);
+  const dataInfo = getLocalStorageUserInfo()
 
   const handleClickLogo = () => {
-    if (dataUser.role === ROLE[0]) {
-      navigate("/");
-    } else {
-      navigate("/dashboard");
+    if(dataInfo){
+      if (dataUser?.role === ROLE[0]) {
+        navigate("/");
+      } else {
+        navigate("/dashboard");
+      }
+    }else {
+      toast.warning("You need to fill in all information",toastOptions)
     }
   };
 

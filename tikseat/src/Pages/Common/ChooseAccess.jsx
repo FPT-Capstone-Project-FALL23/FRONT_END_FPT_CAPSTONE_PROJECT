@@ -129,9 +129,15 @@ const ChooseAccess = () => {
         const roleUser = response.data.role;
         const token = response.token;
         const userData = response.data;
-        navigateAfterConfirmPassword(roleUser);
-        setLocalStorageToken(token);
-        setLocalStorageUserData(userData);
+        if (roleUser !== ROLE[1]) {
+          navigateAfterConfirmPassword(roleUser);
+          setLocalStorageToken(token);
+          setLocalStorageUserData(userData);
+        } else {
+          setLocalStorageUserData(userData);
+          navigate("/createProfileOrganizers");
+        }
+        
       } else {
         console.log("Error setting password!");
       }

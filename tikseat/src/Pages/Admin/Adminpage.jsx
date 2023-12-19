@@ -158,16 +158,10 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const [notificationsOrganizer, setNotificationsOrganizer] = useState([
-    2, 2, 2,
-  ]);
-  const [notificationsEvent, setNotificationsEvent] = useState([2, 2]);
-  const [notificationsRefundTicket, setNotificationsRefundTicket] = useState([
-    2, 2, 2, 4,
-  ]);
+  const [notificationsOrganizer, setNotificationsOrganizer] = useState([]);
+  const [notificationsEvent, setNotificationsEvent] = useState([]);
+  const [notificationsRefundTicket, setNotificationsRefundTicket] = useState([]);
   const [notificationsPayBusiness, setNotificationsPayBusiness] = useState([]);
-
-  const [openNotification, setOpenNotification] = useState(false);
 
   const allNotificationLists = [
     notificationsOrganizer.length,
@@ -178,19 +172,36 @@ export default function MiniDrawer() {
 
   const ListMenu = ({
     setMenuData,
+    nameMenu,
     menuData,
     open,
-    nameMenu,
     titleMenu,
     icon,
     isCollapse,
     notificationLength,
   }) => {
+    const handleSetDataNotification = (aaa) => {
+      if (aaa === "approvedOrganizer") {
+        setNotificationsOrganizer([]);
+      } else if (aaa === "approvedEvent") {
+        setNotificationsEvent([]);
+      } else if (aaa === "refundList") {
+        setNotificationsRefundTicket([]);
+      } else if (aaa === "payBusiness") {
+        setNotificationsPayBusiness([]);
+      }
+    };
+    const handleSetMenuData = (nameMenu) => {
+      handleSetDataNotification(nameMenu)
+      setMenuData(nameMenu);
+    };
+
     return (
+      
       <ListItem
         disablePadding
         sx={{ display: "block", border: "none" }}
-        onClick={() => setMenuData(nameMenu)}
+        onClick={() => handleSetMenuData(nameMenu)}
       >
         <ListItemButton
           sx={{
@@ -301,7 +312,6 @@ export default function MiniDrawer() {
           <Collapse in={openCollapse} timeout="auto">
             {LIST_COLLAPSE.map((value, index) => {
               let noti;
-              console.log(value.nameMenu);
               if (value.nameMenu === "approvedOrganizer") {
                 noti = allNotificationLists[0];
               } else if (value.nameMenu === "approvedEvent") {
@@ -343,47 +353,32 @@ export default function MiniDrawer() {
     }
   }, [socket, adminId]);
 
-  // useEffect(() => {
-  //   const handleNotification = (data) => {
-  //     if (
-  //       !notifications.some(
-  //         (notification) => notification.senderName === data.senderName
-  //       )
-  //     ) {
-  //       setNotifications((prev) => [...prev, data]);
-  //     }
-  //   };
 
-  //   if (socket) {
-  //     if (socket.on) {
-  //       socket.on("getNotification", handleNotification);
+  useEffect(() => {
+    const handleNotification = (data) => {
+      if (data.typeOfNotification === "acceptEvent") {
+        setNotificationsEvent((prev) => [...prev, data]);
+      }else if (data.typeOfNotification === "acceptOrganizer") {
+        setNotificationsOrganizer((prev) => [...prev, data]);
+      }else if (data.typeOfNotification === "acceptRefund") {
+        setNotificationsRefundTicket((prev) => [...prev, data]);
+      } else if (data.typeOfNotification === "acceptPayBusiness") {
+        setNotificationsPayBusiness((prev) => [...prev, data]);
+      }
+    };
 
-  //       return () => {
-  //         if (socket.off) {
-  //           socket.off("getNotification", handleNotification);
-  //         }
-  //       };
-  //     }
-  //   }
-  // }, [socket, notifications]);
+    if (socket) {
+      if (socket.on) {
+        socket.on("getNotification", handleNotification);
+        return () => {
+          if (socket.off) {
+            socket.off("getNotification", handleNotification);
+          }
+        };
+      }
+    }
+  }, [socket, notificationsEvent]);
 
-  const displayNotification = ({ senderName }) => {
-    return (
-      <span
-        style={{
-          backgroundColor: "#E0F4FF",
-          padding: "10px",
-          margin: "5px",
-          borderRadius: "10px",
-        }}
-      >{`${senderName} đã tạo một sự kiện mới.`}</span>
-    );
-  };
-
-  // const handleRead = () => {
-  //   setNotifications([]);
-  //   setOpenNotification(false);
-  // };
   useEffect(() => {
     checkToken(navigate);
   }, []);
@@ -420,30 +415,6 @@ export default function MiniDrawer() {
             <Typography variant="h6" noWrap component="div">
               Welcome Back <span style={{ color: "yellow" }}>Admin</span>
             </Typography>
-            <Grid>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                  onClick={() => setOpenNotification(!openNotification)}
-                >
-                  {/* {notifications.length > 0 && (
-                    <Badge
-                      sx={{
-                        position: "absolute",
-                        marginBottom: "20px",
-                        marginLeft: "20px",
-                      }}
-                      badgeContent={notifications.length}
-                      color="error"
-                    />
-                  )} */}
-                  <NotificationsIcon sx={{ width: "35px", height: "35px" }} />
-                </IconButton>
-              </Box>
-            </Grid>
-
             <Grid
               sx={{
                 height: "60px",
@@ -459,25 +430,6 @@ export default function MiniDrawer() {
               />
             </Grid>
           </Grid>
-          {/* {openNotification && (
-            <Grid
-              style={{
-                position: "absolute",
-                width: "400px",
-                top: "64px",
-                right: "0",
-                backgroundColor: "white",
-                color: "black",
-                fontWeight: "300",
-                display: "flex",
-                flexDirection: "column",
-                padding: "10px",
-              }}
-            >
-              {notifications.map((n) => displayNotification(n))}
-              <Button onClick={handleRead}> Read</Button>
-            </Grid>
-          )} */}
         </Toolbar>
       </AppBar>
 
@@ -499,7 +451,7 @@ export default function MiniDrawer() {
         <Divider />
 
         <List style={{ border: "none" }}>
-          {LIST_NAME_MENU.map((value, index) => {
+          {LIST_NAME_MENU.map((value) => {
             return (
               <>
                 <ListMenu
@@ -515,8 +467,7 @@ export default function MiniDrawer() {
               </>
             );
           })}
-          {LIST_HOME_ADMIN.map((value, index) => {
-            console.log(value.LIST_COLLAPSE[0].nameMenu);
+          {LIST_HOME_ADMIN.map((value) => {
             let notification;
             if (value.LIST_COLLAPSE[0].nameMenu === "approvedOrganizer") {
               notification = allNotificationLists[0] + allNotificationLists[1];

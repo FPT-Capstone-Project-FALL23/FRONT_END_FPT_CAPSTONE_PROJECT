@@ -2,13 +2,19 @@ import React from "react";
 import { Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
-import ErrorImg from "../../Assets/Images/error.jpg";
+import { getLocalStorageUserInfo } from "../../Store/userStore";
 
 function SuccessPage() {
+  const dataInfo = getLocalStorageUserInfo();
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate("/");
+    if (dataInfo) {
+      navigate("/dashboard");
+    } else {
+      window.localStorage.clear();
+      navigate("/");
+    }
   };
 
   return (
@@ -62,7 +68,7 @@ function SuccessPage() {
               border: "solid 3px #03a973",
             }}
             onClick={handleBack}>
-            Back Dashboard
+            Back {dataInfo ? "Dashboard" : "Home"}
           </Button>
         </Grid>
       </Grid>

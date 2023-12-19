@@ -289,9 +289,10 @@ function ProfileOrganizers() {
         organizerInfo: organizerInfo,
         avatarImage: base64EncodedImage,
       });
-      // setLocalStorageUserInfo(respone.data);
-      if (respone.data) {
-        navigate("/succes");
+      if(respone.status === true){
+        navigate("/success");
+      }else{
+        console.log("error");
       }
     } catch (err) {
       console.error(err);
@@ -319,12 +320,7 @@ function ProfileOrganizers() {
 
   return (
     <>
-      <Grid
-        style={{
-          backgroundColor: "#ffffff",
-          borderRadius: "10px",
-          height: "89vh",
-        }}>
+      <Grid style={{ backgroundColor: "#ffffff", borderRadius: "10px", height:"100%", }}>
         <Grid
           style={{
             display: "flex",
