@@ -13,6 +13,8 @@ import {
   TableHead,
   TableRow,
   TablePagination,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
@@ -23,7 +25,7 @@ const RefundableTickets = () => {
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [loading, setLoading] = useState(true);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -37,6 +39,14 @@ const RefundableTickets = () => {
     const endIndex = startIndex + rowsPerPage;
     return dataMyTicket?.slice(startIndex, endIndex);
   };
+  useEffect(() => {
+    // Simulate a 10-second loading delay
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(delay);
+  }, []);
   useEffect(() => {
     async function getDataOrderByClient() {
       const response = await ApiClient.getOrdersRefundTicket({
@@ -93,7 +103,9 @@ const RefundableTickets = () => {
           <TableCell component="th" scope="row">
             {row?.eventName}
           </TableCell>
-          <TableCell align="left">{row.eventDate}</TableCell>
+          <TableCell align="left">
+            {new Date(row.eventDate).toLocaleString()}
+          </TableCell>
           <TableCell align="left">{row.city}</TableCell>
           <TableCell>
             <Stack direction={"row"} gap={"10px"}>
@@ -168,7 +180,19 @@ const RefundableTickets = () => {
     );
   }
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Stack direction={"column"} margin={"0 auto"}>
+        <Typography variant="h4" marginTop={"20px"} textAlign={"center"}>
+          Refundable list
+        </Typography>
+      </Stack>
       <Paper style={{ marginTop: "20px", width: "80%", overflow: "hidden" }}>
         <TableContainer>
           <Table aria-label="collapsible table">
@@ -181,10 +205,18 @@ const RefundableTickets = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mappingDataMyTicket?.length > 0 &&
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                mappingDataMyTicket?.length > 0 &&
                 mappingDataMyTicket.map((row, index) => (
                   <Row key={index} row={row} />
-                ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

@@ -13,6 +13,7 @@ import {
   Typography,
   tableCellClasses,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
@@ -61,10 +62,19 @@ const HistoryPayment = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [loading, setLoading] = useState(true);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  useEffect(() => {
+    // Simulate a 10-second loading delay
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(delay);
+  }, []);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -79,7 +89,11 @@ const HistoryPayment = () => {
       const response = await ApiClient.orderByClient({
         _idClient: dataInfo?._id,
       });
-      setDataOrderByClient(response?.data);
+      const sortedHistoryPayment = await response?.data?.sort(
+        (a, b) => new Date(b.transaction) - new Date(a.transaction)
+      );
+      setDataOrderByClient(sortedHistoryPayment);
+      console.log("sortedHistoryPayment: ", sortedHistoryPayment);
     }
 
     getDataOrderByClient();
@@ -89,11 +103,11 @@ const HistoryPayment = () => {
     <div>
       <Box width={"100%"} display={"flex"} marginTop={"20px"}>
         <Stack direction={"column"} margin={"0 auto"}>
-          <Typography variant="h2" textAlign={"center"}>
+          <Typography variant="h4" textAlign={"center"}>
             Transaction history
           </Typography>
           <Paper style={{ overflow: "hidden" }}>
-            <TableContainer style={{ marginTop: "50px" }}>
+            <TableContainer style={{ marginTop: "20px" }}>
               <Table
                 sx={{ minWidth: 1050 }}
                 size="medium"
@@ -118,13 +132,22 @@ const HistoryPayment = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {getPaginatedData()?.length > 0 &&
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={4} align="center">
+                        <CircularProgress />
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    getPaginatedData()?.length > 0 &&
                     getPaginatedData().map((row) => (
                       <StyledTableRow key={row._id}>
                         <TableCell component="th" scope="row">
                           {row.event_name}
                         </TableCell>
-                        <TableCell align="left">{row.transaction}</TableCell>
+                        <TableCell align="left">
+                          {new Date(row.transaction).toLocaleString()}
+                        </TableCell>
                         <TableCell align="left">{row.totalAmount}</TableCell>
                         <TableCell align="left">
                           <Button
@@ -205,7 +228,8 @@ const HistoryPayment = () => {
                           </Modal>
                         </TableCell>
                       </StyledTableRow>
-                    ))}
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
