@@ -9,15 +9,19 @@ function StackBookNow({ itemEvent, setShowEvent }) {
       alignItems={"center"}
       style={{
         padding: "10px",
-        border: "1px solid black",
-      }}>
+        border: "2px solid orange",
+        borderRadius: "10px",
+        color: "#d70b0b",
+      }}
+    >
       <Typography variant="h6" fontSize={"16px"}>
         Event date: {new Date(itemEvent.date).toLocaleDateString()}
       </Typography>
       <Button
         onClick={() => setShowEvent(() => itemEvent._id)}
         variant="outlined"
-        color="error">
+        color="error"
+      >
         Book now
       </Button>
     </Stack>
