@@ -94,12 +94,11 @@ function CheckingTicket({ CheckingTicket }) {
         backgroundColor: "#ffffff",
         borderRadius: "10px",
         padding: "10px",
-        height: "89vh",
       }}
     >
       <h2>Generate Download & Scan QR Code </h2>
       <Grid className="body-QR">
-        <Grid className="generate">
+        {/* <Grid className="generate">
           <TextField
             fullWidth
             label="Enter Text Here"
@@ -130,7 +129,7 @@ function CheckingTicket({ CheckingTicket }) {
               </a>
             ) : null}
           </Grid>
-        </Grid>
+        </Grid> */}
 
         <Grid className="scanner">
           <Grid>

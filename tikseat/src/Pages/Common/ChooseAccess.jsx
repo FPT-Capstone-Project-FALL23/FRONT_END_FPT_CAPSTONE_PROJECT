@@ -102,7 +102,6 @@ const ChooseAccess = () => {
 
           if (response.status === true) {
             setLoading(false);
-            setCallAPI("setPassword");
             handleSignUp();
           } else {
             setLoading(false);
@@ -312,7 +311,7 @@ const ChooseAccess = () => {
             />
             {newPassword !== confirmPassword && (
               <Grid sx={{ margin: "-20px 0px 30px 10px" }}>
-                <span style={{ color: "red" }}>Password not match</span>
+                <span style={{ color: "red", fontSize:"13px" }}>Password not match</span>
               </Grid>
             )}
             <Grid sx={{ display: displayCode }}>
@@ -320,10 +319,14 @@ const ChooseAccess = () => {
                 fullWidth
                 type="code"
                 onChange={(e) => setVerifyCode(e.target.value)}
-                // setValue={setVerifyCode}
                 value={verifyCode === undefined ? "" : verifyCode}
                 label="Enter Code"
               />
+              {(verifyCode === undefined || verifyCode === "") && (
+              <Grid sx={{ margin: "0px 0px 30px 10px" }}>
+                <span style={{ color: "red", fontSize:"13px" }}>Code will expire in 3 minutes</span>
+              </Grid>
+            )}
               <Stack
                 spacing={1}
                 alignItems={"center"}

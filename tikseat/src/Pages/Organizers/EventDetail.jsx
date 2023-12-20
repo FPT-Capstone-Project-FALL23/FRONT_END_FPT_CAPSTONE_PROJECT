@@ -9,10 +9,9 @@ import { getLocalStorageUserInfo } from "../../Store/userStore";
 
 function EventDetail({ eventDetail }) {
   const idEvent = eventDetail._idEvent;
-  console.log(eventDetail);
+  console.log(idEvent);
   const dateEvent = eventDetail.startDay;
   const formattedDate = new Date(dateEvent).toLocaleString();
-  console.log(formattedDate);
 
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,
@@ -22,6 +21,12 @@ function EventDetail({ eventDetail }) {
     totalSoldChairs: null,
     totalCheckedInChairs: null,
   });
+
+  const [dataStatisticalEvent, setDataStatisticalEvent] = useState({
+    dates: [],
+    totalAmounts: [],
+  });
+  console.log(dataStatisticalEvent);
 
   useEffect(() => {
     const dataTotalEvent = async () => {
@@ -55,7 +60,33 @@ function EventDetail({ eventDetail }) {
     dataTotalEvent();
   }, []);
 
-  console.log(allDataEvent);
+  useEffect(() => {
+    const getStatisticalEvent = async () => {
+      try {
+        const response = await ApiEvent.getStatistiaclEvent({
+          _idEvent: idEvent,
+        });
+        if (response.status === true) {
+          console.log(response.data);
+          const dates = response?.data?.map((item) => item.date) || [];
+          const totalAmounts =
+            response?.data?.map((item) => item.totalAmount) || [];
+          const indexes = dates?.map((item, index) => index + 1);
+          const dataEvent = {
+            ...dataStatisticalEvent,
+            dates: indexes,
+            totalAmounts: totalAmounts,
+          };
+          setDataStatisticalEvent(dataEvent);
+        } else {
+          console.log("error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getStatisticalEvent();
+  }, []);
 
   return (
     <>
@@ -68,7 +99,8 @@ function EventDetail({ eventDetail }) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           <Typography variant="h4">
             <span style={{ color: "yellow" }}>{eventDetail.eventName}</span>{" "}
             event
@@ -81,7 +113,8 @@ function EventDetail({ eventDetail }) {
           style={{
             borderRadius: "0px 0px 5px 5px",
             padding: "30px",
-          }}>
+          }}
+        >
           <Grid>
             <TotalRevenueEvent eventTotalDetail={allDataEvent} />
           </Grid>
@@ -90,22 +123,27 @@ function EventDetail({ eventDetail }) {
               display: "flex",
               marginTop: "30px",
               justifyContent: "space-between",
-            }}>
+            }}
+          >
             <Grid
               style={{
                 height: "450px",
                 width: "55%",
                 display: "flex",
                 flexDirection: "column",
-              }}>
+              }}
+            >
               <Grid
                 sx={{
                   backgroundColor: "#fff",
                   borderRadius: "5px",
                   width: "100%",
                   padding: "20px",
-                }}>
-                <BasicAreaEvent />
+                }}
+              >
+                {dataStatisticalEvent.dates.length > 0 && (
+              <BasicAreaEvent statisticalEvent={dataStatisticalEvent} />
+            )}
               </Grid>
             </Grid>
 
@@ -115,7 +153,8 @@ function EventDetail({ eventDetail }) {
                 display: "flex",
                 flexDirection: "column",
                 width: "44%",
-              }}>
+              }}
+            >
               <Grid
                 style={{
                   backgroundColor: "#fff",
@@ -123,7 +162,8 @@ function EventDetail({ eventDetail }) {
                   borderRadius: "5px",
                   width: "100%",
                   marginBottom: "17px",
-                }}>
+                }}
+              >
                 <DayChartEvent detailOneEvent={allDataEvent} />
               </Grid>
               <Grid
@@ -132,7 +172,8 @@ function EventDetail({ eventDetail }) {
                   padding: "10px",
                   borderRadius: "5px",
                   width: "100%",
-                }}>
+                }}
+              >
                 <CheckinOneChart detailOneEvent={allDataEvent} />
               </Grid>
             </Grid>

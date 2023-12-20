@@ -1,8 +1,10 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Grid, Typography } from "@mui/material";
 
-export default function BasicArea() {
+export default function BasicArea({ statisticalEvent }) {
+  console.log(statisticalEvent);
+
   return (
     <>
     <Grid item>
@@ -11,15 +13,15 @@ export default function BasicArea() {
         </Typography>
       </Grid>
     <LineChart
-      xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+      xAxis={[{ data: statisticalEvent?.dates }]}
       series={[
         {
-          data: [2, 5.5, 2, 8.5, 1.5, 5],
+          data: statisticalEvent?.totalAmounts,
           area: true,
         },
       ]}
       height={400}
-
+      margin={{ left: 80 }}
     />
     </>
   );

@@ -82,7 +82,7 @@ const InputCustom = ({
         isValid = validatePassword(inputValue);
         errorMessage = checkSetMessageErr(
           isValid,
-          "Invalid password. Must enter between 8 and 16 characters"
+          "Invalid password format (eg: aBcde%123456)"
         );
       }
     }

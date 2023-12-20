@@ -71,7 +71,7 @@ function ListEventToday({ onClickCheckin }) {
 
   return (
     <>
-      <Grid sx={{height:"88.5vh"}}>
+      <Grid sx={{height:"50vh"}}>
         <TableContainer component={Paper}>
           <Table aria-label="customized table">
             <TableHead>
