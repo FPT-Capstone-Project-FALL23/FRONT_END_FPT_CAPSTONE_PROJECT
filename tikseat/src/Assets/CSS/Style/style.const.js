@@ -168,6 +168,7 @@ export const FormControlStyle = styled(FormControl)`
 export const FooterStyle = styled.footer`
   background: ${colorCetaceanBlue};
   padding: 50px;
+  margin-top: 100px;
 `;
 
 export const CpSendEmailStyle = styled.div`
