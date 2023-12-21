@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import { ToastContainer, toast } from "react-toastify";
-import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import { toastBockTick, toastOptions } from "../../Assets/Constant/Common/dataCommon";
 import "react-toastify/dist/ReactToastify.css";
 import "../../Assets/CSS/Organizer/CreateTiket.css";
 import ApiEvent from "../../API/Event/ApiEvent";
@@ -33,17 +33,12 @@ import {
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
 
-export const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
-  const selectedFile = e.target.files[0];
-  setSelectedFile(selectedFile);
-  if (selectedFile) {
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-    reader.onloadend = () => {
-      setTypeLayout(reader.result);
-    };
-  }
+export const validateFile = (fileName) => {
+  const fileExtensionRegex =
+    /^.*\.(jpg|jpeg|png|gif|tiff|psd|eps|ai|heic|raw|svg)$/i;
+  return fileExtensionRegex.test(fileName);
 };
+
 
 function UpdateTicket({ event }) {
   console.log(event);
@@ -85,6 +80,7 @@ function UpdateTicket({ event }) {
   const [typeLayout, setTypeLayout] = useState(dataTicket?.type_layout || null);
   const [allDateEvents, setAllDateEvents] = useState([]);
   const [errorInputPrice, setErrorInputPrice] = useState(false);
+  const [fileError, setFileError] = useState(null);
 
   //socket
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -105,6 +101,28 @@ function UpdateTicket({ event }) {
 
   const handleIconClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleFileInputChange = (e, setSelectedFile, setTypeLayout) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      if (validateFile(selectedFile.name)) {
+        setSelectedFile(selectedFile);
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedFile);
+        reader.onloadend = () => {
+          setTypeLayout(reader.result);
+        };
+        setFileError("")
+      } else {
+        setSelectedFile(null);
+        setTypeLayout("");
+        setFileError(
+          "File input have format:(.jpg, .jpeg, .png, .gif, .ai, ...)"
+        );
+      }
+    }
   };
 
   const [errorDateEvent, setErrorDateEvent] = useState(false);
@@ -498,6 +516,21 @@ function UpdateTicket({ event }) {
     const endSale = saleDate.endSaleDate;
     if (formatDateEvent <= endSale) {
       setErrorDateEvent(true);
+      toast.error("Event date must be greater than End Sale", toastBockTick)
+      setEventDate((prevEventDate) => {
+        const updatedEventDates = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const newDate = event instanceof Date ? event : event.target.value;
+            return { ...form, dateEvent: newDate };
+          } else {
+            return form;
+          }
+        });
+
+        updateDetailTicket(updatedEventDates);
+
+        return updatedEventDates;
+      });
     } else {
       setEventDate((prevEventDate) => {
         const updatedEventDates = prevEventDate.map((form) => {

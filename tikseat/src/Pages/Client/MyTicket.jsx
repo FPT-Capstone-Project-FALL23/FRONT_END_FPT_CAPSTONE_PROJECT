@@ -12,6 +12,9 @@ import {
   TableHead,
   TableRow,
   TablePagination,
+  Stack,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import { ToastContainer } from "react-toastify";
 import Row from "../../Components/Common/rowTable/RowTable";
@@ -22,6 +25,7 @@ const MyTicket = () => {
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [loading, setLoading] = useState(true); // Add a loading state
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -31,7 +35,14 @@ const MyTicket = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  useEffect(() => {
+    // Simulate a 10-second loading delay
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
 
+    return () => clearTimeout(delay);
+  }, []);
   // Function to slice the data for the current page
 
   console.log("dataMyTicket: ", dataMyTicket);
@@ -106,7 +117,19 @@ const MyTicket = () => {
     });
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Stack direction={"column"} margin={"0 auto"}>
+        <Typography variant="h4" marginTop={"20px"} textAlign={"center"}>
+          Ticket list
+        </Typography>
+      </Stack>
       <Paper style={{ marginTop: "20px", width: "80%", overflow: "hidden" }}>
         <TableContainer>
           <Table aria-label="collapsible table">
@@ -119,14 +142,22 @@ const MyTicket = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mappingDataMyTicket?.length > 0 &&
-                mappingDataMyTicket?.map((row, index) => (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                mappingDataMyTicket?.length > 0 &&
+                mappingDataMyTicket.map((row, index) => (
                   <Row
                     key={index}
                     row={row}
                     onRefetch={getAllOrdersAvailableTickets}
                   />
-                ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

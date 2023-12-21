@@ -393,7 +393,7 @@ export default function MiniDrawer() {
         sx={{ backgroundColor: "#ffffff", color: "black" }}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid sx={{ display: "flex", alignItems: "center" }}>
+          <Grid sx={{ display: "flex", alignItems: "center", marginLeft: "150px"}}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
@@ -410,7 +410,7 @@ export default function MiniDrawer() {
           </Grid>
           <Grid
             className="welcome"
-            sx={{ marginRight: "50px", display: "flex", alignItems: "center" }}
+            sx={{ marginRight: "50px", display: "flex", alignItems: "center", marginRight: "150px" }}
           >
             <Typography variant="h6" noWrap component="div">
               Welcome Back <span style={{ color: "yellow" }}>Admin</span>

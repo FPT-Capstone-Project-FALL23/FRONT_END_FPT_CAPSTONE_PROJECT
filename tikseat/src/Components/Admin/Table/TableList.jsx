@@ -8,7 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Divider, IconButton } from "@mui/material";
+import { Divider, Grid, IconButton, Stack } from "@mui/material";
 import DialogComponent, {
   StyledAvatar,
   StyledChip,
@@ -148,15 +148,28 @@ export default function TableList({
                 </TableBody>
               </Table>
             </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5]}
-              colSpan={3}
-              component="div"
-              count={count}
-              rowsPerPage={5}
-              page={page}
-              onPageChange={handleChangePage}
-            />
+            <Grid
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                backgroundColor: "#ffffff",
+                borderTop: "1px solid #ccc",
+                position: "flxed",
+                bottom: "11px",
+                width: "100%",
+              }}>
+              <Stack spacing={2}>
+                <TablePagination
+                  rowsPerPageOptions={[5]}
+                  colSpan={3}
+                  component="div"
+                  count={count}
+                  rowsPerPage={5}
+                  page={page}
+                  onPageChange={handleChangePage}
+                />
+              </Stack>
+            </Grid>
             <DialogComponent
               open={detailOpen}
               selectedUser={selectedUser}

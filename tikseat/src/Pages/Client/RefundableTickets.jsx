@@ -14,24 +14,25 @@ import {
   TableRow,
   TablePagination,
   IconButton,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DialogSendMail from "../../Components/Client/DialogSendMail";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
 
 const RefundableTickets = () => {
   const dataInfo = getLocalStorageUserInfo();
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openDialog, setOpenDialog] = useState(false);
-  
-  function handleOponeDialog(){
-    setOpenDialog(true)
-  }
 
+  const [loading, setLoading] = useState(true);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -45,6 +46,14 @@ const RefundableTickets = () => {
     const endIndex = startIndex + rowsPerPage;
     return dataMyTicket?.slice(startIndex, endIndex);
   };
+  useEffect(() => {
+    // Simulate a 10-second loading delay
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(delay);
+  }, []);
   useEffect(() => {
     async function getDataOrderByClient() {
       const response = await ApiClient.getOrdersRefundTicket({
@@ -82,6 +91,29 @@ const RefundableTickets = () => {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
     const [dataMyTicket, setDataMyTicket] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+
+    function handleOponeDialog(event) {
+      event.preventDefault();
+      setOpenDialog(true)
+    }
+
+    const handleSendRequest = async () => {
+      try {
+        const request = {
+          "client_id": getLocalStorageUserInfo()._id,
+          "event_id": row.eventId
+        }
+        const reponse = await ApiClient.requestRefundMoney(request)
+        if (reponse.status) {
+          setOpenDialog(false)
+          toast.success("You have sent email", toastBockTick);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
     useEffect(() => {
       if (open) {
         async function getMyTicket() {
@@ -94,14 +126,16 @@ const RefundableTickets = () => {
         getMyTicket();
       }
     }, [row._idOrderDetail, open]);
-    console.log("dataMyTicket", dataMyTicket);
+    console.log("dataMyTicket", row);
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
           <TableCell component="th" scope="row">
             {row?.eventName}
           </TableCell>
-          <TableCell align="left">{row.eventDate}</TableCell>
+          <TableCell align="left">
+            {new Date(row.eventDate).toLocaleString()}
+          </TableCell>
           <TableCell align="left">{row.city}</TableCell>
           <TableCell>
             <Stack direction={"row"} gap={"10px"}>
@@ -115,6 +149,7 @@ const RefundableTickets = () => {
                 {open ? "collapse" : "Show more"}
               </Button>{" "}
             </Stack>
+
           </TableCell>
         </TableRow>
         <TableRow>
@@ -164,15 +199,16 @@ const RefundableTickets = () => {
                               />
                               {!ViewDetailRow.refunded &&
                                 <IconButton color="error" onClick={handleOponeDialog} >
-                                  <PriorityHighIcon/>
+                                  <PriorityHighIcon />
                                 </IconButton>
                               }
-                              <DialogSendMail isDialogOpen={openDialog} setIsDialogOpen={setOpenDialog} />
+                              <DialogSendMail isDialogOpen={openDialog} setIsDialogOpen={setOpenDialog} handleSendMail={handleSendRequest} />
                             </TableCell>
                           </TableRow>
                         );
                       })}
                   </TableBody>
+                  <ToastContainer />
                 </Table>
               </Box>
             </Collapse>
@@ -182,7 +218,19 @@ const RefundableTickets = () => {
     );
   }
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Stack direction={"column"} margin={"0 auto"}>
+        <Typography variant="h4" marginTop={"20px"} textAlign={"center"}>
+          Refundable list
+        </Typography>
+      </Stack>
       <Paper style={{ marginTop: "20px", width: "80%", overflow: "hidden" }}>
         <TableContainer>
           <Table aria-label="collapsible table">
@@ -195,10 +243,18 @@ const RefundableTickets = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {mappingDataMyTicket?.length > 0 &&
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                mappingDataMyTicket?.length > 0 &&
                 mappingDataMyTicket.map((row, index) => (
                   <Row key={index} row={row} />
-                ))}
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

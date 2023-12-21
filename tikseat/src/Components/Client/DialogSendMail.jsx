@@ -6,20 +6,21 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function DialogSendMail({ isDialogOpen, setIsDialogOpen }) {
+export default function DialogSendMail({ isDialogOpen, setIsDialogOpen, handleSendMail }) {
   const closeDialog = () => {
     setIsDialogOpen(false);
   };
   return (
     <Dialog open={isDialogOpen} onClose={closeDialog}>
-      <DialogTitle>Ticket Sales Ended</DialogTitle>
+      <DialogTitle>Send email to return tickets</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Ticket sales for this event have ended. Thank you for your interest!
+          You have not received your ticket payment yet. Click send email so we can send a response email to the event organizer. Thank you
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeDialog}>Close</Button>
+        <Button color="info" onClick={closeDialog}>Close</Button>
+        <Button color="primary" onClick={handleSendMail}>Send Mail</Button>
       </DialogActions>
     </Dialog>
   );

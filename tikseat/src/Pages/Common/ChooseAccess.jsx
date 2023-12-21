@@ -102,7 +102,6 @@ const ChooseAccess = () => {
 
           if (response.status === true) {
             setLoading(false);
-            setCallAPI("setPassword");
             handleSignUp();
           } else {
             setLoading(false);
@@ -137,7 +136,6 @@ const ChooseAccess = () => {
           setLocalStorageUserData(userData);
           navigate("/createProfileOrganizers");
         }
-        
       } else {
         console.log("Error setting password!");
       }
@@ -157,8 +155,7 @@ const ChooseAccess = () => {
             marginTop: "50px",
             height: "100%",
             justifyContent: "space-around",
-          }}
-        >
+          }}>
           <Grid sx={{ width: "45%" }}>
             <Link
               to={"/login"}
@@ -167,15 +164,13 @@ const ChooseAccess = () => {
                 fontStyle: "italic",
                 display: "flex",
                 alignItems: "center",
-              }}
-            >
+              }}>
               <KeyboardArrowLeftIcon /> <span>Back to login</span>
             </Link>
             <Typography
               variant="h4"
               component={"h5"}
-              style={{ marginTop: "20px", fontStyle: "italic" }}
-            >
+              style={{ marginTop: "20px", fontStyle: "italic" }}>
               Choose Access
             </Typography>
             <p style={{ color: "#112211", marginTop: "20px" }}>
@@ -186,23 +181,20 @@ const ChooseAccess = () => {
               justifyContent={"space-evenly"}
               alignItems={"center"}
               direction={"row"}
-              style={{ marginTop: "100px" }}
-            >
+              style={{ marginTop: "100px" }}>
               <Grid
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   width: "100%",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <Grid
                   sx={{
                     width: "100%",
                     display: "flex",
                     justifyContent: "space-around",
-                  }}
-                >
+                  }}>
                   {selectedRole !== "organizer" && (
                     <Box
                       style={{
@@ -211,8 +203,7 @@ const ChooseAccess = () => {
                         boxShadow: "rgb(245 210 23 / 68%) 0px 1px 15px 15px",
                         borderRadius: "20px",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       <Button
                         onClick={() => handleRoleSelection("client")}
                         style={{
@@ -221,8 +212,7 @@ const ChooseAccess = () => {
                           marginTop: "-6px",
                           color: "black",
                         }}
-                        fullWidth
-                      >
+                        fullWidth>
                         <img
                           style={{
                             height: "150px",
@@ -244,8 +234,7 @@ const ChooseAccess = () => {
                         boxShadow: "rgb(245 210 23 / 68%) 0px 1px 15px 15px",
                         borderRadius: "20px",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       <Button
                         onClick={() => handleRoleSelection("organizer")}
                         style={{
@@ -254,8 +243,7 @@ const ChooseAccess = () => {
                           marginTop: "-6px",
                           color: "black",
                         }}
-                        fullWidth
-                      >
+                        fullWidth>
                         <img
                           style={{
                             height: "150px",
@@ -280,8 +268,7 @@ const ChooseAccess = () => {
                         fontSize: "15px",
                         backgroundColor: "#f5bd19",
                       }}
-                      onClick={handleResetSelection}
-                    >
+                      onClick={handleResetSelection}>
                       Reset Choose ROLE
                     </Button>
                   )}
@@ -304,8 +291,7 @@ const ChooseAccess = () => {
               flexDirection: "column",
               justifyContent: "center",
               padding: "30px",
-            }}
-          >
+            }}>
             <Grid sx={{ marginBottom: "30px", color: "black" }}>
               <h2>User Account</h2>
             </Grid>
@@ -325,7 +311,7 @@ const ChooseAccess = () => {
             />
             {newPassword !== confirmPassword && (
               <Grid sx={{ margin: "-20px 0px 30px 10px" }}>
-                <span style={{ color: "red" }}>Password not match</span>
+                <span style={{ color: "red", fontSize:"13px" }}>Password not match</span>
               </Grid>
             )}
             <Grid sx={{ display: displayCode }}>
@@ -333,10 +319,14 @@ const ChooseAccess = () => {
                 fullWidth
                 type="code"
                 onChange={(e) => setVerifyCode(e.target.value)}
-                // setValue={setVerifyCode}
                 value={verifyCode === undefined ? "" : verifyCode}
                 label="Enter Code"
               />
+              {(verifyCode === undefined || verifyCode === "") && (
+              <Grid sx={{ margin: "0px 0px 30px 10px" }}>
+                <span style={{ color: "red", fontSize:"13px" }}>Code will expire in 3 minutes</span>
+              </Grid>
+            )}
               <Stack
                 spacing={1}
                 alignItems={"center"}
@@ -346,8 +336,7 @@ const ChooseAccess = () => {
                   margin: "20px",
                   display: "flex",
                   flexDirection: "row-reverse",
-                }}
-              >
+                }}>
                 <Link
                   component="button"
                   onClick={handleResendOTP}
@@ -355,8 +344,7 @@ const ChooseAccess = () => {
                     color: "#F5BD19",
                     fontWeight: "500",
                     textDecoration: "none",
-                  }}
-                >
+                  }}>
                   RESEND CODE
                 </Link>
               </Stack>
@@ -375,8 +363,7 @@ const ChooseAccess = () => {
                   fontSize: "18px",
                 }}
                 type="submit"
-                fullWidth
-              >
+                fullWidth>
                 {callAPI}
               </Button>
             </Grid>

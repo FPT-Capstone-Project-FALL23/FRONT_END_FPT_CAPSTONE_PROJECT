@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import { ToastContainer, toast } from "react-toastify";
-import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import { toastBockTick, toastOptions } from "../../Assets/Constant/Common/dataCommon";
 import "react-toastify/dist/ReactToastify.css";
 import "../../Assets/CSS/Organizer/CreateTiket.css";
 import ApiEvent from "../../API/Event/ApiEvent";
@@ -74,7 +74,7 @@ const CreateTicket = () => {
   const fileInputRef = useRef("");
   const today = new Date().toISOString().slice(0, 10);
   const [typeLayout, setTypeLayout] = useState(
-    dataEventInfo?.type_layout || null
+    dataTicketInfo?.type_layout || null
   );
   const [fileError, setFileError] = useState(null);
 
@@ -122,7 +122,6 @@ const CreateTicket = () => {
   };
 
   const handleIconClick = () => {
-    // Kích hoạt sự kiện click trên thẻ input
     fileInputRef.current.click();
   };
 
@@ -216,7 +215,7 @@ const CreateTicket = () => {
     event_name: dataEventInfo?.event_name || "",
     type_of_event: dataEventInfo?.type_of_event || "",
     eventImage: dataEventInfo?.eventImage || "",
-    type_layout: "",
+    type_layout: typeLayout,
     event_description: dataEventInfo?.event_description || "",
     maxTicketInOrder: maxTicket,
     sales_date: {
@@ -477,6 +476,21 @@ const CreateTicket = () => {
     const endSale = saleDate.endSaleDate;
     if (formatDateEvent <= endSale) {
       setErrorDateEvent(true);
+      toast.error("Event date must be greater than End Sale", toastBockTick)
+      setEventDate((prevEventDate) => {
+        const updatedEventDates = prevEventDate.map((form) => {
+          if (form.date_number === formId) {
+            const newDate = event instanceof Date ? event : event.target.value;
+            return { ...form, dateEvent: newDate };
+          } else {
+            return form;
+          }
+        });
+
+        updateDetailTicket(updatedEventDates);
+
+        return updatedEventDates;
+      });
     } else {
       setEventDate((prevEventDate) => {
         const updatedEventDates = prevEventDate.map((form) => {

@@ -51,6 +51,20 @@ function PayBusiness() {
       console.log(error);
     }
   };
+  const handleChangePage = async (event, newPage) => {
+    try {
+      const reponse = await ApiAdmin.getPayBusinessWithRequest({ page: newPage + 1 });
+      if (reponse) {
+        setPage(newPage);
+        setDataTable(reponse.data.paginatedPayBusiness);
+        setPayBussinessCount(reponse.data.totalItems);
+        setAmountPaidOrganization(reponse.data.amountPaidOrganization);
+        setAmountRequestOrganizations(reponse.data.amountRequestOrganizations);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const cellComponentsPayBusiness = {
     isPay: (isPay) => (
@@ -123,6 +137,7 @@ function PayBusiness() {
               dialogTitle={TITLE_CONFIRM_PAYBUSINESS}
               dialogContent={CONTENT_CONFIRM_PAYBUSINESS}
               onConfirm={handleClickComfirn}
+              handleChangePage={handleChangePage}
             />
           </Box>
         </Box>

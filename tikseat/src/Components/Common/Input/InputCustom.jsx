@@ -47,12 +47,23 @@ const InputCustom = ({
 
   const validatePassword = (password) => {
     // Regular expression to check for a valid URL format
-    const urlRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    const urlRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
     return urlRegex.test(password);
   };
+  function checkSetMessageErr(isValid, message) {
+    let errorMessage;
+    if (isValid) {
+      errorMessage = null;
+    } else {
+      errorMessage = message;
+    }
+    return errorMessage;
+  }
 
   const handleChange = (e) => {
     const inputValue = e.target.value;
+    console.log("inputValue", inputValue);
     let isValid = true;
     let errorMessage = "";
 
@@ -66,9 +77,13 @@ const InputCustom = ({
       } else if (type === "web") {
         isValid = validateWebURL(inputValue);
         errorMessage = "Invalid web URL format";
-      }else if (type === "password") {
+      } else if (type === "password") {
+        console.log("aaaaaa");
         isValid = validatePassword(inputValue);
-        errorMessage = "Invalid web URL format";
+        errorMessage = checkSetMessageErr(
+          isValid,
+          "Invalid password format (eg: aBcde%123456)"
+        );
       }
     }
     if (isConfirm) {
@@ -90,8 +105,7 @@ const InputCustom = ({
       <FormControl
         variant="outlined"
         fullWidth
-        style={{ marginBottom: "20px" }}
-      >
+        style={{ marginBottom: "20px" }}>
         <InputLabel htmlFor="outlined-adornment-password" required>
           {label || "not label"}
         </InputLabel>
@@ -102,21 +116,24 @@ const InputCustom = ({
           required
           disabled={disabled}
           defaultValue={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={handleChange}
           endAdornment={
             <InputAdornment position="end" variant="standard">
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={() => setShowPassword(!showPassword)}
                 // onMouseDown={handleMouseDownPassword}
-                edge="end"
-              >
+                edge="end">
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
           }
           label={label}
+          error={errorMessage}
         />
+        {errorMessage?.length > 0 && (
+          <p style={{ color: "red", fontSize: "13px" }}>{errorMessage}</p>
+        )}
         {labelError?.length > 0 && (
           <FormHelperText style={{ color: "red" }} id="component-error-text">
             {labelError}
@@ -130,7 +147,7 @@ const InputCustom = ({
       {...rest}
       className={className}
       // style={{ marginBottom: "20px" }}
-      style={{ backgroundColor:"white" }}
+      style={{ backgroundColor: "white" }}
       label={label || "Not label"}
       fullWidth
       required

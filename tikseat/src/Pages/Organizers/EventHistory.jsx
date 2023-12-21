@@ -255,7 +255,6 @@ function EventHistory({ onEventDetail }) {
     <>
       <TableContainer
         sx={{
-          height: "88.5vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -402,7 +401,6 @@ function EventHistory({ onEventDetail }) {
           style={{
             display: "flex",
             justifyContent: "center",
-            padding: "11px",
             backgroundColor: "#ffffff",
             borderTop: "1px solid #ccc",
             position: "flxed",

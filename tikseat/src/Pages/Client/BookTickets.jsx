@@ -41,6 +41,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
 import DialogErrBuyTick from "../../Components/Client/DialogErrBuyTick";
+import Footer from "../../Components/Common/Footer/Footer";
 const style = {
   position: "absolute",
   top: "50%",
@@ -444,16 +445,17 @@ const BookTickets = () => {
         style={{
           width: "100%",
           position: "relative",
-          background: `url(${dataEventDetail?.eventImage}) no-repeat center `,
           height: "550px",
-        }}>
+        }}
+      >
         <div
           style={{
             height: "100%",
             width: "100%",
-            background: "rgb(0 0 0 / 84%)",
+            background: "#000000",
             position: "absolute",
-          }}></div>
+          }}
+        ></div>
         <Stack
           direction={"row"}
           gap={"40px"}
@@ -463,7 +465,8 @@ const BookTickets = () => {
             zIndex: "2",
             width: "80%",
             height: "100%",
-          }}>
+          }}
+        >
           <div style={{ width: "500px" }}>
             <img
               alt=""
@@ -507,7 +510,8 @@ const BookTickets = () => {
                   color: "black",
                   height: "max-content",
                   margin: "auto",
-                }}>
+                }}
+              >
                 <Stack direction={"row "} gap={"10px"} gridColumn={"10px"}>
                   <span
                     style={{
@@ -519,7 +523,8 @@ const BookTickets = () => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                    }}>
+                    }}
+                  >
                     <CalendarMonthIcon />
                   </span>
                   <Stack direction={"column"}>
@@ -557,510 +562,545 @@ const BookTickets = () => {
             </Stack>
           </Stack>
         </Stack>
-        <Grid
-          style={{
-            margin: "100px auto",
-            position: "relative",
-            zIndex: "2",
-            width: "80%",
-            height: "100%",
-          }}
-          container
-          spacing={2}>
-          <Grid item xs={12}>
-            <Grid container spacing={2}>
-              <Grid item xs={5}>
-                <TabContext value={value}>
-                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <TabList
-                      onChange={handleChangeTab}
-                      aria-label="lab API tabs example">
-                      <Tab label="Ticket infomation" value="1" />
-                      <Tab label="About" value="2" />
-                    </TabList>
-                  </Box>
-                  <TabPanel value="1">
-                    <Stack>
-                      <Stack
-                        marginTop={"30px"}
-                        direction={"column"}
-                        gap={"20px"}>
-                        {dataEventDetail?.event_date?.length > 0 &&
-                          dataEventDetail?.event_date?.map((itemEvent) => {
-                            return (
-                              <Box key={itemEvent._id}>
-                                <StackBookNow
-                                  itemEvent={itemEvent}
-                                  setShowEvent={setShowEvent}
-                                />
-                                {itemEvent?._id === showEvent && (
-                                  <Box marginTop={"20px"}>
-                                    {itemEvent.event_areas.map(
-                                      (item, index) => {
-                                        return (
-                                          <StackBuyTicket
-                                            index={index}
-                                            item={item}
-                                            handleOpenBuyTick={
-                                              handleOpenBuyTick
-                                            }
-                                          />
-                                        );
-                                      }
-                                    )}
-                                  </Box>
-                                )}
-                              </Box>
-                            );
-                          })}
-                      </Stack>
-                      <ModalStyled
-                        sx={{
-                          "& .MuiDialog-paper": {
-                            width: dialogWidth,
-                            height: dialogHeight,
-                          },
-                        }}
-                        open={open}
-                        onClose={handleClose}>
-                        <Box sx={{ ...style, width: "70%" }}>
-                          <div
-                            style={{
-                              width: "100%",
-                              height: "60px",
-                              background: "#a9a90a",
-                              display: "flex",
-                              fontWeight: "bold",
-                              color: "white",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              position: "relative",
-                            }}>
-                            <div
-                              style={{
-                                position: "absolute",
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                left: "10px",
-                                color: "white",
-                                zIndex: 2,
-                                display: "flex",
-                                height: "30px",
-                                width: "30px",
-                              }}
-                              onClick={handleClose}>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-6 h-6">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                                />
-                              </svg>
-                            </div>
-                            <span>Buy ticket</span>
-                          </div>
-                          <Stack
-                            direction={"column"}
-                            alignItems={"center"}
-                            style={{ background: "black", padding: "20px" }}>
-                            {" "}
-                            <div style={{ margin: "auto", width: "80%" }}>
-                              <img src={imageScreen} alt="" />
-                            </div>
-                            <Box
-                              component={"div"}
-                              height={"300px"}
-                              width={"80%"}
-                              style={{ overflow: "auto" }}>
-                              <Stack direction={"column"} gap={"30px"}>
-                                {selectRows?.length > 0 &&
-                                  selectRows?.map((selectRow) => {
+      </div>
+      <Grid
+        style={{
+          margin: "100px auto",
+          position: "relative",
+          zIndex: "2",
+          width: "80%",
+          height: "100%",
+        }}
+        container
+        spacing={2}
+      >
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={5}>
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <TabList
+                    onChange={handleChangeTab}
+                    aria-label="lab API tabs example"
+                  >
+                    <Tab label="Ticket infomation" value="1" />
+                    <Tab label="About" value="2" />
+                  </TabList>
+                </Box>
+                <TabPanel value="1">
+                  <Stack>
+                    <Stack marginTop={"30px"} direction={"column"} gap={"20px"}>
+                      {dataEventDetail?.event_date?.length > 0 &&
+                        dataEventDetail?.event_date?.map((itemEvent) => {
+                          return (
+                            <Box key={itemEvent._id}>
+                              <StackBookNow
+                                itemEvent={itemEvent}
+                                setShowEvent={setShowEvent}
+                              />
+                              {itemEvent?._id === showEvent && (
+                                <Box
+                                  marginTop={"20px"}
+                                  display={"flex"}
+                                  flexDirection={"column"}
+                                  gap={"20px"}
+                                >
+                                  {itemEvent.event_areas.map((item, index) => {
                                     return (
-                                      <Stack
-                                        direction={"row"}
-                                        gap={"20px"}
-                                        key={selectRow._id}>
-                                        <Stack
-                                          direction={"column"}
-                                          gap={"10px"}>
-                                          <Typography
-                                            variant="h3"
-                                            color={"white"}>
-                                            {selectRow?.row_name}
-                                          </Typography>
-                                        </Stack>
-                                        <Stack direction={"row"} gap={"15px"}>
-                                          {selectRow?.chairs?.map(
-                                            (item, index) => {
-                                              const isCheckSelected =
-                                                selectChair?.length > 0 &&
-                                                selectChair?.find((itemc) => {
-                                                  return (
-                                                    itemc._idChairName ===
-                                                    item._id
-                                                  );
-                                                });
-                                              return (
-                                                <div
-                                                  onClick={() => {
-                                                    handleClickChair(
-                                                      item,
-                                                      selectRow,
-                                                      isCheckSelected,
-                                                      item._id
-                                                    );
-                                                  }}
-                                                  key={index}
-                                                  style={{
-                                                    width: "50px",
-                                                    height: "50px",
-                                                    borderRadius: "5px",
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    color: "white",
-                                                    cursor: "pointer",
-                                                    backgroundColor: `${handleSeatColor(
-                                                      item,
-                                                      isCheckSelected
-                                                    )}`,
-                                                  }}>
-                                                  {item.chair_name}
-                                                </div>
-                                              );
-                                            }
-                                          )}
-                                        </Stack>
-                                      </Stack>
+                                      <StackBuyTicket
+                                        index={index}
+                                        item={item}
+                                        handleOpenBuyTick={handleOpenBuyTick}
+                                      />
                                     );
                                   })}
-                              </Stack>
+                                </Box>
+                              )}
                             </Box>
-                            <Stack
-                              color={"white"}
-                              marginTop={"10px"}
-                              direction={"row"}
-                              gap={"40px"}>
-                              <Stack direction={"row"} gap={"10px"}>
-                                <Stack
-                                  direction={"row"}
-                                  alignItems={"center"}
-                                  gap={"20px"}>
-                                  <div
-                                    style={{
-                                      background: "#46494c",
-                                      height: "25px",
-                                      width: "25px",
-                                      borderRadius: "4px",
-                                    }}></div>
-                                  <span>Reserved</span>
-                                </Stack>
-                                <Stack
-                                  direction={"row"}
-                                  alignItems={"center"}
-                                  gap={"10px"}>
-                                  <div
-                                    style={{
-                                      background: "#BDBDBD",
-                                      height: "25px",
-                                      width: "25px",
-                                      borderRadius: "4px",
-                                    }}></div>
-                                  <span>On Hold</span>
-                                </Stack>
-                                <Stack
-                                  direction={"row"}
-                                  alignItems={"center"}
-                                  gap={"10px"}>
-                                  <div
-                                    style={{
-                                      background: "#6908bd",
-                                      height: "25px",
-                                      width: "25px",
-                                      borderRadius: "4px",
-                                    }}></div>
-                                  <span>Available</span>
-                                </Stack>
-                                <Stack
-                                  direction={"row"}
-                                  alignItems={"center"}
-                                  gap={"10px"}>
-                                  <div
-                                    style={{
-                                      background: "#ff15a0",
-                                      height: "25px",
-                                      width: "25px",
-                                      borderRadius: "4px",
-                                    }}></div>
-                                  <span>Your selected</span>
-                                </Stack>
+                          );
+                        })}
+                    </Stack>
+                    <ModalStyled
+                      sx={{
+                        "& .MuiDialog-paper": {
+                          width: dialogWidth,
+                          height: dialogHeight,
+                        },
+                      }}
+                      open={open}
+                      onClose={handleClose}
+                    >
+                      <Box sx={{ ...style, width: "70%" }}>
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "60px",
+                            background: "#a9a90a",
+                            display: "flex",
+                            fontWeight: "bold",
+                            color: "white",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            position: "relative",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              left: "10px",
+                              color: "white",
+                              zIndex: 2,
+                              display: "flex",
+                              height: "30px",
+                              width: "30px",
+                            }}
+                            onClick={handleClose}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15.75 19.5L8.25 12l7.5-7.5"
+                              />
+                            </svg>
+                          </div>
+                          <span>Buy ticket</span>
+                        </div>
+                        <Stack
+                          direction={"column"}
+                          alignItems={"center"}
+                          style={{ background: "black", padding: "20px" }}
+                        >
+                          {" "}
+                          <div style={{ margin: "auto", width: "80%" }}>
+                            <img src={imageScreen} alt="" />
+                          </div>
+                          <Box
+                            component={"div"}
+                            height={"300px"}
+                            width={"80%"}
+                            style={{ overflow: "auto" }}
+                          >
+                            <Stack direction={"column"} gap={"30px"}>
+                              {selectRows?.length > 0 &&
+                                selectRows?.map((selectRow) => {
+                                  return (
+                                    <Stack
+                                      direction={"row"}
+                                      gap={"20px"}
+                                      key={selectRow._id}
+                                    >
+                                      <Stack direction={"column"} gap={"10px"}>
+                                        <Typography
+                                          variant="h3"
+                                          color={"white"}
+                                        >
+                                          {selectRow?.row_name}
+                                        </Typography>
+                                      </Stack>
+                                      <Stack direction={"row"} gap={"15px"}>
+                                        {selectRow?.chairs?.map(
+                                          (item, index) => {
+                                            const isCheckSelected =
+                                              selectChair?.length > 0 &&
+                                              selectChair?.find((itemc) => {
+                                                return (
+                                                  itemc._idChairName ===
+                                                  item._id
+                                                );
+                                              });
+                                            return (
+                                              <div
+                                                onClick={() => {
+                                                  handleClickChair(
+                                                    item,
+                                                    selectRow,
+                                                    isCheckSelected,
+                                                    item._id
+                                                  );
+                                                }}
+                                                key={index}
+                                                style={{
+                                                  width: "50px",
+                                                  height: "50px",
+                                                  borderRadius: "5px",
+                                                  display: "flex",
+                                                  justifyContent: "center",
+                                                  alignItems: "center",
+                                                  color: "white",
+                                                  cursor: "pointer",
+                                                  backgroundColor: `${handleSeatColor(
+                                                    item,
+                                                    isCheckSelected
+                                                  )}`,
+                                                }}
+                                              >
+                                                {item.chair_name}
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                      </Stack>
+                                    </Stack>
+                                  );
+                                })}
+                            </Stack>
+                          </Box>
+                          <Stack
+                            color={"white"}
+                            marginTop={"10px"}
+                            direction={"row"}
+                            gap={"40px"}
+                          >
+                            <Stack direction={"row"} gap={"10px"}>
+                              <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"20px"}
+                              >
+                                <div
+                                  style={{
+                                    background: "#46494c",
+                                    height: "25px",
+                                    width: "25px",
+                                    borderRadius: "4px",
+                                  }}
+                                ></div>
+                                <span>Reserved</span>
+                              </Stack>
+                              <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"10px"}
+                              >
+                                <div
+                                  style={{
+                                    background: "#BDBDBD",
+                                    height: "25px",
+                                    width: "25px",
+                                    borderRadius: "4px",
+                                  }}
+                                ></div>
+                                <span>On Hold</span>
+                              </Stack>
+                              <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"10px"}
+                              >
+                                <div
+                                  style={{
+                                    background: "#6908bd",
+                                    height: "25px",
+                                    width: "25px",
+                                    borderRadius: "4px",
+                                  }}
+                                ></div>
+                                <span>Available</span>
+                              </Stack>
+                              <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                gap={"10px"}
+                              >
+                                <div
+                                  style={{
+                                    background: "#ff15a0",
+                                    height: "25px",
+                                    width: "25px",
+                                    borderRadius: "4px",
+                                  }}
+                                ></div>
+                                <span>Your selected</span>
                               </Stack>
                             </Stack>
+                          </Stack>
+                          <Typography
+                            variant="body2"
+                            color={"white"}
+                            marginTop={"20px"}
+                          >
+                            See detailed images and chair information
+                          </Typography>
+                          {selectChair.length >
+                            dataEventDetail?.maxTicketInOrder && (
                             <Typography
                               variant="body2"
-                              color={"white"}
-                              marginTop={"20px"}>
-                              See detailed images and chair information
+                              color={"red"}
+                              marginTop={"10px"}
+                            >
+                              The event only allows a maximum purchase of{" "}
+                              {dataEventDetail?.maxTicketInOrder} tickets at a
+                              time
                             </Typography>
-                            {selectChair.length >
-                              dataEventDetail?.maxTicketInOrder && (
-                              <Typography
-                                variant="body2"
-                                color={"red"}
-                                marginTop={"10px"}>
-                                The event only allows a maximum purchase of{" "}
-                                {dataEventDetail?.maxTicketInOrder} tickets at a
-                                time
+                          )}
+                        </Stack>
+                        <Stack padding={"20px"}>
+                          <Stack
+                            direction={"row"}
+                            gap={"20px"}
+                            alignItems={"center"}
+                          >
+                            {time > 0 && (
+                              <Typography variant="h4">
+                                Thời gian còn lại: {minutes < 10 ? "0" : ""}
+                                {minutes}:{seconds < 10 ? "0" : ""}
+                                {seconds}
                               </Typography>
                             )}
                           </Stack>
-                          <Stack padding={"20px"}>
-                            <Stack
-                              direction={"row"}
-                              gap={"20px"}
-                              alignItems={"center"}>
-                              {time > 0 && (
-                                <Typography variant="h4">
-                                  Thời gian còn lại: {minutes < 10 ? "0" : ""}
-                                  {minutes}:{seconds < 10 ? "0" : ""}
-                                  {seconds}
-                                </Typography>
-                              )}
-                            </Stack>
 
-                            <Stack
-                              direction={"row"}
-                              padding={"15px 0"}
-                              style={{ color: "gray", width: "100%" }}
-                              alignItems={"center"}
-                              justifyContent={"space-between"}
-                              flexWrap={"wrap"}>
-                              <Grid container spacing={3}>
-                                <Grid item sx={6} md={6}>
-                                  <FormControl
-                                    fullWidth
-                                    sx={{ m: 1 }}
-                                    variant="standard">
-                                    <InputLabel htmlFor="standard-adornment-amount">
-                                      Your email
-                                    </InputLabel>
-                                    <Input
-                                      disabled
-                                      defaultValue={dataUser?.email}
-                                      id="standard-adornment-amount"
-                                    />
-                                  </FormControl>
-                                </Grid>
-                                <Grid item sx={6} md={6}>
-                                  <Stack
-                                    direction={"column"}
-                                    alignSelf={"end"}
-                                    borderBottom={"1px solid gray"}>
-                                    <label
-                                      htmlFor=""
-                                      style={{ fontSize: "12px" }}>
-                                      chair name
-                                    </label>
-                                    <Stack>
-                                      <Stack
-                                        direction={"row"}
-                                        alignItems={"center"}
-                                        gap={"10px"}
-                                        style={{
-                                          padding: "5px 10px",
-                                          height: "38px",
-                                        }}>
-                                        {selectChair?.length > 0 && (
-                                          <>
-                                            <div>
-                                              {selectChair?.length > 0 &&
-                                                selectChair
-                                                  .filter(
-                                                    (item) =>
-                                                      item.email ===
-                                                      dataUser?.email
-                                                  )
-                                                  .map((item) => {
-                                                    return String(
-                                                      item.chair_name
-                                                    );
-                                                  })
-                                                  .join(",")}
-                                            </div>
-                                          </>
-                                        )}
-                                      </Stack>
-                                    </Stack>
-                                  </Stack>
-                                </Grid>
+                          <Stack
+                            direction={"row"}
+                            padding={"15px 0"}
+                            style={{ color: "gray", width: "100%" }}
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                            flexWrap={"wrap"}
+                          >
+                            <Grid container spacing={3}>
+                              <Grid item sx={6} md={6}>
+                                <FormControl
+                                  fullWidth
+                                  sx={{ m: 1 }}
+                                  variant="standard"
+                                >
+                                  <InputLabel htmlFor="standard-adornment-amount">
+                                    Your email
+                                  </InputLabel>
+                                  <Input
+                                    disabled
+                                    defaultValue={dataUser?.email}
+                                    id="standard-adornment-amount"
+                                  />
+                                </FormControl>
                               </Grid>
-                            </Stack>
-
-                            <Divider />
-                            <Stack
-                              direction={"row"}
-                              justifyContent={"space-between"}
-                              marginTop={"15px"}
-                              alignItems={"center"}>
-                              <Stack>
-                                <Typography variant="body2" color={"gray"}>
-                                  Total amount
-                                </Typography>
-                                <Typography variant="h6">
-                                  {Number(totalByTicket)?.toLocaleString()} VNĐ
-                                </Typography>
-                              </Stack>
-                              <Button
-                                disabled={statusConfrim}
-                                type="button"
-                                style={{
-                                  background: `${
-                                    statusConfrim ? "gray" : "#bfad17"
-                                  }`,
-                                  color: "white",
-                                  fontWeight: "bold",
-                                  padding: "10px 20px",
-                                }}
-                                onClick={(event) => handleOpenConfirm()}>
-                                Confirm
-                              </Button>
-                              <Modal
-                                open={openConfrm}
-                                onClose={handleCloseConfirm}
-                                aria-labelledby="child-modal-title"
-                                aria-describedby="child-modal-description">
-                                <Box
-                                  sx={{
-                                    ...style,
-                                    width: 500,
-                                    padding: "20px",
-                                    borderRadius: "10px",
-                                  }}>
-                                  <Stack direction={"column"}>
-                                    <Stack
-                                      direction={"row"}
-                                      padding={" 10px 0"}>
-                                      <label
-                                        htmlFor=""
-                                        style={{
-                                          fontWeight: "500",
-                                          fontSize: "18px",
-                                        }}>
-                                        Confirm chair name:{" "}
-                                      </label>
-                                      <Stack
-                                        marginLeft={"10px"}
-                                        direction={"row"}
-                                        alignItems={"center"}>
-                                        {selectChair?.length > 0 && (
-                                          <>
-                                            <span
-                                              style={{
-                                                fontSize: "18px",
-                                                fontWeight: "700",
-                                              }}>
-                                              {selectChair?.length > 0 &&
-                                                selectChair
-                                                  .filter(
-                                                    (item) =>
-                                                      item.email ===
-                                                      dataUser?.email
-                                                  )
-                                                  .map((item) => {
-                                                    return String(
-                                                      item.chair_name
-                                                    );
-                                                  })
-                                                  .join(",")}
-                                            </span>
-                                          </>
-                                        )}
-                                      </Stack>
-                                    </Stack>
+                              <Grid item sx={6} md={6}>
+                                <Stack
+                                  direction={"column"}
+                                  alignSelf={"end"}
+                                  borderBottom={"1px solid gray"}
+                                >
+                                  <label
+                                    htmlFor=""
+                                    style={{ fontSize: "12px" }}
+                                  >
+                                    chair name
+                                  </label>
+                                  <Stack>
                                     <Stack
                                       direction={"row"}
                                       alignItems={"center"}
-                                      padding={" 10px 0"}>
-                                      <label
-                                        htmlFor=""
-                                        style={{
-                                          fontWeight: "500",
-                                          fontSize: "18px",
-                                        }}>
-                                        Email recieve ticket:{" "}
-                                      </label>
-                                      <span style={{ marginLeft: "10px" }}>
-                                        {dataUser?.email}
-                                      </span>
+                                      gap={"10px"}
+                                      style={{
+                                        padding: "5px 10px",
+                                        height: "38px",
+                                      }}
+                                    >
+                                      {selectChair?.length > 0 && (
+                                        <>
+                                          <div>
+                                            {selectChair?.length > 0 &&
+                                              selectChair
+                                                .filter(
+                                                  (item) =>
+                                                    item.email ===
+                                                    dataUser?.email
+                                                )
+                                                .map((item) => {
+                                                  return String(
+                                                    item.chair_name
+                                                  );
+                                                })
+                                                .join(",")}
+                                          </div>
+                                        </>
+                                      )}
+                                    </Stack>
+                                  </Stack>
+                                </Stack>
+                              </Grid>
+                            </Grid>
+                          </Stack>
+
+                          <Divider />
+                          <Stack
+                            direction={"row"}
+                            justifyContent={"space-between"}
+                            marginTop={"15px"}
+                            alignItems={"center"}
+                          >
+                            <Stack>
+                              <Typography variant="body2" color={"gray"}>
+                                Total amount
+                              </Typography>
+                              <Typography variant="h6">
+                                {Number(totalByTicket)?.toLocaleString()} VNĐ
+                              </Typography>
+                            </Stack>
+                            <Button
+                              disabled={statusConfrim}
+                              type="button"
+                              style={{
+                                background: `${
+                                  statusConfrim ? "gray" : "#bfad17"
+                                }`,
+                                color: "white",
+                                fontWeight: "bold",
+                                padding: "10px 20px",
+                              }}
+                              onClick={(event) => handleOpenConfirm()}
+                            >
+                              Confirm
+                            </Button>
+                            <Modal
+                              open={openConfrm}
+                              onClose={handleCloseConfirm}
+                              aria-labelledby="child-modal-title"
+                              aria-describedby="child-modal-description"
+                            >
+                              <Box
+                                sx={{
+                                  ...style,
+                                  width: 500,
+                                  padding: "20px",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                <Stack direction={"column"}>
+                                  <Stack direction={"row"} padding={" 10px 0"}>
+                                    <label
+                                      htmlFor=""
+                                      style={{
+                                        fontWeight: "500",
+                                        fontSize: "18px",
+                                      }}
+                                    >
+                                      Confirm chair name:{" "}
+                                    </label>
+                                    <Stack
+                                      marginLeft={"10px"}
+                                      direction={"row"}
+                                      alignItems={"center"}
+                                    >
+                                      {selectChair?.length > 0 && (
+                                        <>
+                                          <span
+                                            style={{
+                                              fontSize: "18px",
+                                              fontWeight: "700",
+                                            }}
+                                          >
+                                            {selectChair?.length > 0 &&
+                                              selectChair
+                                                .filter(
+                                                  (item) =>
+                                                    item.email ===
+                                                    dataUser?.email
+                                                )
+                                                .map((item) => {
+                                                  return String(
+                                                    item.chair_name
+                                                  );
+                                                })
+                                                .join(",")}
+                                          </span>
+                                        </>
+                                      )}
                                     </Stack>
                                   </Stack>
                                   <Stack
                                     direction={"row"}
-                                    spacing={2}
-                                    marginTop={"30px"}
-                                    justifyContent={"center"}
-                                    alignItems={"center"}>
-                                    <Button
-                                      type="button"
-                                      variant="outlined"
-                                      onClick={handleCloseConfirm}>
-                                      Close
-                                    </Button>
-                                    <Button
-                                      type="button"
-                                      style={{ backgroundColor: "#bfad17" }}
-                                      variant="contained"
-                                      onClick={(e) => handleBuyTickect(e)}>
-                                      Buy Ticket
-                                    </Button>
+                                    alignItems={"center"}
+                                    padding={" 10px 0"}
+                                  >
+                                    <label
+                                      htmlFor=""
+                                      style={{
+                                        fontWeight: "500",
+                                        fontSize: "18px",
+                                      }}
+                                    >
+                                      Email recieve ticket:{" "}
+                                    </label>
+                                    <span style={{ marginLeft: "10px" }}>
+                                      {dataUser?.email}
+                                    </span>
                                   </Stack>
-                                </Box>
-                              </Modal>
-                              <DialogErrBuyTick isDialogOpen={openShowDialogErr} message={messageError} onReload={handleReloadPage} />
-                            </Stack>
+                                </Stack>
+                                <Stack
+                                  direction={"row"}
+                                  spacing={2}
+                                  marginTop={"30px"}
+                                  justifyContent={"center"}
+                                  alignItems={"center"}
+                                >
+                                  <Button
+                                    type="button"
+                                    variant="outlined"
+                                    onClick={handleCloseConfirm}
+                                  >
+                                    Close
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    style={{ backgroundColor: "#bfad17" }}
+                                    variant="contained"
+                                    onClick={(e) => handleBuyTickect(e)}
+                                  >
+                                    Buy Ticket
+                                  </Button>
+                                </Stack>
+                              </Box>
+                            </Modal>
+                            <DialogErrBuyTick isDialogOpen={openShowDialogErr} message={messageError} onReload={handleReloadPage} />
                           </Stack>
-                        </Box>
-                      </ModalStyled>
-                      <DialogNotification
-                        isDialogOpen={isOpenDialogNotify}
-                        setIsDialogOpen={setIsOpenDialogNotify}
-                      />
-                      <ToastContainer />
-                    </Stack>
-                  </TabPanel>
-                  <TabPanel value="2">
-                    <Stack
-                      direction={"row"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}>
-                      <Typography variant="h4">About</Typography>
-                    </Stack>
-                    <Stack>{dataEventDetail?.event_description}</Stack>
-                  </TabPanel>
-                </TabContext>
-              </Grid>
-              <Grid item xs={7}>
-                <div style={{ height: "500px", marginTop: "50px" }}>
-                  <img
-                    style={{ objectFit: "fill" }}
-                    height={"100%"}
-                    src={dataEventDetail?.type_layout}
-                    alt=""
-                    loading="lazy"
-                  />
-                </div>
-              </Grid>
+                        </Stack>
+                      </Box>
+                    </ModalStyled>
+                    <DialogNotification
+                      isDialogOpen={isOpenDialogNotify}
+                      setIsDialogOpen={setIsOpenDialogNotify}
+                    />
+                    <ToastContainer />
+                  </Stack>
+                </TabPanel>
+                <TabPanel value="2">
+                  <Stack
+                    direction={"row"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                  >
+                    <Typography variant="h4">About</Typography>
+                  </Stack>
+                  <Stack>{dataEventDetail?.event_description}</Stack>
+                </TabPanel>
+              </TabContext>
+            </Grid>
+            <Grid item xs={7}>
+              <div style={{ height: "500px", marginTop: "50px" }}>
+                <img
+                  style={{ objectFit: "fill" }}
+                  height={"100%"}
+                  src={dataEventDetail?.type_layout}
+                  alt=""
+                  loading="lazy"
+                />
+              </div>
             </Grid>
           </Grid>
-          <ListEvents idEvent={idEvent}></ListEvents>
         </Grid>
-      </div>
+        <ListEvents idEvent={idEvent}></ListEvents>
+      </Grid>
     </Box>
   );
 };

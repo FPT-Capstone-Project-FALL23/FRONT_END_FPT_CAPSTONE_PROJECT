@@ -35,8 +35,8 @@ const ApiAdmin = {
     getAllOrders(data) {
         return axiosDefault.post(URL_GET_ALL_ODRERS, data)
     },
-    getAllIsRefund() {
-        return axiosDefault.get(URL_GET_IS_REFUND)
+    getAllIsRefund(data) {
+        return axiosDefault.post(URL_GET_IS_REFUND, data)
     },
     refundMoney(data) {
         return axiosDefault.post(URL_REFUND_MONEY, data)
