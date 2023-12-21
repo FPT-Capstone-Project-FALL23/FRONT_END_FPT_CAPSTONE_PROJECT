@@ -19,8 +19,6 @@ import {
 import { ToastContainer } from "react-toastify";
 import Row from "../../Components/Common/rowTable/RowTable";
 import { useOpenStore } from "../../Store/openStore";
-import { URL_SOCKET } from "../../API/ConstAPI";
-import { io } from "socket.io-client";
 
 const MyTicket = () => {
   const dataInfo = getLocalStorageUserInfo();
@@ -28,22 +26,6 @@ const MyTicket = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(true); // Add a loading state
-
-  const socket = io(URL_SOCKET, { transports: ["websocket"] });
-  const organizerId = dataInfo._id;
-  
-  useEffect(() => {
-    socket?.emit("organizerId", organizerId);
-  }, [socket, organizerId]);
-
-  const handleNotificationRefund = () => {
-    socket.emit("organizerToAdmin", {
-      typeOfNotification: "client",
-      senderName: "client",
-      receiverName: "6544b5f73dd2f66548b5d85a",
-    });
-  };
-
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -95,6 +77,7 @@ const MyTicket = () => {
       );
 
       setDataMyTicket(sortedEvents);
+      console.log("sortedEvents: ", sortedEvents);
       setCheckRefund(false);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -124,6 +107,7 @@ const MyTicket = () => {
     getPaginatedData().map((item) => {
       console.log("item:oo ", item);
       return {
+        endDate: item.end_sale_date,
         eventId: item.event_id,
         eventName: item?.event_name,
         eventDate: item?.event_date,

@@ -13,7 +13,6 @@ import React, { useEffect, useRef, useState } from "react";
 import IconNext from "../../Common/Icons/IconNext";
 import IconPrev from "../../Common/Icons/IconPrev";
 import imgBgHeader from "../../../Assets/Images/bgheaderhomepage.png";
-import imgCarousel from "../../../Assets/Images/pngguru.png";
 import {
   CarouselStyle,
   DatePickerStyle,
@@ -29,7 +28,6 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import SearchIcon from "@mui/icons-material/Search";
 import { DATA_EVENT_TYPE } from "../../../Assets/Constant/Client/dataClient";
-
 import ApiCity from "../../../API/City/ApiCity";
 import NavBar from "../Layout/NavBar";
 import ApiEvent from "../../../API/Event/ApiEvent";
@@ -118,7 +116,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
             transform: "translate(-50%, -50%)",
             maxWidth: "80%",
             width: "100%",
-          }}>
+          }}
+        >
           <CarouselStyle
             autoPlay={false}
             infiniteLoop="true"
@@ -138,7 +137,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                     top: "50%",
                     transform: "translateY(-50%)",
                   }}
-                  onClick={clickHandler}>
+                  onClick={clickHandler}
+                >
                   <IconNext />
                 </div>
               );
@@ -155,11 +155,13 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                     zIndex: "22",
                     color: "white",
                   }}
-                  onClick={clickHandler}>
+                  onClick={clickHandler}
+                >
                   <IconPrev />
                 </div>
               );
-            }}>
+            }}
+          >
             {dataEventHot?.map((item, index) => {
               return (
                 <div
@@ -170,7 +172,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                     alignItems: "center",
                     gap: "50px",
                     padding: "0 50px",
-                  }}>
+                  }}
+                >
                   <div
                     key={index}
                     style={{
@@ -179,7 +182,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                       maxWidth: "600px",
                       width: "100%",
                       height: "400px",
-                    }}>
+                    }}
+                  >
                     <img alt="" src={item?.imageEvent} />
                   </div>
                   <div
@@ -188,7 +192,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                       display: "flex",
                       flexDirection: "column",
                       gap: "30px",
-                    }}>
+                    }}
+                  >
                     <div style={{}}>
                       <h3
                         style={{
@@ -196,7 +201,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                           fontWeight: 700,
                           color: "white",
                           textAlign: "start",
-                        }}>
+                        }}
+                      >
                         {item?.nameEvent}
                       </h3>
                       <p
@@ -204,7 +210,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                           fontSize: "18px",
                           color: "white",
                           textAlign: "start",
-                        }}>
+                        }}
+                      >
                         Look no further! Our {item?.nameEvent} tickets are the
                         simplest way for you to experience a event
                       </p>
@@ -214,7 +221,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                         display: "flex",
                         alignItems: "center",
                         gap: "30px",
-                      }}>
+                      }}
+                    >
                       <Button
                         onClick={() => handClickGetTiket(item._id)}
                         style={{
@@ -226,7 +234,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                           display: "flex",
                           width: "182px",
                           height: "60px",
-                        }}>
+                        }}
+                      >
                         Get Tiket
                       </Button>
                     </div>
@@ -242,7 +251,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
             spacing={2}
             alignItems={"self-end"}
             position={"relative"}
-            style={{ height: "100%" }}>
+            style={{ height: "100%" }}
+          >
             <Grid item xs={2}>
               <TextFieldStyle
                 id="filled-helperText"
@@ -262,7 +272,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                   position: "relative",
                   zIndex: 20,
                 }}
-                ref={dropdownRef}>
+                ref={dropdownRef}
+              >
                 <label htmlFor="" style={{ color: "white" }}>
                   Place
                 </label>
@@ -271,7 +282,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                     display: "flex",
                     width: "100%",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   <div
                     style={{
                       height: "40px",
@@ -283,7 +295,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                       cursor: "pointer",
                       display: "flex",
                       flex: 1,
-                    }}>
+                    }}
+                  >
                     {selectsDistrict?.length > 0 && (
                       <Stack
                         direction={"row"}
@@ -295,7 +308,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                           borderRadius: "30px",
                           background: "gray",
                           height: "30px",
-                        }}>
+                        }}
+                      >
                         <span style={{ padding: "0 10px" }}>
                           {selectsDistrict[0].value}
                         </span>
@@ -306,7 +320,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                               (itemF) => itemF.id !== selectsDistrict[0]?.id
                             );
                             setSelectsDistrict(filterChange);
-                          }}>
+                          }}
+                        >
                           <HighlightOffIcon />
                         </span>
                       </Stack>
@@ -317,7 +332,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                   </div>
                   <div
                     onClick={toggleDropdown}
-                    style={{ cursor: "pointer", color: "white" }}>
+                    style={{ cursor: "pointer", color: "white" }}
+                  >
                     {isOpen ? (
                       <KeyboardArrowUpIcon />
                     ) : (
@@ -339,7 +355,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                       maxHeight: "500px",
                       height: "max-content",
                       boxShadow: "1px 1px 2px 2px #bbb1b12e",
-                    }}>
+                    }}
+                  >
                     <Paper
                       component="form"
                       sx={{
@@ -347,7 +364,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                         display: "flex",
                         alignItems: "center",
                         width: "100%",
-                      }}>
+                      }}
+                    >
                       <InputBase
                         sx={{ ml: 1, flex: 1 }}
                         placeholder="Tìm quận/huyện"
@@ -356,7 +374,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                       <IconButton
                         type="button"
                         sx={{ p: "10px" }}
-                        aria-label="search">
+                        aria-label="search"
+                      >
                         <SearchIcon />
                       </IconButton>
                     </Paper>
@@ -367,7 +386,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                         maxHeight: "200px",
                         height: "max-content",
                         overflow: "auto",
-                      }}>
+                      }}
+                    >
                       {dataDistrict.length > 0 &&
                         dataDistrict.map((item, index) => {
                           return (
@@ -387,7 +407,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                                     item,
                                   ]);
                                 }
-                              }}>
+                              }}
+                            >
                               <span>{item.value}</span>
                               <input
                                 id={`${item.value}`}
@@ -426,14 +447,16 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                         direction={"row"}
                         alignItems={"center"}
                         gap={"10px"}
-                        style={{ cursor: "pointer" }}>
+                        style={{ cursor: "pointer" }}
+                      >
                         <LoopIcon></LoopIcon>
                         <span>reset</span>
                       </Stack>
                       <Button
                         type="button"
                         variant="contained"
-                        onClick={() => setIsOpen(false)}>
+                        onClick={() => setIsOpen(false)}
+                      >
                         Apply
                       </Button>
                     </Stack>
@@ -449,7 +472,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                   position: "relative",
                   zIndex: 20,
                 }}
-                ref={dropdownRef}>
+                ref={dropdownRef}
+              >
                 <label htmlFor="" style={{ color: "white" }}>
                   Time
                 </label>
@@ -466,28 +490,46 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
               </Stack>
             </Grid>
             <Grid item xs={3}>
-              <TextFieldStyle
-                id="filled-helperText"
-                select
-                label="Type Event"
-                defaultValue={typeEvent}
-                variant="filled"
-                onChange={(e) => {
-                  setTypeEvent(e.target.value);
-                }}>
-                {dataType?.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextFieldStyle>
+              <div style={{ position: "relative" }}>
+                <TextFieldStyle
+                  id="filled-helperText"
+                  select
+                  label="Type Event"
+                  value={typeEvent}
+                  variant="filled"
+                  onChange={(e) => {
+                    setTypeEvent(e.target.value);
+                  }}
+                >
+                  {dataType?.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextFieldStyle>
+                {typeEvent?.length > 0 && (
+                  <span
+                    onClick={() => setTypeEvent("")}
+                    style={{
+                      position: "absolute",
+                      right: "35px",
+                      color: "white",
+                      top: "60%",
+                      transform: "translateY(-50%)",
+                    }}
+                  >
+                    <HighlightOffIcon></HighlightOffIcon>
+                  </span>
+                )}
+              </div>
             </Grid>
             <Grid item xs={1}>
               <Button
                 type="button"
                 variant="outlined"
                 onClick={() => handleSearchEvent()}
-                style={{ background: "white" }}>
+                style={{ background: "white" }}
+              >
                 Search
               </Button>
             </Grid>
@@ -499,7 +541,8 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "20px",
-              }}>
+              }}
+            >
               Search Event
             </div>
           </Grid>

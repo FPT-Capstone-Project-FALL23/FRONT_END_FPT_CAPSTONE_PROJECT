@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../../API/Client/ApiClient";
 import {
@@ -24,10 +25,12 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
+  width: "70%",
+  // maxHeight: "80%",
+  // height: "100% !important",
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
+  p: 5,
 };
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 function Row(props) {
@@ -186,7 +189,7 @@ function Row(props) {
       return item.chairName;
     });
   const now = new Date();
-  const eventDateTime = new Date(row.eventDate);
+  const eventDateTime = new Date(row.endDate);
 
   // Check if the current date is more than 24 hours before the event
   const isRefundAllowed = eventDateTime - now > 24 * 60 * 60 * 1000;
@@ -399,19 +402,30 @@ function Row(props) {
                               aria-describedby="modal-modal-description"
                             >
                               <Box sx={style}>
-                                <img
-                                  id="downloadImage"
-                                  src={viewDetail}
-                                  alt="image ticket"
-                                />
-                                <Button
-                                  onClick={handleDownload}
-                                  variant="contained"
-                                  size="large"
-                                  color="primary"
+                                <div
+                                  style={{
+                                    width: "600px",
+                                    height: "max-content",
+                                    margin: "auto",
+                                  }}
                                 >
-                                  Download
-                                </Button>
+                                  <img
+                                    style={{ objectFit: "fill" }}
+                                    id="downloadImage"
+                                    src={viewDetail}
+                                    alt="image ticket"
+                                  />
+                                </div>
+                                <div>
+                                  <Button
+                                    onClick={handleDownload}
+                                    variant="contained"
+                                    size="large"
+                                    color="primary"
+                                  >
+                                    Download
+                                  </Button>
+                                </div>
                               </Box>
                             </Modal>
                           </TableCell>
