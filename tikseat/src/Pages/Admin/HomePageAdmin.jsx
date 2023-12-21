@@ -83,18 +83,23 @@ function HomePageAdmin() {
     try {
       const reponse = await ApiAdmin.getHomeAdmin();
       if (reponse) {
-        setTotalAmountSold(reponse.data.totalAmountSold);
-        setTotalMoneyRefund(reponse.data.formatMoneyRefund);
-        setTotalAdminEarnings(reponse.data.totalAdminEarnings);
-        setTotalAdminEarRefund(reponse.data.adminEarRefund);
-        setTotalMoneyAdminHas(reponse.data.totalMoneyAdminHas);
+        setTotalAmountSold(reponse.data?.totalAmountSold);
+        setTotalMoneyRefund(reponse.data?.formatMoneyRefund);
+        setTotalAdminEarnings(reponse.data?.totalAdminEarnings);
+        setTotalAdminEarRefund(reponse.data?.adminEarRefund);
+        setTotalMoneyAdminHas(reponse.data?.totalMoneyAdminHas);
         const dataChart = reponse.data.dataChart;
-        const dataTotalTransactions = dataChart.map(
-          (item) => item.totalTransactions
-        );
-        const dataEvent_name = dataChart.map((item) => item.event_name);
-        setTotalTransactions(dataTotalTransactions);
-        setEvent_name(dataEvent_name);
+        if (dataChart) {
+          const dataTotalTransactions = dataChart?.map(
+            (item) => item?.totalTransactions
+          );
+          const dataEvent_name = dataChart?.map((item) => item?.event_name);
+          setTotalTransactions(dataTotalTransactions);
+          setEvent_name(dataEvent_name);
+        } else {
+          setTotalTransactions(0);
+          setEvent_name(0);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -195,11 +200,11 @@ function HomePageAdmin() {
                       <BasicPie
                         adminRevenue={totalMoneyAdminHas}
                         amountReceived={parseInt(
-                          totalAmountSold.replace(/,/g, ""),
+                          totalAmountSold?.replace(/,/g, ""),
                           10
                         )}
                         amountRefund={parseInt(
-                          totalMoneyRefund.replace(/,/g, ""),
+                          totalMoneyRefund?.replace(/,/g, ""),
                           10
                         )}
                       />

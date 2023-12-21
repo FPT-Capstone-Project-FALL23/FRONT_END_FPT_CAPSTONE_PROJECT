@@ -12,9 +12,7 @@ import RequestPageIcon from "@mui/icons-material/RequestPage";
 import TablePagination from "@mui/material/TablePagination";
 import EditIcon from "@mui/icons-material/Edit";
 import ApiEvent from "../../API/Event/ApiEvent";
-import {
-  getLocalStorageUserInfo,
-} from "../../Store/userStore";
+import { getLocalStorageUserInfo } from "../../Store/userStore";
 import {
   Button,
   Grid,
@@ -24,6 +22,7 @@ import {
   DialogActions,
   Stack,
   DialogContentText,
+  CircularProgress,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import { URL_SOCKET } from "../../API/ConstAPI";
@@ -146,6 +145,16 @@ function EventHistory({ onEventDetail }) {
   const [open, setOpen] = useState(false);
   const [requestCreate, setRequestCreate] = useState();
   const [dataDialog, setDataDialog] = useState();
+  const [loading, setLoading] = useState(true); // Add a loading state
+
+  useEffect(() => {
+    // Simulate a 10-second loading delay
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(delay);
+  }, []);
 
   useEffect(() => {
     socket?.emit("organizerId", organizerId);
@@ -287,114 +296,122 @@ function EventHistory({ onEventDetail }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {eventHistory?.map((row, index) => (
-              <StyledTableRow key={index}>
-                <StyledTableCell component="th" scope="row">
-                  {row.eventName}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Rating
-                    name="customized-empty"
-                    value={row.totalRating}
-                    precision={0.5}
-                    readOnly
-                  />
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {new Date(row.startDay)?.toLocaleString()}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.totalEstimated?.toLocaleString()}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.totalActual?.toLocaleString()}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {row.totalRefundAmount?.toLocaleString()}
-                </StyledTableCell>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            ) : (
+              eventHistory?.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.eventName}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Rating
+                      name="customized-empty"
+                      value={row.totalRating}
+                      precision={0.5}
+                      readOnly
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {new Date(row.startDay)?.toLocaleString()}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.totalEstimated?.toLocaleString()}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.totalActual?.toLocaleString()}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.totalRefundAmount?.toLocaleString()}
+                  </StyledTableCell>
 
-                <StyledTableCell align="center">
-                  <Grid
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      width: "100%",
-                      height: "100%",
-                      fontSize: "15px",
-                    }}>
+                  <StyledTableCell align="center">
+                    <Grid
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100%",
+                        fontSize: "15px",
+                      }}>
+                      <Grid
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100%",
+                          width: "100%",
+                          margin: "0px 10% 0px 10%",
+                          fontWeight: "500",
+                          backgroundColor:
+                            row.eventStatus === "UPCOMING"
+                              ? "#A0E9FF"
+                              : row.eventStatus === "FINISHED"
+                              ? "#E49393"
+                              : "#FFFD8C",
+                        }}>
+                        {row.eventStatus}
+                      </Grid>
+                    </Grid>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
                     <Grid
                       style={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         height: "100%",
-                        width: "100%",
-                        margin: "0px 10% 0px 10%",
                         fontWeight: "500",
-                        backgroundColor:
-                          row.eventStatus === "UPCOMING"
-                            ? "#A0E9FF"
-                            : row.eventStatus === "FINISHED"
-                            ? "#E49393"
-                            : "#FFFD8C",
+                        width: "100%",
+                        backgroundColor: row.isActive ? "#A0E9FF" : "#E49393",
                       }}>
-                      {row.eventStatus}
+                      {row.isActive ? "approved" : "waiting"}
                     </Grid>
-                  </Grid>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Grid
-                    style={{
+                  </StyledTableCell>
+                  <StyledTableCell
+                    align="center"
+                    sx={{
+                      width: "350px",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      fontWeight: "500",
-                      width: "100%",
-                      backgroundColor: row.isActive ? "#A0E9FF" : "#E49393",
+                      justifyContent: "space-around",
+                      padding: "12px 0px",
                     }}>
-                    {row.isActive ? "approved" : "waiting"}
-                  </Grid>
-                </StyledTableCell>
-                <StyledTableCell
-                  align="center"
-                  sx={{
-                    width: "350px",
-                    display: "flex",
-                    justifyContent: "space-around",
-                    padding: "12px 0px",
-                  }}>
-                  <Grid sx={{ width: "48%" }}>
-                    <ButtonAction
-                      nameButton="Statistics"
-                      icon={<LeaderboardIcon />}
-                      row={row}
-                      handleClick={handleEventDetail}
-                      nameHandle="statistics"
-                    />
-                  </Grid>
-                  <Grid sx={{ width: "48%" }}>
-                    {row.eventStatus == "FINISHED" ? (
+                    <Grid sx={{ width: "48%" }}>
                       <ButtonAction
-                        nameButton="Request payment"
-                        icon={<RequestPageIcon />}
-                        handleClick={handleRequestPayment}
-                        row={row}
-                        isRequestPayment={row?.isRequestPayment}
-                      />
-                    ) : (
-                      <ButtonAction
-                        nameButton="Update"
-                        icon={<EditIcon />}
+                        nameButton="Statistics"
+                        icon={<LeaderboardIcon />}
                         row={row}
                         handleClick={handleEventDetail}
-                        nameHandle="update"
+                        nameHandle="statistics"
                       />
-                    )}
-                  </Grid>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+                    </Grid>
+                    <Grid sx={{ width: "48%" }}>
+                      {row.eventStatus == "FINISHED" ? (
+                        <ButtonAction
+                          nameButton="Request payment"
+                          icon={<RequestPageIcon />}
+                          handleClick={handleRequestPayment}
+                          row={row}
+                          isRequestPayment={row?.isRequestPayment}
+                        />
+                      ) : (
+                        <ButtonAction
+                          nameButton="Update"
+                          icon={<EditIcon />}
+                          row={row}
+                          handleClick={handleEventDetail}
+                          nameHandle="update"
+                        />
+                      )}
+                    </Grid>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))
+            )}
           </TableBody>
         </Table>
         <Grid

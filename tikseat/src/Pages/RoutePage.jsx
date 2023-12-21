@@ -50,12 +50,11 @@ function RoutePage() {
           <Route path="/book-tickets/:id" element={<BookTickets />}></Route>{" "}
           <Route
             path="refundable_tickets"
-            element={<RefundableTickets />}
-          ></Route>
+            element={<RefundableTickets />}></Route>
           <Route path="my_ticket" element={<MyTicket />}></Route>
           <Route path="my_history_payment" element={<HistoryPayment />}></Route>
-          <Route path="payment_completed" element={<PaymentComplated />} />
         </Route>
+        <Route path="payment_completed" element={<PaymentComplated />} />
 
         <Route element={<SignUp />}>
           <Route
@@ -68,8 +67,7 @@ function RoutePage() {
         <Route
           element={
             <LayoutSign itemLeft={6} itemRight={6} direction="row-reverse" />
-          }
-        >
+          }>
           <Route path="/forgot-password" element={<ForgetPassword />}></Route>
         </Route>
         <Route path="/" element={<HomePage />}></Route>

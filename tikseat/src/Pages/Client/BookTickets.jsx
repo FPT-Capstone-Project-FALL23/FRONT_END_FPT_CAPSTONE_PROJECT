@@ -83,7 +83,7 @@ const BookTickets = () => {
   const [dayNumber, setDayNumber] = useState();
   const [openShowDialogErr, setOpenShowDialogErr] = useState(false);
   const [messageError, setMessageError] = useState();
-  
+  const [isEnd, setIsEnd] = useState(true);
 
   const [id, setId] = useState("");
 
@@ -194,11 +194,18 @@ const BookTickets = () => {
   };
 
   function checkEventTicketSalesEnd(item) {
-    const eventDate = new Date(
+    const eventEndDate = new Date(
       dataEventDetail?.sales_date?.end_sales_date
     ).getTime();
+    const eventStartDate = new Date(
+      dataEventDetail?.sales_date?.start_sales_date
+    ).getTime();
     const timeNow = new Date().getTime();
-    if (timeNow > eventDate) {
+    if (timeNow < eventStartDate) {
+      setIsOpenDialogNotify(true);
+      setIsEnd(false);
+    } else if (timeNow > eventEndDate) {
+      setIsEnd(true);
       setIsOpenDialogNotify(true);
     } else {
       handleOpen();
@@ -222,7 +229,7 @@ const BookTickets = () => {
     const reponse = await ApiEvent.selectChairInArea(requestData);
     if (reponse) {
       setSelectedItem(reponse.data);
-      setSelectRows(reponse.data.rows)
+      setSelectRows(reponse.data.rows);
     }
   };
 
@@ -231,7 +238,7 @@ const BookTickets = () => {
     setTime(null);
     setSelectChair([]);
     setSelectedItem(null);
-    if(socket){
+    if (socket) {
       socket?.disconnect();
     }
   };
@@ -246,12 +253,11 @@ const BookTickets = () => {
       getEventDetail();
     }
   }, [idEvent]);
-  useEffect(()=>{
+  useEffect(() => {
     getEventDetail();
-  },[])
+  }, []);
 
-  console.log("setSelectRows", selectRows);
-  console.log("setSelectedItem", selectedItem);
+  
   const [value, setValue] = React.useState("1");
 
   function handleSeatColor(item, isCheckSelected) {
@@ -304,16 +310,16 @@ const BookTickets = () => {
         handleCloseConfirm();
         setLocalStorageListChairId(listChairIds);
         setLocalStorageEventId(eventId);
-      }else{
-        setMessageError(response.message)
-        setOpenShowDialogErr(true)
+      } else {
+        setMessageError(response.message);
+        setOpenShowDialogErr(true);
       }
     } catch (e) {
       toast.error(e.response.data.message, toastBockTick);
     }
   };
 
-  function handleReloadPage(){
+  function handleReloadPage() {
     // getSelectChairInArea();
     // setMessageError(null)
     // setOpenShowDialogErr(false)
@@ -418,18 +424,23 @@ const BookTickets = () => {
   };
 
   useEffect(() => {
+    console.log("dataEventDetail", dataEventDetail);
     const eventStartSale = new Date(
       dataEventDetail?.sales_date?.start_sales_date
     );
     const eventEndSale = new Date(dataEventDetail?.sales_date?.end_sales_date);
     const getTimeEvenStartSale = eventStartSale.getTime();
     const getTimeEvenEndSale = eventEndSale.getTime();
-    const now = new Date().getTime();
-    if (now < getTimeEvenStartSale) {
+    const now = new Date();
+    console.log("eventStartSale", eventStartSale);
+    console.log("eventEndSale", eventEndSale);
+    console.log("now", now);
+    if (now < eventStartSale) {
       setIsOpenSale(true);
       setStatusTime(true);
       countTimeLeft(eventStartSale);
-    } else if (getTimeEvenStartSale <= now && now <= getTimeEvenEndSale) {
+    } else if (eventStartSale <= now && now <= eventEndSale) {
+      console.log("aaaaaa");
       setIsOpenSale(false);
       setStatusTime(true);
       countTimeLeft(eventEndSale);
@@ -446,16 +457,14 @@ const BookTickets = () => {
           width: "100%",
           position: "relative",
           height: "550px",
-        }}
-      >
+        }}>
         <div
           style={{
             height: "100%",
             width: "100%",
             background: "#000000",
             position: "absolute",
-          }}
-        ></div>
+          }}></div>
         <Stack
           direction={"row"}
           gap={"40px"}
@@ -465,8 +474,7 @@ const BookTickets = () => {
             zIndex: "2",
             width: "80%",
             height: "100%",
-          }}
-        >
+          }}>
           <div style={{ width: "500px" }}>
             <img
               alt=""
@@ -510,8 +518,7 @@ const BookTickets = () => {
                   color: "black",
                   height: "max-content",
                   margin: "auto",
-                }}
-              >
+                }}>
                 <Stack direction={"row "} gap={"10px"} gridColumn={"10px"}>
                   <span
                     style={{
@@ -523,8 +530,7 @@ const BookTickets = () => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                    }}
-                  >
+                    }}>
                     <CalendarMonthIcon />
                   </span>
                   <Stack direction={"column"}>
@@ -572,8 +578,7 @@ const BookTickets = () => {
           height: "100%",
         }}
         container
-        spacing={2}
-      >
+        spacing={2}>
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs={5}>
@@ -581,8 +586,7 @@ const BookTickets = () => {
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                   <TabList
                     onChange={handleChangeTab}
-                    aria-label="lab API tabs example"
-                  >
+                    aria-label="lab API tabs example">
                     <Tab label="Ticket infomation" value="1" />
                     <Tab label="About" value="2" />
                   </TabList>
@@ -603,8 +607,7 @@ const BookTickets = () => {
                                   marginTop={"20px"}
                                   display={"flex"}
                                   flexDirection={"column"}
-                                  gap={"20px"}
-                                >
+                                  gap={"20px"}>
                                   {itemEvent.event_areas.map((item, index) => {
                                     return (
                                       <StackBuyTicket
@@ -628,8 +631,7 @@ const BookTickets = () => {
                         },
                       }}
                       open={open}
-                      onClose={handleClose}
-                    >
+                      onClose={handleClose}>
                       <Box sx={{ ...style, width: "70%" }}>
                         <div
                           style={{
@@ -642,8 +644,7 @@ const BookTickets = () => {
                             justifyContent: "center",
                             alignItems: "center",
                             position: "relative",
-                          }}
-                        >
+                          }}>
                           <div
                             style={{
                               position: "absolute",
@@ -656,16 +657,14 @@ const BookTickets = () => {
                               height: "30px",
                               width: "30px",
                             }}
-                            onClick={handleClose}
-                          >
+                            onClick={handleClose}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
                               strokeWidth={1.5}
                               stroke="currentColor"
-                              className="w-6 h-6"
-                            >
+                              className="w-6 h-6">
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
@@ -678,8 +677,7 @@ const BookTickets = () => {
                         <Stack
                           direction={"column"}
                           alignItems={"center"}
-                          style={{ background: "black", padding: "20px" }}
-                        >
+                          style={{ background: "black", padding: "20px" }}>
                           {" "}
                           <div style={{ margin: "auto", width: "80%" }}>
                             <img src={imageScreen} alt="" />
@@ -688,8 +686,7 @@ const BookTickets = () => {
                             component={"div"}
                             height={"300px"}
                             width={"80%"}
-                            style={{ overflow: "auto" }}
-                          >
+                            style={{ overflow: "auto" }}>
                             <Stack direction={"column"} gap={"30px"}>
                               {selectRows?.length > 0 &&
                                 selectRows?.map((selectRow) => {
@@ -697,13 +694,11 @@ const BookTickets = () => {
                                     <Stack
                                       direction={"row"}
                                       gap={"20px"}
-                                      key={selectRow._id}
-                                    >
+                                      key={selectRow._id}>
                                       <Stack direction={"column"} gap={"10px"}>
                                         <Typography
                                           variant="h3"
-                                          color={"white"}
-                                        >
+                                          color={"white"}>
                                           {selectRow?.row_name}
                                         </Typography>
                                       </Stack>
@@ -742,8 +737,7 @@ const BookTickets = () => {
                                                     item,
                                                     isCheckSelected
                                                   )}`,
-                                                }}
-                                              >
+                                                }}>
                                                 {item.chair_name}
                                               </div>
                                             );
@@ -759,67 +753,58 @@ const BookTickets = () => {
                             color={"white"}
                             marginTop={"10px"}
                             direction={"row"}
-                            gap={"40px"}
-                          >
+                            gap={"40px"}>
                             <Stack direction={"row"} gap={"10px"}>
                               <Stack
                                 direction={"row"}
                                 alignItems={"center"}
-                                gap={"20px"}
-                              >
+                                gap={"20px"}>
                                 <div
                                   style={{
                                     background: "#46494c",
                                     height: "25px",
                                     width: "25px",
                                     borderRadius: "4px",
-                                  }}
-                                ></div>
+                                  }}></div>
                                 <span>Reserved</span>
                               </Stack>
                               <Stack
                                 direction={"row"}
                                 alignItems={"center"}
-                                gap={"10px"}
-                              >
+                                gap={"10px"}>
                                 <div
                                   style={{
                                     background: "#BDBDBD",
                                     height: "25px",
                                     width: "25px",
                                     borderRadius: "4px",
-                                  }}
-                                ></div>
+                                  }}></div>
                                 <span>On Hold</span>
                               </Stack>
                               <Stack
                                 direction={"row"}
                                 alignItems={"center"}
-                                gap={"10px"}
-                              >
+                                gap={"10px"}>
                                 <div
                                   style={{
                                     background: "#6908bd",
                                     height: "25px",
                                     width: "25px",
                                     borderRadius: "4px",
-                                  }}
-                                ></div>
+                                  }}></div>
                                 <span>Available</span>
                               </Stack>
                               <Stack
                                 direction={"row"}
                                 alignItems={"center"}
-                                gap={"10px"}
-                              >
+                                gap={"10px"}>
                                 <div
                                   style={{
                                     background: "#ff15a0",
                                     height: "25px",
                                     width: "25px",
                                     borderRadius: "4px",
-                                  }}
-                                ></div>
+                                  }}></div>
                                 <span>Your selected</span>
                               </Stack>
                             </Stack>
@@ -827,8 +812,7 @@ const BookTickets = () => {
                           <Typography
                             variant="body2"
                             color={"white"}
-                            marginTop={"20px"}
-                          >
+                            marginTop={"20px"}>
                             See detailed images and chair information
                           </Typography>
                           {selectChair.length >
@@ -836,8 +820,7 @@ const BookTickets = () => {
                             <Typography
                               variant="body2"
                               color={"red"}
-                              marginTop={"10px"}
-                            >
+                              marginTop={"10px"}>
                               The event only allows a maximum purchase of{" "}
                               {dataEventDetail?.maxTicketInOrder} tickets at a
                               time
@@ -848,8 +831,7 @@ const BookTickets = () => {
                           <Stack
                             direction={"row"}
                             gap={"20px"}
-                            alignItems={"center"}
-                          >
+                            alignItems={"center"}>
                             {time > 0 && (
                               <Typography variant="h4">
                                 Time remaining: {minutes < 10 ? "0" : ""}
@@ -865,15 +847,13 @@ const BookTickets = () => {
                             style={{ color: "gray", width: "100%" }}
                             alignItems={"center"}
                             justifyContent={"space-between"}
-                            flexWrap={"wrap"}
-                          >
+                            flexWrap={"wrap"}>
                             <Grid container spacing={3}>
                               <Grid item sx={6} md={6}>
                                 <FormControl
                                   fullWidth
                                   sx={{ m: 1 }}
-                                  variant="standard"
-                                >
+                                  variant="standard">
                                   <InputLabel htmlFor="standard-adornment-amount">
                                     Your email
                                   </InputLabel>
@@ -888,12 +868,10 @@ const BookTickets = () => {
                                 <Stack
                                   direction={"column"}
                                   alignSelf={"end"}
-                                  borderBottom={"1px solid gray"}
-                                >
+                                  borderBottom={"1px solid gray"}>
                                   <label
                                     htmlFor=""
-                                    style={{ fontSize: "12px" }}
-                                  >
+                                    style={{ fontSize: "12px" }}>
                                     chair name
                                   </label>
                                   <Stack>
@@ -904,8 +882,7 @@ const BookTickets = () => {
                                       style={{
                                         padding: "5px 10px",
                                         height: "38px",
-                                      }}
-                                    >
+                                      }}>
                                       {selectChair?.length > 0 && (
                                         <>
                                           <div>
@@ -937,8 +914,7 @@ const BookTickets = () => {
                             direction={"row"}
                             justifyContent={"space-between"}
                             marginTop={"15px"}
-                            alignItems={"center"}
-                          >
+                            alignItems={"center"}>
                             <Stack>
                               <Typography variant="body2" color={"gray"}>
                                 Total amount
@@ -958,24 +934,21 @@ const BookTickets = () => {
                                 fontWeight: "bold",
                                 padding: "10px 20px",
                               }}
-                              onClick={(event) => handleOpenConfirm()}
-                            >
+                              onClick={(event) => handleOpenConfirm()}>
                               Confirm
                             </Button>
                             <Modal
                               open={openConfrm}
                               onClose={handleCloseConfirm}
                               aria-labelledby="child-modal-title"
-                              aria-describedby="child-modal-description"
-                            >
+                              aria-describedby="child-modal-description">
                               <Box
                                 sx={{
                                   ...style,
                                   width: 500,
                                   padding: "20px",
                                   borderRadius: "10px",
-                                }}
-                              >
+                                }}>
                                 <Stack direction={"column"}>
                                   <Stack direction={"row"} padding={" 10px 0"}>
                                     <label
@@ -983,23 +956,20 @@ const BookTickets = () => {
                                       style={{
                                         fontWeight: "500",
                                         fontSize: "18px",
-                                      }}
-                                    >
+                                      }}>
                                       Confirm chair name:{" "}
                                     </label>
                                     <Stack
                                       marginLeft={"10px"}
                                       direction={"row"}
-                                      alignItems={"center"}
-                                    >
+                                      alignItems={"center"}>
                                       {selectChair?.length > 0 && (
                                         <>
                                           <span
                                             style={{
                                               fontSize: "18px",
                                               fontWeight: "700",
-                                            }}
-                                          >
+                                            }}>
                                             {selectChair?.length > 0 &&
                                               selectChair
                                                 .filter(
@@ -1021,15 +991,13 @@ const BookTickets = () => {
                                   <Stack
                                     direction={"row"}
                                     alignItems={"center"}
-                                    padding={" 10px 0"}
-                                  >
+                                    padding={" 10px 0"}>
                                     <label
                                       htmlFor=""
                                       style={{
                                         fontWeight: "500",
                                         fontSize: "18px",
-                                      }}
-                                    >
+                                      }}>
                                       Email recieve ticket:{" "}
                                     </label>
                                     <span style={{ marginLeft: "10px" }}>
@@ -1042,27 +1010,28 @@ const BookTickets = () => {
                                   spacing={2}
                                   marginTop={"30px"}
                                   justifyContent={"center"}
-                                  alignItems={"center"}
-                                >
+                                  alignItems={"center"}>
                                   <Button
                                     type="button"
                                     variant="outlined"
-                                    onClick={handleCloseConfirm}
-                                  >
+                                    onClick={handleCloseConfirm}>
                                     Close
                                   </Button>
                                   <Button
                                     type="button"
                                     style={{ backgroundColor: "#bfad17" }}
                                     variant="contained"
-                                    onClick={(e) => handleBuyTickect(e)}
-                                  >
+                                    onClick={(e) => handleBuyTickect(e)}>
                                     Buy Ticket
                                   </Button>
                                 </Stack>
                               </Box>
                             </Modal>
-                            <DialogErrBuyTick isDialogOpen={openShowDialogErr} message={messageError} onReload={handleReloadPage} />
+                            <DialogErrBuyTick
+                              isDialogOpen={openShowDialogErr}
+                              message={messageError}
+                              onReload={handleReloadPage}
+                            />
                           </Stack>
                         </Stack>
                       </Box>
@@ -1070,6 +1039,7 @@ const BookTickets = () => {
                     <DialogNotification
                       isDialogOpen={isOpenDialogNotify}
                       setIsDialogOpen={setIsOpenDialogNotify}
+                      isEnd={isEnd}
                     />
                     <ToastContainer />
                   </Stack>
@@ -1078,8 +1048,7 @@ const BookTickets = () => {
                   <Stack
                     direction={"row"}
                     alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
+                    justifyContent={"space-between"}>
                     <Typography variant="h4">About</Typography>
                   </Stack>
                   <Stack>{dataEventDetail?.event_description}</Stack>

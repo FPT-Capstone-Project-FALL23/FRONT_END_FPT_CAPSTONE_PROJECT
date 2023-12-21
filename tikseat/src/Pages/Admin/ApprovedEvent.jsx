@@ -19,7 +19,7 @@ function ApprovedEvent() {
 
   const getAllEvent = async () => {
     try {
-      const respones = await ApiAdmin.getAllEventIsActiveFalse();
+      const respones = await ApiAdmin.getAllEventIsActiveFalse({ page: 1 });
       setDataTableEvent(respones.data.formattedEvent);
       setEventsCount(respones.data.eventsCount);
     } catch (error) {
@@ -63,7 +63,6 @@ function ApprovedEvent() {
   const handleChangePage = async (event, newPage) => {
     try {
       const pageRequest = { page: newPage + 1 };
-      console.log("object1: ", pageRequest);
       const respones = await ApiAdmin.getAllEventIsActiveFalse(pageRequest);
       if (respones) {
         setPage(newPage);

@@ -25,7 +25,7 @@ function RefundList() {
 
   const getAllIsRefund = async () => {
     try {
-      const reponse = await ApiAdmin.getAllIsRefund({page: 1});
+      const reponse = await ApiAdmin.getAllIsRefund();
       if (reponse.status === true) {
         setTotalTransactions(reponse.data.lenght);
         setTotalRefundmount(reponse.data.totalRefundAmount);
@@ -37,17 +37,7 @@ function RefundList() {
   };
 
   const handleChangePage = async (event, newPage) => {
-    try {
-      const reponse = await ApiAdmin.getAllIsRefund({page: newPage + 1});
-      if (reponse.status === true) {
-        setPage(newPage)
-        setTotalTransactions(reponse.data.lenght);
-        setTotalRefundmount(reponse.data.totalRefundAmount);
-        setDataTable(reponse.data.refunds);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    setPage(newPage + 1);
   };
 
   useEffect(() => {

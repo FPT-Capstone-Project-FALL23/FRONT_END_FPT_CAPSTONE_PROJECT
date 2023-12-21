@@ -20,7 +20,7 @@ import {
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import DialogSendMail from "../../Components/Client/DialogSendMail";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -95,24 +95,24 @@ const RefundableTickets = () => {
 
     function handleOponeDialog(event) {
       event.preventDefault();
-      setOpenDialog(true)
+      setOpenDialog(true);
     }
 
     const handleSendRequest = async () => {
       try {
         const request = {
-          "client_id": getLocalStorageUserInfo()._id,
-          "event_id": row.eventId
-        }
-        const reponse = await ApiClient.requestRefundMoney(request)
+          client_id: getLocalStorageUserInfo()._id,
+          event_id: row.eventId,
+        };
+        const reponse = await ApiClient.requestRefundMoney(request);
         if (reponse.status) {
-          setOpenDialog(false)
+          setOpenDialog(false);
           toast.success("You have sent email", toastBockTick);
         }
       } catch (err) {
         console.log(err);
       }
-    }
+    };
 
     useEffect(() => {
       if (open) {
@@ -126,7 +126,7 @@ const RefundableTickets = () => {
         getMyTicket();
       }
     }, [row._idOrderDetail, open]);
-    console.log("dataMyTicket", row);
+    console.log("dataMyTicket", dataMyTicket);
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -144,12 +144,10 @@ const RefundableTickets = () => {
                 size="large"
                 onClick={() => {
                   setOpen(!open);
-                }}
-              >
+                }}>
                 {open ? "collapse" : "Show more"}
               </Button>{" "}
             </Stack>
-
           </TableCell>
         </TableRow>
         <TableRow>
@@ -188,8 +186,7 @@ const RefundableTickets = () => {
                             </TableCell>
                             <TableCell
                               align="left"
-                              style={{ cursor: "pointer" }}
-                            >
+                              style={{ cursor: "pointer" }}>
                               <Chip
                                 label={
                                   ViewDetailRow.refunded
@@ -197,12 +194,18 @@ const RefundableTickets = () => {
                                     : "No refund yet"
                                 }
                               />
-                              {!ViewDetailRow.refunded &&
-                                <IconButton color="error" onClick={handleOponeDialog} >
+                              {!ViewDetailRow.refunded && (
+                                <IconButton
+                                  color="error"
+                                  onClick={handleOponeDialog}>
                                   <PriorityHighIcon />
                                 </IconButton>
-                              }
-                              <DialogSendMail isDialogOpen={openDialog} setIsDialogOpen={setOpenDialog} handleSendMail={handleSendRequest} />
+                              )}
+                              <DialogSendMail
+                                isDialogOpen={openDialog}
+                                setIsDialogOpen={setOpenDialog}
+                                handleSendMail={handleSendRequest}
+                              />
                             </TableCell>
                           </TableRow>
                         );
@@ -224,8 +227,7 @@ const RefundableTickets = () => {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-      }}
-    >
+      }}>
       <Stack direction={"column"} margin={"0 auto"}>
         <Typography variant="h4" marginTop={"20px"} textAlign={"center"}>
           Refundable list

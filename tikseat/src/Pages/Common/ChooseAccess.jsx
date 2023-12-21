@@ -16,7 +16,10 @@ import { ToastContainer, toast } from "react-toastify";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import { setLocalStorageToken } from "../../Store/authStore";
-import { setLocalStorageUserData } from "../../Store/userStore";
+import {
+  setLocalStorageUserData,
+  setLocalStorageUserInfo,
+} from "../../Store/userStore";
 import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 import "react-toastify/dist/ReactToastify.css";
 import { NAME_LOGO, ROLE } from "../../Assets/Constant/Common/constCommon";
@@ -128,10 +131,12 @@ const ChooseAccess = () => {
         const roleUser = response.data.role;
         const token = response.token;
         const userData = response.data;
+        const userInfo = response.client;
         if (roleUser !== ROLE[1]) {
           navigateAfterConfirmPassword(roleUser);
           setLocalStorageToken(token);
           setLocalStorageUserData(userData);
+          setLocalStorageUserInfo(userInfo);
         } else {
           setLocalStorageUserData(userData);
           navigate("/createProfileOrganizers");
@@ -150,7 +155,7 @@ const ChooseAccess = () => {
   };
   return (
     <>
-    <Grid style={{ width: "30%", position: "absolute" }}>
+      <Grid style={{ width: "30%", position: "absolute" }}>
         <Button onClick={handleClickLogo}>
           <Typography variant="h3" className="logo" component="h4">
             {NAME_LOGO}
@@ -320,7 +325,9 @@ const ChooseAccess = () => {
             />
             {newPassword !== confirmPassword && (
               <Grid sx={{ margin: "-20px 0px 30px 10px" }}>
-                <span style={{ color: "red", fontSize:"13px" }}>Password not match</span>
+                <span style={{ color: "red", fontSize: "13px" }}>
+                  Password not match
+                </span>
               </Grid>
             )}
             <Grid sx={{ display: displayCode }}>
@@ -332,10 +339,12 @@ const ChooseAccess = () => {
                 label="Enter Code"
               />
               {(verifyCode === undefined || verifyCode === "") && (
-              <Grid sx={{ margin: "0px 0px 30px 10px" }}>
-                <span style={{ color: "red", fontSize:"13px" }}>Code will expire in 3 minutes</span>
-              </Grid>
-            )}
+                <Grid sx={{ margin: "0px 0px 30px 10px" }}>
+                  <span style={{ color: "red", fontSize: "13px" }}>
+                    Code will expire in 3 minutes
+                  </span>
+                </Grid>
+              )}
               <Stack
                 spacing={1}
                 alignItems={"center"}

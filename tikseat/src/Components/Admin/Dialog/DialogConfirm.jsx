@@ -81,9 +81,11 @@ export default function DialogConfirm({
                         expanded={expandedArea === area._id}
                         onChange={() => handleAccordionChange(area._id)}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <TableCell>{area.name_areas}</TableCell>
-                          <TableCell>{area.total_row}</TableCell>
-                          <TableCell>{area.ticket_price}</TableCell>
+                          <TableCell>Name areas: {area.name_areas}</TableCell>
+                          <TableCell>Total row: {area.total_row}</TableCell>
+                          <TableCell>
+                            Ticket price: {area.ticket_price}
+                          </TableCell>
                         </AccordionSummary>
                         <AccordionDetails>
                           <TableContainer>
