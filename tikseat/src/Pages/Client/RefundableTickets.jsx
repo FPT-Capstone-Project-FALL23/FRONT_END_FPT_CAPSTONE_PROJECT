@@ -13,16 +13,24 @@ import {
   TableHead,
   TableRow,
   TablePagination,
+  IconButton,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ApiClient from "../../API/Client/ApiClient";
 import { getLocalStorageUserInfo } from "../../Store/userStore";
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import DialogSendMail from "../../Components/Client/DialogSendMail";
 
 const RefundableTickets = () => {
   const dataInfo = getLocalStorageUserInfo();
   const [dataMyTicket, setDataMyTicket] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [openDialog, setOpenDialog] = useState(false);
+  
+  function handleOponeDialog(){
+    setOpenDialog(true)
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -154,6 +162,12 @@ const RefundableTickets = () => {
                                     : "No refund yet"
                                 }
                               />
+                              {!ViewDetailRow.refunded &&
+                                <IconButton color="error" onClick={handleOponeDialog} >
+                                  <PriorityHighIcon/>
+                                </IconButton>
+                              }
+                              <DialogSendMail isDialogOpen={openDialog} setIsDialogOpen={setOpenDialog} />
                             </TableCell>
                           </TableRow>
                         );

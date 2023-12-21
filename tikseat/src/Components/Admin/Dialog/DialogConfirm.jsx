@@ -168,7 +168,7 @@ export default function DialogConfirm({
         <Button
           onClick={isConfirmEvent ? () => onConfirm(isHot) : onConfirm}
           autoFocus>
-          {isAccept ? "Accept" : "Block"}
+          Accept
         </Button>
       </DialogActions>
     </>

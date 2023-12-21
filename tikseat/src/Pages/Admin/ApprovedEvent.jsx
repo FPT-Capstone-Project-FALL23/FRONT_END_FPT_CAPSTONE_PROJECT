@@ -82,7 +82,7 @@ function ApprovedEvent() {
       if (reponse) {
         toast.success("You have not accepted this event", toastBockTick);
         setOpenComfirn(false);
-        getAllOrganizerIsFalse();
+        getAllEvent();
       }
     } catch (error) {
       console.log(error);

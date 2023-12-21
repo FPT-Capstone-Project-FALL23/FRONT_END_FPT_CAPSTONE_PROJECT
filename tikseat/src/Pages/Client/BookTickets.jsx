@@ -40,6 +40,7 @@ import ListEvents from "../../Components/Client/ListEvents";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
+import DialogErrBuyTick from "../../Components/Client/DialogErrBuyTick";
 const style = {
   position: "absolute",
   top: "50%",
@@ -79,6 +80,9 @@ const BookTickets = () => {
   const [isOpenSale, setIsOpenSale] = React.useState();
   const [isOpenDialogNotify, setIsOpenDialogNotify] = React.useState(false);
   const [dayNumber, setDayNumber] = useState();
+  const [openShowDialogErr, setOpenShowDialogErr] = useState(false);
+  const [messageError, setMessageError] = useState();
+  
 
   const [id, setId] = useState("");
 
@@ -216,7 +220,8 @@ const BookTickets = () => {
     };
     const reponse = await ApiEvent.selectChairInArea(requestData);
     if (reponse) {
-      selectedItem(reponse.data);
+      setSelectedItem(reponse.data);
+      setSelectRows(reponse.data.rows)
     }
   };
 
@@ -225,25 +230,27 @@ const BookTickets = () => {
     setTime(null);
     setSelectChair([]);
     setSelectedItem(null);
-    const eventRowKey = `${idEvent}_${selectedItem?._id}`;
-    if (socket) {
-      console.log("aaaaaa", dataEventDetail);
-      socket?.emit("CLOSE_DIALOG", { eventRowKey, email: dataUser?.email });
+    if(socket){
+      socket?.disconnect();
     }
-    socket?.disconnect();
   };
 
+  async function getEventDetail() {
+    const response = await ApiClient.geDetailEvent({ _idEvent: idEvent });
+    setDataEventDetail(response.event);
+    setOrganizer(response.organizer);
+  }
   useEffect(() => {
     if (idEvent) {
-      async function getEventDetail() {
-        const response = await ApiClient.geDetailEvent({ _idEvent: idEvent });
-        setDataEventDetail(response.event);
-        setOrganizer(response.organizer);
-      }
       getEventDetail();
     }
   }, [idEvent]);
+  useEffect(()=>{
+    getEventDetail();
+  },[])
 
+  console.log("setSelectRows", selectRows);
+  console.log("setSelectedItem", selectedItem);
   const [value, setValue] = React.useState("1");
 
   function handleSeatColor(item, isCheckSelected) {
@@ -286,7 +293,7 @@ const BookTickets = () => {
       };
 
       const response = await ApiClient.paymentTicket(requestData);
-      if (response) {
+      if (response.status) {
         window.open(
           response.data.order_url,
           "_blank",
@@ -296,11 +303,21 @@ const BookTickets = () => {
         handleCloseConfirm();
         setLocalStorageListChairId(listChairIds);
         setLocalStorageEventId(eventId);
+      }else{
+        setMessageError(response.message)
+        setOpenShowDialogErr(true)
       }
     } catch (e) {
       toast.error(e.response.data.message, toastBockTick);
     }
   };
+
+  function handleReloadPage(){
+    // getSelectChairInArea();
+    // setMessageError(null)
+    // setOpenShowDialogErr(false)
+    window.location.reload();
+  }
 
   const handleClickChair = async (item, selectRow, isCheckSelected, seat) => {
     handlebookSeat(item, seat, isCheckSelected, selectRow);
@@ -345,6 +362,7 @@ const BookTickets = () => {
         toast.error("Time is up, please book again!", toastBockTick);
         setTime(null);
         setOpen(false);
+        setOpenConfirm(false);
         socket.disconnect();
       }
     }
@@ -1004,6 +1022,7 @@ const BookTickets = () => {
                                   </Stack>
                                 </Box>
                               </Modal>
+                              <DialogErrBuyTick isDialogOpen={openShowDialogErr} message={messageError} onReload={handleReloadPage} />
                             </Stack>
                           </Stack>
                         </Box>

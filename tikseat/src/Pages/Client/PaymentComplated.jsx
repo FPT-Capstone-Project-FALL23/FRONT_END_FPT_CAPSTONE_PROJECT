@@ -80,15 +80,15 @@ const PaymentComplated = () => {
     window.close();
   };
 
-  useEffect(() => {
-    const socket = io(URL_SOCKET, {
-      transports: ["websocket"],
-      query: { email: dataUser?.email },
-    });
-    setSocket(socket);
-    socket.on("connect", () => setId(socket.id));
-    console.log("socket connect:", socket.id);
-  }, []);
+  // useEffect(() => {
+  //   const socket = io(URL_SOCKET, {
+  //     transports: ["websocket"],
+  //     query: { email: dataUser?.email },
+  //   });
+  //   setSocket(socket);
+  //   socket.on("connect", () => setId(socket.id));
+  //   console.log("socket connect:", socket.id);
+  // }, []);
 
   return (
     <div>
