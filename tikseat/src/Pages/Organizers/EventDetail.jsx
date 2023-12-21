@@ -12,7 +12,7 @@ function EventDetail({ eventDetail }) {
   console.log(eventDetail);
   console.log(idEvent);
   const dateEvent = eventDetail.startDay;
-  const formattedDate = new Date(dateEvent).toISOString();
+  const formattedDate = new Date(dateEvent).toLocaleString();
 
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,

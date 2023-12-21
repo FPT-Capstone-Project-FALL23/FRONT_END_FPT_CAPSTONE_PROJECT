@@ -125,6 +125,7 @@ const MyTicket = () => {
       console.log("item:oo ", item);
       return {
         eventId: item.event_id,
+        organizerId: item.organizer_id,
         eventName: item?.event_name,
         eventDate: item?.event_date,
         city: item.event_location,

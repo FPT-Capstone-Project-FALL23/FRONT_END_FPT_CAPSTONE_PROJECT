@@ -84,7 +84,6 @@ function DefaultDashboard() {
         });
         if (response.status === true) {
           setNoChart("");
-          console.log(response.data);
           const months = response?.data?.map((item) => item.month) || [];
           const totalAmounts =
             response?.data?.map((item) => item.totalAmount) || [];

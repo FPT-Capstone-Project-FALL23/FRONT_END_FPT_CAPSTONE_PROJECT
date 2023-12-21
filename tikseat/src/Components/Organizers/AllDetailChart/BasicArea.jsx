@@ -3,7 +3,7 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { Grid, Typography } from "@mui/material";
 
 export default function BasicArea({ dataChart }) {
-  console.log(dataChart);
+
   return (
     <>
       <Grid item>

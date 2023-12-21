@@ -19,6 +19,9 @@ import { getLocalStorageUserInfo } from "../../../Store/userStore";
 import Rating from "@mui/material/Rating";
 import { createPortal } from "react-dom";
 import { useOpenStore } from "../../../Store/openStore";
+import { URL_SOCKET } from "../../../API/ConstAPI";
+import { io } from "socket.io-client";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -31,15 +34,31 @@ const style = {
 };
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 function Row(props) {
+
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
   const { row } = props;
+  const receiverName = row.organizerId;
   const { setCheckRefund, checkRefund: checkRefunds } = useOpenStore();
   const dataInfo = getLocalStorageUserInfo();
+  const organizerId = dataInfo._id;
   const eventDate = new Date(row.eventDate);
   const currentDate = new Date();
   const isEnded = currentDate > eventDate;
   const [open, setOpen] = useState(false);
   const [dataRow, setDataRow] = useState([]);
   const [dataMyTicket, setDataMyTicket] = useState([]);
+
+  useEffect(() => {
+    socket?.emit("organizerId", organizerId);
+  }, [socket, organizerId]);
+
+  const handleNotificationRefund = () => {
+    socket.emit("organizerToAdmin", {
+      typeOfNotification: "client",
+      senderName: "client",
+      receiverName: receiverName,
+    });
+  };
   useEffect(() => {
     if (open) {
       async function getMyTicket() {
@@ -174,6 +193,7 @@ function Row(props) {
       if (responseRefund.status) {
         await setCheckRefund(() => true);
         setOpen(false);
+        handleNotificationRefund();
         toast.success("Ticket refund requested");
       }
     } catch (error) {
