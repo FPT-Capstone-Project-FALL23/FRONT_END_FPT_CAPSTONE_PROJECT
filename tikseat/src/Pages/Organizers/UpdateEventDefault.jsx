@@ -163,6 +163,7 @@ function UpdateEventDefault({ eventDetail }) {
           >
             {page === "newEvent" && eventInfo?.event_name !== null ? (
               <UpdateEvent
+                eventDetail={eventDetail}
                 onContinueClick={() => {
                   setPage("create-ticket");
                 }}

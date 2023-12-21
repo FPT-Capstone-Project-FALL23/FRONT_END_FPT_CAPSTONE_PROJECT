@@ -35,6 +35,7 @@ import {
   getLocalStorageUserData,
   setLocalStorageEventInfo,
   getLocalStorageEventInfo,
+  getLocalStorageTicketInfo,
 } from "../../Store/userStore";
 import ApiEvent from "../../API/Event/ApiEvent";
 
@@ -156,7 +157,22 @@ export const handleFileInputChange = (e, setSelectedFile, setEventImage) => {
   }
 };
 
-function UpdateEvent({ onContinueClick }) {
+function UpdateEvent({ eventDetail, onContinueClick }) {
+
+  function updateDataEventInfo() {
+    const newDataTicketInfo = getLocalStorageTicketInfo();
+    dataTicket = newDataTicketInfo;
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key === "eventInfo") {
+      updateDataEventInfo();
+    }
+  });
+  let dataTicket = getLocalStorageTicketInfo();
+
+  const isActive = eventDetail.isActive;
+  const today = new Date().toISOString().slice(0, 10);
   const eventInfomation = getLocalStorageEventInfo();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -186,6 +202,13 @@ function UpdateEvent({ onContinueClick }) {
   const [specificAddress, setSpecificAddress] = useState(
     eventInfomation?.address?.specific_address || ""
   );
+
+  const checkTicketConditions = (isActive, dataTicket, today) => {
+    return isActive === true && dataTicket <= today;
+  }
+  const checkUpdateEventDate = checkTicketConditions(isActive, dataTicket?.sales_date?.start_sales_date, today)
+
+  console.log(checkUpdateEventDate);
 
   const fileInputRef = useRef(null);
   const handleIconClick = () => {
