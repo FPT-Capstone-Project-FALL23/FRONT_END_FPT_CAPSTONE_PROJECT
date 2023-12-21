@@ -19,7 +19,7 @@ import { setLocalStorageToken } from "../../Store/authStore";
 import { setLocalStorageUserData } from "../../Store/userStore";
 import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
 import "react-toastify/dist/ReactToastify.css";
-import { ROLE } from "../../Assets/Constant/Common/constCommon";
+import { NAME_LOGO, ROLE } from "../../Assets/Constant/Common/constCommon";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import ApiCommon from "../../API/Common/ApiCommon";
@@ -145,9 +145,18 @@ const ChooseAccess = () => {
       toast.error(err, toastOptions);
     }
   };
-
+  const handleClickLogo = () => {
+    navigate("/");
+  };
   return (
     <>
+    <Grid style={{ width: "30%", position: "absolute" }}>
+        <Button onClick={handleClickLogo}>
+          <Typography variant="h3" className="logo" component="h4">
+            {NAME_LOGO}
+          </Typography>
+        </Button>
+      </Grid>
       <FormSubmit onSubmit={handleSumit}>
         <Grid
           sx={{
