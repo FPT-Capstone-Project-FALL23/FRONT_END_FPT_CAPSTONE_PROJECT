@@ -51,6 +51,7 @@ function ListRefund() {
   const organizerId = dataInfo._id;
   const organizerName = dataInfo.organizer_name;
   const [refunds, setRefunds] = useState([]);
+  console.log(refunds);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const socket = io(URL_SOCKET, { transports: ["websocket"] });
@@ -92,7 +93,6 @@ function ListRefund() {
         page: page,
       });
       if (response.status === true) {
-        handleNotificationRefund();
         setRefunds(response.data.results);
       } else {
         console.log("error!");
@@ -114,6 +114,7 @@ function ListRefund() {
         isRefund: true,
       });
       if (response.status === true) {
+        handleNotificationRefund();
         toast.success("Send notification to Admin success!", toastOptions);
         listRefund();
       } else {

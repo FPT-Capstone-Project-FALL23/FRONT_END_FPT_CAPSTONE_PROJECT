@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { Avatar, Badge, Button, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -48,6 +48,8 @@ import ListRefund from "./ListRefund";
 import UpdateEventDefault from "./UpdateEventDefault";
 import Transactions from "./Transactions";
 import Footer from "../../Components/Common/Footer/Footer";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -124,21 +126,57 @@ export const handleLogOut = (navigate) => {
 
 export default function MiniDrawer() {
   const dataInfo = getLocalStorageUserInfo();
+  const organizerId = dataInfo?._id;
   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [menuData, setMenuData] = useState("dashboard");
   const [eventDetail, setEventDetail] = useState(null);
   const [eventCheckin, setEventCheckin] = useState(null);
-  const [notifications, setNotifications] = useState([1, 2]);
-  const [notificationRefund, setNotificationRefund] = useState([1, 2]);
-  const [openNotification, setOpenNotification] = useState(false);
+  const [notificationRefund, setNotificationRefund] = useState([]);
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io(URL_SOCKET, { transports: ["websocket"] });
+    setSocket(newSocket);
+    return () => {
+      if (newSocket) {
+        newSocket.disconnect();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socket && organizerId) {
+      socket.emit("organizerId", organizerId);
+
+      return () => {
+        if (socket.off) {
+          socket.off("organizerId");
+        }
+      };
+    }
+  }, [socket, organizerId]);
+
+  useEffect(() => {
+    const handleNotification = (data) => {
+      if (data.typeOfNotification === "client") {
+        setNotificationRefund((prev) => [...prev, data]);
+      }
+    };
+
+    if (socket) {
+      if (socket.on) {
+        socket.on("getNotification", handleNotification);
+        return () => {
+          if (socket.off) {
+            socket.off("getNotification", handleNotification);
+          }
+        };
+      }
+    }
+  }, [socket, notificationRefund]);
 
   const navigate = useNavigate();
-
-  const handleRead = () => {
-    setNotifications([]);
-    setOpenNotification(false);
-  };
 
   const handleClickRefund = () => {
     setMenuData("listRefund");
