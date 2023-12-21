@@ -852,7 +852,7 @@ const BookTickets = () => {
                           >
                             {time > 0 && (
                               <Typography variant="h4">
-                                Thời gian còn lại: {minutes < 10 ? "0" : ""}
+                                Time remaining: {minutes < 10 ? "0" : ""}
                                 {minutes}:{seconds < 10 ? "0" : ""}
                                 {seconds}
                               </Typography>

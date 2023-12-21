@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { NAME_LOGO } from "../../../Assets/Constant/Common/constCommon";
 import SwiperLogin from "../../../Components/Common/SwiperLogin";
 import "../../../Assets/CSS/Common/LayoutSign.css";
+import ApiEvent from "../../../API/Event/ApiEvent";
+import { useEffect, useState } from "react";
 
 const GridStyleLayout = styled(Grid)`
   height: 100vh;
@@ -15,6 +17,25 @@ const GridStyleLayout = styled(Grid)`
 `;
 
 const LayoutSign = ({ direction = "row", itemLeft, itemRight }) => {
+
+  const [dataImage, setDataImage] = useState();
+
+  async function getThreeImaged() {
+    try {
+      const reponse = await ApiEvent.getLatestHotEventImages();
+      console.log(reponse);
+      if (reponse) {
+        setDataImage(reponse);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getThreeImaged();
+  }, []);
+
   return (
     <>
       <GridStyleLayout container className="login">
@@ -33,7 +54,7 @@ const LayoutSign = ({ direction = "row", itemLeft, itemRight }) => {
           </Grid>
 
           <Grid item md={itemRight} className="right">
-            <SwiperLogin />
+            <SwiperLogin dataImage={dataImage}/>
           </Grid>
         </Paper>
       </GridStyleLayout>
