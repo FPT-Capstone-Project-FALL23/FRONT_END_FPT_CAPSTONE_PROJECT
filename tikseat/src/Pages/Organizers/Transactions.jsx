@@ -97,7 +97,7 @@ function Transactions() {
   };
 
   return (
-    <Box sx={{ height: "86vh" }}>
+    <Box>
       <div>
         <div style={{ border: "1px groove", margin: "0 0 20px 0" }}>
           <div

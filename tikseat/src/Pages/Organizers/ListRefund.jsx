@@ -117,11 +117,9 @@ function ListRefund() {
 
   return (
     <>
-    <Button onClick={handleNotificationRefund}>AAAAAAAAAA</Button>
       <Grid sx={{ backgroundColor: "#ffffff" }}>
         <TableContainer
           sx={{
-            height: "88.5vh",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
@@ -212,7 +210,6 @@ function ListRefund() {
             style={{
               display: "flex",
               justifyContent: "center",
-              padding: "10px",
               backgroundColor: "#ffffff",
               borderTop: "1px solid #ccc",
             }}

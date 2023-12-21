@@ -17,6 +17,8 @@ import {
   Chip,
   OutlinedInput,
   MenuItem,
+  Button,
+  Typography,
 } from "@mui/material";
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
@@ -33,6 +35,7 @@ import {
 } from "../../Store/userStore";
 import { DATA_EVENT_TYPE } from "../../Assets/Constant/Client/dataClient";
 import { MENUPROPS } from "../../Assets/Constant/Client/constClient";
+import { NAME_LOGO } from "../../Assets/Constant/Common/constCommon";
 
 function getStyles(name, personName, theme) {
   return {
@@ -193,8 +196,19 @@ function ProfileClient() {
     }
   };
 
+  const handleClickLogo = () => {
+    navigate("/");
+  };
+
   return (
     <>
+      <Grid style={{ width: "30%", position: "absolute" }}>
+        <Button onClick={handleClickLogo}>
+          <Typography variant="h3" className="logo" component="h4">
+            {NAME_LOGO}
+          </Typography>
+        </Button>
+      </Grid>
       <Grid
         style={{
           display: "flex",
@@ -387,9 +401,9 @@ function ProfileClient() {
         </Grid>
         <ToastContainer />
       </FormSubmit>
-      <Grid fullWidth sx={{display:"flex", justifyContent:"center"}}>
+      <Grid fullWidth sx={{ display: "flex", justifyContent: "center" }}>
         <Stack style={{ width: "50%", margin: "30px" }}>
-          <ButtonCustom 
+          <ButtonCustom
             type="button"
             onClick={() => navigate("/change-password")}
             color="black"

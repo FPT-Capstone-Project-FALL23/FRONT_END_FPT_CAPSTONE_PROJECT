@@ -47,6 +47,7 @@ import EventDetail from "./EventDetail";
 import ListRefund from "./ListRefund";
 import UpdateEventDefault from "./UpdateEventDefault";
 import Transactions from "./Transactions";
+import Footer from "../../Components/Common/Footer/Footer";
 
 const drawerWidth = 300;
 const styleIcon = { paddingLeft: "10px", fontSize: "40px" };
@@ -134,10 +135,6 @@ export default function MiniDrawer() {
 
   const navigate = useNavigate();
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
   const handleRead = () => {
     setNotifications([]);
     setOpenNotification(false);
@@ -157,7 +154,7 @@ export default function MiniDrawer() {
         elevation={4}
         sx={{ backgroundColor: "#fff", color: "black" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Grid sx={{ display: "flex", alignItems: "center", marginLeft:"20px" }}>
+          <Grid sx={{ display: "flex", alignItems: "center", marginLeft:"150px" }}>
             <IconButton
             sx={{marginRight:"20px"}}
               color="inherit"
@@ -174,7 +171,7 @@ export default function MiniDrawer() {
           </Grid>
           <Grid
             className="welcome"
-            sx={{ marginRight: "80px", display: "flex", alignItems: "center" }}>
+            sx={{ marginRight: "150px", display: "flex", alignItems: "center" }}>
             <Typography
               variant="h6"
               noWrap
@@ -511,7 +508,6 @@ export default function MiniDrawer() {
         }}>
         <Box
           style={{
-            height: "100%",
             padding: "80px 20px 20px 20px",
           }}
           component="main"
@@ -555,6 +551,7 @@ export default function MiniDrawer() {
           {menuData === "transaction" && <Transactions />}
           {menuData === "logOut" && <DefaultDashboard />}
         </Box>
+        <Footer/>
       </Grid>
     </Box>
   );

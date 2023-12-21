@@ -369,36 +369,37 @@ function UpdateEvent({ onContinueClick }) {
                   color={"#7CA629"}
                   fontWeight={600}
                 >
-                  LƯU Ý KHI ĐĂNG TẢI SỰ KIỆN
+                  NOTE WHEN UPLOADING AN EVENT
                 </Typography>
                 <ul>
-                  <li>
-                    1.&nbsp;&nbsp; Vui lòng{" "}
-                    <strong>
-                      không hiển thị thông tin liên lạc của Ban Tổ Chức
-                    </strong>{" "}
-                    (ví dụ: Số điện thoại/ Email/ Website/ Facebook/ Instagram…){" "}
-                    <strong>trên banner và trong nội dung bài đăng.</strong> Chỉ
-                    sử dụng duy nhất Hotline TickSeat - 1900.6408.
-                  </li>
-                  <li>
-                    2.&nbsp;&nbsp; Trong trường hợp Ban tổ chức{" "}
-                    <strong>
-                      tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu
-                      trên, TickSeat có quyền từ chối phê duyệt sự kiện.
-                    </strong>
-                  </li>
-                  <li>
-                    3.&nbsp;&nbsp; Ticketbox sẽ liên tục kiểm tra thông tin các
-                    sự kiện đang được hiển thị trên nền tảng,{" "}
-                    <strong>
-                      nếu phát hiện có sai phạm liên quan đến hình ảnh/ nội dung
-                      bài đăng, TickSeat có quyền gỡ bỏ hoặc từ chối cung cấp
-                      dịch vụ đối với các sự kiện này,
-                    </strong>{" "}
-                    dựa theo điều khoản trong Hợp đồng dịch vụ.
-                  </li>
-                </ul>
+                    <li>
+                      1.&nbsp;&nbsp; Please{" "}
+                      <strong>
+                        do not display contact information of the Organizer
+                      </strong>{" "}
+                      (eg: Phone number/ Email/ Website/ Facebook/ Instagram…){" "}
+                      <strong>on the banner and in the content.</strong> Only
+                      use Hotline TickSeat - 1900.6408.
+                    </li>
+                    <li>
+                      2.&nbsp;&nbsp; In case the Organizer{" "}
+                      <strong>
+                        creates or updates the event not in accordance with the
+                        above provisions, TickSeat has the right to refuse to
+                        approve the event.
+                      </strong>
+                    </li>
+                    <li>
+                      3.&nbsp;&nbsp; TickSeat will continuously check the
+                      information of events being displayed on the platform,{" "}
+                      <strong>
+                        if it detects that there is an error related to the
+                        image / post content, TickSeat has the right to remove
+                        or refuse to provide the service,
+                      </strong>{" "}
+                      subject to clause 2.9 of the Service Agreement.
+                    </li>
+                  </ul>
               </Box>
             </Fade>
           </Modal>

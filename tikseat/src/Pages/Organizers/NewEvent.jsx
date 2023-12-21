@@ -354,7 +354,7 @@ const NewEvent = ({ onContinueClick }) => {
               component="h2"
               color={"black"}
             >
-              Vui lòng đọc kỹ &nbsp;
+              Please read carefully &nbsp;
               <Link
                 component="button"
                 style={{
@@ -364,7 +364,7 @@ const NewEvent = ({ onContinueClick }) => {
                 }}
                 onClick={handleOpen}
               >
-                Lưu ý khi cập nhật sự kiện
+                Note when updating events
               </Link>
             </Typography>
           </Grid>
