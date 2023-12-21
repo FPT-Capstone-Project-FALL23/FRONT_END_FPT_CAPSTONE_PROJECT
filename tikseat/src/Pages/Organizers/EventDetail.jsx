@@ -9,9 +9,10 @@ import { getLocalStorageUserInfo } from "../../Store/userStore";
 
 function EventDetail({ eventDetail }) {
   const idEvent = eventDetail._idEvent;
+  console.log(eventDetail);
   console.log(idEvent);
   const dateEvent = eventDetail.startDay;
-  const formattedDate = new Date(dateEvent).toLocaleString();
+  const formattedDate = new Date(dateEvent).toISOString();
 
   const [allDataEvent, setAllDataEvent] = useState({
     totalMoney: null,
