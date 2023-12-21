@@ -84,6 +84,7 @@ const BookTickets = () => {
   const [openShowDialogErr, setOpenShowDialogErr] = useState(false);
   const [messageError, setMessageError] = useState();
   const [isEnd, setIsEnd] = useState(true);
+  const [lenghtTicket, setLenghtTicket] = useState();
 
   const [id, setId] = useState("");
 
@@ -257,7 +258,6 @@ const BookTickets = () => {
     getEventDetail();
   }, []);
 
-  
   const [value, setValue] = React.useState("1");
 
   function handleSeatColor(item, isCheckSelected) {
@@ -336,12 +336,14 @@ const BookTickets = () => {
     );
 
     if (checkEmail.length > 0) {
+      setLenghtTicket(checkEmail.length);
       setStatusConfrim(false);
       if (!countDown) {
         setTime(600);
         setCountDown(true);
       }
     } else {
+      setLenghtTicket(0);
       setStatusConfrim(true);
       setCountDown(false);
       setTime(null);
@@ -815,8 +817,7 @@ const BookTickets = () => {
                             marginTop={"20px"}>
                             See detailed images and chair information
                           </Typography>
-                          {selectChair.length >
-                            dataEventDetail?.maxTicketInOrder && (
+                          {/* {lenghtTicket > dataEventDetail?.maxTicketInOrder && (
                             <Typography
                               variant="body2"
                               color={"red"}
@@ -825,7 +826,7 @@ const BookTickets = () => {
                               {dataEventDetail?.maxTicketInOrder} tickets at a
                               time
                             </Typography>
-                          )}
+                          )} */}
                         </Stack>
                         <Stack padding={"20px"}>
                           <Stack
@@ -837,6 +838,18 @@ const BookTickets = () => {
                                 Time remaining: {minutes < 10 ? "0" : ""}
                                 {minutes}:{seconds < 10 ? "0" : ""}
                                 {seconds}
+                              </Typography>
+                            )}
+                            {lenghtTicket >
+                              dataEventDetail?.maxTicketInOrder && (
+                              <Typography
+                                variant="body2"
+                                color={"red"}
+                                marginTop={"10px"}
+                                marginLeft={"30px"}>
+                                The event only allows a maximum purchase of{" "}
+                                {dataEventDetail?.maxTicketInOrder} tickets at a
+                                time
                               </Typography>
                             )}
                           </Stack>
