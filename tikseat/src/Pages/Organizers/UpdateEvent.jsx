@@ -455,6 +455,9 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                 >
                   <Stack style={{ width: "45%", marginBottom: "0px" }}>
                     <InputCustom
+                      InputProps={{
+                        readOnly: checkUpdateEventDate,
+                      }}
                       type="text"
                       name="event_name"
                       value={newEvent.event_name}
@@ -465,7 +468,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                     />
                   </Stack>
                   <Stack style={{ width: "45%", marginBottom: "0px" }}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth disabled={checkUpdateEventDate}>
                       <InputLabel id="demo-multiple-chip-label">
                         Event Type
                       </InputLabel>
@@ -539,8 +542,9 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   }}
                 >
                   <Stack style={{ width: "45%" }}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth >
                       <Autocomplete
+                        disabled={checkUpdateEventDate}
                         freeSolo
                         id="select-city"
                         options={allCity}
@@ -568,6 +572,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   <Stack style={{ width: "45%" }}>
                     <FormControl fullWidth>
                       <Autocomplete
+                        disabled={checkUpdateEventDate}
                         freeSolo
                         id="select-districts"
                         options={allDistrictsOfCity}
@@ -603,6 +608,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   <Stack style={{ width: "45%" }}>
                     <FormControl fullWidth>
                       <Autocomplete
+                        disabled={checkUpdateEventDate}
                         freeSolo
                         id="select-wards"
                         value={selectWard}
@@ -621,6 +627,9 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   </Stack>
                   <Stack style={{ width: "45%" }}>
                     <InputCustom
+                      InputProps={{
+                        readOnly: checkUpdateEventDate,
+                      }}
                       type="text"
                       name="specific_address"
                       value={newEvent.address.specific_address}
@@ -641,6 +650,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
               </Grid>
               <Stack>
                 <TextareaAutosize
+                  disabled={checkUpdateEventDate}
                   style={{ fontSize: "20px" }}
                   fullWidth
                   minRows={6}
