@@ -18,7 +18,6 @@ import {
 import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import ClientAvt from "../../Assets/Images/Client.png";
 import MonochromePhotosIcon from "@mui/icons-material/MonochromePhotos";
 import FormSubmit from "../../Components/Common/FormCustom/FormSubmit";
 import ApiCommon from "../../API/Common/ApiCommon";
@@ -33,9 +32,10 @@ import {
   setLocalStorageUserInfo,
   getLocalStorageUserInfo,
 } from "../../Store/userStore";
-// import { Api } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { LIST_BANK } from "../../Assets/Constant/ConstBank";
+import { URL_SOCKET } from "../../API/ConstAPI";
+import { io } from "socket.io-client";
 
 function getStyles(name, eventType, theme) {
   return {
@@ -131,6 +131,8 @@ export const handleFileInputChange = (e, setSelectedFile, setAvatar) => {
 function ProfileOrganizers() {
   const dataUser = getLocalStorageUserData();
   const dataInfo = getLocalStorageUserInfo();
+  const organizerId = dataUser._id;
+  const socket = io(URL_SOCKET, { transports: ["websocket"] });
   const [avatar, setAvatar] = useState(dataInfo?.avatarImage || "");
   const [selectedFile, setSelectedFile] = useState(null);
   const [eventType, setEventType] = useState([]);
@@ -138,6 +140,18 @@ function ProfileOrganizers() {
   const [allDistrictsOfCity, setAllDistrictsOfCity] = useState([]);
   const [allWardsOfDistricts, setAllWardsOfDistricts] = useState([]);
   const today = new Date().toISOString().slice(0, 10);
+
+  useEffect(() => {
+    socket?.emit("organizerId", organizerId);
+  }, [socket, organizerId]);
+
+  const handleNotificationApprovedO = () => {
+    socket.emit("organizerToAdmin", {
+      typeOfNotification: "acceptOrganizer",
+      senderName: "organizer",
+      receiverName: "6544b5f73dd2f66548b5d85a",
+    });
+  };
 
   const [selectCity, setSelectCity] = useState(dataInfo?.address?.city || "");
   const [selectDistrict, setSelectDistrict] = useState(
@@ -211,7 +225,6 @@ function ProfileOrganizers() {
     });
   };
 
-  console.log("organizerInfo", organizerInfo);
   const handleOrganizerInfo = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -291,6 +304,7 @@ function ProfileOrganizers() {
       });
       if(respone.status === true){
         navigate("/success");
+        handleNotificationApprovedO();
       }else{
         console.log("error");
       }
@@ -311,7 +325,6 @@ function ProfileOrganizers() {
         avatarImage: base64EncodedImage,
       });
       setLocalStorageUserInfo(response.data);
-      // navigate("/dashboard");
       toast.success("Update profile success!", toastOptions);
     } catch (error) {
       console.log(error);
