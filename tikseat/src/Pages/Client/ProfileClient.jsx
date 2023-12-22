@@ -402,7 +402,7 @@ function ProfileClient() {
         <ToastContainer />
       </FormSubmit>
       <Grid fullWidth sx={{ display: "flex", justifyContent: "center" }}>
-        <Stack style={{ width: "50%", margin: "30px" }}>
+        <Stack style={{ width: "50%", margin: "20px" }}>
           <ButtonCustom
             type="button"
             onClick={() => navigate("/change-password")}

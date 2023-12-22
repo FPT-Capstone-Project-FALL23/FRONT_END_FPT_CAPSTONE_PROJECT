@@ -14,7 +14,12 @@ import InputCustom from "../../Components/Common/Input/InputCustom";
 import ButtonCustom from "../../Components/Common/Button/ButtonCustom";
 import { getLocalStorageUserData } from "../../Store/userStore";
 import ApiCommon from "../../API/Common/ApiCommon";
+import { ToastContainer, toast } from "react-toastify";
+import { toastOptions } from "../../Assets/Constant/Common/dataCommon";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState();
   const [newPassword, setNewPassword] = useState();
@@ -26,6 +31,8 @@ const ChangePassword = () => {
   const handleClick = () => {
     setOpen(true);
   };
+
+  const navigate = useNavigate();
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -47,7 +54,9 @@ const ChangePassword = () => {
       console.log("res: ", res);
 
       if (res.status === true) {
-        handleClick();
+        toast.success("Update password success!", toastOptions);
+          window.localStorage.clear();
+            navigate("/login");
       }
     } else {
       setLabelError("password incorrect");
@@ -144,16 +153,6 @@ const ChangePassword = () => {
           </Grid>
         </Box>
       </Paper>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Thay đổi mật khẩu thành công
-        </Alert>
-      </Snackbar>
     </Grid>
   );
 };

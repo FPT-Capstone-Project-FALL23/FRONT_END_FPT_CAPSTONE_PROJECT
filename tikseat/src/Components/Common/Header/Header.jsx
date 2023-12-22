@@ -236,7 +236,7 @@ const Header = ({ setSearchEvent, handleSearchEvent }) => {
                           height: "60px",
                         }}
                       >
-                        Get Tiket
+                        Get Ticket
                       </Button>
                     </div>
                   </div>
