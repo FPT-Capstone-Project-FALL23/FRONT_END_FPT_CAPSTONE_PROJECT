@@ -27,6 +27,7 @@ import {
   setLocalStorageTicketInfo,
   getLocalStorageTicketInfo,
   getLocalStorageEventInfo,
+  setLocalStorageEventInfo,
 } from "../../Store/userStore";
 import { URL_SOCKET } from "../../API/ConstAPI";
 import { io } from "socket.io-client";
@@ -696,7 +697,8 @@ const CreateTicket = () => {
         handleNewEvent();
         toast.success("New Event success!", toastOptions);
         navigate("/success");
-        setLocalStorageTicketInfo([]);
+        setLocalStorageTicketInfo("");
+        setLocalStorageEventInfo("")
       } else {
         console.log("error");
       }
