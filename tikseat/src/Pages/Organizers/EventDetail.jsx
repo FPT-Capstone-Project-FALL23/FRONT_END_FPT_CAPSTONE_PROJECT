@@ -100,10 +100,11 @@ function EventDetail({ eventDetail }) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            paddingRight:"100px"
           }}
         >
           <Typography variant="h4">
-            <span style={{ color: "yellow" }}>{eventDetail.eventName}</span>{" "}
+            <span style={{ color: "#0b2d91", fontWeight:"600" }}>{eventDetail.eventName}</span>{" "}
             event
           </Typography>
           <Typography variant="h5">

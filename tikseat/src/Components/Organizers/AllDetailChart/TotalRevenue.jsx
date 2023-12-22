@@ -17,8 +17,8 @@ function TotalRevenue({ dataAllEventDetail }) {
               title="Actual money VNĐ"
               count={dataAllEventDetail?.totalRevenue?.toLocaleString()}
               // percentage={allDataEvent.percent}
-              percentage={75}
-              extra="8,900"
+              // percentage={75}
+              extra={dataAllEventDetail?.totalRevenue?.toLocaleString()}
             />
           </Grid>
           <Grid sx={{ width: "24%" }}>
@@ -26,19 +26,19 @@ function TotalRevenue({ dataAllEventDetail }) {
               bgColor="linear-gradient(to right, #001b9f, #2ee1fd)"
               title="Total Ticket"
               count={dataAllEventDetail.totalChairs}
-              percentage={70.5}
-              extra="8,900"
+              // percentage={70.5}
+              extra={dataAllEventDetail.totalChairs}
             />
           </Grid>
           <Grid sx={{ width: "24%" }}>
             <AnalyticEcommerce
               bgColor="linear-gradient(to right, #eb9c39, #fff3c8)"
-              title="Total Buy Ticket"
+              title="Total Ticket sale"
               count={dataAllEventDetail.totalSoldChairs}
-              percentage={27.4}
-              isLoss
-              color="warning"
-              extra="1,943"
+              // percentage={27.4}
+              // isLoss
+              // color="warning"
+              extra={dataAllEventDetail.totalSoldChairs}
             />
           </Grid>
           <Grid sx={{ width: "24%" }}>
@@ -46,10 +46,10 @@ function TotalRevenue({ dataAllEventDetail }) {
               bgColor="linear-gradient(to right, #209b40, #a5ff9f)"
               title="Total Check in"
               count={dataAllEventDetail.totalCheckedInChairs}
-              percentage={27.4}
-              isLoss
-              color="warning"
-              extra="$20,395"
+              // percentage={27.4}
+              // isLoss
+              // color="warning"
+              extra={dataAllEventDetail.totalCheckedInChairs}
             />
           </Grid>
         </Grid>

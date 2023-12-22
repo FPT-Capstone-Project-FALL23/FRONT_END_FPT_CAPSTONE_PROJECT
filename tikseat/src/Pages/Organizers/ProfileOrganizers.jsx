@@ -149,7 +149,7 @@ function ProfileOrganizers() {
     socket.emit("organizerToAdmin", {
       typeOfNotification: "acceptOrganizer",
       senderName: "organizer",
-      receiverName: "6544b5f73dd2f66548b5d85a",
+      receiverName: "65847b9a377aaf7126ac03ce",
     });
   };
 
