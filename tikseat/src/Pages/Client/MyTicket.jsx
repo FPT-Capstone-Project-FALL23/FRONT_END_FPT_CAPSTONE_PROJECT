@@ -77,6 +77,7 @@ const MyTicket = () => {
       );
 
       setDataMyTicket(sortedEvents);
+      console.log("sortedEvents: ", sortedEvents);
       setCheckRefund(false);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -106,6 +107,7 @@ const MyTicket = () => {
     getPaginatedData().map((item) => {
       console.log("item:oo ", item);
       return {
+        endDate: item.end_sale_date,
         eventId: item.event_id,
         organizerId: item.organizer_id,
         eventName: item?.event_name,

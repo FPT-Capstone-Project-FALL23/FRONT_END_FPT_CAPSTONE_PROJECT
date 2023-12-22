@@ -68,7 +68,11 @@ const RefundableTickets = () => {
               e.chair_name.join() === event.chair_name.join()
           )
       );
-      setDataMyTicket(() => uniqueEvents);
+      const sortedEvents = uniqueEvents.sort(
+        (a, b) => new Date(b.transaction) - new Date(a.transaction)
+      );
+
+      setDataMyTicket(sortedEvents);
     }
 
     getDataOrderByClient();
@@ -126,7 +130,7 @@ const RefundableTickets = () => {
         getMyTicket();
       }
     }, [row._idOrderDetail, open]);
-    console.log("dataMyTicket", dataMyTicket);
+    console.log("dataMyTicket", row);
     return (
       <React.Fragment>
         <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -144,7 +148,8 @@ const RefundableTickets = () => {
                 size="large"
                 onClick={() => {
                   setOpen(!open);
-                }}>
+                }}
+              >
                 {open ? "collapse" : "Show more"}
               </Button>{" "}
             </Stack>
@@ -186,7 +191,8 @@ const RefundableTickets = () => {
                             </TableCell>
                             <TableCell
                               align="left"
-                              style={{ cursor: "pointer" }}>
+                              style={{ cursor: "pointer" }}
+                            >
                               <Chip
                                 label={
                                   ViewDetailRow.refunded
@@ -197,7 +203,8 @@ const RefundableTickets = () => {
                               {!ViewDetailRow.refunded && (
                                 <IconButton
                                   color="error"
-                                  onClick={handleOponeDialog}>
+                                  onClick={handleOponeDialog}
+                                >
                                   <PriorityHighIcon />
                                 </IconButton>
                               )}
@@ -227,7 +234,8 @@ const RefundableTickets = () => {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-      }}>
+      }}
+    >
       <Stack direction={"column"} margin={"0 auto"}>
         <Typography variant="h4" marginTop={"20px"} textAlign={"center"}>
           Refundable list
