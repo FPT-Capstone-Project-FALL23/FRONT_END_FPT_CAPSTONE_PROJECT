@@ -220,11 +220,31 @@ function Row(props) {
       event_id: row.eventId,
       client_id: dataInfo._id,
     };
-    const reponse = await ApiClient.getClientRating(request);
-    if (reponse) {
-      checkVoted(reponse.clientRating);
-      setOpenRating(true);
+    try {
+      const response = await ApiClient.getClientRating(request);
+      
+      if (!response.clientRating) {
+        // Chưa có đánh giá, mở popup đánh giá
+        setOpenRating(true);
+      } else { 
+        // Đã có đánh giá, hiển thị số sao
+        checkVoted(response.clientRating);
+        setOpenRating(true);
+      }
+  
+    } catch (error) {
+      // Xử lý lỗi
+      console.error("Lỗi khi lấy đánh giá khách hàng:", error);
     }
+    // try {
+    // const reponse = await ApiClient.getClientRating(request);
+    // if (reponse) {
+    //   checkVoted(reponse.clientRating);
+    //   setOpenRating(true);
+    // }}catch (error) {
+    //   // Xử lý lỗi, ghi log, hoặc hiển thị thông báo lỗi
+    //   console.error("Lỗi khi lấy đánh giá khách hàng:", error);
+    // }
   }
   //Kiểm tra xem đã vote event chưa
   function checkVoted(star) {
