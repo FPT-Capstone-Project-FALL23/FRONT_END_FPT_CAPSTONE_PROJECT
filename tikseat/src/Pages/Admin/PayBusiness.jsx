@@ -9,6 +9,9 @@ import {
   CONTENT_CONFIRM_PAYBUSINESS,
   TITLE_CONFIRM_PAYBUSINESS,
 } from "../../Assets/Constant/Admin/constAdmin";
+import "react-toastify/dist/ReactToastify.css";
+import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
+import { ToastContainer, toast } from "react-toastify";
 
 function PayBusiness() {
   const [dataTable, setDataTable] = useState();
@@ -44,6 +47,7 @@ function PayBusiness() {
       console.log("selected_id", selected_id);
       const respones = await ApiAdmin.setIsPayForOrganizers(selected_id);
       if (respones) {
+        toast.success("You have payment for organizer", toastBockTick);
         setOpenComfirn(false);
         getAllPayBusiness();
       }
@@ -139,6 +143,7 @@ function PayBusiness() {
               onConfirm={handleClickComfirn}
               handleChangePage={handleChangePage}
             />
+            <ToastContainer />
           </Box>
         </Box>
       </Box>

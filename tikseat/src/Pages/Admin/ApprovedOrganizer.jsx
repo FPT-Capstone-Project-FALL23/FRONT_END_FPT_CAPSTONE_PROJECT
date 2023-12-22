@@ -23,7 +23,7 @@ function ApprovedOrganizer() {
 
   const getAllOrganizerIsFalse = async () => {
     try {
-      const respones = await ApiAdmin.getAllOrganizersIsActiveFalse();
+      const respones = await ApiAdmin.getAllOrganizersIsActiveFalse({page: 1});
       setDataTableOrganizer(respones.data.formattedOrganizers);
       setOrganizersCount(respones.data.organizersCount);
     } catch (error) {

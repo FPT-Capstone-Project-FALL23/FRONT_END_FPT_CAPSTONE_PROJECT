@@ -61,7 +61,7 @@ function ListRefund() {
     // Simulate a 10-second loading delay
     const delay = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 3500);
 
     return () => clearTimeout(delay);
   }, []);
@@ -231,7 +231,7 @@ function ListRefund() {
                 rowsPerPageOptions={[5, 10, 25]}
                 colSpan={3}
                 component="div"
-                count={~~(refunds.length / rowsPerPage + 1)}
+                count={refunds.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

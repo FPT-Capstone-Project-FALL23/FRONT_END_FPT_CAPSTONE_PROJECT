@@ -14,6 +14,9 @@ import { NAME_COLUMNS_REFUND } from "../../Assets/Constant/Admin/dataAdmin";
 import ApiAdmin from "../../API/Admin/ApiAdmin";
 import DialogComponent from "../../Components/Admin/Dialog/DialogDetail";
 import TableList from "../../Components/Admin/Table/TableList";
+import "react-toastify/dist/ReactToastify.css";
+import { toastBockTick } from "../../Assets/Constant/Common/dataCommon";
+import { ToastContainer, toast } from "react-toastify";
 
 function RefundList() {
   const [totalTransactions, setTotalTransactions] = useState();
@@ -37,7 +40,7 @@ function RefundList() {
   };
 
   const handleChangePage = async (event, newPage) => {
-    setPage(newPage + 1);
+    setPage(newPage);
   };
 
   useEffect(() => {
@@ -56,7 +59,7 @@ function RefundList() {
       const respones = await ApiAdmin.refundMoney(selected_id);
       console.log("respones", respones);
       if (respones) {
-        alert("oke");
+        toast.success("You have refund money success", toastBockTick);
         setOpenComfirn(false);
         getAllIsRefund();
       }
@@ -118,6 +121,7 @@ function RefundList() {
           page={page}
           handleChangePage={handleChangePage}
         />
+        <ToastContainer />
       </Box>
     </>
   );

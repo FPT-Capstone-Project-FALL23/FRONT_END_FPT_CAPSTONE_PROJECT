@@ -65,7 +65,7 @@ export default function TableList({
     // Simulate a 10-second loading delay
     const delay = setTimeout(() => {
       setLoading(false);
-    }, 3500);
+    }, 4000);
 
     return () => clearTimeout(delay);
   }, []);
