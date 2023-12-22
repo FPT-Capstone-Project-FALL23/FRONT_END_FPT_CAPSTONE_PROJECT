@@ -294,6 +294,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
               <WarningIcon sx={{ color: "red", fontSize:"30px" }} />
             )}
           <h3>Cover image</h3>
+          {checkUpdateEventDate && (<p style={{color:"red"}}>(You cannot edit tickets once the event has taken place)</p>)}
         </Grid>
         <Grid
           style={{
@@ -430,8 +431,8 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
         <Grid fullwidth>
           <Grid style={{ display: "flex", justifyContent: "space-around" }}>
             <Grid style={{ width: "100%" }}>
-              <Grid style={{ display: "flex", justifyContent: "start" }}>
-                <h3 style={{ marginTop: "20px" }}>
+              <Grid style={{ display: "flex", justifyContent: "start", marginTop: "20px" }}>
+                <h3>
                   {newEvent.event_name !== "" && newEvent.type_of_event.length !== 0 ? (
                     <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
                   ) : (
@@ -439,6 +440,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   )}
                   Name and Type of Event
                 </h3>
+                {checkUpdateEventDate && (<p style={{color:"red"}}>(You cannot edit tickets once the event has taken place)</p>)}
               </Grid>
               <Grid
                 style={{
@@ -516,8 +518,8 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
               </Grid>
 
               {/* Địa chỉ */}
-              <Grid style={{ display: "flex", justifyContent: "start" }}>
-                <h3 style={{ marginTop: "20px" }}>
+              <Grid style={{ display: "flex", justifyContent: "start",marginTop: "20px" }}>
+                <h3>
                   {newEvent.address.city !== "" && newEvent.address.district !== "" 
                     && newEvent.address.specific_address !== "" && newEvent.address.ward !== ""  ? (
                       <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
@@ -526,6 +528,7 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   )}
                   Address
                 </h3>
+                {checkUpdateEventDate && (<p style={{color:"red"}}>(You cannot edit tickets once the event has taken place)</p>)}
               </Grid>
               <Grid
                 style={{
@@ -639,14 +642,15 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
                   </Stack>
                 </Stack>
               </Grid>
-              <Grid style={{ display: "flex", justifyContent: "start" }}>
-                <h3 style={{ marginTop: "20px" }}> 
+              <Grid style={{ display: "flex", justifyContent: "start", marginTop: "20px" }}>
+                <h3> 
                   {newEvent.event_description !== "" ? (
                   <OfflinePinIcon sx={{ color: "green", fontSize:"30px", marginBottom:"-8px" }} />
                     ) : (
                       <WarningIcon sx={{ color: "red", fontSize:"30px", marginBottom:"-8px" }} />
                     )} 
                 Event Information</h3>
+                {checkUpdateEventDate && (<p style={{color:"red"}}>(You cannot edit tickets once the event has taken place)</p>)}
               </Grid>
               <Stack>
                 <TextareaAutosize
@@ -664,8 +668,8 @@ function UpdateEvent({ eventDetail, onContinueClick }) {
               </Stack>
             </Grid>
           </Grid>
-          <Grid style={{ display: "flex", justifyContent: "start" }}>
-            <h3 style={{ marginTop: "20px" }}>Info Organizer</h3>
+          <Grid style={{ display: "flex", justifyContent: "start",marginTop: "20px" }}>
+            <h3>Info Organizer</h3>
           </Grid>
           <Grid
             style={{

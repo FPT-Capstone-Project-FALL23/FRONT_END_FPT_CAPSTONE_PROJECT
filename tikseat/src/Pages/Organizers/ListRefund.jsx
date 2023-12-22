@@ -74,7 +74,7 @@ function ListRefund() {
     socket.emit("organizerToAdmin", {
       typeOfNotification: "acceptRefund",
       senderName: organizerName,
-      receiverName: "6544b5f73dd2f66548b5d85a",
+      receiverName: "65847b9a377aaf7126ac03ce",
     });
   };
 
@@ -168,8 +168,8 @@ function ListRefund() {
                       <StyledTableCell component="th" scope="row">
                         {row.event_name}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {new Date(row.refund_date).toLocaleString()}
+                      <StyledTableCell align="center" sx={{width:"200px"}}>
+                        {new Date(row.refund_date).toISOString().split("T")[0]}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         {row.classTicket}

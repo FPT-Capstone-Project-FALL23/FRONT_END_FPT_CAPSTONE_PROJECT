@@ -39,7 +39,6 @@ function ChangePassword() {
           toast.success("Update password success!", toastOptions);
           window.localStorage.clear();
             navigate("/login");
-
         } else {
             console.log("error");
         }
